@@ -1,0 +1,45 @@
+<mat-toolbar color="primary" fxLayout="row">
+
+    <div fxFlex="30" class="">
+        <button mat-icon-button *ngIf="(admin$ | async)" [matMenuTriggerFor]="adminMenu">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #adminMenu="matMenu">
+            <button mat-menu-item (click)="onCreateAuction()">
+                <mat-icon matPrefix>
+                    add
+                </mat-icon>
+                Napravi aukciju
+            </button>
+        </mat-menu>
+    </div>
+
+    <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+        <div #logo 
+            class="logo" [ngClass]="{'pointer': !rootRoute}" 
+            (click)="onLogoClick()" 
+            [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
+        ></div>
+        
+        <div class="logo-animated" [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="!clickFlag"></div>
+        <!-- <div class="logo-animated" ></div> -->
+    </div>
+
+    <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
+        <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
+        
+        <img *ngIf="(user$ | async) as user" class="avatar pointer" src="{{user.photoURL}}"
+            matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
+
+        <mat-menu #profileMenu="matMenu">
+            <button mat-menu-item (click)="onLogout()">
+                <mat-icon matPrefix>
+                    exit_to_app
+                </mat-icon>
+                Odjava
+            </button>
+        </mat-menu>
+    </div>
+
+</mat-toolbar>
+<mat-progress-bar style="position: absolute" *ngIf="(active$ | async)" mode="indeterminate"></mat-progress-bar>

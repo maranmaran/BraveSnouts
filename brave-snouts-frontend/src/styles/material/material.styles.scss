@@ -1,0 +1,45 @@
+@import "./material.theme.scss";
+
+.mat-form-field {
+  width: 100% !important;
+}
+
+.auction-item-media-dropzone {
+  border: 2px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px;
+  box-sizing: border-box;
+
+  &:hover {
+    // transform: scale(1.01);
+    // transition: 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    border: 2px solid mat-color($theme-light-primary, default) !important;
+  }
+
+  &:focus, &:active, &:visited {
+    border: 2px solid mat-color($theme-light-primary, default) !important;
+  }
+}
+
+.mat-card{
+  display:flex;
+  flex-direction: column;
+}
+
+.mat-card-header {
+  flex-shrink: 0;
+}
+
+.mat-card-content{
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.mat-card-actions {
+  margin-right: 0;
+}
+
+.close-btn {
+  position: relative;
+  bottom: 1rem;
+  left: 1rem;  
+}

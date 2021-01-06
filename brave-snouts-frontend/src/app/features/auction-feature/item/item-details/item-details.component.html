@@ -1,0 +1,69 @@
+<mat-card *ngIf="bootstrapped" @skipInitAnimation class="m-2 mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">
+
+    <mat-card-title fxLayout="row" fxLayoutAlign="space-between">
+        <label> {{item.name}} </label>
+
+        <label [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'">
+            {{item.bid + ' kn'}}
+        </label>
+
+        <mat-icon class="best-bid-icon" 
+            [@starOnBidChanged]="userId === item.user && isAuthenticated" 
+            *ngIf="(userId$ | async) == item.user && (isAuthenticated$ | async)"
+            matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
+            star
+        </mat-icon>
+        
+    </mat-card-title>
+
+    <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
+
+    <mat-card-content>
+        <app-truncated-text [text]="item.description" [fallbackText]="'Nema opisa predmeta'"></app-truncated-text>
+    </mat-card-content>
+
+    <mat-card-actions fxLayout="column" fxLayoutAlign="center center">
+
+        <div id="slider-row" class="w-100 mb-3" fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxFlex="17" class="center mr-1">
+                <mat-small>{{(item.bid + 5) + ' kn'}}</mat-small>
+            </div>
+
+            <mat-slider fxFlex="60" class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid"
+                [step]="1" [min]="item.bid + 5" [max]="item.bid + 30" [value]="bidSlider.min"
+                (input)="bidChange($event)" [thumbLabel]="true">
+            </mat-slider>
+
+            <div fxFlex="23" class="center ml-1" style="position: relative">
+                <mat-form-field id="item-max-price-control">
+                    <input matInput type="number" [formControl]="currentBidControl">
+                    <span matSuffix class="ml-1">kn</span>
+
+                    <div class="bid-errors"
+                        *ngIf="currentBidControl.invalid && (currentBidControl.dirty || currentBidControl.touched)">
+                        <div *ngIf="currentBidControl.errors.required">
+                            Nedostaje cijena
+                        </div>
+                        <div *ngIf="currentBidControl.errors.decimal">
+                            Cijena mora biti prirodan broj
+                        </div>
+                        <div *ngIf="currentBidControl.errors.min">
+                            Minimalna cijena mora biti 5 kuna viša
+                        </div>
+                    </div>
+                </mat-form-field>
+
+            </div>
+        </div>
+
+        <div id="btns-row" class="w-100" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
+
+            <button class="w-100" mat-flat-button [disabled]="bidDisabled" (click)="onBid(item)"
+                color="primary">Ponudi</button>
+
+            <button class="w-100" mat-flat-button [disabled]="item.user != (userId$ | async) || bidDisabled || !(isAuthenticated$ | async)"
+                (click)="onUndoBid(item)">Poništi</button>
+
+        </div>
+    </mat-card-actions>
+</mat-card>

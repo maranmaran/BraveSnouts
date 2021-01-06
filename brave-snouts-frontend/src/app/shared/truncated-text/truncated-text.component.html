@@ -1,0 +1,35 @@
+<!-- <ng-container *ngIf="text; else fallback"> -->
+<div class="text" *ngIf="text; else fallback">
+
+    <div [innerHtml]="text"></div>
+<!-- 
+    <ng-container *ngIf="!showAll">
+        <ng-container *ngTemplateOutlet="truncated"></ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="showAll">
+        <ng-container *ngTemplateOutlet="full"></ng-container>
+    </ng-container> -->
+
+</div>
+<!-- </ng-container> -->
+
+<ng-template #truncated>
+    <div [innerHtml]="text | truncate : characters"></div>
+    <a mat-stroked-button color="accent" fxFlexAlign="end" *ngIf="text.length > characters" class="mt-2 pointer" (click)="showAll = true">
+        Prikaži više
+    </a>
+</ng-template>
+
+<ng-template #full>
+    <div [innerHtml]="text"></div>
+    <a mat-stroked-button color="accent" fxFlexAlign="end" *ngIf="text.length > characters" class="mt-2 pointer" (click)="showAll = false">
+        Prikaži manje
+    </a>
+</ng-template>
+
+<ng-template #fallback>
+    <div class="text" >
+        <i>{{fallbackText}}</i>
+    </div>
+</ng-template>

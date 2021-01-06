@@ -1,0 +1,21 @@
+@import "~@angular/material/theming";
+
+@mixin scrollbar-theme($theme) {
+  $primary: map-get($theme, primary);
+  $primary-lighter: mat-color($primary, lighter);
+
+  *::-webkit-scrollbar {
+    width: 0.3em;
+    height: 0.3em;
+  }
+
+  *::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: $primary-lighter;
+    outline: 1px solid $primary-lighter;
+  }
+}

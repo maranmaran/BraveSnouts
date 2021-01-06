@@ -1,0 +1,130 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./bootstrap/bootstrap.styles.scss";
+@import "./material/material.styles.scss";
+
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.bubble.css";
+@import "~quill/dist/quill.snow.css";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-fluid {
+  height: 100%;
+  width: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0 !important;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+img,
+video {
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -o-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  -webkit-tap-highlight-color: none !important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+lightbox {
+  gallery {
+    background-color: black !important;
+  }
+}
+
+gallery {
+  background-color: white !important;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px !important;
+
+  .ql-container.ql-snow {
+    height: 200px !important;
+  }
+}
+
+#item-max-price-control {
+  width: 4.7rem !important;
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .mat-form-field-wrapper {
+    padding: 0 !important;
+    width: 4.7rem !important;
+  }
+
+  .mat-form-field-suffix {
+    top: 0 !important;
+  }
+}
+
+// @import url('https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap');
+
+// .custom-font {
+//     font-family: 'Mali', cursive !important;
+// }
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.bold {
+  font-weight: bold !important;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}

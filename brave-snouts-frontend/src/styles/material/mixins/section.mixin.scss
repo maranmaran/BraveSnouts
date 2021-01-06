@@ -1,0 +1,19 @@
+@import "~@angular/material/theming";
+
+@mixin section-theme($theme) {
+  
+  $background-palette: map-get($theme, background); //palette
+  $dialog: map-get($background-palette, dialog);
+
+
+  .section {
+  @include mat-elevation(2);
+    background-color: $dialog;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  mat-card {
+    border-radius: 8px;
+  }
+}

@@ -1,0 +1,24 @@
+@import "~@angular/material/theming";
+
+@mixin random-theme($theme) {
+
+    $warn: mat-color(map-get($theme, warn), default);
+
+    .bid-errors {
+        color: $warn;
+        background: white;
+        border: 1px solid $warn;
+        padding: 10px;
+        border-radius: 15px;
+        border-bottom-right-radius: 0px !important;
+        z-index: 10;
+        width: max-content;
+    
+        @include mat-elevation(4);
+    
+        position: absolute;
+        bottom: 3.3rem;
+        right: 3.1rem;
+    }
+    
+}

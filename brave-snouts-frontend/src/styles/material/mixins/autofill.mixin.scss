@@ -1,0 +1,19 @@
+@import "~@angular/material/theming";
+@import '~@angular/cdk/text-field/text-field';
+
+
+// autofill - https://material.angular.io/cdk/text-field/overview
+@mixin autofill-theme($theme) {
+
+  .theme-light {
+    input {
+      @include cdk-text-field-autofill-color(transparent, black);
+    }
+  }
+
+  .theme-dark {
+    input {
+      @include cdk-text-field-autofill-color(transparent, white);
+    }
+  }
+}

@@ -1,0 +1,63 @@
+// ======================================= MIXINS ==========================================
+@import "./mixins/scrollbar.mixin.scss";
+@import "./mixins/section.mixin.scss";
+@import "./mixins/autofill.mixin.scss";
+@import "./mixins/slider.mixin.scss";
+@import "./mixins/random.mixin.scss";
+
+@mixin custom-components-theme($theme) {
+  @include scrollbar-theme($theme);
+  @include section-theme($theme);
+  @include autofill-theme($theme);
+  @include slider-theme($theme);
+  @include random-theme($theme);
+}
+
+@import "./mixins/spacing.mixin.scss";
+
+
+// ======================================= THEME ==========================================
+@import "~@angular/material/theming";
+@include mat-core();
+
+$primary: $mat-cyan;
+$accent: $mat-cyan;
+$warning: $mat-pink;
+
+$theme-light-primary: mat-palette($primary, 700, 400, 900);
+$theme-light-accent: mat-palette($accent, A700);
+$theme-light-warn: mat-palette($warning, A200);
+
+$theme-light: mat-light-theme(
+  $theme-light-primary,
+  $theme-light-accent,
+  $theme-light-warn
+);
+
+@import url('https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap');
+
+// Define a custom typography config that overrides the font-family as well as the
+// `headlines` and `body-1` levels.
+$custom-typography: mat-typography-config(
+  $font-family: 'Mali, cursive',
+  $headline: mat-typography-level(32px, 48px, 700),
+  $body-1: mat-typography-level(16px, 24px, 500)
+);
+
+// // Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
+// @include mat-base-typography($custom-typography);
+
+// // Override typography for a specific Angular Material components.
+// @include mat-checkbox-typography($custom-typography);
+
+// // Override typography for all Angular Material, including mat-base-typography and all components.
+// @include angular-material-typography($custom-typography);
+
+// Override the typography in the core CSS.
+@include mat-core($custom-typography);
+
+
+.theme-light {
+  @include angular-material-theme($theme-light);
+  @include custom-components-theme($theme-light);
+}

@@ -1,0 +1,31 @@
+<div class="container mt-5 mb-5" fxLayout="row" fxLayoutGap="0rem" fxLayout.lt-sm="column" fxLayoutGap.lt-sm="3rem">
+    
+    <div id="auction-list" fxFlex="50%" fxFlex.lt-lg="50%" fxFlex.lt-sm="100%" fxLayout="column" fxLayoutGap="0.5rem">
+
+        <ng-container *ngIf="auctions?.length > 0">
+            <mat-card *ngFor="let auction of auctions" class="pointer" (click)="onClick(auction)" [ngClass]="{'mr-5': mediaObs.isActive('gt-xs')}">
+                <mat-card-header fxLayout="row" fxLayoutAlign="space-between">
+                    <mat-card-title>{{auction.name}}</mat-card-title>
+                    <mat-card-subtitle>Traje do: {{ auction.endDate.toDate() | date: 'MMM d, h:mm:ss' }}</mat-card-subtitle>
+
+                    <div fxLayout="Row" >
+                        <button *ngIf="(admin$ | async)" mat-icon-button color="primary" (click)="onEdit(auction, $event)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button *ngIf="(admin$ | async)" mat-icon-button color="warn" (click)="onDelete(auction, $event)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </mat-card-header>
+            </mat-card>
+    </ng-container>
+        
+        <ng-container *ngIf="auctions?.length == 0">
+            <i class="custom-font center mat-title">Trenutno nema aktivnih aukcija</i>
+        </ng-container>
+    </div>
+
+    <div id="reason-donate" *ngIf="auctions" fxFlex fxLayout="column" fxLayoutGap="3rem" fxLayoutAlign="start center">
+        <app-donate></app-donate>
+    </div>
+</div>
