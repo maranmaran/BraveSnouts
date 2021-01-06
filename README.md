@@ -13,6 +13,18 @@ If you wish to contribute please contact me by mail
 
 Visit current version in production [here](https://bravesnoutsprod.firebaseapp.com)
 
+# Application
+
+Anyone can visit the page and participate in auction.
+You can authenticate in the application via Google and Facebook.
+Application only requires name, mail and profile picture permissions.
+
+If you are the current highest bidder you will have a star on the item that marks you the highest bidder. 
+Application keeps track of bids and will notify you via email when you are outbidded. You can opt out of this.
+
+Once the auction is done, app will automatically send email with item winnings to highest bidders along with payment information.
+In development: Inform facebook authenticated users via facebook messenger.
+
 # Developer notes
 
 This app is developed with angular 10+ and firebase as backend server / database.
