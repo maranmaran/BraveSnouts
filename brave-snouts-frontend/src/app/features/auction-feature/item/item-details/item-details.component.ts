@@ -1,6 +1,7 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DocumentData, QueryFn } from '@angular/fire/firestore';
+import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { Guid } from 'guid-typescript';
@@ -50,6 +51,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
+    public readonly mediaObs: MediaObserver,
   ) { }
 
   // Data

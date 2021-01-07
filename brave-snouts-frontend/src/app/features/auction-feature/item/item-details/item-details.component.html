@@ -1,18 +1,27 @@
 <mat-card *ngIf="bootstrapped" @skipInitAnimation class="m-2 mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">
 
-    <mat-card-title fxLayout="row" fxLayoutAlign="space-between">
-        <label> {{item.name}} </label>
+    <mat-card-title fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
 
-        <label [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'">
-            {{item.bid + ' kn'}}
+        <label class="mb-0" [ngClass]="{
+            'mat-title bold': mediaObs.isActive('lt-sm'), 
+            'mat-headline': mediaObs.isActive('gt-xs')  
+        }"> 
+            {{item.name}} 
         </label>
 
-        <mat-icon class="best-bid-icon" 
-            [@starOnBidChanged]="userId === item.user && isAuthenticated" 
-            *ngIf="(userId$ | async) == item.user && (isAuthenticated$ | async)"
-            matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
-            star
-        </mat-icon>
+        <label [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'" class="no-wrap mb-0" [ngClass]="{
+            'mat-title bold': mediaObs.isActive('lt-sm'), 
+            'mat-headline': mediaObs.isActive('gt-xs')  
+        }">
+            {{item.bid + ' kn'}}
+
+            <mat-icon class="best-bid-icon" 
+                [@starOnBidChanged]="userId === item.user && isAuthenticated" 
+                *ngIf="(userId$ | async) == item.user && (isAuthenticated$ | async)"
+                matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
+                star
+            </mat-icon>
+        </label>
         
     </mat-card-title>
 
