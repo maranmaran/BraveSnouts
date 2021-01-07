@@ -13,14 +13,17 @@
     img, video {
         width: 100%;
     }
-
+}
+@media(max-width: 600px) {
+    .mat-card-image {
+        height: 200px;
+    }
 }
 
 .footer {
     position: relative;
     bottom: 0;
 }
-
 
 .best-bid-icon {
     position: absolute;
