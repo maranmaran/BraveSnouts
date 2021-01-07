@@ -48,9 +48,11 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.adminSub.unsubscribe();
   }
 
+  //#region Component bootstrapping and list retrieval
+
   /** Initializes auctions list component with correct data
-   * @param admin Whether or not user is admin 
-   */
+     * @param admin Whether or not user is admin 
+     */
   initList(admin: boolean) {
 
     // console.log(`Initializing list | Admin - ${admin}`); // debug
@@ -63,7 +65,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
     /** If regular user. They don't need to see non started auctions (future ones) */
     if (!admin) {
-      auctions$ = auctions$.pipe(map(this.filterOutFutureStartDate));
+      auctions$ = auctions$.pipe(map(auction => this.filterOutFutureStartDate(auction)));
     }
 
     // progress bar - loading
@@ -91,10 +93,15 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     if (auctions?.length == 0)
       return [];
 
-    const isBefore = (auction: Auction) => moment(auction.startDate.toDate()).isBefore(new Date());
+    // this is fine because firebase translates Timestamp to user browser local time
+    const isBefore = auction => !this.isFutureAuction(auction);
 
     return auctions.filter(isBefore);
   }
+
+  //#endregion
+
+  //#region Auction actions (navigate, edit, delete)
 
   /**Navigate to selected auction */
   onClick(auction: Auction) {
@@ -151,6 +158,18 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
       })
 
+  }
+
+  //#endregion
+
+  /**Auction that is set in future and is yet to come */
+  isFutureAuction(auction: Auction) {
+    return moment(auction.startDate.toDate()).isAfter(new Date());
+  }
+
+  /**Auction that has ended and/or is processed by firebase function*/
+  isExpiredAuction(auction: Auction) {
+    return (moment(auction.endDate.toDate()).isBefore(new Date()) || auction.processed) && !this.isFutureAuction(auction); 
   }
 
 }
