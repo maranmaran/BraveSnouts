@@ -65,7 +65,10 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
     /** If regular user. They don't need to see non started auctions (future ones) */
     if (!admin) {
-      auctions$ = auctions$.pipe(map(auction => this.filterOutFutureStartDate(auction)));
+      auctions$ = auctions$.pipe(map(auctions => this.filterOutFutureStartDate(auctions)));
+    // custom order for admins
+    } else {
+      auctions$ = auctions$.pipe(map(auctions => this.sortAdminAuctions(auctions)));
     }
 
     // progress bar - loading
@@ -76,7 +79,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   }
 
   /* Retrieves only active auctions */
-  private get notFinishedAuctionsSortedQuery() {
+  private get notFinishedAuctionsSortedQuery(): QueryFn<firebase.firestore.DocumentData> {
     let today = firebase.firestore.Timestamp.fromDate(new Date());
     return ref => ref
       .where("endDate", '>=', today)
@@ -84,8 +87,8 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   }
 
   /* Admin has right to see all auctions. Sorted by endDate */
-  private get allAuctionsSortedQuery() {
-    return ref => ref.orderBy("endDate", 'desc');
+  private get allAuctionsSortedQuery(): QueryFn<firebase.firestore.DocumentData> {
+    return ref => ref; // @see {sortAdminAuctions (auction-list.component.ts)}
   }
 
   /* Filters out auctions with start date in the future */
@@ -99,6 +102,13 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     return auctions.filter(isBefore);
   }
 
+  /**Sorts custom for admin view active in middle, future top, expired bottom */
+  sortAdminAuctions(auctions: Auction[]) {
+    let expired = auctions.filter(a => this.isExpiredAuction(a));
+    let future = auctions.filter(a => this.isFutureAuction(a));
+    let active = auctions.filter(a => !this.isExpiredAuction(a) && !this.isFutureAuction(a));
+    return [...future, ...active, ...expired];
+  }
   //#endregion
 
   //#region Auction actions (navigate, edit, delete)
