@@ -6,7 +6,7 @@ import firebase from 'firebase/app';
 import { noop } from "rxjs";
 import { from } from "rxjs/internal/observable/from";
 import { of } from "rxjs/internal/observable/of";
-import { map, switchMap, take } from "rxjs/operators";
+import { map, switchMap, take, tap } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 
 
@@ -36,9 +36,9 @@ export class AuthService {
     public get isAdmin$() {
         return from(this.auth.user)
         .pipe(
-            switchMap(user => user ? this.firestore.collection(`admins`, ref => ref.where('userId', '==', user.uid)).valueChanges() : of([]) ),
-            // tap(console.log),
-            map(admin => admin.length == 1)
+            switchMap(user => user ? this.firestore.collection(`admins`, ref => ref.where('userId', '==', user.uid)).valueChanges().pipe(take(1)) : of([]) ),
+            // tap(console.trace),
+            map(admin => admin?.length == 1),
         );
     }
 
