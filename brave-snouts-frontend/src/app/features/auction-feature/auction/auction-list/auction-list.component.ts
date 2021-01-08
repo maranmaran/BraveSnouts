@@ -170,6 +170,13 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   }
 
+  onViewBids(auctionObj: Auction, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.router.navigate(['bids', { id: auctionObj.id }])
+  }
+
   //#endregion
 
   /**Auction that is set in future and is yet to come */

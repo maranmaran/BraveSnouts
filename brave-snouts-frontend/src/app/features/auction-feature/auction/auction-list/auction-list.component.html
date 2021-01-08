@@ -22,6 +22,9 @@
                         </mat-card-subtitle>
     
                         <div fxLayout="Row" >
+                            <button *ngIf="(admin$ | async)" mat-icon-button color="primary" (click)="onViewBids(auction, $event)">
+                                <mat-icon>shopping_cart</mat-icon>
+                            </button>
                             <button *ngIf="(admin$ | async)" mat-icon-button color="primary" (click)="onEdit(auction, $event)">
                                 <mat-icon>edit</mat-icon>
                             </button>

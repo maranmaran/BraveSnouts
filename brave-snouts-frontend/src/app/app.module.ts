@@ -28,6 +28,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
+import { AuctionBidsComponent } from './features/auction-feature/auction/auction-bids/auction-bids.component';
 
 
 
@@ -76,6 +77,8 @@ import { ItemMediaComponent } from './features/auction-feature/item/item-media/i
 
     // Core
     ToolbarComponent,
+
+    AuctionBidsComponent,
   ],
   providers: [
     {

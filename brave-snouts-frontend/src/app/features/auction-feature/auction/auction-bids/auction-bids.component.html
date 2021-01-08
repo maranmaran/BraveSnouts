@@ -1,0 +1,44 @@
+<div class="container" fxLayout="column" fxLayoutGap="1rem">
+
+    <mat-card *ngIf="(auction$ | async) as auction">
+        <mat-card-header>
+            <mat-card-title>{{ auction.name }}</mat-card-title>
+            <mat-card-subtitle>subtitle</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+        
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button>Ok</button>
+        </mat-card-actions>
+    </mat-card>
+    
+    <div fxLayout="row" fxLayoutGap="1rem">
+        <mat-card *ngFor="let item of (items$ | async)">
+            <mat-card-header>
+                <mat-card-title>{{ item.name }}</mat-card-title>
+                <mat-card-subtitle>subtitle</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+        
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="getBids(item.id)">Show</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    
+    <mat-card *ngFor="let bid of (bids$ | async)">
+        <mat-card-header>
+            <mat-card-title>{{ bid.userId }}</mat-card-title>
+            <mat-card-subtitle>{{ bid.bid }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+    
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button>Show</button>
+        </mat-card-actions>
+    </mat-card>
+
+</div>
