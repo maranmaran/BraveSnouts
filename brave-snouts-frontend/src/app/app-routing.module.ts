@@ -8,18 +8,15 @@ import { AuctionFormGuard } from 'src/business/guards/auction-form.guard';
 import { AuthGuard } from 'src/business/guards/auth.guard';
 import { AdminGuard } from 'src/business/guards/admin.guard';
 import { Auction } from 'src/business/models/auction.model';
+import { AuctionIdGuard } from 'src/business/guards/auction-id.guard';
+import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
 
 const routes: Routes = [
   { path: '', component: AuctionListComponent},
   { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
   { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },  
-  // For /auction path
-  // TODO Auction active guard
-  // TODO Has Auction Id guard
-  { path: 'auction',  component: AuctionDetailsComponent }, 
-  // For /bids path
-  // TODO Has Auction Id guard
-  { path: 'bids', canActivate: [AdminGuard], component: AuctionBidsComponent },
+  { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent }, 
+  { path: 'bids', canActivate: [AdminGuard, AuctionIdGuard], component: AuctionBidsComponent },
   { path: '**', redirectTo: '/' }
 ];
 
