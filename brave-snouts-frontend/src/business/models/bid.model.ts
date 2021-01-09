@@ -6,6 +6,13 @@ export class Bid {
   id: string;
   itemId: string;
   userId: string;
+  userInfo: UserInfo;
   bid: number;
   date: any;
+}
+
+export class UserInfo {
+  name: string;
+  email: string;
+  avatar: string;
 }

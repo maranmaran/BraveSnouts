@@ -53,7 +53,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
       const duration = moment.duration(dateDiff);
       const leftTime = duration.asSeconds();
 
-      this.config = { leftTime, format: "HH:mm:ss", formatDate: formatDateToHoursOnlyNgxCountdown }
+      this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
     }));
   }
 

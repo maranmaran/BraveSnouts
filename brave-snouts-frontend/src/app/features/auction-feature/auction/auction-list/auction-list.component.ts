@@ -174,18 +174,33 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['bids', { id: auctionObj.id }])
+    this.router.navigate(['bids', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
   }
 
   //#endregion
 
+  getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
+    
+    let state: 'future' | 'active' | 'expired' = 'active';
+
+    if(this.isFutureAuction(auction)) {
+      state = 'future'
+    } 
+
+    if(this.isExpiredAuction(auction)) {
+      state = 'expired'
+    }
+    
+    return state;
+  }
+
   /**Auction that is set in future and is yet to come */
-  isFutureAuction(auction: Auction) {
+  private isFutureAuction(auction: Auction) {
     return moment(auction.startDate.toDate()).isAfter(new Date());
   }
 
   /**Auction that has ended and/or is processed by firebase function*/
-  isExpiredAuction(auction: Auction) {
+  private isExpiredAuction(auction: Auction) {
     return (moment(auction.endDate.toDate()).isBefore(new Date()) || auction.processed) && !this.isFutureAuction(auction); 
   }
 

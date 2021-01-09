@@ -13,7 +13,7 @@ import { LoginMethodComponent } from "src/app/features/auth-feature/login-method
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    _admin: boolean = false;
+    private _admin: boolean = false;
 
     constructor(
         private readonly auth: AngularFireAuth,
@@ -81,4 +81,5 @@ export class AuthService {
     logout() {
         this.auth.signOut();
     }
+
 }

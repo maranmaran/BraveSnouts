@@ -1,9 +1,7 @@
 @import "~@angular/material/theming";
 
 @mixin random-theme($theme) {
-
     $warn: mat-color(map-get($theme, warn), default);
-    
 
     .bid-errors {
         color: $warn;
@@ -14,20 +12,49 @@
         border-bottom-right-radius: 0px !important;
         z-index: 10;
         width: max-content;
-    
+
         @include mat-elevation(4);
-    
+
         position: absolute;
         bottom: 3.3rem;
         right: 3.1rem;
     }
 
-    .mat-card.warn.lighter {
-        background: mat-color(map-get($theme, warn), 50) !important;
+    .background {
+        &.warn.lighter {
+            background: mat-color(map-get($theme, warn), 50) !important;
+        }
+
+        &.primary.lighter {
+            background: mat-color(map-get($theme, primary), 50) !important;
+        }
     }
 
-    .mat-card.primary.lighter {
-        background: mat-color(map-get($theme, primary), 50) !important;
+    .foreground {
+        &.warn.default {
+            color: mat-color(map-get($theme, warn), "default") !important;
+        }
+
+        &.primary.lighter {
+            color: mat-color(map-get($theme, primary), "default") !important;
+        }
     }
-    
+
+    .elevate
+    {
+        @include mat-elevation-transition;
+
+        &.hover {
+            &:hover {
+                @include mat-elevation(4, mat-color(map-get($theme, primary), 800), 1);
+            }
+        }
+
+        &.selected {
+            &.selected {
+                @include mat-elevation(8, mat-color(map-get($theme, primary), 800), 1);
+            }
+        }
+    }
+
 }

@@ -15,8 +15,9 @@
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+
         <div #logo 
-            class="logo" [ngClass]="{'pointer': !rootRoute}" 
+            class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" 
             (click)="onLogoClick()" 
             [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
         ></div>

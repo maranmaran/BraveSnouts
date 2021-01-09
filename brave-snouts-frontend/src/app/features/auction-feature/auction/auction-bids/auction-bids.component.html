@@ -1,44 +1,71 @@
 <div class="container" fxLayout="column" fxLayoutGap="1rem">
 
-    <mat-card *ngIf="(auction$ | async) as auction">
-        <mat-card-header>
-            <mat-card-title>{{ auction.name }}</mat-card-title>
-            <mat-card-subtitle>subtitle</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-        
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button>Ok</button>
-        </mat-card-actions>
-    </mat-card>
-    
-    <div fxLayout="row" fxLayoutGap="1rem">
-        <mat-card *ngFor="let item of (items$ | async)">
+    <div [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" *ngIf="(auction$ | async) as auction" fxLayout="column"
+        fxLayoutGap="1rem">
+
+        <div fxLayout="row">
+            <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" fxFlex="100%"
+                fxFlex.lt-md="100%">
+                <div class="mat-title mb-0 bold">{{ auction.name }}</div>
+                <div fxLayout="row" fxLayoutGap="1rem" class="foreground"
+                    [ngClass]="{'warn default': state == 'expired', 'primary lighter': state == 'future'}">
+
+                    <div [ngSwitch]="state">
+                        <ng-container *ngSwitchCase="'future'">
+                            Poćinje: {{ auction.startDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'expired'">
+                            Završila: {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'active'">
+                            Traje do: {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+                        </ng-container>
+                    </div>
+                    <countdown *ngIf="state == 'active' && config" class="m-0 bold" #cd [config]="config">
+                    </countdown>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="1rem" class="w-100 pb-3 overflow-x">
+
+        <mat-card *ngFor="let item of (items$ | async)" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
             <mat-card-header>
                 <mat-card-title>{{ item.name }}</mat-card-title>
-                <mat-card-subtitle>subtitle</mat-card-subtitle>
             </mat-card-header>
-            <mat-card-content>
-        
-            </mat-card-content>
             <mat-card-actions>
-                <button mat-button (click)="getBids(item.id)">Show</button>
+                <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje
+                    ponude</button>
             </mat-card-actions>
         </mat-card>
+
     </div>
-    
-    <mat-card *ngFor="let bid of (bids$ | async)">
-        <mat-card-header>
-            <mat-card-title>{{ bid.userId }}</mat-card-title>
-            <mat-card-subtitle>{{ bid.bid }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-    
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button>Show</button>
-        </mat-card-actions>
-    </mat-card>
+
+    <ng-container *ngIf="!!(bids$ | async)">
+
+        <ng-container *ngIf="(bids$ | async).length > 0 ;else noBids">
+            <mat-card *ngFor="let bid of (bids$ | async)" class="elevate hover">
+                <mat-card-header>
+                    <img mat-card-avatar [src]="bid.userInfo?.avatar">
+                    <mat-card-title>
+                        {{ bid.userInfo?.name }} - {{ bid.bid }} kn
+                    </mat-card-title>
+                    <mat-card-subtitle>
+                        {{ bid.date.toDate() | date: 'MMM d, h:mm:ss' }}
+                    </mat-card-subtitle>
+                    <mat-card-subtitle>
+                        {{ bid.userInfo?.email }}
+                    </mat-card-subtitle>
+                </mat-card-header>
+            </mat-card>
+        </ng-container>
+        
+        <ng-template #noBids>
+            <i>Nažalost nema ponuda :( </i>
+        </ng-template>
+    </ng-container>
 
 </div>
