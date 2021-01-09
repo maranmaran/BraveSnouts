@@ -3,9 +3,11 @@
     <div id="auction-list" fxFlex="50%" fxFlex.lt-lg="50%" fxFlex.lt-sm="100%" fxLayout="column" fxLayoutGap="0.5rem">
 
         <ng-container *ngIf="(auctions$ | async) as auctions">
-            <ng-container *ngIf="auctions?.length > 0; else noAuctions">
+            <div @staggerFadeIn *ngIf="auctions?.length > 0; else noAuctions">
 
-                <mat-card *ngFor="let auction of auctions" class="pointer background lighter hover-elevate" (click)="onClick(auction)" [ngClass]="{'mr-5': mediaObs.isActive('gt-xs'), 'warn': isExpiredAuction(auction),'primary': isFutureAuction(auction)}">
+                <mat-card *ngFor="let auction of auctions" class="pointer background lighter hover-elevate mb-2" (click)="onClick(auction)" 
+                [ngClass]="{'mr-5': mediaObs.isActive('gt-xs'), 'warn': getAuctionState(auction) == 'expired','primary': getAuctionState(auction) == 'future'}">
+
                     <mat-card-header fxLayout="row" fxLayoutAlign="space-between">
 
                         <mat-card-title>
@@ -38,9 +40,10 @@
                             </button>
                         </div>
                     </mat-card-header>
+
                 </mat-card>
                 
-            </ng-container>
+            </div>
         </ng-container>
         
         
@@ -50,6 +53,6 @@
     </div>
 
     <div id="reason-donate" fxFlex fxLayout="column" fxLayoutGap="3rem" fxLayoutAlign="start center">
-        <app-donate></app-donate>
+        <app-donate *ngIf="bootstrapDonateComponent" @fadeIn></app-donate>
     </div>
 </div>

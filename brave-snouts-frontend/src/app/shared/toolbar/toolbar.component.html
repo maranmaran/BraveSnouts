@@ -29,7 +29,7 @@
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
         <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
         
-        <img *ngIf="(user$ | async) as user" class="avatar pointer" src="{{user.photoURL}}"
+        <img *ngIf="(user$ | async) as user" class="avatar pointer elevate hover default" src="{{user.photoURL}}"
             matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
 
         <mat-menu #profileMenu="matMenu">

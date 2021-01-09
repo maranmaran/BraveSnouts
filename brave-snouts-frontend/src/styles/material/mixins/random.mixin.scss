@@ -50,6 +50,12 @@
             }
         }
 
+        &.hover.default {
+            &:hover {
+                @include mat-elevation(4);
+            }
+        }
+
         &.selected {
             &.selected {
                 @include mat-elevation(8, mat-color(map-get($theme, primary), 800), 1);

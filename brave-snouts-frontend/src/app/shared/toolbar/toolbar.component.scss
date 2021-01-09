@@ -26,6 +26,11 @@
   @extend .logo-base;
   background-image: url("/assets/snouts-logo/njuske-kapica-krug-compressed.jpg");
   background-size: contain;
+
+  &:hover {
+    background-image: url("/assets/snouts-logo/njuske-kapica-animated.gif");
+    background-size: contain;
+  }
 }
 .logo-animated {
   @extend .logo-base;

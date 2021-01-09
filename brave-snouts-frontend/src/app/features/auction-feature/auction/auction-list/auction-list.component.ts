@@ -1,25 +1,26 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DocumentData, QueryFn } from '@angular/fire/firestore';
+import { QueryFn } from '@angular/fire/firestore';
 import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
-import * as moment from 'moment';
 import { noop, Observable, Subscription } from 'rxjs';
-import { from } from 'rxjs/internal/observable/from';
-import { concatMap, distinctUntilChanged, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { fadeIn } from 'src/business/animations/fade-in.animation';
+import { staggerFadeIn } from 'src/business/animations/stagger-fade-in.animation';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/auction.repository';
+import { getAuctionState } from 'src/business/services/auction.service';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
-import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-auction-list',
   templateUrl: './auction-list.component.html',
-  styleUrls: ['./auction-list.component.scss']
+  styleUrls: ['./auction-list.component.scss'],
+  animations: [ staggerFadeIn, fadeIn ]
 })
 export class AuctionListComponent implements OnInit, OnDestroy {
 
@@ -37,6 +38,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   admin$: Observable<boolean>;
 
   adminSub: Subscription;
+  bootstrapDonateComponent = false;
 
   ngOnInit(): void {
     this.admin$ = this.authSvc.isAdmin$;
@@ -74,7 +76,8 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     // progress bar - loading
     this.loadingSvc.active$.next(true);
     this.auctions$ = auctions$.pipe(
-      tap(() => this.loadingSvc.active$.next(false))
+      tap(() => this.loadingSvc.active$.next(false)),
+      tap(() => this.bootstrapDonateComponent = true),
     );
   }
 
@@ -97,16 +100,16 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       return [];
 
     // this is fine because firebase translates Timestamp to user browser local time
-    const isBefore = auction => !this.isFutureAuction(auction);
+    const isBefore = auction => this.getAuctionState(auction) != 'future';
 
     return auctions.filter(isBefore);
   }
 
   /**Sorts custom for admin view active in middle, future top, expired bottom */
   sortAdminAuctions(auctions: Auction[]) {
-    let expired = auctions.filter(a => this.isExpiredAuction(a));
-    let future = auctions.filter(a => this.isFutureAuction(a));
-    let active = auctions.filter(a => !this.isExpiredAuction(a) && !this.isFutureAuction(a));
+    let expired = auctions.filter(a => this.getAuctionState(a) == 'expired');
+    let future = auctions.filter(a => this.getAuctionState(a) == 'future');
+    let active = auctions.filter(a => this.getAuctionState(a) == 'active');
     return [...future, ...active, ...expired];
   }
   //#endregion
@@ -115,7 +118,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   /**Navigate to selected auction */
   onClick(auction: Auction) {
-    this.router.navigate(['auction', { id: auction.id }])
+    this.router.navigate(['auction', { id: auction.id } ], { state: { auction } });
   }
 
   onEdit(auctionObj: Auction, event: Event) {
@@ -180,28 +183,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   //#endregion
 
   getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
-    
-    let state: 'future' | 'active' | 'expired' = 'active';
-
-    if(this.isFutureAuction(auction)) {
-      state = 'future'
-    } 
-
-    if(this.isExpiredAuction(auction)) {
-      state = 'expired'
-    }
-    
-    return state;
-  }
-
-  /**Auction that is set in future and is yet to come */
-  private isFutureAuction(auction: Auction) {
-    return moment(auction.startDate.toDate()).isAfter(new Date());
-  }
-
-  /**Auction that has ended and/or is processed by firebase function*/
-  private isExpiredAuction(auction: Auction) {
-    return (moment(auction.endDate.toDate()).isBefore(new Date()) || auction.processed) && !this.isFutureAuction(auction); 
+    return getAuctionState(auction);
   }
 
 }
