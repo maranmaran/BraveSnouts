@@ -42,6 +42,11 @@ export class AuctionActiveGuard implements CanActivate {
         }
     
         return of(getAuctionState(auction) == 'active');
+      }),
+      switchMap(canNavigate => {
+        if(canNavigate) return of(true);
+
+        return this.router.navigate(['']);
       })
     );
   }
