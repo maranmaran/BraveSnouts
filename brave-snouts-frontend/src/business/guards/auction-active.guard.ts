@@ -2,17 +2,19 @@ import { Injectable } from "@angular/core";
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { take } from "rxjs/internal/operators/take";
-import { map } from "rxjs/operators";
+import { concatMap, map, switchMap } from "rxjs/operators";
 import { Auction } from "src/business/models/auction.model";
 import { AuctionRepository } from "src/business/services/auction.repository";
 import { getAuctionState } from "src/business/services/auction.service";
+import { AuthService } from "src/business/services/auth.service";
 
 @Injectable({ providedIn: 'root' })
 export class AuctionActiveGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    private readonly auctionRepo: AuctionRepository
+    private readonly auctionRepo: AuctionRepository,
+    private readonly authSvc: AuthService,
   ) {
   }
 
@@ -25,13 +27,23 @@ export class AuctionActiveGuard implements CanActivate {
       return this.router.navigate([''])
     }
 
-    if(!auction) {
-      let auction$ = this.getAuction(auctionId);
+    return this.authSvc.isAdmin$.pipe(
+      switchMap(admin => {
+        // admin can navigate to any state of auction
+        // be it future, active or expired
+        if(admin) return of(true);
 
-      return auction$.pipe(map(auction => getAuctionState(auction) == 'active'));
-    }
+        // if not admin do regular check
 
-    return of(getAuctionState(auction) == 'active');
+        if(!auction) {
+          let auction$ = this.getAuction(auctionId);
+    
+          return auction$.pipe(map(auction => getAuctionState(auction) == 'active'));
+        }
+    
+        return of(getAuctionState(auction) == 'active');
+      })
+    );
   }
 
   getAuction(id: string): Observable<Auction> {
