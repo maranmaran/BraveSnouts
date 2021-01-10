@@ -5,7 +5,7 @@
         <ng-container *ngIf="(auctions$ | async) as auctions">
             <div @staggerFadeIn *ngIf="auctions?.length > 0; else noAuctions">
 
-                <mat-card *ngFor="let auction of auctions" class="pointer background lighter hover-elevate mb-2" (click)="onClick(auction)" 
+                <mat-card *ngFor="let auction of auctions" class="pointer background lighter elevate hover mb-2" (click)="onClick(auction)" 
                 [ngClass]="{'mr-5': mediaObs.isActive('gt-xs'), 'warn': getAuctionState(auction) == 'expired','primary': getAuctionState(auction) == 'future'}">
 
                     <mat-card-header fxLayout="row" fxLayoutAlign="space-between">
