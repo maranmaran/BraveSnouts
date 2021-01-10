@@ -3,8 +3,16 @@
     <div fxLayout="row">
         <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem"
         fxFlex="45%" fxFlex.lt-md="100%">
-            <div [ngClass]="{'mat-title': mediaObs.isActive('lt-sm'), 'mat-headline': mediaObs.isActive('gt-xs')  }" class="mb-0 bold" >{{auction.name}}</div>
-            <countdown class="m-0 bold" [ngClass]="{'mat-title': mediaObs.isActive('lt-sm'), 'mat-headline': mediaObs.isActive('gt-xs')  }" *ngIf="config" #cd [config]="config"></countdown>
+            <div class="mb-0 bold"  [ngClass]="{
+                'mat-title': mediaObs.isActive('lt-lg'), 
+                'mat-headline': mediaObs.isActive('gt-md')  
+            }" >
+                {{auction.name}}
+            </div>
+            <countdown *ngIf="config" #cd [config]="config" class="m-0 bold" [ngClass]="{
+                'mat-title': mediaObs.isActive('lt-lg'), 
+                'mat-headline': mediaObs.isActive('gt-md')  
+            }" ></countdown>
         </div>
     </div>
     

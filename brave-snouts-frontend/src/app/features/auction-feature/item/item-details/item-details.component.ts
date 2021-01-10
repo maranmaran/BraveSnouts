@@ -261,15 +261,20 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
         // take next (now new last) bid
         // get last bid which isn't the same value (ignore duplicates)
+        // TODO: Extract and refactor
         let lastBid = bids[0];
-        while (lastBid.bid == this.item.bid) {
-          bidsToDelete.push(bids.splice(0, 1)[0]);
-          lastBid = bids[0];
-
-          if (!lastBid) {
-            // default state for auction item
-            lastBid = new Bid({ bid: 0, userId: null });
-            break;
+        if(!lastBid) {
+          lastBid = new Bid({ bid: 0, userId: null });
+        } else {
+          while (lastBid.bid == this.item.bid) {
+            bidsToDelete.push(bids.splice(0, 1)[0]);
+            lastBid = bids[0];
+  
+            if (!lastBid) {
+              // default state for auction item
+              lastBid = new Bid({ bid: 0, userId: null });
+              break;
+            }
           }
         }
 
