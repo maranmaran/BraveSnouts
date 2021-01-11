@@ -1,24 +1,29 @@
 @import "~@angular/material/theming";
 
 @mixin elevation-theme($theme) {
+
     .elevate {
         @include mat-elevation-transition;
-
-        &.hover {
-            &:hover {
-                @include mat-elevation(4, mat-color(map-get($theme, primary), 800), 1);
-            }
-            &:hover.default {
-                @include mat-elevation(4);
-            }
-            &:hover.warn {
-                @include mat-elevation(4, mat-color(map-get($theme, warn), 800), 1);
-            }
-        }
 
         &.selected {
             &.selected {
                 @include mat-elevation(8, mat-color(map-get($theme, primary), 800), 1);
+            }
+        }
+    }
+
+    @media(hover: hover) {
+        .elevate {
+            &.hover {
+                &:hover {
+                    @include mat-elevation(4, mat-color(map-get($theme, primary), 800), 1);
+                }
+                &:hover.default {
+                    @include mat-elevation(4);
+                }
+                &:hover.warn {
+                    @include mat-elevation(4, mat-color(map-get($theme, warn), 800), 1);
+                }
             }
         }
     }

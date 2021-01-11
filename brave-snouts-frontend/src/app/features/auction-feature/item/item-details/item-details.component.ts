@@ -106,8 +106,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
   //#region Subscriptions and form controls 
 
-  /**
-   * Triggers when authenticated userId changes 
+  /** Triggers when authenticated userId changes 
    * Workaround for broken animation with async pipe
    * https://github.com/angular/angular/issues/21331
   */
@@ -253,36 +252,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
         let bids = [...this.bids];
 
-        //#region Delete previous bid records 
-
-        // remove this users latest bid...
-        const bidsToDelete: Bid[] = [];
-        bidsToDelete.push(bids.splice(0, 1)[0]);
-
-        // take next (now new last) bid
-        // get last bid which isn't the same value (ignore duplicates)
-        // TODO: Extract and refactor
-        let lastBid = bids[0];
-        if(!lastBid) {
-          lastBid = new Bid({ bid: 0, userId: null });
-        } else {
-          while (lastBid.bid == this.item.bid) {
-            bidsToDelete.push(bids.splice(0, 1)[0]);
-            lastBid = bids[0];
-  
-            if (!lastBid) {
-              // default state for auction item
-              lastBid = new Bid({ bid: 0, userId: null });
-              break;
-            }
-          }
-        }
-
-        for (const bidToDelete of bidsToDelete) {
-          this.bidsRepo.delete(bidToDelete.id);
-        }
-
-        //#endregion
+        const lastBid = this.deleteLastBid(bids);
 
         // undo item bid
         this.itemsRepo.update(item.auctionId, item.id, {
@@ -291,6 +261,40 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
         });
 
       });
+  }
+
+  /** Deletes last bid and any bid that matches it's value (because of possible same time bids)
+   *  Retrieves first deleted bid
+   */
+  deleteLastBid(bids) {
+
+    const bidsToDelete: Bid[] = [];
+    bidsToDelete.push(bids.splice(0, 1)[0]);
+
+    // take next (now new last) bid
+    // get last bid which isn't the same value (ignore duplicates)
+    // TODO: Extract and refactor
+    let lastBid = bids[0];
+    if(!lastBid) {
+      lastBid = new Bid({ bid: 0, userId: null });
+    } else {
+      while (lastBid.bid == this.item.bid) {
+        bidsToDelete.push(bids.splice(0, 1)[0]);
+        lastBid = bids[0];
+
+        if (!lastBid) {
+          // default state for auction item
+          lastBid = new Bid({ bid: 0, userId: null });
+          break;
+        }
+      }
+    }
+
+    for (const bidToDelete of bidsToDelete) {
+      this.bidsRepo.delete(bidToDelete.id);
+    }
+
+    return lastBid;
   }
 
   /* Validates current bid price */

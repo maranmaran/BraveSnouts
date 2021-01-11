@@ -32,10 +32,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     
-    // TODO: Make guard to prevent user accessing AUCTION DETAILS if auctions is 
-    // In future
-    // Ended (expired) and or processed flag is set by functions
-
     // Retrieve auction data
     let auctionId = this.route.snapshot.paramMap.get('id');
     this.auction$ = this.auctionsRepo.getOne(auctionId);

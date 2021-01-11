@@ -6,10 +6,10 @@
             {{item.name}} 
         </label>
 
-        <div gdColumns="repeat(2, minmax(65px, 1fr))" class="mr-0">
+        <div gdColumns="min-content min-content" gdGap="1rem" class="mr-0">
             
             <div class="center">
-                <button mat-icon-button color="warn" class="elevate hover warn" *ngIf="(item.user == (userId$ | async) && (isAuthenticated$ | async)); else btnfiller" (click)="onUndoBid(item)">
+                <button mat-icon-button color="warn" class="elevate hover warn" *ngIf="(item.user == (userId$ | async) && (isAuthenticated$ | async)); else btnfiller" (click)="$event.preventDefault(); onUndoBid(item)">
                     <mat-icon>settings_backup_restore</mat-icon>
                 </button>
                 <ng-template #btnfiller><div style="width: 40px; height: 40px;"></div></ng-template>
