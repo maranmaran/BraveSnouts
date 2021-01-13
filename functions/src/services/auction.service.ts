@@ -16,7 +16,7 @@ export const auctionEnd = async () => {
     const auctions = await getAuctions();
     if(auctions.length === 0) {
         console.log('No auctions found');
-        return;
+        return null;
     }
 
     // Get all auction items
@@ -24,14 +24,14 @@ export const auctionEnd = async () => {
     const items: AuctionItem[] = await getAllItems(auctions);
     if(items.length === 0) {
         console.log('No items found');
-        return;
+        return null;
     }
 
     // Retrieve bids
     const bids = getBids(items);
     if(bids.length === 0) {
         console.log('No bids found');
-        return;
+        return null;
     }
 
     // Retrieve user information
@@ -46,6 +46,8 @@ export const auctionEnd = async () => {
 
     // Mark processed auctions
     await markAuctionsProcessed(auctions);
+
+    return null;
 }
 
 export const markAuctionsProcessed = async (auctions: Auction[]) => {

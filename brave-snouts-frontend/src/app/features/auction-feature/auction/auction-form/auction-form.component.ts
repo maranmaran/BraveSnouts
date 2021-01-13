@@ -13,13 +13,15 @@ import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
+import { FunctionsService } from 'src/business/services/functions.service';
 import { SubSink } from 'subsink';
 import { StorageService } from './../../../../../business/services/storage.service';
 
 export interface FirebaseFile {
   path: string,
   type: string,
-  name: string
+  name: string,
+  compressedPath: string
 }
 
 @Component({
@@ -54,6 +56,7 @@ export class AuctionFormComponent implements OnInit {
     private readonly storage: StorageService,
     private readonly router: Router,
     private readonly authSvc: AuthService,
+    private readonly functionsSvc: FunctionsService,
   ) { }
 
   ngOnInit(): void {
@@ -169,18 +172,19 @@ export class AuctionFormComponent implements OnInit {
     from(event.addedFiles)
     .pipe(
       mergeMap((file: File) => {
-        const path = `auction-items/${Guid.create()}`;
-    
+
+        // const name = `${Guid.create()}.jpg`;
+        const name = `test`;
+        const path = `auction-items/${name}`;
+        const type = this.getFirebaseFileType(file.type);
+
         return from(this.storage.uploadFile(file, path))
         .pipe(
-          map(_ => ({
-            name: file.name,
-            type: this.getFirebaseFileType(file.type),
-            path
-          })),
+          map(_ => ({ name, type, path }) as FirebaseFile),
           tap((firebaseFile: FirebaseFile) => this.files[index].push(firebaseFile))
-          )
+        )
       }),
+      tap(res => console.log(res)),
       finalize(() => this.uploadStates$[index].next(false))
     ).subscribe(noop)
       

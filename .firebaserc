@@ -1,6 +1,7 @@
 {
   "projects": {
     "dev": "bravesnoutsdev",
-    "prod": "bravesnoutsprod"
+    "prod": "bravesnoutsprod",
+    "default": "bravesnoutsdev"
   }
 }
