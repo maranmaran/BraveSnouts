@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as moment from 'moment';
-import { store } from '..';
+import { logger, store } from '..';
 import { Auction, AuctionItem, Bid, UserInfo } from '../models/models';
 import { sendEndAuctionMail } from './mail.service';
 
@@ -15,23 +15,23 @@ export const auctionEnd = async () => {
     // get auctions
     const auctions = await getAuctions();
     if(auctions.length === 0) {
-        console.log('No auctions found');
-        return;
+        logger.log('No auctions found');
+        return null;
     }
 
     // Get all auction items
     // filter out only items that were bid on
     const items: AuctionItem[] = await getAllItems(auctions);
     if(items.length === 0) {
-        console.log('No items found');
-        return;
+        logger.log('No items found');
+        return null;
     }
 
     // Retrieve bids
     const bids = getBids(items);
     if(bids.length === 0) {
-        console.log('No bids found');
-        return;
+        logger.log('No bids found');
+        return null;
     }
 
     // Retrieve user information
@@ -46,6 +46,8 @@ export const auctionEnd = async () => {
 
     // Mark processed auctions
     await markAuctionsProcessed(auctions);
+
+    return null;
 }
 
 export const markAuctionsProcessed = async (auctions: Auction[]) => {
@@ -88,7 +90,7 @@ export const getUserInformation = async (userIds: string[]) => {
             });
 
         } catch (error) {
-            console.log(`User not found ${error}`);
+            logger.log(`User not found ${error}`);
         }
     }
 
@@ -105,7 +107,7 @@ export const getAuctions = async () => {
     // Get auctions for today
     const today = () => moment(new Date()).utc();
     
-    console.log(`Check time is ${today()}`);
+    logger.log(`Check time is ${today()}`);
     
     const auctionsQuery = store.collection('auctions')
     .orderBy('endDate')

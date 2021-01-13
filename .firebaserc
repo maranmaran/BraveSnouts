@@ -1,6 +1,6 @@
 {
   "projects": {
-    "dev": "bravesnoutsdev-dab7e",
+    "dev": "bravesnoutsdev",
     "prod": "bravesnoutsprod"
   }
 }

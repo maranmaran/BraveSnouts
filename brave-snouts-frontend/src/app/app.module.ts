@@ -1,4 +1,4 @@
-import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
+import {  NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -29,8 +29,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { AuctionBidsComponent } from './features/auction-feature/auction/auction-bids/auction-bids.component';
-
-
+import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/functions';
 
 @NgModule({
   imports: [
@@ -42,6 +41,7 @@ import { AuctionBidsComponent } from './features/auction-feature/auction/auction
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireStorageModule,
+    AngularFireFunctionsModule,
 
     // Auction 
     NgxDropzoneModule,
@@ -81,6 +81,8 @@ import { AuctionBidsComponent } from './features/auction-feature/auction/auction
     AuctionBidsComponent,
   ],
   providers: [
+    { provide: REGION, useValue: 'europe-west1' },
+    { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
     {
       provide: GALLERY_CONFIG,
       useValue: {
