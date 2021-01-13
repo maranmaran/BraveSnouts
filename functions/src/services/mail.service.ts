@@ -1,6 +1,7 @@
-import { AuctionItem, Bid, UserInfo } from "../models/models"
+import { logger } from "firebase-functions";
 import * as nodemailer from 'nodemailer';
-import { logger } from "..";
+import { AuctionItem, Bid, UserInfo } from "../models/models";
+
 // import * as functions from 'firebase-functions';
 
 // Configure the email transport using the default SMTP transport and a GMail account.

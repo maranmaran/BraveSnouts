@@ -173,8 +173,7 @@ export class AuctionFormComponent implements OnInit {
     .pipe(
       mergeMap((file: File) => {
 
-        // const name = `${Guid.create()}.jpg`;
-        const name = `test`;
+        const name = `${Guid.create()}.jpg`;
         const path = `auction-items/${name}`;
         const type = this.getFirebaseFileType(file.type);
 
