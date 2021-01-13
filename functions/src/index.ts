@@ -12,8 +12,8 @@ export const store = admin.firestore();
 export const europeFunctions = functions.region('europe-west1');
 
 // functions
-export const auctionsEnd = auctionsEndFunction;
-// export const bidChange = bidChangeFunction;
+// export const auctionsEnd = auctionsEndFunction;
+export const bidChange = bidChangeFunction;
 // export const compressImage = compressImageFunction;
 
 
