@@ -11,6 +11,13 @@ Run:
 * `firebase emulators:start`
 * `firebase emulators:start --inspect-functions`
 
+## Environment variables
+
+[Environment configuration](https://firebase.google.com/docs/functions/config-env)
+
+`firebase functions:config:set mail.user="patience56@ethereal.email" mail.password="jYsRxVBXdsfU6W8nHv"`
+
+
 ## TODO:
 
 ### Facebook messaging

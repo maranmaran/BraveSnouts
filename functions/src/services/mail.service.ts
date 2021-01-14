@@ -1,5 +1,6 @@
 import { logger } from "firebase-functions";
 import * as nodemailer from 'nodemailer';
+import { config, europeFunctions } from "..";
 import { AuctionItem, Bid, UserInfo } from "../models/models";
 
 // import * as functions from 'firebase-functions';
@@ -26,8 +27,8 @@ export const sendEndAuctionMail = async (user: UserInfo, items: Bid[]) => {
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'patience56@ethereal.email',
-      pass: 'jYsRxVBXdsfU6W8nHv',
+      user: config.mail.user,
+      pass: config.mail.password,
     },
   });
 
@@ -53,8 +54,8 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'patience56@ethereal.email',
-      pass: 'jYsRxVBXdsfU6W8nHv',
+      user: config.mail.user,
+      pass: config.mail.password,
     },
   });
 

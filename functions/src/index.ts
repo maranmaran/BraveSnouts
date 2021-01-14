@@ -10,6 +10,7 @@ admin.initializeApp();
 // dependancies
 export const store = admin.firestore();
 export const europeFunctions = functions.region('europe-west1');
+export const config = functions.config();
 
 // functions
 // export const auctionsEnd = auctionsEndFunction;
