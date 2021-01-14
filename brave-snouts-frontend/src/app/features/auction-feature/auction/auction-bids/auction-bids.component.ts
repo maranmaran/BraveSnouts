@@ -28,7 +28,6 @@ export class AuctionBidsComponent implements OnInit {
     private readonly auctionRepo: AuctionRepository,
     private readonly itemRepo: AuctionItemRepository,
     private readonly bidRepo: BidsRepository,
-    private readonly mediaObs: MediaObserver,
     private readonly route: ActivatedRoute
   ) { }
 

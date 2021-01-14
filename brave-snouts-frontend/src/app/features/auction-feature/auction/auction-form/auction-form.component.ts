@@ -56,7 +56,6 @@ export class AuctionFormComponent implements OnInit {
     private readonly storage: StorageService,
     private readonly router: Router,
     private readonly authSvc: AuthService,
-    private readonly functionsSvc: FunctionsService,
   ) { }
 
   ngOnInit(): void {
@@ -202,12 +201,17 @@ export class AuctionFormComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
+    // this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
 
-    // this.uploadStates$.push(new BehaviorSubject(true));
-    // this.storage.deleteFile(url)
-    // .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
-    // .finally(() => this.uploadStates$.push(new BehaviorSubject(false)));
+    // delete on server
+    this.uploadStates$.push(new BehaviorSubject(true));
+    this.storage.deleteFile(url)
+    .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
+    .finally(() => {
+      // delete locally
+      this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
+      this.uploadStates$.push(new BehaviorSubject(false));
+    });
 		
   }
 

@@ -49,14 +49,17 @@ import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/
     LightboxModule,
     CountdownModule,
     DragScrollModule,
+    QuillModule.forRoot({modules}),
     
     // Shared
     MaterialModule,
     ReactiveFormsModule,
-    QuillModule.forRoot({modules})
   ],
   declarations: [
+
+    // core
     AppComponent,
+    ToolbarComponent,
     
     // Auction feature
     AuctionListComponent,
@@ -65,8 +68,11 @@ import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/
     ItemListComponent,
     ItemDetailsComponent,
     ItemMediaComponent,
-    DonateComponent,
+    AuctionBidsComponent,
     
+    // other
+    DonateComponent,
+
     // shared
     TruncatedTextComponent,
     TruncatePipe,
@@ -75,10 +81,6 @@ import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/
     // auth
     LoginMethodComponent,
 
-    // Core
-    ToolbarComponent,
-
-    AuctionBidsComponent,
   ],
   providers: [
     { provide: REGION, useValue: 'europe-west1' },
