@@ -16,4 +16,6 @@ export class Auction {
 
     // Describes if auction was processed for winners upon ending
     processed: boolean;
+    // Describes if auction was archived
+    archived: boolean;
 }   
