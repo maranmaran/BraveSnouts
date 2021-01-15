@@ -17,6 +17,21 @@ Run:
 
 `firebase functions:config:set mail.user="patience56@ethereal.email" mail.password="jYsRxVBXdsfU6W8nHv"`
 
+## Deployment 
+
+At the moment two projects exist in firebase  
+One is **dev** and other is **prod**
+
+### Functions
+#### Development
+
+* `firebase use dev`
+* `firebase deploy --only functions`
+
+#### Production
+
+* `firebase use prod`
+* `firebase deploy --only functions`
 
 ## TODO:
 

@@ -27,8 +27,9 @@ In development: Inform facebook authenticated users via facebook messenger.
 
 # Developer notes
 
-This app is developed with angular 10+ and firebase as backend server / database.
+This app is developed with angular 11+ and firebase as backend server / database.
 It consumes firebase firestore, auth, storage, functions.
+
 
 ## Deployment 
 
@@ -40,29 +41,27 @@ Add your .env file with appropriate keys for environments to generate
 
 ### Web app
 #### Development
-`ng build` if you wish to debug otherwise `ng build -c development`
 
-`firebase use dev`
-
-`firebase deploy --only hosting -P dev`
+* `ng build` if you wish to debug otherwise `ng build -c development`
+* `firebase use dev`
+* `firebase deploy --only hosting -P dev`
 
 #### Production
-`ng build -c production`
 
-`firebase use prod`
-
-`firebase deploy --only hosting -P prod`
+* `ng build -c production`
+* `firebase use prod`
+* `firebase deploy --only hosting -P prod`
 
 ### Functions
 #### Development
-`firebase use dev`
 
-`firebase deploy --only functions -P dev`
+* `firebase use dev`
+* `firebase deploy --only functions -P dev`
 
 #### Production
-`firebase use prod`
 
-`firebase deploy --only functions -P prod`
+* `firebase use prod`
+* `firebase deploy --only functions -P prod`
 
 ## Serving locally
 
