@@ -82,6 +82,9 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
   bootstrapped = false;
   private _subsink = new SubSink();
 
+  // bid step size
+  bidStepSize = environment.itemCardConfig.bidStepSize;
+
   ngOnInit(): void {
     this.userId$ = this.authSvc.userId$;
     this.isAuthenticated$ = this.authSvc.isAuthenticated$;

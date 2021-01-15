@@ -43,7 +43,7 @@
             </div>
 
             <mat-slider fxFlex="60" class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid"
-                [step]="1" [min]="item.bid + 5" [max]="item.bid + 30" [value]="bidSlider.min"
+                [step]="bidStepSize" [min]="item.bid + 5" [max]="item.bid + 30" [value]="bidSlider.min"
                 (input)="bidChange($event)" [thumbLabel]="true">
             </mat-slider>
 
