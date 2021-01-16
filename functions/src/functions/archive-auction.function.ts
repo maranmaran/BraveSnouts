@@ -1,9 +1,7 @@
 import moment = require("moment");
-import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
-import { Auction, AuctionItem, Bid, UserInfo } from "../models/models";
-import { sendEndAuctionMail } from "../services/mail.service";
 import { europeFunctions, store } from "../index";
+import { Auction } from "../models/models";
 
 
 /** Function executed every morning picks up 30+ days old 
@@ -21,11 +19,11 @@ export const archiveAuctionFunction = europeFunctions.pubsub.schedule('0 6 * * 0
     .endAt(today().subtract(30, 'days').endOf('day').toDate());
     
     const auctionsSnapshot = await auctionsQuery.get();
-    let auctions = auctionsSnapshot.docs.map(getDocument) as Auction[];
+    const auctions = auctionsSnapshot.docs.map(getDocument) as Auction[];
     
     logger.info(`${auctions.length} processed but not archived auctions found in last 30 days.`);
 
-    for (let auction of auctions) {
+    for (const auction of auctions) {
         auction.archived = true;
         await store.collection('auctions').doc(auction.id).update(auction);
     }

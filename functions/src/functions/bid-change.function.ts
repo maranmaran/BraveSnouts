@@ -1,8 +1,8 @@
-import { AuctionItem, UserInfo } from "../models/models";
-import { sendOutbiddedMail } from "../services/mail.service";
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { europeFunctions } from "../index";
+import { AuctionItem, UserInfo } from "../models/models";
+import { sendOutbiddedMail } from "../services/mail.service";
 
 
 /** Sends email notification to higher bidder */

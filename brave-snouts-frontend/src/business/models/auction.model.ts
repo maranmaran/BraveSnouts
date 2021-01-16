@@ -8,14 +8,19 @@ export class Auction {
     }
 
     id: string;
+    
+    // auction name
     name: string;
+    // basic auction description (TODO)
     description: string;
+    // start date and time when the auction starts
     startDate: firebase.firestore.Timestamp;
+    // end date and time when the auction finishes
     endDate: firebase.firestore.Timestamp;
-    items: AuctionItem[];
-
     // Describes if auction was processed for winners upon ending
-    processed: boolean;
+    processed: boolean = false;
     // Describes if auction was archived
-    archived: boolean;
+    archived: boolean = false;
+
+    items: AuctionItem[];
 }   

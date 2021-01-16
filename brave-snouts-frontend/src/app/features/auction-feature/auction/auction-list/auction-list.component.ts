@@ -86,12 +86,13 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     let today = firebase.firestore.Timestamp.fromDate(new Date());
     return ref => ref
       .where("endDate", '>=', today)
+      .where('archived', '!=', true)
       .orderBy("endDate", 'desc');
   }
 
   /* Admin has right to see all auctions. Sorted by endDate */
   private get allAuctionsSortedQuery(): QueryFn<firebase.firestore.DocumentData> {
-    return ref => ref; // @see {sortAdminAuctions (auction-list.component.ts)}
+    return ref => ref.where('archived', '!=', true); // @see {sortAdminAuctions (auction-list.component.ts)}
   }
 
   /* Filters out auctions with start date in the future */
