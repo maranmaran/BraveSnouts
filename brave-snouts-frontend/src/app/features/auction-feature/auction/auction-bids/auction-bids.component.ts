@@ -28,7 +28,8 @@ export class AuctionBidsComponent implements OnInit {
     private readonly auctionRepo: AuctionRepository,
     private readonly itemRepo: AuctionItemRepository,
     private readonly bidRepo: BidsRepository,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    public readonly mediaObs: MediaObserver
   ) { }
 
   auction$: Observable<Auction>;
@@ -58,10 +59,9 @@ export class AuctionBidsComponent implements OnInit {
   getBids(itemId: string) {
     this.activeItemId = itemId;
     
-    const query = ref => ref.where('itemId', '==', itemId);
+    const query = ref => ref.where('itemId', '==', itemId).orderBy("date", "desc");
     this.bids$ = this.bidRepo.getAll(query);
   }
-
 
 
   /**Sets up countdown component to coundown to the end date time*/

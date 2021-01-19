@@ -2,31 +2,32 @@
 
     <mat-card-title fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
 
-        <label class="mb-0 mat-title bold"> 
-            {{item.name}} 
+        <label class="mb-0 mat-title bold">
+            {{item.name}}
         </label>
 
         <div gdColumns="min-content min-content" gdGap="1rem" class="mr-0">
-            
-            <div class="center">
+
+            <!--@deprecated - BS-6 "Brave Snouts Requirements-->
+            <!-- <div class="center">
                 <button mat-icon-button color="warn" class="elevate hover warn" *ngIf="(item.user == (userId$ | async) && (isAuthenticated$ | async)); else btnfiller" (click)="$event.preventDefault(); onUndoBid(item)">
                     <mat-icon>settings_backup_restore</mat-icon>
                 </button>
                 <ng-template #btnfiller><div style="width: 40px; height: 40px;"></div></ng-template>
-            </div>
-            
+            </div> -->
+
             <label [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'" class="no-wrap mb-0 mat-title bold center">
                 {{item.bid + ' kn'}}
             </label>
         </div>
-        
-        <mat-icon class="best-bid-icon" 
-            [@starOnBidChanged]="userId === item.user && isAuthenticated" 
+
+        <mat-icon class="best-bid-icon"
+            [@starOnBidChanged]="userId === item.user && isAuthenticated"
             *ngIf="(userId$ | async) == item.user && (isAuthenticated$ | async)"
             matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
             star
         </mat-icon>
-        
+
     </mat-card-title>
 
     <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
@@ -43,7 +44,7 @@
             </div>
 
             <mat-slider fxFlex="60" class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid"
-                [step]="1" [min]="item.bid + 5" [max]="item.bid + 30" [value]="bidSlider.min"
+                [step]="bidStepSize" [min]="item.bid + 5" [max]="item.bid + 30" [value]="bidSlider.min"
                 (input)="bidChange($event)" [thumbLabel]="true">
             </mat-slider>
 
@@ -73,10 +74,6 @@
 
             <button class="w-100" mat-flat-button [disabled]="bidDisabled" (click)="onBid(item)"
                 color="primary">Ponudi</button>
-
-            <!-- <button class="w-100" mat-flat-button [disabled]="item.user != (userId$ | async) || bidDisabled || !(isAuthenticated$ | async)"
-                (click)="onUndoBid(item)">Poništi</button> -->
-
         </div>
     </mat-card-actions>
 </mat-card>

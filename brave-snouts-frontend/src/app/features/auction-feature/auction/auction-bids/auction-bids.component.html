@@ -46,7 +46,7 @@
 
     <ng-container *ngIf="!!(bids$ | async)">
 
-        <ng-container *ngIf="(bids$ | async).length > 0 ;else noBids">
+        <ng-container *ngIf="(bids$ | async)?.length > 0 ;else noBids">
             <mat-card *ngFor="let bid of (bids$ | async)" class="elevate hover">
                 <mat-card-header>
                     <img mat-card-avatar [src]="bid.userInfo?.avatar">
