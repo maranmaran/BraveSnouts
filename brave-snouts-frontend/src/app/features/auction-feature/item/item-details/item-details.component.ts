@@ -220,30 +220,20 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
         // update bids array for historic data
 
-        // check current bid value again before final update
-        this.itemsRepo.getOne(item.auctionId, item.id)
-          .pipe(take(1))
-          .subscribe(itemToCheck => {
+        // create bid and update item
+        this.bidsRepo.create(bid).then(
+        createdBid => {
 
-            if (item.bid <= itemToCheck.bid) {
-              console.log("Can not offer less then or equal bid value to current one.");
-            }
+            // update current item bid data
+            this.itemsRepo.update(item.auctionId, item.id, {
+              bidId: createdBid.id,
+              bid: bid.bid,
+              user: bid.userId,
+            });
+            
+          }
+        );
 
-            // create bid and update item
-            this.bidsRepo.create(bid).then(
-              createdBid => {
-
-                // update current item bid data
-                this.itemsRepo.update(item.auctionId, item.id, {
-                  bidId: createdBid.id,
-                  bid: bid.bid,
-                  user: bid.userId,
-                });
-
-              }
-            );
-
-          })
       });
   }
 

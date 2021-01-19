@@ -36,9 +36,9 @@ export class AuthService {
     public get isAdmin$() {
         return from(this.auth.user)
         .pipe(
-            switchMap(user => user ? this.firestore.collection(`admins`, ref => ref.where('userId', '==', user.uid)).valueChanges().pipe(take(1)) : of([]) ),
+            map(user => user ? this.firestore.doc(`admins/${user.uid}`).ref : null),
             // tap(console.trace),
-            map(admin => admin?.length == 1),
+            map(admin => !!admin),
         );
     }
 
