@@ -14,7 +14,7 @@ export const config = functions.config();
 
 // functions
 // export const auctionsEnd = auctionsEndFunction;
-//export const bidChange = bidChangeFunction;
+export const bidChange = bidChangeFunction;
 // export const compressImage = compressImageFunction;
 
 

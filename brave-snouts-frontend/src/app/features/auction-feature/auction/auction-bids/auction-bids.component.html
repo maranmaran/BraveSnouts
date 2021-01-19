@@ -12,7 +12,7 @@
 
                     <div [ngSwitch]="state">
                         <ng-container *ngSwitchCase="'future'">
-                            Poćinje: {{ auction.startDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+                            Počinje: {{ auction.startDate.toDate() | date: 'MMM d, HH:mm:ss' }}
                         </ng-container>
                         <ng-container *ngSwitchCase="'expired'">
                             Završila: {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
