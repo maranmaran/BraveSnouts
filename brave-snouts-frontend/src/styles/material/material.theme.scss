@@ -6,6 +6,8 @@
 @import "./mixins/random.mixin.scss";
 @import "./mixins/elevation.mixin.scss";
 @import "./mixins/colors.mixin.scss";
+@import "./mixins/timepicker.mixin.scss";
+
 
 @mixin custom-components-theme($theme) {
   @include scrollbar-theme($theme);
@@ -15,6 +17,7 @@
   @include random-theme($theme);
   @include elevation-theme($theme);
   @include colors-theme($theme);
+  @include timepicker-theme($theme);
 }
 
 @import "./mixins/spacing.mixin.scss";

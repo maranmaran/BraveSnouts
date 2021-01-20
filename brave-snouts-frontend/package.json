@@ -35,6 +35,7 @@
     "ngx-countdown": "^11.0.1",
     "ngx-drag-scroll": "^9.0.0-beta.4",
     "ngx-dropzone": "^2.3.0",
+    "ngx-material-timepicker": "^5.5.3",
     "ngx-quill": "^13.0.1",
     "quill": "^1.3.7",
     "rxjs": "~6.6.0",
