@@ -126,10 +126,18 @@ export class AuctionFormComponent implements OnInit {
   /**Gets new item control group */
   getItemFormGroup(item?: AuctionItem) {
     return this.formBuilder.group({
+
+      // changeable stuff
       id: [item?.id],
       name: [item?.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       startPrice: [item?.startBid ?? 0, [Validators.min(0)]],
-      description: [item?.description]
+      description: [item?.description],
+
+      //hidden stuff, potentially from already existing items (on update)
+      auctionId: item.auctionId,
+      bid: item.bid, 
+      user: item.user,
+      bidId: item.bidId,
     });
   }
 
@@ -237,12 +245,18 @@ export class AuctionFormComponent implements OnInit {
 
     const items = this.itemsArr.value.map(
         (item, index) => new AuctionItem({
+          // actually editable in form
           name: item.name,
           description: item.description,
-          // auctionId
           startBid: item.startPrice,
-          bid: item.startPrice,
-          media: this.files[index]
+          media: this.files[index],
+
+          // not editable in form and might be from already existing item
+          // ?? null because .set in writeBatch can't set "undefined" values
+          auctionId: item.auctionId ?? null,
+          bid: item.bid ?? item.startPrice, // default to start price if none defined
+          user: item.user ?? null,
+          bidId: item.bidId ?? null,
       }));
 
     if(this.createMode) {

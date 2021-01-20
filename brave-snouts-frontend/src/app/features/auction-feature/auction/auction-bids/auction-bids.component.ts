@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
 import { UserInfo } from 'os';
+import { noop } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { take } from 'rxjs/internal/operators/take';
 import { reduce, tap } from 'rxjs/operators';
@@ -14,6 +15,7 @@ import { AuctionItemRepository } from 'src/business/services/auction-item.reposi
 import { AuctionRepository } from 'src/business/services/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { BidsRepository } from 'src/business/services/bids.repository';
+import { FunctionsService } from 'src/business/services/functions.service';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
 
@@ -29,7 +31,8 @@ export class AuctionBidsComponent implements OnInit {
     private readonly itemRepo: AuctionItemRepository,
     private readonly bidRepo: BidsRepository,
     private readonly route: ActivatedRoute,
-    public readonly mediaObs: MediaObserver
+    public readonly mediaObs: MediaObserver,
+    private readonly functionsSvc: FunctionsService
   ) { }
 
   auction$: Observable<Auction>;
@@ -63,7 +66,6 @@ export class AuctionBidsComponent implements OnInit {
     this.bids$ = this.bidRepo.getAll(query);
   }
 
-
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown() {
     this._subsink.add(this.auction$.subscribe(auction => {
@@ -76,6 +78,11 @@ export class AuctionBidsComponent implements OnInit {
 
       this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
     }));
+  }
+
+  closeAuction(auctionId) {
+    this.functionsSvc.endAuction(auctionId)
+    .subscribe(res => console.log(res), err => console.log(err));
   }
 
 }

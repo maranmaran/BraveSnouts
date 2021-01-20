@@ -40,7 +40,7 @@ export class AuctionItemRepository {
         items.forEach(item => {
             item.auctionId = auctionId;
             const docRef = this.getDocument(item.auctionId, item.id ?? this.firestore.createId());
-            batch.set(docRef.ref, Object.assign({}, item));
+            batch.set(docRef.ref, Object.assign({}, item)); // destructive because we can "delete" media 
         });
 
         return batch.commit();

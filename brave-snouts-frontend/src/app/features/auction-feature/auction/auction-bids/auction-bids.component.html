@@ -1,7 +1,6 @@
-<div class="container" fxLayout="column" fxLayoutGap="1rem">
+<div class="container" fxLayout="column" fxLayoutGap="1rem" *ngIf="(auction$ | async) as auction">
 
-    <div [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" *ngIf="(auction$ | async) as auction" fxLayout="column"
-        fxLayoutGap="1rem">
+    <div id="auction-details" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" fxLayout="column" fxLayoutGap="1rem">
 
         <div fxLayout="row">
             <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" fxFlex="100%"
@@ -30,7 +29,11 @@
 
     </div>
 
-    <div fxLayout="row" fxLayoutGap="1rem" class="w-100 pb-3 overflow-x">
+    <div id="admin-actions" fxLayout="row wrap" class="section">
+        <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="closeAuction(auction.id)">Zatvori aukciju</button>
+    </div>
+
+    <div id="items-list" fxLayout="row" fxLayoutGap="1rem" class="w-100 pb-3 overflow-x">
 
         <mat-card *ngFor="let item of (items$ | async)" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
             <mat-card-header>

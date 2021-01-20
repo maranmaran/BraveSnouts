@@ -7,7 +7,7 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 
-export const compressImageFunction = europeFunctions.storage.object().onFinalize(async (object, ctx) => {
+export const compressImageFn = europeFunctions.storage.object().onFinalize(async (object, ctx) => {
 
   // Exit if this is triggered on a file that is not an image.
   if (!(object.contentType as string).startsWith('image/')) { 

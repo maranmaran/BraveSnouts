@@ -1,45 +1,45 @@
-import moment = require("moment");
 import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
+import { europeFunctions, store } from "../index";
 import { Auction, AuctionItem, Bid, UserInfo } from "../models/models";
 import { sendEndAuctionMail } from "../services/mail.service";
-import { europeFunctions, store } from "../index";
 
-/** Logic containing picking up winners of auction
- * Scheduled 5 minutes behind every full hour in a day
- * Checks for ended auctions in past hour and processes them
+/** Processes auctions end
+ * Picks up item winners and sends email notification templates for won items
+ * Marks auction as processed
  */
-export const auctionsEndScheduledFunction = europeFunctions.pubsub.schedule('5 0-23 * * *')
-  .timeZone('Europe/Zagreb')
-  .onRun(async ctx => await auctionEnd());
+export const endAuctionFn = europeFunctions.https.onCall(
+  async (data, context) => {
+
+    const auctionId = data.auctionId;
+
+    try {
+      // process auction
+      return await auctionEnd(auctionId);
+    } 
+    catch(error) {
+      logger.error(error);
+      return { status: 'error', code: 401, message: 'Failed to process auction' }
+    }
+
+  }
+);
 
 /**Performs actions once auction is finished
  * Checks for today auction and whether or not it's finished
  * If it's done it retrieves all best bids 
  */
-const auctionEnd = async () => {
+const auctionEnd = async (auctionId: string) => {
 
-    // get auctions
-    const auctions = await getAuctions();
-    if(auctions.length === 0) {
-        logger.log('No auctions found');
-        return null;
-    }
+    // get auction data
+    const auction = await getAuction(auctionId);
 
-    // Get all auction items
-    // filter out only items that were bid on
-    const items: AuctionItem[] = await getAllItems(auctions);
-    if(items.length === 0) {
-        logger.log('No items found');
-        return null;
-    }
+    // Get auction items data
+    // Filter out only items that were bid on
+    const items: AuctionItem[] = await getAuctionItems(auctionId);
 
     // Retrieve bids
     const bids = getBids(items);
-    if(bids.length === 0) {
-        logger.log('No bids found');
-        return null;
-    }
 
     // Retrieve user information
     const userIds = [...(new Set(bids.map(bid => bid.user)))];
@@ -48,53 +48,28 @@ const auctionEnd = async () => {
     // Group user bids
     const userBids = getUserBids(bids, userInfo);
 
+    // Save all winning users
+    await saveWinners(auctionId, bids);
+
     // Inform users
     await sendMails(userBids);
 
     // Mark processed auctions
-    await markAuctionsProcessed(auctions);
+    await markAuctionProcessed(auction);
 
     return null;
 }
 
-/** Retrieves relevant auctions if there are any */
-const getAuctions = async () => {
+/** Retrieves specific auction data */
+const getAuction = async (auctionId: string) => {
     
-  // Get auctions for today
-  const today = () => moment(new Date()).utc();
-  
-  logger.log(`Check time is ${today()}`);
-  
-  const auctionsQuery = store.collection('auctions')
-  .orderBy('endDate')
-  .startAt(today().startOf('day').toDate())
-  .endAt(today().endOf('day').toDate());
-  
-  const auctionsSnapshot = await auctionsQuery.get();
-  let auctions = auctionsSnapshot.docs.map(getDocument) as Auction[];
-  
-  // Filter out processed auctions 
-  // Take only finished ones (finished between NOW and 1 hour ago)
-  const inPastHour = (date: Date) => moment(date).isBetween(today().subtract(1 , 'hour'), today());
-  auctions = auctions.filter(auction => !auction.processed && inPastHour(auction.endDate.toDate()));
+  const auction = await store.doc(`auctions/${auctionId}`).get();
 
-  console.log(`${auctions.length} in past 1 hour`);
-  
-  return auctions;
-}
-
-/** Retrieves items for array of auctions */
-const getAllItems = async (auctions: Auction[]) => {
-  let items: AuctionItem[] = [];
-
-  for await (const auction of auctions) {
-      const itemsArr = await getAuctionItems(auction.id);
-      items = [...items, ...itemsArr];
+  if(!auction.exists) {
+    throw new Error(`Auction ${auctionId} not found`);
   }
 
-  items = items.filter(item => !!item.user && item.user.trim() !== '');
-
-  return items;
+  return { id: auction.id, ...auction.data() } as Auction;
 }
 
 /** Retrieves auction items */
@@ -104,13 +79,47 @@ const getAuctionItems = async (auctionId: string) => {
   const itemsSnapshot = await itemsQuery.get();
   const items = itemsSnapshot.docs.map(getDocument) as AuctionItem[];
 
+  if(items.length === 0) {
+    const message = 'No items found';
+    logger.log(message);
+    throw new Error(message);
+  }
+
   return items;
 } 
 
 /** Reduces auction items and retrieves array of relevant bids */
 const getBids = (items: AuctionItem[]) => {
-  return items.map(item => ({ value: item.bid, user: item.user, item}) as Bid);
+  const bids = items
+  .filter(item => item.bid > 0 && item.user)
+  .map(item => ({ value: item.bid, user: item.user, item}) as Bid);
+
+  if(bids.length === 0) {
+    const message = 'No bids found';
+    logger.log(message);
+    throw new Error(message);
+  }
+
+  return bids;
 };
+
+/** Saves winners to winner collection */
+const saveWinners = async (auctionId: string, bids: Bid[]) => {
+  
+  for (const bid of bids) {
+
+    const winner = {
+      userId: bid.user,
+      auctionId: auctionId,
+      itemId: bid.item.id,
+      bidId: bid.item.bidId,
+    }
+
+    let id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
+
+    await store.collection('winners').doc(id).set(winner);
+  }
+}
 
 /** Retrieves authenticated users information (Email, Name ..etc) */
 const getUserInformation = async (userIds: string[]) => {
@@ -127,7 +136,8 @@ const getUserInformation = async (userIds: string[]) => {
           });
 
       } catch (error) {
-          logger.log(`User not found ${error}`);
+          logger.error(`${error}`);
+          throw new Error('User not found');
       }
   }
 
@@ -156,12 +166,9 @@ const sendMails = async (userBids: Map<UserInfo, Bid[]>) => {
 }
 
 /** Marks all auctions as processed */
-const markAuctionsProcessed = async (auctions: Auction[]) => {
-  for (const auction of auctions) {
-      auction.processed = true;
-
-      await store.collection('auctions').doc(auction.id).update(auction);
-  }
+const markAuctionProcessed = async (auction: Auction) => {
+    auction.processed = true;
+    await store.collection('auctions').doc(auction.id).update(auction);
 }
 
 /** Retrieves document data and id in object  */

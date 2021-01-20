@@ -20,7 +20,7 @@ import { AuctionItem, Bid, UserInfo } from "../models/models";
 
 export const sendEndAuctionMail = async (user: UserInfo, items: Bid[]) => {
 
-  logger.log(`Sending mail to ${user.email} as he won ${items.length} items!`);
+  logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
   const testMailService = nodemailer.createTransport({
     host: "smtp.ethereal.email",
