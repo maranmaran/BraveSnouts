@@ -7,7 +7,7 @@ import { Auction } from "../models/models";
 /** Function executed every morning picks up 30+ days old 
  * auctions and marks them as **archived**  
  * CRON Schedule: At 06:00 on every day-of-week from Sunday through Saturday. */
-export const archiveAuctionFunction = europeFunctions.pubsub.schedule('0 6 * * 0-6')
+export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
   .timeZone('Europe/Zagreb')
   .onRun(async ctx => {
     

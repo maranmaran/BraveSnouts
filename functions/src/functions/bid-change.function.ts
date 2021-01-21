@@ -6,7 +6,7 @@ import { sendOutbiddedMail } from "../services/mail.service";
 
 
 /** Sends email notification to higher bidder */
-export const auctionItemBidChange = europeFunctions.firestore.document("auctions/{auctionId}/items/{itemId}")
+export const bidChangeFn = europeFunctions.firestore.document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
     
     const before = change.before.data() as AuctionItem;

@@ -23,6 +23,37 @@ export class Auction {
     processed: boolean;
     // Describes if auction was archived
     archived: boolean;
+    // Handover details for auction winners
+    handoverDetails: string;
+}
+
+export class Winner {
+
+    constructor(data: Partial<Winner>) {
+        Object.assign(this, data);
+    }
+
+    id: string;
+    auctionId: string;
+    itemId: string;
+    bidId: string;
+    userId: string;
+    
+    userInfo: {
+        name: string;
+        email: string;
+    };
+
+    deliveryChoice: 'postal' | 'handover' | null;
+    postalInformation: PostalInformation | null;
+    paymentStatus: 'paid' | 'pending' | 'notpaid';
+}
+
+
+export class PostalInformation {
+    fullName: string;
+    address: string;
+    phoneNumber: string;
 }
 
 export class AuctionItem {

@@ -1,19 +1,26 @@
+import { WHITE_ON_BLACK_CSS_CLASS } from '@angular/cdk/a11y/high-contrast-mode/high-contrast-mode-detector';
 import { Component, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
 import { UserInfo } from 'os';
+import { noop } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { take } from 'rxjs/internal/operators/take';
-import { reduce, tap } from 'rxjs/operators';
+import { map, reduce, tap } from 'rxjs/operators';
+import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
+import { PostalInformation, Winner } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { BidsRepository } from 'src/business/services/bids.repository';
+import { FunctionsService } from 'src/business/services/functions.service';
+import { WinnersRepository } from 'src/business/services/winners.repository';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
 
@@ -28,12 +35,16 @@ export class AuctionBidsComponent implements OnInit {
     private readonly auctionRepo: AuctionRepository,
     private readonly itemRepo: AuctionItemRepository,
     private readonly bidRepo: BidsRepository,
+    private readonly winnersRepo: WinnersRepository,
     private readonly route: ActivatedRoute,
-    public readonly mediaObs: MediaObserver
+    public readonly mediaObs: MediaObserver,
+    private readonly functionsSvc: FunctionsService,
+    private readonly dialog: MatDialog,
   ) { }
 
   auction$: Observable<Auction>;
   items$: Observable<AuctionItem[]>;
+  winners: Map<string, Winner>;
 
   activeItemId: string;
 
@@ -51,10 +62,25 @@ export class AuctionBidsComponent implements OnInit {
 
     this.auction$ = this.auctionRepo.getOne(auctionId);
     this.items$ = this.itemRepo.getAll(auctionId);
+    this.getWinners(auctionId); 
 
 
     this.setupCountdown();
   }
+
+  /** Gets auction winners and groups them by items for rendering */
+  getWinners(auctionId: string) {
+    let winners$ = this.winnersRepo.getAll(ref => ref.where('auctionId', '==', auctionId));
+
+    let winnersMap$ = winners$.pipe(
+      map(winners => winners.map(winner => [winner.itemId, winner] as [string, Winner] )),
+      map(winners => new Map<string, Winner>(winners)),
+    )
+
+    this._subsink.add(
+      winnersMap$.subscribe(winnersMap => this.winners = winnersMap)
+    );
+  } 
 
   getBids(itemId: string) {
     this.activeItemId = itemId;
@@ -62,7 +88,6 @@ export class AuctionBidsComponent implements OnInit {
     const query = ref => ref.where('itemId', '==', itemId).orderBy("date", "desc");
     this.bids$ = this.bidRepo.getAll(query);
   }
-
 
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown() {
@@ -76,6 +101,27 @@ export class AuctionBidsComponent implements OnInit {
 
       this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
     }));
+  }
+
+  closeAuction(auctionId) {
+    this.functionsSvc.endAuction(auctionId)
+    // TODO
+    .subscribe(res => console.log(res), err => console.log(err));
+  }
+
+  openPostalInformation(data) {
+    
+    const dialogRef = this.dialog.open(PostDetailsComponent, {
+      height: 'auto',
+      width: 'auto',
+      maxWidth: '98%',
+      autoFocus: false,
+      closeOnNavigation: true,
+      data
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(noop)
+
   }
 
 }

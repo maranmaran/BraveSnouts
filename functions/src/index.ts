@@ -9,14 +9,14 @@ export const europeFunctions = functions.region('europe-west1');
 export const config = functions.config();
 
 // function exports
-import * as bidChangeFunction from './functions/bid-change.function';
-import * as auctionsEndFunction from './functions/auctions-end.function';
-import * as compressImageFunction from './functions/compress-image.function';
-import * as archiveAuctionFunction from './functions/archive-auction.function';
+const bidChangeFn = require('./functions/bid-change.function');
+const endAuctionFn = require('./functions/end-auction.function');
+const archiveAuctionFn = require('./functions/archive-auction.function');
+// import * as compressImageFunction from './functions/compress-image.function';
 
-export const bidChange = bidChangeFunction;
-export const auctionsEnd = auctionsEndFunction;
-export const archiveAuction = archiveAuctionFunction;
+export const bidChange = bidChangeFn;
+export const endAuction = endAuctionFn;
+export const archiveAuction = archiveAuctionFn;
 // export const compressImage = compressImageFunction;
 
 

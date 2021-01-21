@@ -1,6 +1,7 @@
-import {  NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireFunctionsModule, REGION } from '@angular/fire/functions';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,6 +16,8 @@ import { QuillModule } from 'ngx-quill';
 import { AuctionDetailsComponent } from 'src/app/features/auction-feature/auction/auction-details/auction-details.component';
 import { AuctionFormComponent } from 'src/app/features/auction-feature/auction/auction-form/auction-form.component';
 import { AuctionListComponent } from 'src/app/features/auction-feature/auction/auction-list/auction-list.component';
+import { HandoverConfirmComponent } from 'src/app/features/auction-feature/delivery/handover-confirm/handover-confirm.component';
+import { PostConfirmComponent } from 'src/app/features/auction-feature/delivery/post-confirm/post-confirm.component';
 import { ItemDetailsComponent } from 'src/app/features/auction-feature/item/item-details/item-details.component';
 import { ItemListComponent } from 'src/app/features/auction-feature/item/item-list/item-list.component';
 import { LoginMethodComponent } from 'src/app/features/auth-feature/login-method/login-method.component';
@@ -28,9 +31,10 @@ import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { AuctionBidsComponent } from './features/auction-feature/auction/auction-bids/auction-bids.component';
-import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/functions';
+import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
+import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
+import { PostalInformation } from 'src/business/models/winner.model';
 
 @NgModule({
   imports: [
@@ -71,6 +75,9 @@ import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/
     ItemDetailsComponent,
     ItemMediaComponent,
     AuctionBidsComponent,
+    PostConfirmComponent,
+    HandoverConfirmComponent,
+    PostDetailsComponent,
     
     // other
     DonateComponent,
@@ -83,10 +90,12 @@ import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/
     // auth
     LoginMethodComponent,
 
+    PostDetailsComponent,
+
   ],
   providers: [
     { provide: REGION, useValue: 'europe-west1' },
-    { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
+    // { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
     {
       provide: GALLERY_CONFIG,
       useValue: {

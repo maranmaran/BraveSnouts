@@ -17,6 +17,10 @@
             color: mat-color(map-get($theme, warn), "default") !important;
         }
 
+        &.accent.default {
+            color: mat-color(map-get($theme, accent), "default") !important;
+        }
+
         &.primary.lighter {
             color: mat-color(map-get($theme, primary), "default") !important;
         }
