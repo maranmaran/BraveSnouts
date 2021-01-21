@@ -21,6 +21,8 @@ export class Auction {
     processed: boolean = false;
     // Describes if auction was archived
     archived: boolean = false;
+    // Describes handover details sent to winners
+    handoverDetails: string;
 
     items: AuctionItem[];
 }   

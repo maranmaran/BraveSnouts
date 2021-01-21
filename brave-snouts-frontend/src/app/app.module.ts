@@ -84,7 +84,7 @@ import { AngularFireFunctionsModule, REGION, USE_EMULATOR } from '@angular/fire/
   ],
   providers: [
     { provide: REGION, useValue: 'europe-west1' },
-    { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
+    // { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
     {
       provide: GALLERY_CONFIG,
       useValue: {

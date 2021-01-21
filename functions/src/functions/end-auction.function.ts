@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
-import { Auction, AuctionItem, Bid, UserInfo } from "../models/models";
+import { Auction, AuctionItem, Bid, UserInfo, Winner } from "../models/models";
 import { sendEndAuctionMail } from "../services/mail.service";
 
 /** Processes auctions end
@@ -49,7 +49,7 @@ const auctionEnd = async (auctionId: string) => {
     const userBids = getUserBids(bids, userInfo);
 
     // Save all winning users
-    await saveWinners(auctionId, bids);
+    await saveWinners(auctionId, bids, userInfo);
 
     // Inform users
     await sendMails(userBids);
@@ -104,20 +104,31 @@ const getBids = (items: AuctionItem[]) => {
 };
 
 /** Saves winners to winner collection */
-const saveWinners = async (auctionId: string, bids: Bid[]) => {
+const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string, UserInfo>) => {
   
   for (const bid of bids) {
 
-    const winner = {
-      userId: bid.user,
+    const user = userInfo.get(bid.user) as UserInfo;
+
+    const winner = new Winner({
+      userId: user.id,
       auctionId: auctionId,
       itemId: bid.item.id,
       bidId: bid.item.bidId,
-    }
+      
+      userInfo: {
+        name: user.name,
+        email: user.email,
+      },
+      
+      paymentStatus: 'pending',
+      deliveryChoice: undefined,
+      postalInformation: undefined,
+    })
 
-    let id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
+    const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
 
-    await store.collection('winners').doc(id).set(winner);
+    await store.collection('winners').doc(id).set(Object.assign({}, winner));
   }
 }
 
