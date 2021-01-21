@@ -10,14 +10,22 @@ import { AdminGuard } from 'src/business/guards/admin.guard';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionIdGuard } from 'src/business/guards/auction-id.guard';
 import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
+import { PostConfirmComponent } from 'src/app/features/auction-feature/delivery/post-confirm/post-confirm.component';
+import { HandoverConfirmComponent } from 'src/app/features/auction-feature/delivery/handover-confirm/handover-confirm.component';
 
 const routes: Routes = [
   { path: '', component: AuctionListComponent},
+
+  { path: 'post-confirm', component: PostConfirmComponent },
+  { path: 'handover-confirm', component: HandoverConfirmComponent },
+
   { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
   { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },  
+
   { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent }, 
   { path: 'bids', canActivate: [AdminGuard, AuctionIdGuard], component: AuctionBidsComponent },
-  { path: '**', redirectTo: '/' }
+
+  { path: '**', redirectTo: '/' } 
 ];
 
 @NgModule({

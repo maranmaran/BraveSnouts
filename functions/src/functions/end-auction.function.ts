@@ -52,7 +52,7 @@ const auctionEnd = async (auctionId: string) => {
     await saveWinners(auctionId, bids, userInfo);
 
     // Inform users
-    await sendMails(userBids);
+    await sendMails(auctionId, userBids);
 
     // Mark processed auctions
     await markAuctionProcessed(auction);
@@ -122,8 +122,8 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
       },
       
       paymentStatus: 'pending',
-      deliveryChoice: undefined,
-      postalInformation: undefined,
+      deliveryChoice: null,
+      postalInformation: null,
     })
 
     const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
@@ -170,9 +170,9 @@ const getUserBids = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserI
 }
 
 /** Sends mails to relevant users with their won items */
-const sendMails = async (userBids: Map<UserInfo, Bid[]>) => {
+const sendMails = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) => {
   for (const [userInfo, bids] of userBids) {
-      await sendEndAuctionMail(userInfo, bids);
+      await sendEndAuctionMail(auctionId, userInfo, bids);
   }
 }
 

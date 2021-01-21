@@ -53,7 +53,10 @@
                             <label *ngSwitchCase="'handover'" class=" foreground primary lighter"> Osobno </label>
                             <label *ngSwitchCase="'postal'" style="color: #c326ff"> 
                                 Poštom
-                                <button mat-icon-button *ngIf="winner.deliveryChoice == 'postal'" matTooltip="Detalji za slanje">
+                                <button mat-icon-button 
+                                *ngIf="winner.deliveryChoice == 'postal' && winner.postalInformation" 
+                                (click)="openPostalInformation(winner.postalInformation)" 
+                                matTooltip="Detalji za slanje">
                                     <mat-icon>drafts</mat-icon>
                                 </button>     
                             </label>

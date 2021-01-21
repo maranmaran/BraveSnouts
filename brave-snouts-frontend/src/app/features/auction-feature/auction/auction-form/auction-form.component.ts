@@ -190,7 +190,7 @@ export class AuctionFormComponent implements OnInit {
           tap((firebaseFile: FirebaseFile) => this.files[index].push(firebaseFile))
         )
       }),
-      tap(res => console.log(res)),
+      // tap(res => console.log(res)),
       finalize(() => this.uploadStates$[index].next(false))
     ).subscribe(noop)
       

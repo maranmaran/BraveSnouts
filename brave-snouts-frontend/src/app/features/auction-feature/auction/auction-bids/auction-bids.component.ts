@@ -1,6 +1,7 @@
 import { WHITE_ON_BLACK_CSS_CLASS } from '@angular/cdk/a11y/high-contrast-mode/high-contrast-mode-detector';
 import { Component, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
@@ -9,10 +10,11 @@ import { noop } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { take } from 'rxjs/internal/operators/take';
 import { map, reduce, tap } from 'rxjs/operators';
+import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
-import { Winner } from 'src/business/models/winner.model';
+import { PostalInformation, Winner } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
@@ -36,7 +38,8 @@ export class AuctionBidsComponent implements OnInit {
     private readonly winnersRepo: WinnersRepository,
     private readonly route: ActivatedRoute,
     public readonly mediaObs: MediaObserver,
-    private readonly functionsSvc: FunctionsService
+    private readonly functionsSvc: FunctionsService,
+    private readonly dialog: MatDialog,
   ) { }
 
   auction$: Observable<Auction>;
@@ -72,7 +75,6 @@ export class AuctionBidsComponent implements OnInit {
     let winnersMap$ = winners$.pipe(
       map(winners => winners.map(winner => [winner.itemId, winner] as [string, Winner] )),
       map(winners => new Map<string, Winner>(winners)),
-      tap(console.log)
     )
 
     this._subsink.add(
@@ -103,7 +105,23 @@ export class AuctionBidsComponent implements OnInit {
 
   closeAuction(auctionId) {
     this.functionsSvc.endAuction(auctionId)
+    // TODO
     .subscribe(res => console.log(res), err => console.log(err));
+  }
+
+  openPostalInformation(data) {
+    
+    const dialogRef = this.dialog.open(PostDetailsComponent, {
+      height: 'auto',
+      width: 'auto',
+      maxWidth: '98%',
+      autoFocus: false,
+      closeOnNavigation: true,
+      data
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(noop)
+
   }
 
 }

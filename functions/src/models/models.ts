@@ -44,8 +44,8 @@ export class Winner {
         email: string;
     };
 
-    deliveryChoice?: 'postal' | 'handover';
-    postalInformation?: PostalInformation;
+    deliveryChoice: 'postal' | 'handover' | null;
+    postalInformation: PostalInformation | null;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
 }
 
