@@ -94,6 +94,8 @@ export class AuctionFormComponent implements OnInit {
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       startDate: [auction.startDate, [Validators.required]],
       endDate: [auction.endDate, [Validators.required]],
+      startTime: [auction.startTime, [Validators.required]],
+      endTime: [auction.endTime, [Validators.required]]
     });
   }
 
@@ -233,9 +235,9 @@ export class AuctionFormComponent implements OnInit {
     if(!this.isValid)
       return;
 
-    const startDate = moment(this.auction.value.startDate).utc().toDate();
-    const endDate = moment(this.auction.value.endDate).utc().toDate();
-
+    const startDate = moment(moment(this.auction.value.startDate).format('L') + ' ' + this.auction.value.startTime, 'L HH:mm').toDate();
+    const endDate = moment(moment(this.auction.value.endDate).format('L') + ' ' + this.auction.value.endTime, 'L HH:mm').toDate();
+    
     const auction = new Auction({
       name: this.auction.value.name,
       startDate: firebase.firestore.Timestamp.fromDate(startDate),
