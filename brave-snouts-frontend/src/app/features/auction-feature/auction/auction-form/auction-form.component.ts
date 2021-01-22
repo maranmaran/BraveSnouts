@@ -134,10 +134,10 @@ export class AuctionFormComponent implements OnInit {
       description: [item?.description],
 
       //hidden stuff, potentially from already existing items (on update)
-      auctionId: item.auctionId,
-      bid: item.bid, 
-      user: item.user,
-      bidId: item.bidId,
+      auctionId: [item?.auctionId],
+      bid: [item?.bid], 
+      user: [item?.user],
+      bidId: [item?.bidId],
     });
   }
 
