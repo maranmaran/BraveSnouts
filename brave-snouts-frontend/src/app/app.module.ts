@@ -33,7 +33,7 @@ import { AppComponent } from './app.component';
 import { AuctionBidsComponent } from './features/auction-feature/auction/auction-bids/auction-bids.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
-import { PostalInformation } from 'src/business/models/winner.model';
+import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
 @NgModule({
   imports: [
@@ -58,6 +58,8 @@ import { PostalInformation } from 'src/business/models/winner.model';
     // Shared
     MaterialModule,
     ReactiveFormsModule,
+    VirtualScrollerModule,
+
   ],
   declarations: [
 
