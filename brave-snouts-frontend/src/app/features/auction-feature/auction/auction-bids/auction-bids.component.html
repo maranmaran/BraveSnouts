@@ -33,11 +33,21 @@
         <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="closeAuction(auction.id)">Zatvori aukciju</button>
     </div>
 
-    <div id="items-list" fxLayout="row" fxLayoutGap="1rem" class="w-100 pb-3 overflow-x">
+    <div fxLayout="row" fxLayoutGap="1rem" class="w-100 pb-3 overflow-x">
 
-        <div *ngFor="let item of (items$ | async)">
+        <div class="h-100 hmin" *ngFor="let item of (items$ | async)" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="space-between">
 
-            <mat-card id="winner" *ngIf="winners.get(item.id) as winner" class="elevate hover selected mb-3" [ngClass]="{'selected': activeItemId == winner.itemId}">
+            <mat-card id="item" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
+                <mat-card-header>
+                    <mat-card-title>{{ item.name }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-actions>
+                    <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje
+                        ponude</button>
+                </mat-card-actions>
+            </mat-card>
+            
+            <mat-card id="winner" *ngIf="winners.get(item.id) as winner; else filler" class="elevate hover selected mb-3" [ngClass]="{'selected': activeItemId == winner.itemId}">
                 <mat-card-header>
                     <mat-card-title fxLayout="row" fxLayoutAlign="start center"> 
                         <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon> {{ winner.userInfo.name }}
@@ -71,7 +81,7 @@
                             <mat-button-toggle value="paid" class="foreground primary lighter">Plaćeno</mat-button-toggle>
                             <mat-button-toggle value="pending">U toku</mat-button-toggle>
                             <mat-button-toggle value="notpaid" class="foreground warn default">Nije plaćeno</mat-button-toggle>
-                          </mat-button-toggle-group>
+                            </mat-button-toggle-group>
                     </div>
 
 
@@ -81,16 +91,12 @@
                     <!-- <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje ponude</button> -->
                 </mat-card-actions>
             </mat-card>
+            <ng-template #filler>
+                <div fxFill class="center">
+                    <i>Nema najbolje ponude</i>
+                </div>
+            </ng-template>
 
-            <mat-card id="item" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
-                <mat-card-header>
-                    <mat-card-title>{{ item.name }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-actions>
-                    <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje
-                        ponude</button>
-                </mat-card-actions>
-            </mat-card>
 
         </div>
 
