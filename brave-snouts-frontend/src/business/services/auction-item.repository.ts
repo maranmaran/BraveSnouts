@@ -37,23 +37,29 @@ export class AuctionItemRepository {
     }
 
     getInitialPage(auctionId) {
-        let query = ref => ref.orderBy('name', 'asc')
+        let query = ref => ref
+                              .orderBy('name', 'asc')
+                              .orderBy('id', 'asc')
                               .limit(this.pageSize);
 
         return this.getCollection(auctionId, query).valueChanges({ idField: 'id' });
     }
 
     getNextPage(last: AuctionItem) {
-        let query = ref => ref.orderBy('name', 'asc')
-                              .startAfter(last.name)
+        let query = ref => ref
+                              .orderBy('name', 'asc')
+                              .orderBy('id', 'asc')
+                              .startAfter(last.name, last.id)
                               .limit(this.pageSize);
 
         return this.getCollection(last.auctionId, query).valueChanges({ idField: 'id' });
     }
 
     getPreviousPage(first: AuctionItem) {
-        let query = ref => ref.orderBy('name', 'asc')
-                              .endBefore(first.name)
+        let query = ref => ref
+                              .orderBy('name', 'asc')
+                              .orderBy('id', 'asc')
+                              .endBefore(first.name, first.id)
                               .limitToLast(this.pageSize);
 
         return this.getCollection(first.auctionId, query).valueChanges({ idField: 'id' });
