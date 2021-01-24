@@ -162,6 +162,10 @@ export class AuctionFormComponent implements OnInit {
     return this.auction.valid && this.items.valid 
   }
 
+  trackByFn(index, item) {
+    return index;
+  }
+
   //#endregion
 
   //#region Media 
@@ -230,6 +234,8 @@ export class AuctionFormComponent implements OnInit {
   /**Submit form and create auction */
   onSubmit() {
 
+    console.log("submitting");
+    
     if(!this.isValid)
       return;
 
@@ -304,6 +310,7 @@ export class AuctionFormComponent implements OnInit {
   postUpdate() {
     this.router.navigate(['']);
   }
+
 
   //#endregion
 

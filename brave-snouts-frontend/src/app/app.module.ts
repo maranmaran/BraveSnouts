@@ -34,6 +34,7 @@ import { AuctionBidsComponent } from './features/auction-feature/auction/auction
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
 
 @NgModule({
   imports: [
@@ -85,6 +86,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     // shared
     TruncatedTextComponent,
     TruncatePipe,
+    FirebasePathPipe,
     ConfirmDialogComponent,
 
     // auth

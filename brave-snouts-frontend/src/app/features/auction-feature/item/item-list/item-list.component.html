@@ -1,35 +1,16 @@
 <virtual-scroller #scroll [items]="items" (vsEnd)="onLoadMore($event)" *ngIf="useScroll; else classicPagination">
-
-    <div #container class="grid pt-2 pr-2" 
-        gdGap="0.5rem"
-        gdColumns="repeat(4, minmax(0, 1fr))" 
-        gdColumns.lt-xl="repeat(3, minmax(0, 1fr))" 
-        gdColumns.lt-lg="repeat(2, minmax(0, 1fr))" 
-        gdColumns.lt-md="repeat(1, minmax(0, 1fr))" 
-        gdColumns.lt-sm="repeat(4, minmax(0, 1fr))">
-
+    <div #container class="items-grid pt-2 pr-2">
         <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
-     
     </div>
-
 </virtual-scroller>
 
 <ng-template #classicPagination>
-    
     <div class="ml-2 pl-2 pr-2 section w-min" fxLayout="row" fxLayoutGap="1rem">
         <button [disabled]="previousDisabled" mat-stroked-button (click)="previousPage()">Previous</button>
         <button [disabled]="nextDisabled" mat-stroked-button (click)="nextPage()">Next</button>
     </div>
-    <div class="grid pt-2" 
-        gdGap="0.5rem"
-        gdColumns="repeat(4, minmax(0, 1fr))" 
-        gdColumns.lt-xl="repeat(3, minmax(0, 1fr))" 
-        gdColumns.lt-lg="repeat(2, minmax(0, 1fr))" 
-        gdColumns.lt-md="repeat(1, minmax(0, 1fr))" 
-        gdColumns.lt-sm="repeat(4, minmax(0, 1fr))">
 
+    <div class="items-grid pt-2">
         <app-item-details *ngFor="let item of items; trackBy: trackByFn" [item]="item"></app-item-details>
-     
     </div>
-
 </ng-template>
