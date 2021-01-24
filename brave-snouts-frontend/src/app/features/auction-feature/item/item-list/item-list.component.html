@@ -1,5 +1,5 @@
 <virtual-scroller #scroll [items]="items" (vsEnd)="onLoadMore($event)" *ngIf="useScroll; else classicPagination">
-    <div #container class="items-grid pt-2 pr-2">
+    <div #container class="items-grid">
         <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
     </div>
 </virtual-scroller>

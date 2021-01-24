@@ -1,13 +1,9 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { QueryFn, DocumentData } from '@angular/fire/firestore';
-import { MediaChange, MediaObserver } from '@angular/flex-layout';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Input, OnInit } from '@angular/core';
+import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { BehaviorSubject, noop, Subject } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
-import { catchError, concatMap, distinctUntilChanged, filter, map, take, tap } from 'rxjs/operators';
+import { noop } from 'rxjs';
+import { map, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
-import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { SubSink } from 'subsink';
@@ -89,8 +85,6 @@ export class ItemListComponent implements OnInit {
       take(1),
       // append
       map(items => [...this.items, ...items]),
-
-      tap(items => console.log(items)),
       
       // map necessary data
       tap(items => this.items = items),

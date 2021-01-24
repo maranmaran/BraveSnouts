@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="items-form h-100" fxLayout="column" fxLayoutGap="1rem" [ngClass]="{'mb-5': !isMobile}">
+    <div class="items-form h-100" fxLayout="column" fxLayoutGap="1rem">
 
         <div class="items-header" fxLayout="row">
             <div class="section" fxFlex="45%" fxFlex.lt-md="100%" fxLayout="row" fxLayoutGap="1rem"
@@ -39,84 +39,89 @@
                     (click)="addItem()">Dodaj</button>
             </div>
         </div>
+        
+        <virtual-scroller [formGroup]="items" #scroll class="pb-3" [items]="itemsArr.controls" [parentScroll]="scrollingBlock">
+            <div #container class="items-grid" formArrayName="items">
+                <form [formGroupName]="scroll.viewPortInfo.startIndex + i" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let i = index" >
+                    <mat-card class="mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">
+                        
+                        <mat-card-title class="header">
+    
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.5rem">
+                                <mat-form-field>
+                                    <mat-label>Naziv</mat-label>
+                                    <input matInput formControlName="name">
+                                </mat-form-field>
+    
+                                <button mat-icon-button class="relative" type="button" color="warn" style="bottom: 0.75rem" (click)="removeItem(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+    
+                            <mat-form-field>
+                                <mat-label>Početna cijena</mat-label>
+                                <input matInput type="number" step="1" value='0.00' formControlName="startPrice">
+                                <span class="ml-1" matSuffix>kn</span>
+                            </mat-form-field>
+    
+                        </mat-card-title>
+    
+                        <div fxLayout="column" fxLayoutGap="1rem">
+                            <div class="media">
+    
+                                <mat-progress-bar *ngIf="(uploadStates$[scroll.viewPortInfo.startIndex + i] | async)" mode="indeterminate">
+                                </mat-progress-bar>
+    
+                                <ngx-dropzone class="auction-item-media-dropzone pb-0"
+                                    (change)="uploadFiles($event, i)" [disableClick]="dragActive">
+    
+                                    <ngx-dropzone-label *ngIf="files[scroll.viewPortInfo.startIndex + i]?.length == 0">
+                                        <button mat-stroked-button type='button'>Učitaj</button>
+                                    </ngx-dropzone-label>
+    
+                                    <drag-scroll class="form-drag-scroll" *ngIf="files[scroll.viewPortInfo.startIndex + i]?.length > 0"
+                                        [drag-scroll-y-disabled]="true" [snap-disabled]="true"
+                                        (dragStart)="dragActive=true" (dragEnd)="dragEnd()" fxLayout="row">
+    
+                                        <div class="item" drag-scroll-item *ngFor="let file of files[scroll.viewPortInfo.startIndex + i]">
+    
+                                            <ng-container *ngIf="(file.path | firebasePath | async) as url">
+                                                <img *ngIf="file.type == 'image'" [src]="url" />
+                                                <video *ngIf="file.type == 'video'" [src]="url"></video>
+                                                <button id="remove-file-btn" type="button" mat-icon-button
+                                                    color="accent" (click)="removeFile(i, file, url, $event)">
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            </ng-container>
+    
+                                        </div>
+    
+                                    </drag-scroll>
+    
+                                </ngx-dropzone>
+                            </div>
+    
+                            <quill-editor class="editor" [placeholder]="'Opis predmeta'"
+                                formControlName="description"></quill-editor>
+                        </div>
+    
+                    </mat-card>
+                </form>
+            </div>
+        </virtual-scroller>
 
-        <form [formGroup]="items" class="h-100 pr-2">
-
-            <virtual-scroller class="pb-3" #scroll [items]="itemsArr.controls" [parentScroll]="scrollingBlock">
-                <div #container class="items-grid" >
-                    <div formArrayName="items" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let i = index">
-                        <form [formGroupName]="i" >
-                            <mat-card class="mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">
-
-                                <mat-card-title class="header">
-
-                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.5rem">
-                                        <mat-form-field>
-                                            <mat-label>Naziv</mat-label>
-                                            <input matInput formControlName="name">
-                                        </mat-form-field>
-
-                                        <button mat-icon-button class="relative" type="button" color="warn" style="bottom: 0.75rem" (click)="removeItem(i)">
-                                            <mat-icon>delete</mat-icon>
-                                        </button>
-                                    </div>
-
-                                    <mat-form-field>
-                                        <mat-label>Početna cijena</mat-label>
-                                        <input matInput type="number" step="1" value='0.00' formControlName="startPrice">
-                                        <span class="ml-1" matSuffix>kn</span>
-                                    </mat-form-field>
-
-                                </mat-card-title>
-
-                                <div fxLayout="column" fxLayoutGap="1rem">
-                                    <div class="media">
-
-                                        <mat-progress-bar *ngIf="(uploadStates$[i] | async)" mode="indeterminate">
-                                        </mat-progress-bar>
-
-                                        <ngx-dropzone class="auction-item-media-dropzone pb-0"
-                                            (change)="uploadFiles($event, i)" [disableClick]="dragActive">
-
-                                            <ngx-dropzone-label *ngIf="files[i]?.length == 0">
-                                                <button mat-stroked-button type='button'>Učitaj</button>
-                                            </ngx-dropzone-label>
-
-                                            <drag-scroll class="form-drag-scroll" *ngIf="files[i]?.length > 0"
-                                                [drag-scroll-y-disabled]="true" [snap-disabled]="true"
-                                                (dragStart)="dragActive=true" (dragEnd)="dragEnd()" fxLayout="row">
-
-                                                <div class="item" drag-scroll-item *ngFor="let file of files[i]">
-
-                                                    <ng-container *ngIf="(file.path | firebasePath | async) as url">
-                                                        <img *ngIf="file.type == 'image'" [src]="url" />
-                                                        <video *ngIf="file.type == 'video'" [src]="url"></video>
-                                                        <button id="remove-file-btn" type="button" mat-icon-button
-                                                            color="accent" (click)="removeFile(i, file, url, $event)">
-                                                            <mat-icon>close</mat-icon>
-                                                        </button>
-                                                    </ng-container>
-
-                                                </div>
-
-                                            </drag-scroll>
-
-                                        </ngx-dropzone>
-                                    </div>
-
-                                    <quill-editor class="editor" [placeholder]="'Opis predmeta'"
-                                        formControlName="description"></quill-editor>
-                                </div>
-                            </mat-card>
-                        </form>
-                    </div>
-                </div>
-            </virtual-scroller>
-
-        </form>
     </div>
 
     <div *ngIf="isMobile" class="form-actions mb-2">
         <button class="w-100" mat-flat-button color="primary" (click)="addItem()">Dodaj</button>
     </div>
 </div>
+<!-- 
+
+<virtual-scroller [formGroup]="items" #scroll class="pb-3 items-grid" [items]="[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]">
+    <div formArrayName="items" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let i = index;" >
+       <div class="center" style="height: 800px; width: 100%;">
+            <h1>{{ item }}</h1>
+        </div>
+    </div>    
+</virtual-scroller> -->

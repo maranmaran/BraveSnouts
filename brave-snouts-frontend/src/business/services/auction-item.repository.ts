@@ -63,13 +63,17 @@ export class AuctionItemRepository {
         return this.getCollection(auctionId).add(Object.assign({}, data));
     }
 
+    getId() {
+        return this.firestore.createId()
+    }
+
     writeBatch(auctionId: string, items: AuctionItem[]) {
 
         const batch = this.firestore.firestore.batch();
 
         items.forEach(item => {
             item.auctionId = auctionId;
-            const docRef = this.getDocument(item.auctionId, item.id ?? this.firestore.createId());
+            const docRef = this.getDocument(item.auctionId, item.id ?? this.getId());
             batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id} )); // destructive because we can "delete" media 
         });
 

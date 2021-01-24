@@ -5,15 +5,13 @@ import { Router } from '@angular/router';
 import firebase from 'firebase/app';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
-import { BehaviorSubject, noop } from 'rxjs';
-import { from } from 'rxjs/internal/observable/from';
+import { BehaviorSubject, from, noop } from 'rxjs';
 import { concatMap, finalize, map, mergeMap, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
-import { FunctionsService } from 'src/business/services/functions.service';
 import { SubSink } from 'subsink';
 import { StorageService } from './../../../../../business/services/storage.service';
 
@@ -26,7 +24,7 @@ export interface FirebaseFile {
 
 @Component({
   selector: 'app-auction-form',
-  templateUrl: './auction-form.component.html',
+templateUrl: './auction-form.component.html',
   styleUrls: ['./auction-form.component.scss']
 })
 export class AuctionFormComponent implements OnInit {
@@ -128,7 +126,7 @@ export class AuctionFormComponent implements OnInit {
     return this.formBuilder.group({
 
       // changeable stuff
-      id: [item?.id],
+      id: [item?.id ?? this.auctionItemRepo.getId()],
       name: [item?.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       startPrice: [item?.startBid ?? 0, [Validators.min(0)]],
       description: [item?.description],
@@ -162,8 +160,8 @@ export class AuctionFormComponent implements OnInit {
     return this.auction.valid && this.items.valid 
   }
 
-  trackByFn(index, item) {
-    return index;
+  trackByFn(_, item) {
+    return item.id;
   }
 
   //#endregion

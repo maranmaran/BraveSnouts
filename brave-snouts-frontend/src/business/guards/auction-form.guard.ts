@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { of } from "rxjs/internal/observable/of";
+import { of } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class AuctionFormGuard implements CanActivate {
