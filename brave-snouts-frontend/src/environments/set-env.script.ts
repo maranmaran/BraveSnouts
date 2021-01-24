@@ -82,6 +82,9 @@ const buildEnvironmentFileContent = `
       appId: "${appId}",
       measurementId: "${measurementId}"
     },
+    pageSizes: {
+      itemsList: ${process.env.PAGE_SIZE_ITEMS_LIST ?? 8},
+    },
     itemCardConfig: {
       minBidOffset: ${process.env.APP_MIN_BID_OFFSET ?? 5},
       maxBidOffset: ${process.env.APP_MAX_BID_OFFSET ?? 30},

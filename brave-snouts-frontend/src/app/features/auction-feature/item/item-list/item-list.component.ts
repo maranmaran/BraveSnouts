@@ -81,7 +81,6 @@ export class ItemListComponent implements OnInit {
     if(this.previous?.id == this.last?.id)
       return;
       
-    console.log(`Loading more with last item ${this.last.id}`);
     this.previous = this.last;
 
     this.loadingSvc.active$.next(true);

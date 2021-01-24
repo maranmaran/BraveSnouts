@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuctionItemRepository {
 
-    public readonly pageSize = 3;
+    public readonly pageSize = environment.pageSizes?.itemsList ?? 8;
 
     constructor(
         private readonly firestore: AngularFirestore
@@ -69,7 +70,7 @@ export class AuctionItemRepository {
         items.forEach(item => {
             item.auctionId = auctionId;
             const docRef = this.getDocument(item.auctionId, item.id ?? this.firestore.createId());
-            batch.set(docRef.ref, Object.assign({}, item)); // destructive because we can "delete" media 
+            batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id} )); // destructive because we can "delete" media 
         });
 
         return batch.commit();
@@ -85,10 +86,6 @@ export class AuctionItemRepository {
 
     delete(auctionId: string, id: string) {
         return this.getDocument(auctionId, id).delete();
-    }
-
-    query(query) {
-        return this.getCollection(query).valueChanges({ idField: 'id' });
     }
 
 }
