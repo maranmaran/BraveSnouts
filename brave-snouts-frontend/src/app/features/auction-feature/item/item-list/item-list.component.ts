@@ -2,9 +2,12 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { QueryFn, DocumentData } from '@angular/fire/firestore';
 import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
+import { IPageInfo } from 'ngx-virtual-scroller';
+import { BehaviorSubject, noop, Subject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
-import { distinctUntilChanged, filter, map, take, tap } from 'rxjs/operators';
+import { catchError, concatMap, distinctUntilChanged, filter, map, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { SubSink } from 'subsink';
@@ -23,35 +26,35 @@ export class ItemListComponent implements OnInit {
   ) { }
 
   // Input data and user info
-  @Input('auctionId') auctionId: string;
+  @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
   
-  items$: Observable<AuctionItem[]>;
+  useScroll = true;
 
-  bufferAmount = 5;
+  items: AuctionItem[];
+  first: AuctionItem;
+  last: AuctionItem;
+  
+  nextDisabled = false;
+
+  firstEver: AuctionItem;
+  get previousDisabled(): boolean {
+    return this.first ? this.firstEver?.name == this.first.name : false;
+  };
 
   private _subsink = new SubSink();
   
   ngOnInit(): void {
-    
-    this.items$ = this.getItems();
 
-    this._subsink.add(
-      this.onMediaChangeUpdateBufferAmount()
-    )
-
-    // sim loading
-    // this.loadingSvc.active$.next(true);
-    // setTimeout(_ => this.loadingSvc.active$.next(false), 1000);
-  }
-
-  getItems() {
-    
     this.loadingSvc.active$.next(true);
+    this.itemsRepo.getInitialPage(this.auctionId)
+    .pipe(
+      take(1), 
+      tap(items => this.items = items),
+      tap(items => (this.first = items[0], this.firstEver = items[0])),
+      tap(items => this.last = items[items.length - 1]),
+      tap(() => this.loadingSvc.active$.next(false)),
+    ).subscribe(noop);
 
-    let query: QueryFn<DocumentData> = ref => ref.orderBy("name", 'asc');
-    
-    return this.itemsRepo.getAll(this.auctionId, query)
-      .pipe(take(1), tap(() => this.loadingSvc.active$.next(false)));
   }
 
   ngOnDestroy(): void {
@@ -62,38 +65,92 @@ export class ItemListComponent implements OnInit {
     return item.id;
   }
 
-  /** When window size changes and grid follows it we need
-   * to update amount of items the virtual scroll will pre-render in adavance
-   * so user experience is better 
-   * (People won't see items appearing and will have smoother scroll experience) */  
-  onMediaChangeUpdateBufferAmount() {
-    return this.mediaObs.asObservable()
+  /** Loads more data when page hits bottom */
+  previous: AuctionItem;
+  onLoadMore(event: IPageInfo) {
+
+    if(!this.items || this.items.length == 0)
+      return;
+    
+    if(!this.last) 
+      return;
+    
+    if(event.endIndex !== this.items.length - 1)
+      return;
+
+    if(this.previous?.id == this.last?.id)
+      return;
+      
+    console.log(`Loading more with last item ${this.last.id}`);
+    this.previous = this.last;
+
+    this.loadingSvc.active$.next(true);
+    this.itemsRepo.getNextPage(this.last)
     .pipe(
-      filter((changes: MediaChange[]) => changes.length > 0),
-      map((changes: MediaChange[]) => changes[0]),
-      distinctUntilChanged((prev, cur) => prev.mqAlias == cur.mqAlias)
-    ).subscribe((change: MediaChange) => {
+      take(1),
+      // append
+      map(items => [...this.items, ...items]),
 
-      switch (change.mqAlias) {
-        case "xl":
-          this.bufferAmount = 20;
-          break;
-        case "lg":
-          this.bufferAmount = 15;
-          break;
-        case "md":
-          this.bufferAmount = 10;
-          break;
-        case "sm":
-          this.bufferAmount = 5;
-          break;
-        default:
-          this.bufferAmount = 5;
-          break;
-        }
-
-    });
+      tap(items => console.log(items)),
+      
+      // map necessary data
+      tap(items => this.items = items),
+      tap(items => this.first = items[0]),
+      tap(items => this.last = items[items.length - 1]),
+      tap(() => this.loadingSvc.active$.next(false)))
+    .subscribe(noop);
   }
 
+  /** Goes to next page*/
+  nextPage() {
+
+    if(!this.items || this.items.length == 0)
+      return;
+    
+    if(!this.last)
+      return; 
+
+    if(this.nextDisabled)
+      return;
+
+    this.loadingSvc.active$.next(true);
+    this.itemsRepo.getNextPage(this.last)
+    .pipe(
+      take(1),
+      // disable next button if no more items
+      tap(items => items?.length < this.itemsRepo.pageSize ? this.nextDisabled = true : noop),
+      // map necessary data
+      tap(items => this.items = items),
+      tap(items => this.first = items[0]),
+      tap(items => this.last = items[items.length - 1]),
+      tap(() => this.loadingSvc.active$.next(false)))
+    .subscribe(noop, err => console.log(err));
+  }
+
+  /** Goes to previous page */
+  previousPage() {
+
+    if(!this.items || this.items.length == 0)
+      return;
+    
+    if(!this.first)
+      return; 
+
+    if(this.previousDisabled)
+      return;
+
+    this.loadingSvc.active$.next(true);
+    this.itemsRepo.getPreviousPage(this.first)
+    .pipe(
+      take(1),
+      // map necessary data
+      tap(items => this.items = items),
+      tap(items => this.first = items[0]),
+      tap(items => this.last = items[items.length - 1]),
+      tap(() => this.nextDisabled = false),
+      tap(() => this.loadingSvc.active$.next(false)))
+    .subscribe(noop);
+  }
+  
 
 }

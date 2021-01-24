@@ -48,8 +48,14 @@
   }
 }
 
+.w-min {
+  width: min-content !important;
+}
 .w-auto {
   width: auto !important;
+}
+.w-max {
+  width: max-content !important;
 }
 .mw-auto {
   max-width: auto !important;
