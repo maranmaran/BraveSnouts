@@ -136,3 +136,11 @@ gallery {
 label {
   padding-bottom: 0 !important;
 }
+
+.container {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 1rem;
+  margin-bottom: 10px;
+  height: calc(100% - 56px - 1rem) !important; // because of toolbar height
+}

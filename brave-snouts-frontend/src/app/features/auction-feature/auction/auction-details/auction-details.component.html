@@ -1,20 +1,22 @@
-<div class="h-100" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" *ngIf="(auction$ | async) as auction" fxLayout="column" fxLayoutGap="1rem">
+<div class="container" #scrollingBlock [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" *ngIf="(auction$ | async) as auction" fxLayout="column" fxLayoutGap="1rem">
 
     <div fxLayout="row">
         <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem"
         fxFlex="45%" fxFlex.lt-md="100%">
             <div class="mb-0 bold"  [ngClass]="{
-                'mat-title': mediaObs.isActive('lt-lg'), 
-                'mat-headline': mediaObs.isActive('gt-md')  
+                'mat-headline': mediaObs.isActive('gt-md'), 
+                'mat-title': mediaObs.isActive('lt-lg'),
+                'mat-body': mediaObs.isActive('lt-sm') 
             }" >
                 {{auction.name}}
             </div>
             <countdown *ngIf="config" #cd [config]="config" class="m-0 bold" [ngClass]="{
-                'mat-title': mediaObs.isActive('lt-lg'), 
-                'mat-headline': mediaObs.isActive('gt-md')  
+                'mat-headline': mediaObs.isActive('gt-md'), 
+                'mat-title': mediaObs.isActive('lt-lg'),
+                'mat-body': mediaObs.isActive('lt-sm')
             }" ></countdown>
         </div>
     </div>
     
-    <app-item-list [auctionId]="auction.id"></app-item-list>
+    <app-item-list [auctionId]="auction.id" [parentScroll]="scrollingBlock"></app-item-list>
 </div>

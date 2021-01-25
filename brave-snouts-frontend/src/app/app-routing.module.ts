@@ -6,6 +6,7 @@ import { AuctionFormComponent } from 'src/app/features/auction-feature/auction/a
 import { AuctionListComponent } from 'src/app/features/auction-feature/auction/auction-list/auction-list.component';
 import { HandoverConfirmComponent } from 'src/app/features/auction-feature/delivery/handover-confirm/handover-confirm.component';
 import { PostConfirmComponent } from 'src/app/features/auction-feature/delivery/post-confirm/post-confirm.component';
+import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 import { AdminGuard } from 'src/business/guards/admin.guard';
 import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
 import { AuctionFormGuard } from 'src/business/guards/auction-form.guard';
@@ -26,6 +27,9 @@ const routes: Routes = [
 
   // auction details for bidding
   { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent }, 
+  
+  // user page for auction tracking
+  { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent }, 
 
   // admin page
   { path: 'bids', canActivate: [AdminGuard, AuctionIdGuard], component: AuctionBidsComponent },

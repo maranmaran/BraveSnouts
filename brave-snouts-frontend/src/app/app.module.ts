@@ -36,6 +36,7 @@ import { ItemMediaComponent } from './features/auction-feature/item/item-media/i
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
+import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 
 @NgModule({
   imports: [
@@ -81,6 +82,7 @@ import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
     PostConfirmComponent,
     HandoverConfirmComponent,
     PostDetailsComponent,
+    UserItemsComponent,
     
     // other
     DonateComponent,
@@ -93,9 +95,6 @@ import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
 
     // auth
     LoginMethodComponent,
-
-    PostDetailsComponent,
-
   ],
   providers: [
     { provide: REGION, useValue: 'europe-west1' },
