@@ -1,15 +1,19 @@
 
 <div class="container" #scrollingBlock>
-    <h1 class="section mb-2" [ngClass]="{'mt-3': mediaObs.isActive('lt-sm')}">Praćeni predmeti</h1>
+    <div class="section m-0 bold"  [ngClass]="{
+        'mat-headline': mediaObs.isActive('gt-md'), 
+        'mat-title': mediaObs.isActive('lt-lg'),
+        'mat-body': mediaObs.isActive('lt-sm') 
+    }" >Praćeni predmeti</div>
     
-    <virtual-scroller #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0; else noItems" [parentScroll]="scrollingBlock">
+    <virtual-scroller #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0" [parentScroll]="scrollingBlock">
         <div #container class="items-grid">
             <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
         </div>
     </virtual-scroller>
     
-    <ng-template #noItems>
-        <i>Trenutno ne pratite niti jedan predmet</i>
-        <i>Sudjelujte u aukciji kako bi pratili predmete</i>
-    </ng-template>
+    <div *ngIf="(trackedItems$ | async)?.length == 0 && !(isLoading$ | async)">
+        <div><i>Trenutno ne pratite niti jedan predmet</i></div>
+        <div><i>Sudjelujte u aukciji kako bi pratili predmete</i></div>
+    </div>
 </div>
