@@ -1,7 +1,7 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { noop, Observable } from 'rxjs';
+import { noop, Observable, Subscription } from 'rxjs';
 import { concatMap, map, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
@@ -14,7 +14,7 @@ import { SubSink } from 'subsink';
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss']
 })
-export class ItemListComponent implements OnInit {
+export class ItemListComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly itemsRepo: AuctionItemRepository,
@@ -42,19 +42,21 @@ export class ItemListComponent implements OnInit {
     return this.first ? this.firstEver?.name == this.first.name : false;
   };
 
+  itemsSubscription: Subscription;
+
   private _subsink = new SubSink();
   
   ngOnInit(): void {
 
     this.loadingSvc.active$.next(true);
-    this.itemsRepo.getInitialPage(this.auctionId)
-    .pipe(
-      take(1), 
-      tap(items => this.items = items),
-      tap(items => (this.first = items[0], this.firstEver = items[0])),
-      tap(items => this.last = items[items.length - 1]),
-      tap(() => this.loadingSvc.active$.next(false)),
-    ).subscribe(noop);
+    
+    this.itemsSubscription = this.itemsRepo.getInitialPage(this.auctionId)
+      .pipe(
+        tap(items => this.items = items),
+        tap(items => (this.first = items[0], this.firstEver = items[0])),
+        tap(items => this.last = items[items.length - 1]),
+        tap(() => this.loadingSvc.active$.next(false)),
+      ).subscribe(noop)
 
     this.getUserTrackedItems();
 
@@ -123,9 +125,9 @@ export class ItemListComponent implements OnInit {
       return;
 
     this.loadingSvc.active$.next(true);
-    this.itemsRepo.getNextPage(this.last)
+    this.itemsSubscription.unsubscribe();
+    this.itemsSubscription = this.itemsRepo.getNextPage(this.last)
     .pipe(
-      take(1),
       // disable next button if no more items
       tap(items => items?.length < this.itemsRepo.pageSize ? this.nextDisabled = true : noop),
       // map necessary data
@@ -149,9 +151,9 @@ export class ItemListComponent implements OnInit {
       return;
 
     this.loadingSvc.active$.next(true);
-    this.itemsRepo.getPreviousPage(this.first)
+    this.itemsSubscription.unsubscribe();
+    this.itemsSubscription = this.itemsRepo.getPreviousPage(this.first)
     .pipe(
-      take(1),
       // map necessary data
       tap(items => this.items = items),
       tap(items => this.first = items[0]),
