@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuctionItemRepository {
+
+    public readonly pageSize = environment.pageSizes?.itemsList ?? 8;
 
     constructor(
         private readonly firestore: AngularFirestore
@@ -11,6 +14,10 @@ export class AuctionItemRepository {
     }
 
     getCollection(auctionId: string, queryFn?: QueryFn<DocumentData>) {
+        
+        if(!queryFn)
+            queryFn = ref => ref.orderBy("name", 'asc');
+
         return this.firestore
             .doc(`auctions/${auctionId}`)
             .collection<AuctionItem>('items', queryFn);
@@ -29,8 +36,41 @@ export class AuctionItemRepository {
         return this.getDocument(auctionId, id).valueChanges({ idField: 'id' });
     }
 
+    getInitialPage(auctionId) {
+        let query = ref => ref
+                              .orderBy('name', 'asc')
+                              .orderBy('id', 'asc')
+                              .limit(this.pageSize);
+
+        return this.getCollection(auctionId, query).valueChanges({ idField: 'id' });
+    }
+
+    getNextPage(last: AuctionItem) {
+        let query = ref => ref
+                              .orderBy('name', 'asc')
+                              .orderBy('id', 'asc')
+                              .startAfter(last.name, last.id)
+                              .limit(this.pageSize);
+
+        return this.getCollection(last.auctionId, query).valueChanges({ idField: 'id' });
+    }
+
+    getPreviousPage(first: AuctionItem) {
+        let query = ref => ref
+                              .orderBy('name', 'asc')
+                              .orderBy('id', 'asc')
+                              .endBefore(first.name, first.id)
+                              .limitToLast(this.pageSize);
+
+        return this.getCollection(first.auctionId, query).valueChanges({ idField: 'id' });
+    }
+
     create(auctionId: string, data: AuctionItem) {
         return this.getCollection(auctionId).add(Object.assign({}, data));
+    }
+
+    getId() {
+        return this.firestore.createId()
     }
 
     writeBatch(auctionId: string, items: AuctionItem[]) {
@@ -39,8 +79,8 @@ export class AuctionItemRepository {
 
         items.forEach(item => {
             item.auctionId = auctionId;
-            const docRef = this.getDocument(item.auctionId, item.id ?? this.firestore.createId());
-            batch.set(docRef.ref, Object.assign({}, item)); // destructive because we can "delete" media 
+            const docRef = this.getDocument(item.auctionId, item.id ?? this.getId());
+            batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id} )); // destructive because we can "delete" media 
         });
 
         return batch.commit();
@@ -56,10 +96,6 @@ export class AuctionItemRepository {
 
     delete(auctionId: string, id: string) {
         return this.getDocument(auctionId, id).delete();
-    }
-
-    query(query) {
-        return this.getCollection(query).valueChanges({ idField: 'id' });
     }
 
 }

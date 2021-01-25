@@ -2,6 +2,11 @@
     font-size: 14px !important;
 }
 
+virtual-scroller {
+    width: 100%;
+    height: 100%;
+}
+
 ngx-dropzone {
     overflow: hidden;
     
@@ -9,7 +14,6 @@ ngx-dropzone {
         overflow-y: hidden;
     }
 }
-
 
 .form-drag-scroll {
     height: 100%;
@@ -36,4 +40,6 @@ ngx-dropzone {
           top: -3px;
       }
     }
-  }
+}
+
+

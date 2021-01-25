@@ -77,7 +77,7 @@ const getAuctionItems = async (auctionId: string) => {
 
   const itemsQuery = store.doc(`auctions/${auctionId}`).collection('items');
   const itemsSnapshot = await itemsQuery.get();
-  const items = itemsSnapshot.docs.map(getDocument) as AuctionItem[];
+  const items = itemsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id})) as AuctionItem[];
 
   if(items.length === 0) {
     const message = 'No items found';
@@ -182,7 +182,5 @@ const markAuctionProcessed = async (auction: Auction) => {
     await store.collection('auctions').doc(auction.id).update(auction);
 }
 
-/** Retrieves document data and id in object  */
-const getDocument = (doc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>) => ({ ...doc.data(), id: doc.id});
 
 

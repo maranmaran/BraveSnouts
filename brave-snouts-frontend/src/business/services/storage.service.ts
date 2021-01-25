@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class StorageService {
@@ -16,7 +17,10 @@ export class StorageService {
         return this.storage.storage.refFromURL(url).delete();
     }
 
-    getDownloadUrl(path) {
+    getDownloadUrl(path: string) {
+        if(path.startsWith('https://') || path.startsWith('http://'))
+            return of(path);
+
         const ref = this.storage.ref(path);
         return ref.getDownloadURL();
     }

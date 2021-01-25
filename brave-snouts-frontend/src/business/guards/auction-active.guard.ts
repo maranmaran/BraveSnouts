@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { take } from "rxjs/internal/operators/take";
-import { concatMap, map, switchMap } from "rxjs/operators";
+import { map, switchMap, take } from "rxjs/operators";
 import { Auction } from "src/business/models/auction.model";
 import { AuctionRepository } from "src/business/services/auction.repository";
 import { getAuctionState } from "src/business/services/auction.service";

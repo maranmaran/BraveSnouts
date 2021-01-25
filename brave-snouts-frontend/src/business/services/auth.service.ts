@@ -3,10 +3,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import firebase from 'firebase/app';
-import { noop } from "rxjs";
-import { from } from "rxjs/internal/observable/from";
-import { of } from "rxjs/internal/observable/of";
-import { map, switchMap, take, tap } from "rxjs/operators";
+import { from, noop, of } from "rxjs";
+import { map, switchMap, take } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 
 

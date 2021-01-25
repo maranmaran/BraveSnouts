@@ -11,3 +11,5 @@ export class TruncatePipe implements PipeTransform {
     return value.length > limit ? value.substr(0, limit) + ellipsis : value;
   }
 }
+
+
