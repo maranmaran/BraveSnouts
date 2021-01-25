@@ -1,9 +1,21 @@
 <div class="container mt-5 mb-5" fxLayout="row" fxLayoutGap="0rem" fxLayout.lt-sm="column" fxLayoutGap.lt-sm="3rem">
     
+    
     <div id="auction-list" fxFlex="50%" fxFlex.lt-lg="50%" fxFlex.lt-sm="100%" fxLayout="column" fxLayoutGap="0.5rem">
+        
+        <button @fadeIn mat-raised-button color="primary" 
+        *ngIf="(userTracksItems$ | async)"
+        routerLink="/my-items"
+        class="my-items-btn elevate hover-big"
+        [ngClass]="{
+            'mr-5': mediaObs.isActive('gt-xs'),
+            'mb-3': mediaObs.isActive('gt-xs')
+        }">
+            Moji predmeti
+        </button>
 
         <ng-container *ngIf="(auctions$ | async) as auctions">
-            <div @staggerFadeIn *ngIf="auctions?.length > 0; else noAuctions">
+            <div @fadeIn *ngIf="auctions?.length > 0; else noAuctions">
 
                 <mat-card *ngFor="let auction of auctions" class="pointer background lighter elevate hover mb-2" (click)="onClick(auction)" 
                 [ngClass]="{'mr-5': mediaObs.isActive('gt-xs'), 'warn': getAuctionState(auction) == 'expired','primary': getAuctionState(auction) == 'future'}">
@@ -48,7 +60,7 @@
         
         
         <ng-template #noAuctions>
-            <i class="custom-font center mat-title">Trenutno nema aktivnih aukcija</i>
+            <i @fadeIn class="custom-font center mat-title">Trenutno nema aktivnih aukcija</i>
         </ng-template>
     </div>
 

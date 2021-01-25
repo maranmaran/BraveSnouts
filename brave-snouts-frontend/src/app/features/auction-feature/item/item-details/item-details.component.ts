@@ -4,8 +4,8 @@ import { DocumentData, QueryFn } from '@angular/fire/firestore';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
-import { from, Observable } from 'rxjs';
-import { concatMap, filter, skip, take } from 'rxjs/operators';
+import { from, noop, Observable, of } from 'rxjs';
+import { concatMap, filter, skip, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
@@ -54,6 +54,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
   // Data
   @Input() item: AuctionItem;
+  @Input('trackedItems') userTrackedItems: Set<string>;
   userId$: Observable<string>;
   isAuthenticated$: Observable<boolean>;
   bids: Bid[]; // item bids
@@ -221,18 +222,22 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
         // update bids array for historic data
 
         // create bid and update item
-        this.bidsRepo.create(bid).then(
-        createdBid => {
+        from(this.bidsRepo.create(bid))
+        .pipe(
+          concatMap(createdBid => this.itemsRepo.update(item.auctionId, item.id, {
+            bidId: createdBid.id,
+            bid: bid.bid,
+            user: bid.userId,
+          })),
+          tap(_ => {
 
-            // update current item bid data
-            this.itemsRepo.update(item.auctionId, item.id, {
-              bidId: createdBid.id,
-              bid: bid.bid,
-              user: bid.userId,
-            });
-            
-          }
-        );
+            if(this.userTrackedItems && this.userTrackedItems.has(item.id)){
+              return;
+            }
+
+            this.itemsRepo.addItemToUser(item, this.userId);
+          })
+        ).subscribe(noop);
 
       });
   }

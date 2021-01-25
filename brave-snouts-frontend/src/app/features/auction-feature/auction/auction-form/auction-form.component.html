@@ -1,4 +1,4 @@
-<div class="h-100" fxLayout="column" fxLayoutGap="1rem" #scrollingBlock>
+<div class="container" fxLayout="column" fxLayoutGap="1rem" #scrollingBlock>
 
     <div class="auction-form" flexLayout="row">
         <div class="section" fxFlex="45%" fxFlex.lt-md="100%" fxLayout="column" fxLayoutGap="1rem">
@@ -107,14 +107,15 @@
     
                     </mat-card>
                 </form>
+                <div *ngIf="isMobile" class="form-actions mt-2">
+                    <button class="w-100" mat-flat-button color="primary" (click)="addItem()">Dodaj</button>
+                </div>
             </div>
         </virtual-scroller>
 
     </div>
 
-    <div *ngIf="isMobile" class="form-actions mb-2">
-        <button class="w-100" mat-flat-button color="primary" (click)="addItem()">Dodaj</button>
-    </div>
+
 </div>
 <!-- 
 

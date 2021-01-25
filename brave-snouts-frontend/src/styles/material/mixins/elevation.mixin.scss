@@ -25,6 +25,11 @@
                     @include mat-elevation(4, mat-color(map-get($theme, warn), 800), 1);
                 }
             }
+            &.hover-big {
+                &:hover {
+                    @include mat-elevation(8, mat-color(map-get($theme, primary), 800), 1);
+                }
+            }
         }
     }
 }

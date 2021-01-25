@@ -3,9 +3,10 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import firebase from 'firebase/app';
-import { from, noop, of } from "rxjs";
+import { from, of } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
+import { AuctionItem } from "src/business/models/auction-item.model";
 
 
 @Injectable({ providedIn: 'root' })
@@ -15,8 +16,8 @@ export class AuthService {
 
     constructor(
         private readonly auth: AngularFireAuth,
-        private readonly firestore: AngularFirestore,
-        private readonly dialog: MatDialog
+        private readonly store: AngularFirestore,
+        private readonly dialog: MatDialog,
     ) { }
 
     public get user$() {
@@ -34,7 +35,7 @@ export class AuthService {
     public get isAdmin$() {
         return from(this.auth.user)
         .pipe(
-            switchMap(user => user ? this.firestore.doc(`admins/${user.uid}`).valueChanges().pipe(take(1)) : of(null)),
+            switchMap(user => user ? this.store.doc(`admins/${user.uid}`).valueChanges().pipe(take(1)) : of(null)),
             // tap(console.log),
             map(admin => !!admin),
         );
@@ -55,12 +56,13 @@ export class AuthService {
             });
 
             return dialogRef.afterClosed().pipe(take(1))
-            .subscribe(method => {
+            .subscribe(async method => {
                 if(!method)
                     return;
 
+                let cred: firebase.auth.UserCredential = null;
                 if(method == 'gmail') {
-                    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(noop);
+                    cred = await this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
                 }
                 if(method == 'facebook') {
                     const facebook = new firebase.auth.FacebookAuthProvider();
@@ -70,7 +72,11 @@ export class AuthService {
                         'display': 'popup'
                     })
 
-                    this.auth.signInWithPopup(facebook).catch(noop);
+                    cred = await this.auth.signInWithPopup(facebook);
+                }
+
+                if(!cred && cred.additionalUserInfo.isNewUser) {
+                    this.addNewUser(cred);
                 }
             })
         })
@@ -78,6 +84,19 @@ export class AuthService {
 
     logout() {
         this.auth.signOut();
+    }
+
+    /** Saves new user to the users collection */
+    addNewUser(cred: firebase.auth.UserCredential) {
+        let user = {
+            id: cred.user.uid,
+            displayName: cred.user.displayName,
+            email: cred.user.email,
+            avatar: cred.user.photoURL,
+            signInMethod: cred.credential.signInMethod,
+            providerId: cred.credential.providerId,
+        }
+        this.store.collection(`users`).doc(user.id).set(user);
     }
 
 }

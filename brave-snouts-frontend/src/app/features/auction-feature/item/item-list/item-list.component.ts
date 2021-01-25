@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { noop } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { noop, Observable } from 'rxjs';
+import { concatMap, map, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
+import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { SubSink } from 'subsink';
 
@@ -19,12 +20,16 @@ export class ItemListComponent implements OnInit {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
     private readonly mediaObs: MediaObserver,
+    private readonly authSvc: AuthService,
   ) { }
 
   // Input data and user info
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
-  
+  @Input() parentScroll: ElementRef;
+
   useScroll = true;
+
+  userTrackedItems$: Observable<Set<string>>;
 
   items: AuctionItem[];
   first: AuctionItem;
@@ -51,6 +56,8 @@ export class ItemListComponent implements OnInit {
       tap(() => this.loadingSvc.active$.next(false)),
     ).subscribe(noop);
 
+    this.getUserTrackedItems();
+
   }
 
   ngOnDestroy(): void {
@@ -59,6 +66,15 @@ export class ItemListComponent implements OnInit {
   
   trackByFn(_, item) {
     return item.id;
+  }
+
+  /** Retrieves user relevant items */
+  getUserTrackedItems() {
+    this.userTrackedItems$ =  this.authSvc.userId$.pipe(
+      take(1),
+      concatMap(userId => this.itemsRepo.getUserItems(userId)),
+      map(items => new Set<string>(items.map(item => item.id))),
+    )
   }
 
   /** Loads more data when page hits bottom */
@@ -144,6 +160,5 @@ export class ItemListComponent implements OnInit {
       tap(() => this.loadingSvc.active$.next(false)))
     .subscribe(noop);
   }
-  
 
 }

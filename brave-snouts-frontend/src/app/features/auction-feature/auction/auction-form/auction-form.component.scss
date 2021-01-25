@@ -42,4 +42,6 @@ ngx-dropzone {
     }
 }
 
-
+.container {
+    height: calc(100% - 56px) !important;
+}

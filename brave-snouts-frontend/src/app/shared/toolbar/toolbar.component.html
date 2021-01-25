@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" fxLayout="row">
+<mat-toolbar class="toolbar" color="primary" fxLayout="row">
 
     <div fxFlex="30" class="">
         <button mat-icon-button *ngIf="(admin$ | async)" [matMenuTriggerFor]="adminMenu">
@@ -33,6 +33,12 @@
             matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
 
         <mat-menu #profileMenu="matMenu">
+            <button mat-menu-item routerLink="/my-items">
+                <mat-icon matPrefix>
+                    redeem
+                </mat-icon>
+                Moji predmeti
+            </button>
             <button mat-menu-item (click)="onLogout()">
                 <mat-icon matPrefix>
                     exit_to_app

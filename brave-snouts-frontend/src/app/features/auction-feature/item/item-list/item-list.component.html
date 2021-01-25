@@ -1,6 +1,6 @@
-<virtual-scroller #scroll [items]="items" (vsEnd)="onLoadMore($event)" *ngIf="useScroll; else classicPagination">
+<virtual-scroller #scroll [items]="items" [parentScroll]="parentScroll" (vsEnd)="onLoadMore($event)" *ngIf="useScroll; else classicPagination">
     <div #container class="items-grid">
-        <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
+        <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
     </div>
 </virtual-scroller>
 
@@ -11,6 +11,6 @@
     </div>
 
     <div class="items-grid pt-2">
-        <app-item-details *ngFor="let item of items; trackBy: trackByFn" [item]="item"></app-item-details>
+        <app-item-details *ngFor="let item of items; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
     </div>
 </ng-template>

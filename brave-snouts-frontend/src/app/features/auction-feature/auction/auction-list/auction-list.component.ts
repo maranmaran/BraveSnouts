@@ -4,8 +4,8 @@ import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
-import { noop, Observable, Subscription } from 'rxjs';
-import { concatMap, distinctUntilChanged, map, take, tap } from 'rxjs/operators';
+import { noop, Observable, of, Subscription } from 'rxjs';
+import { concatMap, distinct, distinctUntilChanged, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { staggerFadeIn } from 'src/business/animations/stagger-fade-in.animation';
@@ -36,12 +36,14 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   auctions$: Observable<Auction[]>;
   admin$: Observable<boolean>;
+  userTracksItems$: Observable<boolean>;
 
   adminSub: Subscription;
   bootstrapDonateComponent = false;
 
   ngOnInit(): void {
     this.admin$ = this.authSvc.isAdmin$;
+    this.userTracksItems$ = this.getIfUserTrackesItems();
 
     this.adminSub = this.admin$.pipe(distinctUntilChanged()).subscribe(admin => this.initList(admin))
   }
@@ -121,6 +123,16 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     let active = auctions.filter(a => this.getAuctionState(a) == 'active');
     return [...future, ...active, ...expired];
   }
+
+  /** Returns whether or not user tracks any auction items */
+  getIfUserTrackesItems() {
+    return this.authSvc.userId$
+    .pipe(
+      concatMap(id => id ? this.itemRepo.getUserItems(id).pipe(take(1)) : of(null)),
+      map(items => !!items)
+    )
+  }
+
   //#endregion
 
   //#region Auction actions (navigate, edit, delete)

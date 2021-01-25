@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
+import { map, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { environment } from 'src/environments/environment';
 
@@ -96,6 +97,22 @@ export class AuctionItemRepository {
 
     delete(auctionId: string, id: string) {
         return this.getDocument(auctionId, id).delete();
+    }
+
+    /** Adds item on which user bid on to the database */
+    addItemToUser(item: AuctionItem, userId: string) {
+        this.firestore.collection(`users/${userId}/tracked-items`)
+        .doc(item.id).set({
+            auctionId: item.auctionId,
+            itemId: item.id,
+            userId: userId,
+        });
+    }
+    
+    /** Retrieves only items on which user bid on */
+    getUserItems(userId: string) {
+        return this.firestore.collection(`users/${userId}/tracked-items`)
+        .valueChanges({ idField: 'id' })
     }
 
 }
