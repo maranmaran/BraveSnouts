@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -27,7 +27,7 @@ export interface FirebaseFile {
 templateUrl: './auction-form.component.html',
   styleUrls: ['./auction-form.component.scss']
 })
-export class AuctionFormComponent implements OnInit {
+export class AuctionFormComponent implements OnInit, OnDestroy  {
 
   // form data
   auction: FormGroup;

@@ -1,5 +1,5 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DocumentData, QueryFn } from '@angular/fire/firestore';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
@@ -43,7 +43,7 @@ import { BidsRepository } from './../../../../../business/services/bids.reposito
     ])
   ]
 })
-export class ItemDetailsComponent implements OnInit, OnDestroy {
+export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private readonly itemsRepo: AuctionItemRepository,
@@ -57,7 +57,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
   @Input('trackedItems') userTrackedItems: Set<string>;
   userId$: Observable<string>;
   isAuthenticated$: Observable<boolean>;
-  bids: Bid[]; // item bids
+  // bids: Bid[]; // item bids
 
   // workaround because animations are broken
   // https://github.com/angular/angular/issues/21331
@@ -95,12 +95,28 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
     // react to changes only (skip first)
     setTimeout(async _ => {
       this._subsink.add(
-        this.onBidsChange(this.item.id),
-        this.onItemChange(),
+        // this.onBidsChange(this.item.id),
+        // this.onItemChange(),
         ...this.onAuthDataChange(),
       )
     });
   }
+
+  
+  public ngOnChanges(changes: SimpleChanges): void {
+
+    let previousItem = changes.item?.previousValue;
+    let currentItem = changes.item?.currentValue;
+
+    if(JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
+      return;
+    }
+
+    if(currentItem?.bid != previousItem?.bid || currentItem?.user != previousItem?.user) {
+      this.onItemChange();
+    }
+  }
+  
 
   ngOnDestroy(): void {
     this._subsink.unsubscribe();
@@ -121,11 +137,19 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
   /* Does work when item bid changes */
   onItemChange() {
-    const document = this.itemsRepo.getOne(this.item.auctionId, this.item.id);
+    // const document = this.itemsRepo.getOne(this.item.auctionId, this.item.id);
 
-    return document.pipe(
-      skip(1),
-      filter(nextItem => nextItem.bid != this.item.bid || nextItem.user != this.item.user),
+    // this.item = item;
+    // console.log(this.item);
+    this.setupControls(this.item);
+    this.disableBidding(750);
+    this.topBidChange(750);
+
+    // return document.pipe(
+    //   tap(r => console.log(r)),
+    //   skip(1),
+    // return of(this.item).pipe(
+    //   filter(nextItem => nextItem.bid != this.item.bid || nextItem.user != this.item.user),
       // switchmap because if two items come in ALMOST same time
       // second coming in (newest) will interrupt procedures from first and reset
       // meaning user won't see flashing STAR and PRICE animations
@@ -135,32 +159,33 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
       //     delay(250),
       //   )
       // ),
-    )
-      .subscribe(item => {
-        this.item = item;
-        this.setupControls(item);
-        this.disableBidding(750);
-        this.topBidChange(750);
-      });
+    // )
+    //   .subscribe(item => {
+    //     this.item = item;
+    //     this.setupControls(item);
+    //     this.disableBidding(750);
+    //     this.topBidChange(750);
+    //   });
   }
 
-  /* Watches and updates bids collection to track all bids on current item */
-  onBidsChange(itemId: string) {
+  // /* Watches and updates bids collection to track all bids on current item */
+  // onBidsChange(itemId: string) {
 
-    const query: QueryFn<DocumentData> = ref => ref
-      .where("itemId", '==', itemId)
-      .orderBy("date", 'desc');
+  //   const query: QueryFn<DocumentData> = ref => ref
+  //     .where("itemId", '==', itemId)
+  //     .orderBy("date", 'desc');
 
-    return this.bidsRepo.getAll(query)
-      .pipe(
-        // firebase server timestamp triggers collection events twice
-        // first time it's saved as date: null and then it modifies that field
-        // with actual firebase server time
-        // causing document to trigger 'modified' event and value change
-        filter(bids => bids.length == 0 ? true : bids[0].date != null),
-      )
-      .subscribe(bids => this.bids = bids)
-  }
+  //   return this.bidsRepo.getAll(query)
+  //     .pipe(
+  //       tap(r => console.log(r)),
+  //       // firebase server timestamp triggers collection events twice
+  //       // first time it's saved as date: null and then it modifies that field
+  //       // with actual firebase server time
+  //       // causing document to trigger 'modified' event and value change
+  //       filter(bids => bids.length == 0 ? true : bids[0].date != null),
+  //     )
+  //     .subscribe(bids => this.bids = bids)
+  // }
 
   /* Sets up slider and custom bid control */
   setupControls(item: AuctionItem) {

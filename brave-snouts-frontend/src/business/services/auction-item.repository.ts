@@ -30,11 +30,12 @@ export class AuctionItemRepository {
     }
 
     getAll(auctionId: string, queryFn?: QueryFn<DocumentData>) {
-        return this.getCollection(auctionId, queryFn).valueChanges({ idField: 'id' });
+        return this.getCollection(auctionId, queryFn).valueChanges({ idField: 'id' })
+        .pipe(tap(r => console.log(r)));
     }
 
     getOne(auctionId: string, id: string) {
-        return this.getDocument(auctionId, id).valueChanges({ idField: 'id' });
+        return this.getDocument(auctionId, id).valueChanges({ idField: 'id' }).pipe(tap(r => console.log(r)));
     }
 
     getInitialPage(auctionId) {
@@ -43,7 +44,8 @@ export class AuctionItemRepository {
                               .orderBy('id', 'asc')
                               .limit(this.pageSize);
 
-        return this.getCollection(auctionId, query).valueChanges({ idField: 'id' });
+        return this.getCollection(auctionId, query).valueChanges({ idField: 'id' })
+        .pipe(tap(r => console.log(r)));
     }
 
     getNextPage(last: AuctionItem) {
@@ -53,7 +55,8 @@ export class AuctionItemRepository {
                               .startAfter(last.name, last.id)
                               .limit(this.pageSize);
 
-        return this.getCollection(last.auctionId, query).valueChanges({ idField: 'id' });
+        return this.getCollection(last.auctionId, query).valueChanges({ idField: 'id' })
+        .pipe(tap(r => console.log(r)));
     }
 
     getPreviousPage(first: AuctionItem) {
@@ -63,7 +66,8 @@ export class AuctionItemRepository {
                               .endBefore(first.name, first.id)
                               .limitToLast(this.pageSize);
 
-        return this.getCollection(first.auctionId, query).valueChanges({ idField: 'id' });
+        return this.getCollection(first.auctionId, query).valueChanges({ idField: 'id' })
+        .pipe(tap(r => console.log(r)));
     }
 
     create(auctionId: string, data: AuctionItem) {
