@@ -2,3 +2,9 @@ virtual-scroller {
     height: 100%;
     width: 100%;
 }
+
+@media(max-width: 600px) {
+    .container {
+        height: calc(100% - 56px - 1.5rem) !important;
+    }
+}

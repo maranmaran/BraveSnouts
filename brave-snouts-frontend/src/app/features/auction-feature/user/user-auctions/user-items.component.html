@@ -1,9 +1,10 @@
 
 <div class="container" #scrollingBlock>
-    <div class="section m-0 bold"  [ngClass]="{
+    <div class="section bold" [ngClass]="{
         'mat-headline': mediaObs.isActive('gt-md'), 
         'mat-title': mediaObs.isActive('lt-lg'),
-        'mat-body': mediaObs.isActive('lt-sm') 
+        'mat-body': mediaObs.isActive('lt-sm'),
+        'mt-4': mediaObs.isActive('lt-sm')
     }" >Praćeni predmeti</div>
     
     <virtual-scroller #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0" [parentScroll]="scrollingBlock">

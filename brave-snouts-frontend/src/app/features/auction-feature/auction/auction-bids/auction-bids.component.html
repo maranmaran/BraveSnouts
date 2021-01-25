@@ -1,4 +1,4 @@
-<div class="container" fxLayout="column" fxLayoutGap="1rem" *ngIf="(auction$ | async) as auction">
+<div class="container" fxLayout="column" fxLayoutGap="1rem" *ngIf="(auction$ | async) as auction" >
 
     <div id="auction-details" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" fxLayout="column" fxLayoutGap="1rem">
 
@@ -47,7 +47,7 @@
                 </mat-card-actions>
             </mat-card>
             
-            <mat-card id="winner" *ngIf="winners.get(item.id) as winner; else filler" class="elevate hover selected mb-3" [ngClass]="{'selected': activeItemId == winner.itemId}">
+            <mat-card id="winner" *ngIf="winners.get(item.id) as winner; else filler" class="elevate hover selected mt-2" [ngClass]="{'selected': activeItemId == winner.itemId}">
                 <mat-card-header>
                     <mat-card-title fxLayout="row" fxLayoutAlign="start center"> 
                         <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon> {{ winner.userInfo.name }}
@@ -92,7 +92,7 @@
                 </mat-card-actions>
             </mat-card>
             <ng-template #filler>
-                <div fxFill class="center">
+                <div class="section elevate hover center mt-2 p-5 pr-3 pl-3">
                     <i>Nema najbolje ponude</i>
                 </div>
             </ng-template>
