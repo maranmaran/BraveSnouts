@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionRepository } from 'src/business/services/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
@@ -21,7 +22,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly auctionsRepo: AuctionRepository,
     public readonly mediaObs: MediaObserver,
-    private readonly authSvc: AuthService
   ) { }
 
   auction$: Observable<Auction>;
@@ -50,7 +50,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
       const leftTime = duration.asSeconds();
 
       this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
-    }));
+    }, err => console.log(err)));
   }
 
   ngOnDestroy() {

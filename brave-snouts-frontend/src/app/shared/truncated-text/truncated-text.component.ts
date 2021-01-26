@@ -31,7 +31,8 @@ export class TruncatedTextComponent implements OnInit, OnDestroy {
         if(media.mqAlias == 'xs') 
           this.characters = this.characters * 0.3;
       }
-    )
+    ),
+    err => console.log(err)
   }
 
   ngOnDestroy() {

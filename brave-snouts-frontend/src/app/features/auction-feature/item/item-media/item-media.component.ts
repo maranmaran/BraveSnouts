@@ -39,7 +39,7 @@ export class ItemMediaComponent implements OnInit {
       map(mediaArr => this.media = mediaArr.sort((a, b) => a.index > b.index ? 1 : -1)),
       tap(_ => this.setupGallery()),
       take(1),
-    ).subscribe(noop)
+    ).subscribe(noop, err => console.log(err))
   }
 
   /* Sets up images and videos for gallery component */
@@ -75,7 +75,8 @@ export class ItemMediaComponent implements OnInit {
     });
     
     this.lightbox.closed.pipe(take(1)).subscribe(
-      _ => this.gallery.ref(this.galleryId).setConfig({imageSize: 'cover'})
+      _ => this.gallery.ref(this.galleryId).setConfig({imageSize: 'cover'}),
+      err => console.log(err)
     );
   }
 

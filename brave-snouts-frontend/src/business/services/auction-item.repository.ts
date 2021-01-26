@@ -31,11 +31,10 @@ export class AuctionItemRepository {
 
     getAll(auctionId: string, queryFn?: QueryFn<DocumentData>) {
         return this.getCollection(auctionId, queryFn).valueChanges({ idField: 'id' })
-        .pipe(tap(r => console.log(r)));
     }
 
     getOne(auctionId: string, id: string) {
-        return this.getDocument(auctionId, id).valueChanges({ idField: 'id' }).pipe(tap(r => console.log(r)));
+        return this.getDocument(auctionId, id).valueChanges({ idField: 'id' })
     }
 
     getInitialPage(auctionId) {
@@ -45,7 +44,6 @@ export class AuctionItemRepository {
                               .limit(this.pageSize);
 
         return this.getCollection(auctionId, query).valueChanges({ idField: 'id' })
-        .pipe(tap(r => console.log(r)));
     }
 
     getNextPage(last: AuctionItem) {
@@ -56,7 +54,6 @@ export class AuctionItemRepository {
                               .limit(this.pageSize);
 
         return this.getCollection(last.auctionId, query).valueChanges({ idField: 'id' })
-        .pipe(tap(r => console.log(r)));
     }
 
     getPreviousPage(first: AuctionItem) {
@@ -67,7 +64,6 @@ export class AuctionItemRepository {
                               .limitToLast(this.pageSize);
 
         return this.getCollection(first.auctionId, query).valueChanges({ idField: 'id' })
-        .pipe(tap(r => console.log(r)));
     }
 
     create(auctionId: string, data: AuctionItem) {
@@ -96,7 +92,7 @@ export class AuctionItemRepository {
     }
 
     set(auctionId: string, id: string, data: AuctionItem) {
-        this.getDocument(auctionId, id).set(Object.assign({}, data));
+        return this.getDocument(auctionId, id).set(Object.assign({}, data));
     }
 
     delete(auctionId: string, id: string) {
@@ -105,7 +101,7 @@ export class AuctionItemRepository {
 
     /** Adds item on which user bid on to the database */
     addItemToUser(item: AuctionItem, userId: string) {
-        this.firestore.collection(`users/${userId}/tracked-items`)
+        return this.firestore.collection(`users/${userId}/tracked-items`)
         .doc(item.id).set({
             auctionId: item.auctionId,
             itemId: item.id,

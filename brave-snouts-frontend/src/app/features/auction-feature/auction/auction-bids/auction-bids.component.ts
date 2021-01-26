@@ -73,7 +73,10 @@ export class AuctionBidsComponent implements OnInit {
     )
 
     this._subsink.add(
-      winnersMap$.subscribe(winnersMap => this.winners = winnersMap)
+      winnersMap$.subscribe(
+        winnersMap => this.winners = winnersMap,
+        err => console.log(err)
+      )
     );
   } 
 
@@ -95,7 +98,7 @@ export class AuctionBidsComponent implements OnInit {
       const leftTime = duration.asSeconds();
 
       this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
-    }));
+    }, err => console.log(err)));
   }
 
   closeAuction(auctionId) {
@@ -115,7 +118,7 @@ export class AuctionBidsComponent implements OnInit {
       data
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(noop)
+    dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
 
   }
 

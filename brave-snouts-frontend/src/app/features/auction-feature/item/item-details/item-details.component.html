@@ -7,15 +7,6 @@
         </label>
 
         <div gdColumns="min-content min-content" gdGap="1rem" class="mr-0">
-
-            <!--@deprecated - BS-6 "Brave Snouts Requirements-->
-            <!-- <div class="center">
-                <button mat-icon-button color="warn" class="elevate hover warn" *ngIf="(item.user == (userId$ | async) && (isAuthenticated$ | async)); else btnfiller" (click)="$event.preventDefault(); onUndoBid(item)">
-                    <mat-icon>settings_backup_restore</mat-icon>
-                </button>
-                <ng-template #btnfiller><div style="width: 40px; height: 40px;"></div></ng-template>
-            </div> -->
-
             <label [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'" class="no-wrap mb-0 mat-title bold center">
                 {{item.bid + ' kn'}}
             </label>
@@ -23,7 +14,7 @@
 
         <mat-icon class="best-bid-icon"
             [@starOnBidChanged]="userId === item.user && isAuthenticated"
-            *ngIf="(userId$ | async) == item.user && (isAuthenticated$ | async)"
+            *ngIf="userId == item.user && isAuthenticated"
             matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
             star
         </mat-icon>

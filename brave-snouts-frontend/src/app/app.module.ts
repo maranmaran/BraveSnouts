@@ -36,6 +36,9 @@ import { PostDetailsComponent } from './features/auction-feature/delivery/post-d
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
+import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 
 @NgModule({
   imports: [
@@ -95,6 +98,8 @@ import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-a
     LoginMethodComponent,
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: REGION, useValue: 'europe-west1' },
     // { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
     {

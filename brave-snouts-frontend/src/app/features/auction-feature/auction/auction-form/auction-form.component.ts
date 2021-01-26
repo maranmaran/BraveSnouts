@@ -73,7 +73,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     // route back to home if use is not admin
     this._subsink.add(
       this.authSvc.isAdmin$.subscribe(
-        isAdmin => isAdmin ? noop() : this.router.navigate(['/'])
+        isAdmin => isAdmin ? noop() : this.router.navigate(['/']),
+        err => console.log(err)
       )
     )
 
@@ -194,7 +195,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
       }),
       // tap(res => console.log(res)),
       finalize(() => this.uploadStates$[index].next(false))
-    ).subscribe(noop)
+    ).subscribe(noop, err => console.log(err))
       
   }
 
@@ -217,6 +218,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     this.uploadStates$.push(new BehaviorSubject(true));
     this.storage.deleteFile(url)
     .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
+    .catch(err => console.log(err))
     .finally(() => {
       // delete locally
       this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
@@ -275,7 +277,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     .pipe(
       concatMap(auction => from(this.auctionItemRepo.writeBatch(auction.id, items)))
     ).subscribe(
-      _ => this.postCreate()
+      _ => this.postCreate(),
+      err => console.log(err)
     )
   }
 
@@ -290,7 +293,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     .pipe(
       concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items)))
     ).subscribe(
-      _ => this.postUpdate()
+      _ => this.postUpdate(),
+      err => console.log(err)
     )
 
   }

@@ -75,11 +75,11 @@ export class AuthService {
                     cred = await this.auth.signInWithPopup(facebook);
                 }
 
-                if(!cred && cred.additionalUserInfo.isNewUser) {
+                if(cred && cred.additionalUserInfo.isNewUser) {
                     this.addNewUser(cred);
                 }
-            })
-        })
+            }, err => console.log(err))
+        }).catch(err => console.log(err))
     }
 
     logout() {

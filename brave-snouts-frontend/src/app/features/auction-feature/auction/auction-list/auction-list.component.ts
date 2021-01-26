@@ -45,7 +45,11 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.admin$ = this.authSvc.isAdmin$;
     this.userTracksItems$ = this.getIfUserTrackesItems();
 
-    this.adminSub = this.admin$.pipe(distinctUntilChanged()).subscribe(admin => this.initList(admin))
+    this.adminSub = this.admin$.pipe(distinctUntilChanged())
+    .subscribe(
+      admin => this.initList(admin),
+      err => console.log(err)
+    )
   }
 
   ngOnDestroy(): void {
@@ -157,7 +161,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       .subscribe(items => this.router.navigate(
         ['edit-auction'],
         { state: { auction, items, action: 'edit' } }
-      ));
+      ), err => console.log(err));
 
   }
 
@@ -188,7 +192,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
             map(items => items.map(item => this.itemRepo.delete(auctionObj.id, item.id))),
             concatMap(deletePromises => Promise.all(deletePromises)),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
-          ).subscribe(noop)
+          ).subscribe(noop, err => console.log(err))
 
       })
 

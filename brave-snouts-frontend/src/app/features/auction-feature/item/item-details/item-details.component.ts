@@ -55,11 +55,9 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   // Data
   @Input() item: AuctionItem;
   @Input('trackedItems') userTrackedItems: Set<string>;
-  userId$: Observable<string>;
-  isAuthenticated$: Observable<boolean>;
-  // bids: Bid[]; // item bids
 
-  // workaround because animations are broken
+  // For animations 
+  // not observables because - animations are broken
   // https://github.com/angular/angular/issues/21331
   userId: string
   isAuthenticated: boolean;
@@ -85,38 +83,39 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   bidStepSize = environment.itemCardConfig.bidStepSize;
 
   ngOnInit(): void {
-    this.userId$ = this.authSvc.userId$;
-    this.isAuthenticated$ = this.authSvc.isAuthenticated$;
-
+    
     this.setupControls(this.item);
 
-    this.bootstrapped = true;
+    this._subsink.add(
+      ...this.onAuthDataChange(),
+    )
 
-    // react to changes only (skip first)
-    setTimeout(async _ => {
-      this._subsink.add(
-        // this.onBidsChange(this.item.id),
-        // this.onItemChange(),
-        ...this.onAuthDataChange(),
-      )
-    });
+    this.bootstrapped = true;
   }
 
-  
-  public ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
 
-    let previousItem = changes.item?.previousValue;
-    let currentItem = changes.item?.currentValue;
+    const previousItem = changes.item?.previousValue;
+    const currentItem = changes.item?.currentValue;
+
+    // console.log("\n\n")
+    // console.log(currentItem?.name)
+    // console.log(previousItem)
+    // console.log(currentItem)
+    // console.log("\n\n")
 
     if(JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
       return;
     }
 
-    if(currentItem?.bid != previousItem?.bid || currentItem?.user != previousItem?.user) {
+    const notNewRender = previousItem;
+    const bidChanged = currentItem?.bid != previousItem?.bid;
+    const userChanged = currentItem?.user != previousItem?.user;
+
+    if(notNewRender && (bidChanged || userChanged)) {
       this.onItemChange();
     }
   }
-  
 
   ngOnDestroy(): void {
     this._subsink.unsubscribe();
@@ -130,63 +129,18 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   */
   onAuthDataChange() {
     return [
-      this.userId$.subscribe(userId => this.userId = userId),
-      this.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth)
+      this.authSvc.userId$.subscribe(userId => this.userId = userId, err => console.log(err)),
+      this.authSvc.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth, err => console.log(err))
     ]
   }
 
   /* Does work when item bid changes */
   onItemChange() {
-    // const document = this.itemsRepo.getOne(this.item.auctionId, this.item.id);
-
-    // this.item = item;
-    // console.log(this.item);
     this.setupControls(this.item);
     this.disableBidding(750);
     this.topBidChange(750);
-
-    // return document.pipe(
-    //   tap(r => console.log(r)),
-    //   skip(1),
-    // return of(this.item).pipe(
-    //   filter(nextItem => nextItem.bid != this.item.bid || nextItem.user != this.item.user),
-      // switchmap because if two items come in ALMOST same time
-      // second coming in (newest) will interrupt procedures from first and reset
-      // meaning user won't see flashing STAR and PRICE animations
-      // switchMap(item => of(item)
-      //   .pipe(
-      //     tap(() => this.disableBidding(1250)),
-      //     delay(250),
-      //   )
-      // ),
-    // )
-    //   .subscribe(item => {
-    //     this.item = item;
-    //     this.setupControls(item);
-    //     this.disableBidding(750);
-    //     this.topBidChange(750);
-    //   });
   }
-
-  // /* Watches and updates bids collection to track all bids on current item */
-  // onBidsChange(itemId: string) {
-
-  //   const query: QueryFn<DocumentData> = ref => ref
-  //     .where("itemId", '==', itemId)
-  //     .orderBy("date", 'desc');
-
-  //   return this.bidsRepo.getAll(query)
-  //     .pipe(
-  //       tap(r => console.log(r)),
-  //       // firebase server timestamp triggers collection events twice
-  //       // first time it's saved as date: null and then it modifies that field
-  //       // with actual firebase server time
-  //       // causing document to trigger 'modified' event and value change
-  //       filter(bids => bids.length == 0 ? true : bids[0].date != null),
-  //     )
-  //     .subscribe(bids => this.bids = bids)
-  // }
-
+ 
   /* Sets up slider and custom bid control */
   setupControls(item: AuctionItem) {
     this.currentBidControl = this.getBidControl(item.bid);
@@ -222,8 +176,9 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     from(this.authSvc.login())
       .pipe(
         take(1),
-        concatMap(_ => this.authSvc.user$),
-        filter(user => !!user))
+        concatMap(_ => this.authSvc.user$.pipe(take(1))),
+        filter(user => !!user),
+      )
       .subscribe(user => {
 
         // check if someone placed bid in the middle of bidding of this user
@@ -245,93 +200,28 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
         });
 
         // update bids array for historic data
-
         // create bid and update item
         from(this.bidsRepo.create(bid))
         .pipe(
-          concatMap(createdBid => this.itemsRepo.update(item.auctionId, item.id, {
-            bidId: createdBid.id,
-            bid: bid.bid,
-            user: bid.userId,
-          })),
-          tap(_ => {
+          take(1),
+          concatMap(createdBid => {
+            let bidData = { bidId: createdBid.id, bid: bid.bid, user: bid.userId, }; 
+            let action = this.itemsRepo.update(item.auctionId, item.id, bidData);
+            return from(action).pipe(take(1))
+          }),
+          concatMap(async () => {
 
-            if(this.userTrackedItems && this.userTrackedItems.has(item.id)){
-              return;
+            if(this.userTrackedItems && this.userTrackedItems.has(item.id)) {
+              return of(null);
             }
 
-            this.itemsRepo.addItemToUser(item, this.userId);
-          })
-        ).subscribe(noop);
+            return from(this.itemsRepo.addItemToUser(item, this.userId)).pipe(take(1));
+          }),
+          take(1),
+        ).subscribe(noop, err => console.log(err));
 
       });
   }
-
-  //#region @deprecated - BS-6 "Brave Snouts Requirements
-
-  /** Undo last bid placed by THIS particular user
-   * Only if last price applied is from THIS user
-   * */
-  // onUndoBid(item: AuctionItem) {
-
-  //   from(this.authSvc.login())
-  //     .pipe(
-  //       take(1),
-  //       concatMap(_ => this.authSvc.user$),
-  //       filter(user => !!user))
-  //     .subscribe(user => {
-
-  //       if (item.user != user.uid)
-  //         return;
-
-  //       let bids = [...this.bids];
-
-  //       const lastBid = this.deleteLastBid(bids);
-
-  //       // undo item bid
-  //       this.itemsRepo.update(item.auctionId, item.id, {
-  //         bid: lastBid.bid,
-  //         user: lastBid.userId,
-  //       });
-
-  //     });
-  // }
-
-  /** Deletes last bid and any bid that matches it's value (because of possible same time bids)
-   *  Retrieves first deleted bid
-   */
-  // deleteLastBid(bids) {
-
-  //   const bidsToDelete: Bid[] = [];
-  //   bidsToDelete.push(bids.splice(0, 1)[0]);
-
-  //   // take next (now new last) bid
-  //   // get last bid which isn't the same value (ignore duplicates)
-  //   // TODO: Extract and refactor
-  //   let lastBid = bids[0];
-  //   if(!lastBid) {
-  //     lastBid = new Bid({ bid: 0, userId: null });
-  //   } else {
-  //     while (lastBid.bid == this.item.bid) {
-  //       bidsToDelete.push(bids.splice(0, 1)[0]);
-  //       lastBid = bids[0];
-
-  //       if (!lastBid) {
-  //         // default state for auction item
-  //         lastBid = new Bid({ bid: 0, userId: null });
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   for (const bidToDelete of bidsToDelete) {
-  //     this.bidsRepo.delete(bidToDelete.id);
-  //   }
-
-  //   return lastBid;
-  // }
-
-  //#endregion
 
   /* Validates current bid price */
   checkBidPrice(item: AuctionItem) {
