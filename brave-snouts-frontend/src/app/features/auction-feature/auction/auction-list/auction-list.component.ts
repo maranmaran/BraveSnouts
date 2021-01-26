@@ -202,7 +202,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['bids', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
+    this.router.navigate(['admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
   }
 
   //#endregion

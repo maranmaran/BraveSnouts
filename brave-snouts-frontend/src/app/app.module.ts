@@ -30,7 +30,6 @@ import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuctionBidsComponent } from './features/auction-feature/auction/auction-bids/auction-bids.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
@@ -39,6 +38,7 @@ import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-a
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
+import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
 
 @NgModule({
   imports: [
@@ -79,7 +79,6 @@ import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
     ItemListComponent,
     ItemDetailsComponent,
     ItemMediaComponent,
-    AuctionBidsComponent,
     PostConfirmComponent,
     HandoverConfirmComponent,
     PostDetailsComponent,
@@ -96,6 +95,8 @@ import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 
     // auth
     LoginMethodComponent,
+
+    AdminPageComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },

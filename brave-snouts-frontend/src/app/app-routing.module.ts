@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuctionBidsComponent } from 'src/app/features/auction-feature/auction/auction-bids/auction-bids.component';
 import { AuctionDetailsComponent } from 'src/app/features/auction-feature/auction/auction-details/auction-details.component';
 import { AuctionFormComponent } from 'src/app/features/auction-feature/auction/auction-form/auction-form.component';
 import { AuctionListComponent } from 'src/app/features/auction-feature/auction/auction-list/auction-list.component';
 import { HandoverConfirmComponent } from 'src/app/features/auction-feature/delivery/handover-confirm/handover-confirm.component';
 import { PostConfirmComponent } from 'src/app/features/auction-feature/delivery/post-confirm/post-confirm.component';
+import { AdminPageComponent } from 'src/app/features/auction-feature/user/admin-page/admin-page.component';
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 import { AdminGuard } from 'src/business/guards/admin.guard';
 import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent }, 
 
   // admin page
-  { path: 'bids', canActivate: [AdminGuard, AuctionIdGuard], component: AuctionBidsComponent },
+  { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
 
   // non matched routes
   { path: '**', redirectTo: '/' } 

@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { noop } from 'rxjs';
 import { map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Winner } from 'src/business/models/winner.model';
+import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { WinnersRepository } from 'src/business/services/winners.repository';
 
 @Component({
@@ -22,11 +24,11 @@ export class PostConfirmComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly winnersRepo: WinnersRepository,
+    private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
   ) { }
 
   ngOnInit(): void {
-    console.log(this.route);
     this._auctionId = this.route.snapshot.paramMap.get('auctionId');
     this._userId = this.route.snapshot.paramMap.get('userId');
 
@@ -51,16 +53,16 @@ export class PostConfirmComponent implements OnInit {
     // update winner post delivery option data
     let data = this.postDeliveryInfoForm.value;
 
-    let query = ref => ref.where('auctionId', '==', this._auctionId)
-                          .where('userId', '==', this._userId);
+    let query = ref => ref.where('winner.userId', '==', this._userId);
 
-    let winners$ = this.winnersRepo.getAll(query);
+    let items$ = this.itemsRepo.getAll(this._auctionId, query);
 
-    winners$.pipe(
+    items$.pipe(
       take(1),
-      mergeMap(winners => [...winners]),
-      map(winner => [winner.id, { postalInformation: data, deliveryChoice: 'postal' } as Partial<Winner>]),
-      mergeMap(([id, data]) => this.winnersRepo.getDocument(id as string).update(data as Partial<Winner>))
+      mergeMap(items => [...items]),
+      map(item => item.winner),
+      map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
+      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
     ).subscribe(
       // TODO: Toast notification for successful submit
       () => this.router.navigate(['/']), 

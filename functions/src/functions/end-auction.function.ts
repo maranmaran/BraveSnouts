@@ -110,7 +110,7 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
 
     const user = userInfo.get(bid.user) as UserInfo;
 
-    const winner = new Winner({
+    const winnerInstance = new Winner({
       userId: user.id,
       auctionId: auctionId,
       itemId: bid.item.id,
@@ -124,11 +124,14 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
       paymentStatus: 'pending',
       deliveryChoice: null,
       postalInformation: null,
+
     })
+    
+    // const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
 
-    const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
+    let winnerObj = Object.assign({}, winnerInstance);
 
-    await store.collection('winners').doc(id).set(Object.assign({}, winner));
+    await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update({winner: winnerObj});
   }
 }
 
