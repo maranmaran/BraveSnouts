@@ -24,20 +24,20 @@ export interface FirebaseFile {
 
 @Component({
   selector: 'app-auction-form',
-templateUrl: './auction-form.component.html',
+  templateUrl: './auction-form.component.html',
   styleUrls: ['./auction-form.component.scss']
 })
-export class AuctionFormComponent implements OnInit, OnDestroy  {
+export class AuctionFormComponent implements OnInit, OnDestroy {
 
   // form data
   auction: FormGroup;
   items: FormGroup;
   files: FirebaseFile[][] = [];
-  
+
   // flags 
   uploadStates$: BehaviorSubject<boolean>[] = [];
   dragActive = false;
-  createMode= false;
+  createMode = false;
 
   /**Check if current view is mobile phone */
   public get isMobile(): boolean {
@@ -45,7 +45,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
   }
 
   private _subsink = new SubSink();
-  
+
   constructor(
     public readonly mediaObserver: MediaObserver,
     private readonly formBuilder: FormBuilder,
@@ -60,13 +60,13 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
 
     // get form data.. create or edit
     const formData = history.state;
-    
+
     // determine if it's create or edit
     this.createMode = formData.action == 'create';
 
     // create auction form
     this.createAuctionForm(formData.auction);
-    
+
     // create item form
     this.createItemsForm(formData.items);
 
@@ -88,7 +88,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
 
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
-    this.auction= this.formBuilder.group({
+    this.auction = this.formBuilder.group({
       id: [auction.id], // hidden
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       startDate: [auction.startDate, [Validators.required]],
@@ -100,7 +100,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
   createItemsForm(items: AuctionItem[]) {
 
     let itemControls = [];
-    if(items.length == 0) {
+    if (items.length == 0) {
       itemControls = [this.getItemFormGroup()]; // create
     } else {
       itemControls = items.map(item => this.getItemFormGroup(item)); // edit
@@ -112,11 +112,11 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     // create all file arrays and loading state for each item
     this.itemsArr.controls.forEach((_, index) => {
       let media = items[index]?.media ?? [];
-      this.files.push(media); 
+      this.files.push(media);
       this.uploadStates$.push(new BehaviorSubject(false));
     });
   }
-  
+
   /**Retrieves array of item control groups*/
   public get itemsArr() {
     return (this.items.get('items') as FormArray)
@@ -134,7 +134,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
 
       //hidden stuff, potentially from already existing items (on update)
       auctionId: [item?.auctionId],
-      bid: [item?.bid], 
+      bid: [item?.bid],
       user: [item?.user],
       bidId: [item?.bidId],
     });
@@ -145,7 +145,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     let itemForm = this.getItemFormGroup();
     (this.itemsArr as FormArray).push(itemForm);
     this.files.push([]);
-    this.uploadStates$.push(new BehaviorSubject(false))  
+    this.uploadStates$.push(new BehaviorSubject(false))
   }
 
   /**Removes item group from array*/
@@ -155,10 +155,10 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     this.files.splice(index, 1);
     this.uploadStates$.splice(index, 1);
   }
-  
+
   /**Check if whole form is valid */
-  public get isValid()  {
-    return this.auction.valid && this.items.valid 
+  public get isValid() {
+    return this.auction.valid && this.items.valid
   }
 
   trackByFn(_, item) {
@@ -168,7 +168,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
   //#endregion
 
   //#region Media 
-  
+
   /**Delay drag active flag once drag is over to avoid click event from dropzone*/
   dragEnd() {
     setTimeout(_ => this.dragActive = false, 100);
@@ -177,34 +177,35 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
   /**Upload selected files onto firebase storage*/
   uploadFiles(event, index) {
 
-    this.uploadStates$[index].next(true); 
+    this.uploadStates$[index].next(true);
 
-    from(event.addedFiles)
-    .pipe(
-      mergeMap((file: File) => {
-
-        const name = `${Guid.create()}.jpg`;
-        const path = `auction-items/${name}`;
-        const type = this.getFirebaseFileType(file.type);
-
-        return from(this.storage.uploadFile(file, path))
+    this._subsink.add(
+      from(event.addedFiles)
         .pipe(
-          map(_ => ({ name, type, path }) as FirebaseFile),
-          tap((firebaseFile: FirebaseFile) => this.files[index].push(firebaseFile))
-        )
-      }),
-      // tap(res => console.log(res)),
-      finalize(() => this.uploadStates$[index].next(false))
-    ).subscribe(noop, err => console.log(err))
-      
+          mergeMap((file: File) => {
+
+            const name = `${Guid.create()}.jpg`;
+            const path = `auction-items/${name}`;
+            const type = this.getFirebaseFileType(file.type);
+
+            return from(this.storage.uploadFile(file, path))
+              .pipe(
+                map(_ => ({ name, type, path }) as FirebaseFile),
+                tap((firebaseFile: FirebaseFile) => this.files[index].push(firebaseFile))
+              )
+          }),
+          // tap(res => console.log(res)),
+          finalize(() => this.uploadStates$[index].next(false))
+        ).subscribe(noop, err => console.log(err))
+    )
   }
 
   /**Check file type */
   getFirebaseFileType(type): 'file' | 'image' | 'video' {
-    if(type.indexOf('image') != -1) 
+    if (type.indexOf('image') != -1)
       return 'image';
-    
-      return 'video';
+
+    return 'video';
   }
 
   /**Remove file from array of files */
@@ -217,26 +218,26 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     // delete on server
     this.uploadStates$.push(new BehaviorSubject(true));
     this.storage.deleteFile(url)
-    .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
-    .catch(err => console.log(err))
-    .finally(() => {
-      // delete locally
-      this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
-      this.uploadStates$.push(new BehaviorSubject(false));
-    });
-		
+      .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
+      .catch(err => console.log(err))
+      .finally(() => {
+        // delete locally
+        this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
+        this.uploadStates$.push(new BehaviorSubject(false));
+      });
+
   }
 
   //#endregion
-  
+
   //#region Form submit
 
   /**Submit form and create auction */
   onSubmit() {
 
     console.log("submitting");
-    
-    if(!this.isValid)
+
+    if (!this.isValid)
       return;
 
     const startDate = moment(this.auction.value.startDate).utc().toDate();
@@ -250,22 +251,22 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
     });
 
     const items = this.itemsArr.value.map(
-        (item, index) => new AuctionItem({
-          // actually editable in form
-          name: item.name,
-          description: item.description,
-          startBid: item.startPrice,
-          media: this.files[index],
+      (item, index) => new AuctionItem({
+        // actually editable in form
+        name: item.name,
+        description: item.description,
+        startBid: item.startPrice,
+        media: this.files[index],
 
-          // not editable in form and might be from already existing item
-          // ?? null because .set in writeBatch can't set "undefined" values
-          auctionId: item.auctionId ?? null,
-          bid: item.bid ?? item.startPrice, // default to start price if none defined
-          user: item.user ?? null,
-          bidId: item.bidId ?? null,
+        // not editable in form and might be from already existing item
+        // ?? null because .set in writeBatch can't set "undefined" values
+        auctionId: item.auctionId ?? null,
+        bid: item.bid ?? item.startPrice, // default to start price if none defined
+        user: item.user ?? null,
+        bidId: item.bidId ?? null,
       }));
 
-    if(this.createMode) {
+    if (this.createMode) {
       this.onCreate(auction, items);
     } else {
       this.onUpdate(auction, items);
@@ -273,28 +274,31 @@ export class AuctionFormComponent implements OnInit, OnDestroy  {
   }
 
   onCreate(auction: Auction, items: AuctionItem[]) {
-    from(this.auctionRepo.create(auction))
-    .pipe(
-      concatMap(auction => from(this.auctionItemRepo.writeBatch(auction.id, items)))
-    ).subscribe(
-      _ => this.postCreate(),
-      err => console.log(err)
-    )
+    this._subsink.add(
+      from(this.auctionRepo.create(auction))
+        .pipe(
+          concatMap(auction => from(this.auctionItemRepo.writeBatch(auction.id, items)))
+        ).subscribe(
+          _ => this.postCreate(),
+          err => console.log(err)
+        ))
   }
 
   onUpdate(auction: Auction, items: AuctionItem[]) {
     let auctionRefId = this.auction.value.id as string;
     let itemRefIds = this.itemsArr.value.map(item => item.id) as string[];
 
-    items = items.map((item, index) => Object.assign(item, {id: itemRefIds[index]}));
+    items = items.map((item, index) => Object.assign(item, { id: itemRefIds[index] }));
 
     // do update
-    from(this.auctionRepo.update(auctionRefId, Object.assign({}, auction)))
-    .pipe(
-      concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items)))
-    ).subscribe(
-      _ => this.postUpdate(),
-      err => console.log(err)
+    this._subsink.add(
+      from(this.auctionRepo.update(auctionRefId, Object.assign({}, auction)))
+        .pipe(
+          concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items)))
+        ).subscribe(
+          _ => this.postUpdate(),
+          err => console.log(err)
+        )
     )
 
   }

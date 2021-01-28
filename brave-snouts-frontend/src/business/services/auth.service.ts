@@ -99,4 +99,20 @@ export class AuthService {
         this.store.collection(`users`).doc(user.id).set(user);
     }
 
+    /** Adds item on which user bid on to the database */
+    addItemToUser(item: AuctionItem, userId: string) {
+        return this.store.collection(`users/${userId}/tracked-items`)
+        .doc(item.id).set({
+            auctionId: item.auctionId,
+            itemId: item.id,
+            userId: userId,
+        });
+    }
+    
+    /** Retrieves only items on which user bid on */
+    getUserItems(userId: string) {
+        return this.store.collection(`users/${userId}/tracked-items`)
+        .valueChanges({ idField: 'id' })
+    }
+    
 }

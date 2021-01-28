@@ -8,7 +8,7 @@
                 'mat-title': mediaObs.isActive('lt-lg'),
                 'mat-body': mediaObs.isActive('lt-sm') 
             }" >
-                {{auction.name}}
+                <!-- {{auction.name}} -->
             </div>
             <countdown *ngIf="config" #cd [config]="config" class="m-0 bold" [ngClass]="{
                 'mat-headline': mediaObs.isActive('gt-md'), 

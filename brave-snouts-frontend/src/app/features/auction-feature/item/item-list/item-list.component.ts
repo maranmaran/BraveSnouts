@@ -1,14 +1,17 @@
 import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { of } from 'rxjs';
+import { concat, of } from 'rxjs';
 import { noop, Observable, Subscription } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, skip, take, tap } from 'rxjs/operators';
+import { concatMap, finalize, map, mergeMap, skip, switchMap, switchMapTo, take, tap, toArray } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
+import { ItemsRdbRepository } from 'src/business/services/real-time-db/items.rdb.repository';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
 
@@ -20,20 +23,18 @@ import { SubSink } from 'subsink';
 export class ItemListComponent implements OnInit, OnDestroy {
 
   constructor(
+    private readonly authSvc: AuthService,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
-    private readonly mediaObs: MediaObserver,
-    private readonly authSvc: AuthService,
   ) { }
 
-  // Input data and user info
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
   @Input() parentScroll: ElementRef;
 
   private _subsink = new SubSink();
-
-  ngOnInit(): void {
-    this.initialPage();
+  
+  async ngOnInit() {
+    this.onLoadMore({endIndex: -1} as IPageInfo);
     this.getUserTrackedItems();
   }
 
@@ -55,7 +56,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
           if (!userId) return of(null);
 
-          return this.itemsRepo.getUserItems(userId).pipe(take(1))
+          return this.authSvc.getUserItems(userId).pipe(take(1))
         }),
         map(items => {
 
@@ -67,8 +68,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   }
 
   //#region  Pagination 
-  
-  items: AuctionItem[];
+
+  items: AuctionItem[] = [];
   first: AuctionItem;
   last: AuctionItem;
 
@@ -76,45 +77,16 @@ export class ItemListComponent implements OnInit, OnDestroy {
   fetchInProgress = false;
   nextDisabled = false;
 
-  /** Gets initial page */
-  initialPage() {
-    
-    this.loadingSvc.active$.next(true);
-    this.itemsRepo.getInitialPage(this.auctionId)
-    .pipe(
-      take(1),
-      // tap(console.log),
-      tap(items => {
-
-        // join items
-        this.items = [...items];
-
-        // set first item reference
-        // (this.first = this.items[0], this.firstEver = this.items[0]);
-        this.first = this.items[0];
-
-        // Process page
-        if(this.pagesProcessed.has(this.first.id)) return;
-        this.addPage(this.first.id); 
-
-        // set last reference
-        this.last = this.items[this.items.length - 1];
-        
-      }),
-      finalize(() => (this.initPageLoaded = true, this.loadingSvc.active$.next(false)))
-    ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
-    
-  }
-
   /** Loads more data when page hits bottom */
   onLoadMore(event: IPageInfo) {
-    
-    // only if initial page loaded 
-    if(!this.initPageLoaded) {
+
+    // only if no other fetch is in progress
+    if (this.fetchInProgress) {
       return;
     }
 
-    if(this.fetchInProgress) {
+    // only if you have clearence to go to next page
+    if (this.nextDisabled) {
       return;
     }
 
@@ -122,85 +94,85 @@ export class ItemListComponent implements OnInit, OnDestroy {
     if (event.endIndex !== this.items.length - 1) {
       return;
     }
-    // only if you have clearence to go to next page
-    if(this.nextDisabled) {
-      return;
-    }
-    // no data already
-    if (!this.items || this.items.length == 0) {
-      return;
-    }
-    // no last item to paginate for next page
-    if (!this.last) {
-      return;
-    }
-    // only if this page wasn't processed already
-    if(this.pagesProcessed.has(this.last.id)) {
-      return;
-    }
 
     this.fetchInProgress = true;
-
     this.loadingSvc.active$.next(true);
-    this.itemsRepo.getNextPage(this.last)
-    .pipe(
-      take(1),
-      // tap(console.log),
-      tap(items => {
 
-        // disable next if no more items
-        if(items.length < this.itemsRepo.pageSize) {
-          this.nextDisabled = true;
-        }
+    const subscription = this.itemsRepo.getScrollPage(this.auctionId, this.last)
+      .pipe(
 
-        // process page
-        if(this.pagesProcessed.has(this.last.id)) return;
-        this.addPage(this.last.id); 
+      ).subscribe(items => {
+        
+          // disable next if no more items
+          if (items.length < this.itemsRepo.pageSize) {
+            this.nextDisabled = true;
+          }
+          
+          // join items
+          console.log("Fetched items")
+          this.items = this.mergeArrays(this.items, items);
+          console.log(`Currently having ${this.items.length} items.`, this.items)
+          console.log("Types are", items.map(item => item.type))
+          console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
+          console.log("\n")
 
-        // join items
-        this.items = [...this.items, ...items];
+          // set last item
+          this.last = this.items[this.items.length - 1];
 
-        // set last item
-        this.last = items[items.length - 1];
+          // update flags
+          this.fetchInProgress = false;
+          this.loadingSvc.active$.next(false);
 
-      }),
-      finalize(() => ( this.fetchInProgress = false, this.loadingSvc.active$.next(false) ))
-    ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
+      }, err => console.log(err));
+
+    this._subsink.add(subscription);
   }
-  
-  /** Subscribe to all new items for their changes */
-  subscribeToItemChanges(items: AuctionItem[]) {
-    for(const item of items) {
 
-      /** Subscribes to single item for changes and handle */
-      this._subsink.add(
+  /** Unionizes two auction item arrays to reflect new changes */
+  mergeArrays(originalArr: AuctionItem[], nextArr: DocumentChangeAction<AuctionItem>[]) {
 
-        this.itemsRepo.getOne(this.auctionId, item.id)
-        .pipe(
-          // tap(console.log),
-          skip(1),
-          tap(item => this.handleItemUpdate(item))
-        ).subscribe(noop, err => console.log(err))
+    let original = originalArr ? [...originalArr] : [];
+    let next = nextArr ? [...nextArr] : [];
 
-      )
+    // no new documents
+    if (!next || next.length == 0)
+      return original;
+
+    // only new documents - init
+    if (!original || original.length == 0)
+      return next.map(item => item.payload.doc.data());
+
+
+    // both collections exist - add new ones, update modified ones
+    for (const document of next) {
+
+      let idx = original.findIndex(item => item.id == document.payload.doc.id);
+
+      // new document
+      if (idx == -1) {
+        original.push(document.payload.doc.data());
+        console.log("Added");
+      }
+      // modified document
+      else if (document.type == 'modified') {
+        original[idx] = document.payload.doc.data();
+        console.log('Modified');
+      }
 
     }
-  }
 
-  /** Updates item in array */
-  handleItemUpdate(item: AuctionItem) {
-    let itemIdx = this.items.findIndex(i => i.id == item.id);
-    this.items[itemIdx] = item;
+    return original;
+
   }
 
   pagesProcessed = new Set<string>();
   addPage(id: string) {
-    if(!id || this.pagesProcessed.has(id)) return;
+    if (!id || this.pagesProcessed.has(id)) return;
 
     this.pagesProcessed.add(id);
   }
 
   //#endregion
-  
+
 
 }

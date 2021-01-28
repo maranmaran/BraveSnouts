@@ -61,149 +61,149 @@ export class AdminPageComponent implements OnInit {
     this._auctionId = this.route.snapshot.paramMap.get('id');
     this.state = this.route.snapshot.paramMap.get('state') as 'future' | 'active' | 'expired';
 
-    this.auction$ = this.auctionRepo.getOne(this._auctionId);
+    this.auction$ = this.auctionRepo.getOne(this._auctionId)
+    .pipe(
+      tap(auction => this.setupCountdown(auction))
+    );
     
-    this.initialPage();
-
-
-    this.setupCountdown();
+    // this.initialPage();
   }
 
-  items: AuctionItem[];
-  first: AuctionItem;
-  last: AuctionItem;
+  // items: AuctionItem[];
+  // first: AuctionItem;
+  // last: AuctionItem;
 
-  initPageLoaded = false;
-  fetchInProgress = false;
-  nextDisabled = false;
+  // initPageLoaded = false;
+  // fetchInProgress = false;
+  // nextDisabled = false;
 
-  /** Gets initial page */
-  initialPage() {
+  // /** Gets initial page */
+  // initialPage() {
     
-    this.loadingSvc.active$.next(true);
-    this.itemsRepo.getInitialPage(this._auctionId)
-    .pipe(
-      take(1),
-      // tap(console.log),
-      tap(items => {
+  //   this.loadingSvc.active$.next(true);
+  //   this.itemsRepo.getInitialPage(this._auctionId)
+  //   .pipe(
+  //     take(1),
+  //     // tap(console.log),
+  //     tap(items => {
 
-        // join items
-        this.items = [...items];
+  //       // join items
+  //       this.items = [...items];
 
-        // set first item reference
-        // (this.first = this.items[0], this.firstEver = this.items[0]);
-        this.first = this.items[0];
+  //       // set first item reference
+  //       // (this.first = this.items[0], this.firstEver = this.items[0]);
+  //       this.first = this.items[0];
 
-        // Process page
-        if(this.pagesProcessed.has(this.first.id)) return;
-        this.addPage(this.first.id); 
+  //       // Process page
+  //       if(this.pagesProcessed.has(this.first.id)) return;
+  //       this.addPage(this.first.id); 
 
-        // set last reference
-        this.last = this.items[this.items.length - 1];
+  //       // set last reference
+  //       this.last = this.items[this.items.length - 1];
         
-      }),
-      finalize(() => (this.initPageLoaded = true, this.loadingSvc.active$.next(false)))
-    ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
+  //     }),
+  //     finalize(() => (this.initPageLoaded = true, this.loadingSvc.active$.next(false)))
+  //   ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
     
-  }
+  // }
 
-  /** Loads more data when page hits bottom */
-  onLoadMore(event: IPageInfo) {
+  // /** Loads more data when page hits bottom */
+  // onLoadMore(event: IPageInfo) {
     
-    // only if initial page loaded 
-    if(!this.initPageLoaded) {
-      return;
-    }
+  //   // only if initial page loaded 
+  //   if(!this.initPageLoaded) {
+  //     return;
+  //   }
 
-    if(this.fetchInProgress) {
-      return;
-    }
+  //   if(this.fetchInProgress) {
+  //     return;
+  //   }
 
-    // only if you scrolled to bottom
-    if (event.endIndex !== this.items.length - 1) {
-      return;
-    }
-    // only if you have clearence to go to next page
-    if(this.nextDisabled) {
-      return;
-    }
-    // no data already
-    if (!this.items || this.items.length == 0) {
-      return;
-    }
-    // no last item to paginate for next page
-    if (!this.last) {
-      return;
-    }
-    // only if this page wasn't processed already
-    if(this.pagesProcessed.has(this.last.id)) {
-      return;
-    }
+  //   // only if you scrolled to bottom
+  //   if (event.endIndex !== this.items.length - 1) {
+  //     return;
+  //   }
+  //   // only if you have clearence to go to next page
+  //   if(this.nextDisabled) {
+  //     return;
+  //   }
+  //   // no data already
+  //   if (!this.items || this.items.length == 0) {
+  //     return;
+  //   }
+  //   // no last item to paginate for next page
+  //   if (!this.last) {
+  //     return;
+  //   }
+  //   // only if this page wasn't processed already
+  //   if(this.pagesProcessed.has(this.last.id)) {
+  //     return;
+  //   }
 
-    this.fetchInProgress = true;
+  //   this.fetchInProgress = true;
 
-    this.loadingSvc.active$.next(true);
-    this.itemsRepo.getNextPage(this.last)
-    .pipe(
-      take(1),
-      // tap(console.log),
-      tap(items => {
+  //   this.loadingSvc.active$.next(true);
+  //   this.itemsRepo.getNextPage(this.last)
+  //   .pipe(
+  //     take(1),
+  //     // tap(console.log),
+  //     tap(items => {
 
-        // disable next if no more items
-        if(items.length < this.itemsRepo.pageSize) {
-          this.nextDisabled = true;
-        }
+  //       // disable next if no more items
+  //       if(items.length < this.itemsRepo.pageSize) {
+  //         this.nextDisabled = true;
+  //       }
 
-        // process page
-        if(this.pagesProcessed.has(this.last.id)) return;
-        this.addPage(this.last.id); 
+  //       // process page
+  //       if(this.pagesProcessed.has(this.last.id)) return;
+  //       this.addPage(this.last.id); 
 
-        // join items
-        this.items = [...this.items, ...items];
+  //       // join items
+  //       this.items = [...this.items, ...items];
 
-        // set last item
-        this.last = items[items.length - 1];
+  //       // set last item
+  //       this.last = items[items.length - 1];
 
-      }),
-      finalize(() => ( this.fetchInProgress = false, this.loadingSvc.active$.next(false) ))
-    ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
-  }
+  //     }),
+  //     finalize(() => ( this.fetchInProgress = false, this.loadingSvc.active$.next(false) ))
+  //   ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
+  // }
   
-  /** Subscribe to all new items for their changes */
-  subscribeToItemChanges(items: AuctionItem[]) {
-    for(const item of items) {
+  // /** Subscribe to all new items for their changes */
+  // subscribeToItemChanges(items: AuctionItem[]) {
+  //   for(const item of items) {
 
-      /** Subscribes to single item for changes and handle */
-      this._subsink.add(
+  //     /** Subscribes to single item for changes and handle */
+  //     this._subsink.add(
 
-        this.itemsRepo.getOne(this._auctionId, item.id)
-        .pipe(
-          // tap(console.log),
-          skip(1),
-          tap(item => this.handleItemUpdate(item))
-        ).subscribe(noop, err => console.log(err))
+  //       this.itemsRepo.getOne(this._auctionId, item.id)
+  //       .pipe(
+  //         // tap(console.log),
+  //         skip(1),
+  //         tap(item => this.handleItemUpdate(item))
+  //       ).subscribe(noop, err => console.log(err))
 
-      )
+  //     )
 
-    }
-  }
+  //   }
+  // }
 
-  /** Updates item in array */
-  handleItemUpdate(item: AuctionItem) {
-    let itemIdx = this.items.findIndex(i => i.id == item.id);
-    this.items[itemIdx] = item;
-  }
+  // /** Updates item in array */
+  // handleItemUpdate(item: AuctionItem) {
+  //   let itemIdx = this.items.findIndex(i => i.id == item.id);
+  //   this.items[itemIdx] = item;
+  // }
 
-  pagesProcessed = new Set<string>();
-  addPage(id: string) {
-    if(!id || this.pagesProcessed.has(id)) return;
+  // pagesProcessed = new Set<string>();
+  // addPage(id: string) {
+  //   if(!id || this.pagesProcessed.has(id)) return;
 
-    this.pagesProcessed.add(id);
-  }
+  //   this.pagesProcessed.add(id);
+  // }
 
-  trackByFn(_, item) {
-    return item.id;
-  }
+  // trackByFn(_, item) {
+  //   return item.id;
+  // }
 
   getBids(itemId: string) {
     this.activeItemId = itemId;
@@ -213,17 +213,14 @@ export class AdminPageComponent implements OnInit {
   }
 
   /**Sets up countdown component to coundown to the end date time*/
-  setupCountdown() {
-    this._subsink.add(this.auction$.subscribe(auction => {
-      
-      const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
-      const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss"); 
-      const dateDiff = auctionEnd.diff(today);
-      const duration = moment.duration(dateDiff);
-      const leftTime = duration.asSeconds();
+  setupCountdown(auction: Auction) {
+    const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
+    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss"); 
+    const dateDiff = auctionEnd.diff(today);
+    const duration = moment.duration(dateDiff);
+    const leftTime = duration.asSeconds();
 
-      this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
-    }, err => console.log(err)));
+    this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
   }
 
   closeAuction(auctionId) {

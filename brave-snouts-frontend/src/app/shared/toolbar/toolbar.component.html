@@ -16,11 +16,14 @@
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
 
+
         <div #logo 
             class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" 
             (click)="onLogoClick()" 
             [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
-        ></div>
+        >
+            <mat-progress-spinner *ngIf="(active$ | async)"  class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
+        </div>
         
         <div class="logo-animated" [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="!clickFlag"></div>
         <!-- <div class="logo-animated" ></div> -->
@@ -49,4 +52,5 @@
     </div>
 
 </mat-toolbar>
-<mat-progress-bar style="position: absolute" *ngIf="(active$ | async)" mode="indeterminate"></mat-progress-bar>
+
+<!-- <mat-progress-bar style="position: absolute" *ngIf="(active$ | async)" mode="indeterminate"></mat-progress-bar> -->

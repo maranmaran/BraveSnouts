@@ -40,4 +40,22 @@
         }
     }
 
+    .spinner {
+        position: relative;
+        top: -8px;
+        left: -8px;
+        z-index: 100000;
+
+        width: 106px;
+        height: 106px;
+
+        svg {
+            width: 106px !important;
+            height: 106px !important;
+
+            circle {
+                stroke-width: 5px !important;
+            }
+        }
+    }
 }

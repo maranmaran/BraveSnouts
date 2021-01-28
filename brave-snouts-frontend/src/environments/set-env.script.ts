@@ -46,6 +46,7 @@ const defaultTargetPath = './src/environments/environment.ts'
 // firebase environment data
 const apiKey = process.env.FIREBASE_API_KEY;
 const authDomain = process.env.FIREBASE_AUTH_DOMAIN;
+const databaseURL = process.env.FIREBASE_DATABASE_URL;
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
@@ -56,6 +57,8 @@ if(!apiKey)
   throw new Error(`apiKey missing`);
 if(!authDomain)
   throw new Error(`authDomain missing`);
+// if(!databaseURL)
+//   throw new Error(`databaseURL missing`);
 if(!projectId)
   throw new Error(`projectId missing`);
 if(!storageBucket)
@@ -76,6 +79,7 @@ const buildEnvironmentFileContent = `
     firebaseConfig: {
       apiKey: "${apiKey}",
       authDomain: "${authDomain}",
+      databaseURL: "${databaseURL}",
       projectId: "${projectId}",
       storageBucket: "${storageBucket}",
       messagingSenderId: "${messagingSenderId}",

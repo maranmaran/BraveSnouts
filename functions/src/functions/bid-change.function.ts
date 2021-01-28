@@ -16,13 +16,11 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
       functions.logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
     }
     
-    // check if starting price and no bids
-    if(!after.user) {
+    if(!after.user || !before.user) {
       functions.logger.info(`User id is not present. Before:${before.user} After:${after.user}`);
       return null;
     }
 
-    // check if new bidder
     if (after.user === before.user) {
       functions.logger.warn(`Same bidder`);
       return null;

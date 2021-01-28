@@ -15,13 +15,10 @@ export class AuctionItemRepository {
     }
 
     getCollection(auctionId: string, queryFn?: QueryFn<DocumentData>) {
-        
         if(!queryFn)
-            queryFn = ref => ref.orderBy("name", 'asc');
+            queryFn = ref => ref.orderBy("name", 'asc').orderBy("id", "asc");
 
-        return this.firestore
-            .doc(`auctions/${auctionId}`)
-            .collection<AuctionItem>('items', queryFn);
+        return this.firestore.collection<AuctionItem>(`auctions/${auctionId}/items`, queryFn);
     }
 
     getDocument(auctionId: string, id: string) {
@@ -37,35 +34,17 @@ export class AuctionItemRepository {
         return this.getDocument(auctionId, id).valueChanges({ idField: 'id' })
     }
 
-    getInitialPage(auctionId) {
-        let query = ref => ref
-                              .orderBy('name', 'asc')
-                              .orderBy('id', 'asc')
-                              .limit(this.pageSize);
+    getScrollPage(auctionId: string, last: AuctionItem) {
 
-        return this.getCollection(auctionId, query).valueChanges({ idField: 'id' })
+        const query = ref => {
+            ref = ref.orderBy('id', 'asc');
+            if(last) ref = ref.startAfter(last.id);
+            return ref.limit(this.pageSize);
+        }
+
+        return this.getCollection(auctionId, query).snapshotChanges();
     }
-
-    getNextPage(last: AuctionItem) {
-        let query = ref => ref
-                              .orderBy('name', 'asc')
-                              .orderBy('id', 'asc')
-                              .startAfter(last.name, last.id)
-                              .limit(this.pageSize);
-
-        return this.getCollection(last.auctionId, query).valueChanges({ idField: 'id' })
-    }
-
-    getPreviousPage(first: AuctionItem) {
-        let query = ref => ref
-                              .orderBy('name', 'asc')
-                              .orderBy('id', 'asc')
-                              .endBefore(first.name, first.id)
-                              .limitToLast(this.pageSize);
-
-        return this.getCollection(first.auctionId, query).valueChanges({ idField: 'id' })
-    }
-
+    
     create(auctionId: string, data: AuctionItem) {
         return this.getCollection(auctionId).add(Object.assign({}, data));
     }
@@ -99,20 +78,5 @@ export class AuctionItemRepository {
         return this.getDocument(auctionId, id).delete();
     }
 
-    /** Adds item on which user bid on to the database */
-    addItemToUser(item: AuctionItem, userId: string) {
-        return this.firestore.collection(`users/${userId}/tracked-items`)
-        .doc(item.id).set({
-            auctionId: item.auctionId,
-            itemId: item.id,
-            userId: userId,
-        });
-    }
-    
-    /** Retrieves only items on which user bid on */
-    getUserItems(userId: string) {
-        return this.firestore.collection(`users/${userId}/tracked-items`)
-        .valueChanges({ idField: 'id' })
-    }
 
 }

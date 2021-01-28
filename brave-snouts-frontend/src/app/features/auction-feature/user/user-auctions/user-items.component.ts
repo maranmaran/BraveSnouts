@@ -35,7 +35,7 @@ export class UserItemsComponent implements OnInit {
     return this.authSvc.userId$
     .pipe(
       take(1),
-      concatMap(id => this.itemsRepo.getUserItems(id).pipe(take(1))),
+      concatMap(id => this.authSvc.getUserItems(id).pipe(take(1))),
       mergeMap(items => [...items]),
       mergeMap((item: any) => this.itemsRepo.getOne(item.auctionId, item.id).pipe(take(1))),
       toArray(),

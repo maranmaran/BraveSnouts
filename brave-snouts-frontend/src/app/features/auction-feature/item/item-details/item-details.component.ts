@@ -4,6 +4,7 @@ import { DocumentData, QueryFn } from '@angular/fire/firestore';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { create } from 'domain';
 import { from, noop, Observable, of } from 'rxjs';
 import { concatMap, filter, skip, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -18,6 +19,7 @@ import { BidsRepository } from './../../../../../business/services/bids.reposito
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
+  providers: [AuctionItemRepository],
   animations: [
     trigger('skipInitAnimation', [
       transition(':enter', [])
@@ -83,7 +85,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   bidStepSize = environment.itemCardConfig.bidStepSize;
 
   ngOnInit(): void {
-    
+
     this.setupControls(this.item);
 
     this._subsink.add(
@@ -104,7 +106,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     // console.log(currentItem)
     // console.log("\n\n")
 
-    if(JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
+    if (JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
       return;
     }
 
@@ -112,7 +114,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     const bidChanged = currentItem?.bid != previousItem?.bid;
     const userChanged = currentItem?.user != previousItem?.user;
 
-    if(notNewRender && (bidChanged || userChanged)) {
+    if (notNewRender && (bidChanged || userChanged)) {
       this.onItemChange();
     }
   }
@@ -140,7 +142,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.disableBidding(750);
     this.topBidChange(750);
   }
- 
+
   /* Sets up slider and custom bid control */
   setupControls(item: AuctionItem) {
     this.currentBidControl = this.getBidControl(item.bid);
@@ -165,7 +167,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
    * Places a bid on item
    * @param item item that the user is bidding on
    */
-  onBid(item: AuctionItem) {
+  async onBid(item: AuctionItem) {
 
     item = Object.assign({}, item);
 
@@ -173,54 +175,49 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       return;
 
     // guard with login
-    from(this.authSvc.login())
+
+    const userDataPromise = from(this.authSvc.login())
       .pipe(
         take(1),
         concatMap(_ => this.authSvc.user$.pipe(take(1))),
         filter(user => !!user),
-      )
-      .subscribe(user => {
+      ).toPromise();
 
-        // check if someone placed bid in the middle of bidding of this user
-        // item.user -> item the current user is bidding on and it's highest user
-        // this.item.user -> realtime highest bidder on the item
-        if (item.user != this.item.user) {
-          // if someone placed the bid.. cancel this bid request
-          console.warn('Somebody placed bid while you were in process of placing the bid');
-          return null;
-        }
+    const user = await userDataPromise;
+    if (!user) {
+      return;
+    }
 
-        // construct bid
-        let bid = new Bid({
-          itemId: item.id,
-          userId: user.uid,
-          userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email},
-          date: this.bidsRepo.timestamp,
-          bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
-        });
+    // check if someone placed bid in the middle of bidding of this user
+    // item.user -> item the current user is bidding on and it's highest user
+    // this.item.user -> realtime highest bidder on the item
+    if (item.user != this.item.user) {
+      // if someone placed the bid.. cancel this bid request
+      console.warn('Somebody placed bid while you were in process of placing the bid');
+      return null;
+    }
 
-        // update bids array for historic data
-        // create bid and update item
-        from(this.bidsRepo.create(bid))
-        .pipe(
-          take(1),
-          concatMap(createdBid => {
-            let bidData = { bidId: createdBid.id, bid: bid.bid, user: bid.userId, }; 
-            let action = this.itemsRepo.update(item.auctionId, item.id, bidData);
-            return from(action).pipe(take(1))
-          }),
-          concatMap(async () => {
+    // construct bid
+    let bid = new Bid({
+      // itemId: item.id,
+      userId: user.uid,
+      userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email },
+      date: this.bidsRepo.timestamp,
+      bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
+    });
 
-            if(this.userTrackedItems && this.userTrackedItems.has(item.id)) {
-              return of(null);
-            }
+    // add bid to historic collection
+    const createdBid = await this.bidsRepo.create(bid);
 
-            return from(this.itemsRepo.addItemToUser(item, this.userId)).pipe(take(1));
-          }),
-          take(1),
-        ).subscribe(noop, err => console.log(err));
+    // update item bid data
+    const bidData = { bidId: createdBid.id, bid: bid.bid, user: bid.userId, };
+    await this.itemsRepo.update(item.auctionId, item.id, bidData);
 
-      });
+    // add item to tracked collection
+    if (!this.userTrackedItems?.has(item.id)) {
+      await this.authSvc.addItemToUser(item, this.userId);
+    }
+
   }
 
   /* Validates current bid price */
