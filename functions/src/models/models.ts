@@ -87,3 +87,9 @@ export interface UserInfo {
     name: string;
     email: string;
 }
+
+export interface TrackedItem {
+    auctionId: string,
+    itemId: string,
+    userId: string,
+}

@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
-import { Auction, AuctionItem, Bid, UserInfo, Winner } from "../models/models";
+import { Auction, AuctionItem, Bid, TrackedItem, UserInfo, Winner } from "../models/models";
 import { sendEndAuctionMail } from "../services/mail.service";
 
 /** Processes auctions end
@@ -50,6 +50,9 @@ const auctionEnd = async (auctionId: string) => {
 
     // Save all winning users
     await saveWinners(auctionId, bids, userInfo);
+
+    // clear tracked items
+    await clearTrackedItems(auctionId);
 
     // Inform users
     await sendMails(auctionId, userBids);
@@ -132,6 +135,15 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
     let winnerObj = Object.assign({}, winnerInstance);
 
     await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update({winner: winnerObj});
+  }
+}
+
+/** Clears all user tracked items for processed auction */
+const clearTrackedItems = async (auctionId: string) => {
+  const trackedItems = await store.collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
+  for(const item of trackedItems.docs) {
+    let trackedItem = item.data() as TrackedItem;
+    await store.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
   }
 }
 

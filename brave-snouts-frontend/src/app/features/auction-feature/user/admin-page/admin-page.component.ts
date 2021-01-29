@@ -20,6 +20,7 @@ import { SubSink } from 'subsink';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-admin-page',
@@ -173,4 +174,12 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   }
 
+  async markPaymentStatus(change: MatButtonToggleChange, winner: Winner) {
+    const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
+    
+    const winnerUpdate = Object.assign({}, winner, { paymentStatus });
+    const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate } ;
+
+    await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
+  }
 }
