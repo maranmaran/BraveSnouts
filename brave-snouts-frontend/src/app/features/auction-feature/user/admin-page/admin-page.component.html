@@ -78,7 +78,7 @@
                             <div id="payment" class="mat-small pb-0" fxLayout="row" fxLayoutGap="0.5rem">
         
                                 <label class="pb-0 bold center">Status plaćanja:</label>
-                                <mat-button-toggle-group [value]="winner.paymentStatus">
+                                <mat-button-toggle-group [value]="winner.paymentStatus" (change)="markPaymentStatus($event, winner)">
                                     <mat-button-toggle value="paid" class="foreground primary lighter">Plaćeno</mat-button-toggle>
                                     <mat-button-toggle value="pending">U toku</mat-button-toggle>
                                     <mat-button-toggle value="notpaid" class="foreground warn default">Nije plaćeno</mat-button-toggle>
