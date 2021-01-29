@@ -3,13 +3,14 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, mergeMap, map } from 'rxjs/operators';
 import { Winner } from 'src/business/models/winner.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
-import { WinnersRepository } from 'src/business/services/winners.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 
 @Component({
   selector: 'app-handover-confirm',
   templateUrl: './handover-confirm.component.html',
-  styleUrls: ['./handover-confirm.component.scss']
+  styleUrls: ['./handover-confirm.component.scss'],
+  providers: [AuctionItemRepository]
 })
 export class HandoverConfirmComponent implements OnInit {
 

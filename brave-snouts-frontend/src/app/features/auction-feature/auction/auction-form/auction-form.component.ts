@@ -9,8 +9,8 @@ import { BehaviorSubject, from, noop } from 'rxjs';
 import { concatMap, finalize, map, mergeMap, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
-import { AuctionRepository } from 'src/business/services/auction.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { SubSink } from 'subsink';
 import { StorageService } from './../../../../../business/services/storage.service';
@@ -25,7 +25,8 @@ export interface FirebaseFile {
 @Component({
   selector: 'app-auction-form',
   templateUrl: './auction-form.component.html',
-  styleUrls: ['./auction-form.component.scss']
+  styleUrls: ['./auction-form.component.scss'],
+  providers: [AuctionRepository, AuctionItemRepository, StorageService, AuthService]
 })
 export class AuctionFormComponent implements OnInit, OnDestroy {
 
@@ -47,13 +48,13 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   private _subsink = new SubSink();
 
   constructor(
-    public readonly mediaObserver: MediaObserver,
-    private readonly formBuilder: FormBuilder,
     private readonly auctionRepo: AuctionRepository,
     private readonly auctionItemRepo: AuctionItemRepository,
     private readonly storage: StorageService,
-    private readonly router: Router,
     private readonly authSvc: AuthService,
+    public readonly mediaObserver: MediaObserver,
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -235,7 +236,6 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   /**Submit form and create auction */
   onSubmit() {
 
-    console.log("submitting");
 
     if (!this.isValid)
       return;

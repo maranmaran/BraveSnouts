@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { of } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class StorageService {
     
     constructor(private storage: AngularFireStorage) { }

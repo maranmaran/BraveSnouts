@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
-import { map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { RepositoryBase } from 'src/business/services/repositories/base.repository';
 import { environment } from 'src/environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AuctionItemRepository {
 
     public readonly pageSize = environment.pageSizes?.itemsList ?? 8;
@@ -15,8 +16,9 @@ export class AuctionItemRepository {
     }
 
     getCollection(auctionId: string, queryFn?: QueryFn<DocumentData>) {
-        if(!queryFn)
+        if(!queryFn) {
             queryFn = ref => ref.orderBy("name", 'asc').orderBy("id", "asc");
+        }
 
         return this.firestore.collection<AuctionItem>(`auctions/${auctionId}/items`, queryFn);
     }
@@ -27,6 +29,8 @@ export class AuctionItemRepository {
     }
 
     getAll(auctionId: string, queryFn?: QueryFn<DocumentData>) {
+        console.error("Getting all prohibited");
+        return of([]);
         return this.getCollection(auctionId, queryFn).valueChanges({ idField: 'id' })
     }
 
@@ -44,7 +48,7 @@ export class AuctionItemRepository {
 
         return this.getCollection(auctionId, query).snapshotChanges();
     }
-    
+
     create(auctionId: string, data: AuctionItem) {
         return this.getCollection(auctionId).add(Object.assign({}, data));
     }

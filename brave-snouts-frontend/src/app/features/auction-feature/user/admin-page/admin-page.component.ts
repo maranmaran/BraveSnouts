@@ -1,39 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
-import { IPageInfo } from 'ngx-virtual-scroller';
 import { noop, Observable } from 'rxjs';
-import { finalize, map, skip, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
 import { Winner } from 'src/business/models/winner.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
-import { AuctionRepository } from 'src/business/services/auction.repository';
-import { BidsRepository } from 'src/business/services/bids.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
+import { BidsRepository } from 'src/business/services/repositories/bids.repository';
 import { FunctionsService } from 'src/business/services/functions.service';
-import { ProgressBarService } from 'src/business/services/progress-bar.service';
-import { WinnersRepository } from 'src/business/services/winners.repository';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
+import { IPageInfo } from 'ngx-virtual-scroller';
+import { mergeArrays } from 'src/business/services/items.service';
+import { ProgressBarService } from 'src/business/services/progress-bar.service';
 
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
-  styleUrls: ['./admin-page.component.scss']
+  styleUrls: ['./admin-page.component.scss'],
+  providers: [AuctionRepository, BidsRepository, AuctionItemRepository, FunctionsService]
 })
-export class AdminPageComponent implements OnInit {
+export class AdminPageComponent implements OnInit, OnDestroy {
 
-  
+
   constructor(
     private readonly auctionRepo: AuctionRepository,
-    private readonly itemsRepo: AuctionItemRepository,
     private readonly bidRepo: BidsRepository,
-    private readonly winnersRepo: WinnersRepository,
+    private readonly itemsRepo: AuctionItemRepository,
     private readonly route: ActivatedRoute,
     public readonly mediaObs: MediaObserver,
     private readonly functionsSvc: FunctionsService,
@@ -56,158 +56,87 @@ export class AdminPageComponent implements OnInit {
   config: CountdownConfig
 
   private _subsink = new SubSink();
-  
+
   ngOnInit(): void {
     this._auctionId = this.route.snapshot.paramMap.get('id');
     this.state = this.route.snapshot.paramMap.get('state') as 'future' | 'active' | 'expired';
 
     this.auction$ = this.auctionRepo.getOne(this._auctionId)
-    .pipe(
-      tap(auction => this.setupCountdown(auction))
-    );
-    
-    // this.initialPage();
+      .pipe(
+        tap(auction => this.setupCountdown(auction))
+      );
+
+    this.onLoadMore({ endIndex: -1 } as IPageInfo);
   }
 
-  // items: AuctionItem[];
-  // first: AuctionItem;
-  // last: AuctionItem;
+  ngOnDestroy() {
+    this._subsink.unsubscribe();
+  }
 
-  // initPageLoaded = false;
-  // fetchInProgress = false;
-  // nextDisabled = false;
 
-  // /** Gets initial page */
-  // initialPage() {
-    
-  //   this.loadingSvc.active$.next(true);
-  //   this.itemsRepo.getInitialPage(this._auctionId)
-  //   .pipe(
-  //     take(1),
-  //     // tap(console.log),
-  //     tap(items => {
+  //#region  Pagination 
 
-  //       // join items
-  //       this.items = [...items];
+  items: AuctionItem[] = [];
+  last: AuctionItem;
 
-  //       // set first item reference
-  //       // (this.first = this.items[0], this.firstEver = this.items[0]);
-  //       this.first = this.items[0];
+  fetchInProgress = false;
+  noMoreData = false;
 
-  //       // Process page
-  //       if(this.pagesProcessed.has(this.first.id)) return;
-  //       this.addPage(this.first.id); 
+  /** Loads more data when page hits bottom */
+  onLoadMore(event: IPageInfo) {
 
-  //       // set last reference
-  //       this.last = this.items[this.items.length - 1];
-        
-  //     }),
-  //     finalize(() => (this.initPageLoaded = true, this.loadingSvc.active$.next(false)))
-  //   ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
-    
-  // }
+    // only if no other fetch is in progress
+    if (this.fetchInProgress) {
+      return;
+    }
 
-  // /** Loads more data when page hits bottom */
-  // onLoadMore(event: IPageInfo) {
-    
-  //   // only if initial page loaded 
-  //   if(!this.initPageLoaded) {
-  //     return;
-  //   }
+    // only if you have clearence to go to next page
+    if (this.noMoreData) {
+      return;
+    }
 
-  //   if(this.fetchInProgress) {
-  //     return;
-  //   }
+    // only if you scrolled to bottom
+    if (event.endIndex !== this.items.length - 1) {
+      return;
+    }
 
-  //   // only if you scrolled to bottom
-  //   if (event.endIndex !== this.items.length - 1) {
-  //     return;
-  //   }
-  //   // only if you have clearence to go to next page
-  //   if(this.nextDisabled) {
-  //     return;
-  //   }
-  //   // no data already
-  //   if (!this.items || this.items.length == 0) {
-  //     return;
-  //   }
-  //   // no last item to paginate for next page
-  //   if (!this.last) {
-  //     return;
-  //   }
-  //   // only if this page wasn't processed already
-  //   if(this.pagesProcessed.has(this.last.id)) {
-  //     return;
-  //   }
+    this.fetchInProgress = true;
+    this.loadingSvc.active$.next(true);
 
-  //   this.fetchInProgress = true;
+    const subscription = this.itemsRepo.getScrollPage(this._auctionId, this.last)
+      .pipe(
 
-  //   this.loadingSvc.active$.next(true);
-  //   this.itemsRepo.getNextPage(this.last)
-  //   .pipe(
-  //     take(1),
-  //     // tap(console.log),
-  //     tap(items => {
+      ).subscribe(items => {
 
-  //       // disable next if no more items
-  //       if(items.length < this.itemsRepo.pageSize) {
-  //         this.nextDisabled = true;
-  //       }
+        // disable next if no more items
+        if (items.length < this.itemsRepo.pageSize) {
+          this.noMoreData = true;
+        }
 
-  //       // process page
-  //       if(this.pagesProcessed.has(this.last.id)) return;
-  //       this.addPage(this.last.id); 
+        // join items
+        this.items = mergeArrays(this.items, items);
+        // console.log(`Currently having ${this.items.length} items.`, this.items)
+        // console.log("Types are", items.map(item => item.type))
+        // console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
+        // console.log("\n")
 
-  //       // join items
-  //       this.items = [...this.items, ...items];
+        // set last item
+        this.last = this.items[this.items.length - 1];
 
-  //       // set last item
-  //       this.last = items[items.length - 1];
+        // update flags
+        this.fetchInProgress = false;
+        this.loadingSvc.active$.next(false);
 
-  //     }),
-  //     finalize(() => ( this.fetchInProgress = false, this.loadingSvc.active$.next(false) ))
-  //   ).subscribe(items => this.subscribeToItemChanges(items), err => console.log(err));
-  // }
-  
-  // /** Subscribe to all new items for their changes */
-  // subscribeToItemChanges(items: AuctionItem[]) {
-  //   for(const item of items) {
+      }, err => console.log(err));
 
-  //     /** Subscribes to single item for changes and handle */
-  //     this._subsink.add(
+    this._subsink.add(subscription);
+  }
 
-  //       this.itemsRepo.getOne(this._auctionId, item.id)
-  //       .pipe(
-  //         // tap(console.log),
-  //         skip(1),
-  //         tap(item => this.handleItemUpdate(item))
-  //       ).subscribe(noop, err => console.log(err))
-
-  //     )
-
-  //   }
-  // }
-
-  // /** Updates item in array */
-  // handleItemUpdate(item: AuctionItem) {
-  //   let itemIdx = this.items.findIndex(i => i.id == item.id);
-  //   this.items[itemIdx] = item;
-  // }
-
-  // pagesProcessed = new Set<string>();
-  // addPage(id: string) {
-  //   if(!id || this.pagesProcessed.has(id)) return;
-
-  //   this.pagesProcessed.add(id);
-  // }
-
-  // trackByFn(_, item) {
-  //   return item.id;
-  // }
+  //#endregion
 
   getBids(itemId: string) {
     this.activeItemId = itemId;
-    
+
     const query = ref => ref.where('itemId', '==', itemId).orderBy("date", "desc").limit(5);
     this.bids$ = this.bidRepo.getAll(query);
   }
@@ -215,7 +144,7 @@ export class AdminPageComponent implements OnInit {
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown(auction: Auction) {
     const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
-    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss"); 
+    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss");
     const dateDiff = auctionEnd.diff(today);
     const duration = moment.duration(dateDiff);
     const leftTime = duration.asSeconds();
@@ -225,12 +154,12 @@ export class AdminPageComponent implements OnInit {
 
   closeAuction(auctionId) {
     this.functionsSvc.endAuction(auctionId)
-    // TODO
-    .subscribe(res => console.log(res), err => console.log(err));
+      // TODO
+      .subscribe(res => console.log(res), err => console.log(err));
   }
 
   openPostalInformation(data) {
-    
+
     const dialogRef = this.dialog.open(PostDetailsComponent, {
       height: 'auto',
       width: 'auto',

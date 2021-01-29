@@ -1,3 +1,32 @@
-.container {
-    height: calc(100% - 56px - 3rem - 1rem + 10px) !important;
+.container-grid {
+    display: grid;
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr);
+    gap: 1rem;
+    
+    .auctions-grid {
+        margin-top: 3rem;
+        padding: 1rem;
+
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0px, 1fr));
+        gap: 1rem;
+    }
+    
+    @media(max-width: 600px) {
+        .auctions-grid {
+            padding: 0;
+            grid-template-columns: minmax(0px, 1fr);
+            gap: 2rem;
+        }
+    }
+}
+
+@media(max-width: 600px) {
+    .container-grid {
+        display: flex;
+        flex-direction: column;
+        #ads {
+            margin-top: 2rem;
+        }
+    }
 }

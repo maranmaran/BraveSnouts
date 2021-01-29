@@ -25,3 +25,4 @@ function isFutureAuction(auction: Auction) {
 function isExpiredAuction(auction: Auction) {
     return (moment(auction.endDate.toDate()).isBefore(new Date()) || auction.processed) && !isFutureAuction(auction);
 }
+

@@ -10,8 +10,8 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { staggerFadeIn } from 'src/business/animations/stagger-fade-in.animation';
 import { Auction } from 'src/business/models/auction.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
-import { AuctionRepository } from 'src/business/services/auction.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { getAuctionState } from 'src/business/services/auction.service';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
@@ -20,17 +20,18 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
   selector: 'app-auction-list',
   templateUrl: './auction-list.component.html',
   styleUrls: ['./auction-list.component.scss'],
-  animations: [ staggerFadeIn, fadeIn ]
+  animations: [ fadeIn ],
+  providers: [AuctionItemRepository, AuctionRepository, AuthService]
 })
 export class AuctionListComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly auctionRepo: AuctionRepository,
+    protected readonly authSvc: AuthService,
+    private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
     private readonly loadingSvc: ProgressBarService,
     protected readonly mediaObs: MediaObserver,
-    protected readonly authSvc: AuthService,
-    private readonly itemRepo: AuctionItemRepository,
     private readonly dialog: MatDialog,
   ) { }
 
@@ -39,7 +40,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   userTracksItems$: Observable<boolean>;
 
   adminSub: Subscription;
-  bootstrapDonateComponent = false;
+  auctionsBootstrapped = false;
 
   ngOnInit(): void {
     this.admin$ = this.authSvc.isAdmin$;
@@ -84,7 +85,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.loadingSvc.active$.next(true);
     this.auctions$ = auctions$.pipe(
       tap(() => this.loadingSvc.active$.next(false)),
-      tap(() => this.bootstrapDonateComponent = true),
+      tap(() => this.auctionsBootstrapped = true),
     );
   }
 
@@ -157,7 +158,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       endDate: auctionObj.endDate.toDate()
     }
 
-    this.itemRepo.getAll(auctionObj.id).pipe(take(1))
+    this.itemsRepo.getAll(auctionObj.id).pipe(take(1))
       .subscribe(items => this.router.navigate(
         ['edit-auction'],
         { state: { auction, items, action: 'edit' } }
@@ -186,10 +187,10 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
         // delete items subcollection
         // finally delete auction
-        this.itemRepo.getAll(auctionObj.id)
+        this.itemsRepo.getAll(auctionObj.id)
           .pipe(
             take(1),
-            map(items => items.map(item => this.itemRepo.delete(auctionObj.id, item.id))),
+            map(items => items.map(item => this.itemsRepo.delete(auctionObj.id, item.id))),
             concatMap(deletePromises => Promise.all(deletePromises)),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
           ).subscribe(noop, err => console.log(err))

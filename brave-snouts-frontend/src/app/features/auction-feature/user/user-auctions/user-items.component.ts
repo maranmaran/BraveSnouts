@@ -4,14 +4,15 @@ import { MediaObserver } from '@angular/flex-layout';
 import { noop, Observable } from 'rxjs';
 import { concatMap, finalize, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 
 @Component({
   selector: 'app-user-items',
   templateUrl: './user-items.component.html',
-  styleUrls: ['./user-items.component.scss']
+  styleUrls: ['./user-items.component.scss'],
+  providers: [AuctionItemRepository, AuthService]
 })
 export class UserItemsComponent implements OnInit {
 

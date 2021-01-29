@@ -3,10 +3,7 @@ import * as admin from 'firebase-admin';
 import { Auction, AuctionItem } from './models';
 import moment from 'moment';
 
-// Read
-// https://cloud.google.com/docs/authentication/getting-started#windows
-// https://firebase.google.com/docs/admin/setup
-// And setup .env file
+
 var firebaseConfig = {
   credential: admin.credential.applicationDefault(),
   apiKey: process.env.FIREBASE_API_KEY,
@@ -56,7 +53,7 @@ const store = admin.firestore();
         media: [
           {
             name: `Media ${i}`,
-            path: `https://picsum.photos/200`,
+            path: `auction-items/5f74c211-e1d4-6727-baef-0fa21331aabe.jpg`,
             type: 'image'
           }
         ],

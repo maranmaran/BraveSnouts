@@ -48,7 +48,7 @@ import { AdminPageComponent } from './features/auction-feature/user/admin-page/a
 
     // Core stuff
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule,
+    AngularFirestoreModule.enablePersistence(),
     AngularFireStorageModule,
     AngularFireFunctionsModule,
 

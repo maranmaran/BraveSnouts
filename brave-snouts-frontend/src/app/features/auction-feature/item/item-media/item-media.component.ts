@@ -9,7 +9,8 @@ import { StorageService } from 'src/business/services/storage.service';
 @Component({
   selector: 'app-item-media',
   templateUrl: './item-media.component.html',
-  styleUrls: ['./item-media.component.scss']
+  styleUrls: ['./item-media.component.scss'],
+  providers: [StorageService]
 })
 export class ItemMediaComponent implements OnInit {
 

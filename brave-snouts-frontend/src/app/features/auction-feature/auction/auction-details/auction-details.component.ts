@@ -6,14 +6,15 @@ import { CountdownConfig } from 'ngx-countdown';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
-import { AuctionRepository } from 'src/business/services/auction.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-auction-details',
   templateUrl: './auction-details.component.html',
-  styleUrls: ['./auction-details.component.scss']
+  styleUrls: ['./auction-details.component.scss'],
+  providers: [AuctionRepository]
 })
 export class AuctionDetailsComponent implements OnInit, OnDestroy {
 

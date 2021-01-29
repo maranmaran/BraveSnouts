@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/functions';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FunctionsService {
 
     constructor(private functions: AngularFireFunctions) { }

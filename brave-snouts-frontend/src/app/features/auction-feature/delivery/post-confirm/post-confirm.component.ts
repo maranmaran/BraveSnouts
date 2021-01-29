@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { noop } from 'rxjs';
-import { map, mergeMap, switchMap, take } from 'rxjs/operators';
-import { AuctionItem } from 'src/business/models/auction-item.model';
+import { map, mergeMap, take } from 'rxjs/operators';
 import { Winner } from 'src/business/models/winner.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
-import { WinnersRepository } from 'src/business/services/winners.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 
 @Component({
   selector: 'app-post-confirm',
   templateUrl: './post-confirm.component.html',
-  styleUrls: ['./post-confirm.component.scss']
+  styleUrls: ['./post-confirm.component.scss'],
+  providers: [AuctionItemRepository]
 })
 export class PostConfirmComponent implements OnInit {
 
@@ -23,7 +22,6 @@ export class PostConfirmComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
-    private readonly winnersRepo: WinnersRepository,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
   ) { }

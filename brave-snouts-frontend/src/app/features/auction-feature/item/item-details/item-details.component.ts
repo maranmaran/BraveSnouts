@@ -1,25 +1,23 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { DocumentData, QueryFn } from '@angular/fire/firestore';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
-import { create } from 'domain';
-import { from, noop, Observable, of } from 'rxjs';
-import { concatMap, filter, skip, take, tap } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { concatMap, filter, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
-import { BidsRepository } from './../../../../../business/services/bids.repository';
+import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
 
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
-  providers: [AuctionItemRepository],
+  providers: [AuctionItemRepository, AuthService, BidsRepository],
   animations: [
     trigger('skipInitAnimation', [
       transition(':enter', [])
@@ -51,7 +49,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
-    public readonly mediaObs: MediaObserver,
   ) { }
 
   // Data

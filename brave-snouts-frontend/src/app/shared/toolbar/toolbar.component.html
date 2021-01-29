@@ -22,7 +22,7 @@
             (click)="onLogoClick()" 
             [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
         >
-            <mat-progress-spinner *ngIf="(active$ | async)"  class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
+            <mat-progress-spinner  *ngIf="(active$ | async)" class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
         </div>
         
         <div class="logo-animated" [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="!clickFlag"></div>

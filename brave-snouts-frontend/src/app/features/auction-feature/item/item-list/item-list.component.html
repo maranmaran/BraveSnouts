@@ -3,14 +3,3 @@
         <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
     </div>
 </virtual-scroller>
-
-<ng-template #classicPagination>
-    <div class="ml-2 pl-2 pr-2 section w-min" fxLayout="row" fxLayoutGap="1rem">
-        <button [disabled]="previousDisabled" mat-stroked-button (click)="previousPage()">Previous</button>
-        <button [disabled]="nextDisabled" mat-stroked-button (click)="nextPage()">Next</button>
-    </div>
-
-    <div class="items-grid pt-2">
-        <app-item-details *ngFor="let item of items; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
-    </div>
-</ng-template>

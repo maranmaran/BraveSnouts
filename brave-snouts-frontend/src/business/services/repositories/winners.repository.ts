@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore, DocumentData, QueryFn } from "@angular/fire/firestore";
-import { Bid } from './../models/bid.model';
+import { Winner } from '../../models/winner.model';
 import { RepositoryBase } from "./base.repository";
 
-@Injectable({ providedIn: 'root' })
-export class BidsRepository extends RepositoryBase {
+@Injectable()
+export class WinnersRepository extends RepositoryBase {
 
   constructor(
     private readonly firestore: AngularFirestore
@@ -12,19 +12,19 @@ export class BidsRepository extends RepositoryBase {
     super();
   }
 
-  getCollection(queryFn?: QueryFn<DocumentData>) {
-    return this.firestore.collection<Bid>('bids', queryFn);
+  private getCollection(queryFn?: QueryFn<DocumentData>) {
+    return this.firestore.collection<Winner>('winners', queryFn);
   }
 
-  getDocument(id: string) {
-    return this.firestore.doc<Bid>(`bids/${id}`);
+  private  getDocument(id: string) {
+    return this.firestore.doc<Winner>(`winners/${id}`);
   }
 
   getAll(queryFn?: QueryFn<DocumentData>) {
     return this.getCollection(queryFn).valueChanges({ idField: 'id' });
   }
 
-  create(data: Bid) {
+  create(data: Winner) {
     return this.getCollection().add(Object.assign({}, data));
   }
 
