@@ -89,14 +89,3 @@ virtual-scroller {
   
 }
 
-@media (max-width: 700px) {
-  .items-gallery-grid {
-
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0px, 1fr));
-    gap: 0.5rem;
-  
-    padding: 0.25rem;
-    padding-top: 0.5rem;
-  }
-}

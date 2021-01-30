@@ -58,4 +58,22 @@
             }
         }
     }
+
+    .item-dialog {
+
+        mat-dialog-container {
+            margin: 0 !important;
+            padding: 0px !important;
+            border-radius: 30px !important;
+        }
+
+        .container {
+            margin: 0 !important;
+            padding: 0 !important;
+
+            mat-card {
+                box-shadow: none;
+            }
+        }
+    }
 }

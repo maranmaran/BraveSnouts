@@ -31,7 +31,8 @@ export function mergeArrays(original: AuctionItem[], next: DocumentChangeAction<
 
     }
 
-    return original;
+    // return new array to trigger onChanges
+    return [...original];
 
   }
 
