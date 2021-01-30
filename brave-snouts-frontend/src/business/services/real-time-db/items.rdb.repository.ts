@@ -1,67 +1,67 @@
-import { Injectable } from "@angular/core";
-import { AuctionItem } from "src/business/models/auction-item.model";
-import { AngularFireDatabase, QueryFn } from '@angular/fire/database';
+// import { Injectable } from "@angular/core";
+// import { AuctionItem } from "src/business/models/auction-item.model";
+// import { AngularFireDatabase, QueryFn } from '@angular/fire/database';
 
-@Injectable({providedIn: 'root'})
-export class ItemsRdbRepository {
+// @Injectable({providedIn: 'root'})
+// export class ItemsRdbRepository {
 
-    constructor(
-        private readonly db: AngularFireDatabase
-    ) {
+//     constructor(
+//         private readonly db: AngularFireDatabase
+//     ) {
         
-    }
+//     }
 
-    getCollection(auctionId: string, queryFn?: QueryFn) {
+//     getCollection(auctionId: string, queryFn?: QueryFn) {
         
-        if(!queryFn)
-            queryFn = ref => ref.orderByChild("name",);
+//         if(!queryFn)
+//             queryFn = ref => ref.orderByChild("name",);
 
 
-        return this.db.list<AuctionItem>(auctionId, queryFn);
-    }
+//         return this.db.list<AuctionItem>(auctionId, queryFn);
+//     }
 
-    getDocument(auctionId: string, id: string) {
-    }
+//     getDocument(auctionId: string, id: string) {
+//     }
 
-    getAll(auctionId: string, queryFn?: QueryFn) {
-    }
+//     getAll(auctionId: string, queryFn?: QueryFn) {
+//     }
 
-    getOne(auctionId: string, id: string) {
-    }
+//     getOne(auctionId: string, id: string) {
+//     }
 
-    getInitialPage(auctionId) {
-    }
+//     getInitialPage(auctionId) {
+//     }
 
-    getNextPage(last: AuctionItem) {
-    }
+//     getNextPage(last: AuctionItem) {
+//     }
 
-    getPreviousPage(first: AuctionItem) {
-    }
+//     getPreviousPage(first: AuctionItem) {
+//     }
 
-    create(auctionId: string, data: AuctionItem) {
-        return this.db.object(`auctions/${auctionId}/items/${data.id}`).set(data);
-    }
+//     create(auctionId: string, data: AuctionItem) {
+//         return this.db.object(`auctions/${auctionId}/items/${data.id}`).set(data);
+//     }
 
-    getId() {
-    }
+//     getId() {
+//     }
 
-    writeBatch(auctionId: string, items: AuctionItem[]) {
-    }
+//     writeBatch(auctionId: string, items: AuctionItem[]) {
+//     }
 
-    update(auctionId: string, id: string, data: Partial<AuctionItem>) {
-    }
+//     update(auctionId: string, id: string, data: Partial<AuctionItem>) {
+//     }
 
-    set(auctionId: string, id: string, data: AuctionItem) {
-    }
+//     set(auctionId: string, id: string, data: AuctionItem) {
+//     }
 
-    delete(auctionId: string, id: string) {
-    }
+//     delete(auctionId: string, id: string) {
+//     }
 
-    /** Adds item on which user bid on to the database */
-    addItemToUser(item: AuctionItem, userId: string) {
-    }
+//     /** Adds item on which user bid on to the database */
+//     addItemToUser(item: AuctionItem, userId: string) {
+//     }
     
-    /** Retrieves only items on which user bid on */
-    getUserItems(userId: string) {
-    }
-}
+//     /** Retrieves only items on which user bid on */
+//     getUserItems(userId: string) {
+//     }
+// }

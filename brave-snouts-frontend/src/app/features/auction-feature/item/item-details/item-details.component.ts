@@ -12,36 +12,14 @@ import { AuthService } from 'src/business/services/auth.service';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
 import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
+import { itemAnimations } from 'src/business/animations/item.animations';
 
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
   providers: [AuctionItemRepository, AuthService, BidsRepository],
-  animations: [
-    trigger('skipInitAnimation', [
-      transition(':enter', [])
-    ]),
-    trigger('priceOnBidChanged', [
-      state('no-change', style({})),
-      state('change', style({ color: '#0a94a7', transform: "scale(1.4)" })),
-      transition('no-change <=> change', animate('225ms ease-in-out'))
-    ]),
-    trigger('starOnBidChanged', [
-      state(':enter', style({})),
-      state(':leave', style({})),
-      transition(':enter',
-        animate('0.7s', keyframes([
-          style({ opacity: 1 }),
-          style({ transform: 'scale(1) translateY(0)' }),
-          style({ transform: 'scale(1.1) translateY(-8px)' }),
-          style({ transform: 'scale(1) translateY(0)' }),
-          style({ transform: 'scale(1.05) translateY(-4px)' }),
-          style({ transform: 'scale(1) translateY(0)' }),
-        ])),
-      )
-    ])
-  ]
+  animations: itemAnimations
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 

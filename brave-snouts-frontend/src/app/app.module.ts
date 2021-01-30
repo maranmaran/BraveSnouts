@@ -40,6 +40,7 @@ import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
 import { HandoverDialogComponent } from './features/auction-feature/delivery/handover-dialog/handover-dialog.component';
+import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
 
 @NgModule({
   imports: [
@@ -100,6 +101,8 @@ import { HandoverDialogComponent } from './features/auction-feature/delivery/han
     AdminPageComponent,
 
     HandoverDialogComponent,
+
+    SingleItemComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
