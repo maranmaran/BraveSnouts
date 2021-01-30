@@ -33,7 +33,6 @@ import { AppComponent } from './app.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
@@ -41,6 +40,7 @@ import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
 import { HandoverDialogComponent } from './features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
+import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
 
 @NgModule({
   imports: [
@@ -92,7 +92,6 @@ import { SingleItemComponent } from './features/auction-feature/item/single-item
     // shared
     TruncatedTextComponent,
     TruncatePipe,
-    FirebasePathPipe,
     ConfirmDialogComponent,
 
     // auth
@@ -103,6 +102,8 @@ import { SingleItemComponent } from './features/auction-feature/item/single-item
     HandoverDialogComponent,
 
     SingleItemComponent,
+
+    ItemGalleryComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },

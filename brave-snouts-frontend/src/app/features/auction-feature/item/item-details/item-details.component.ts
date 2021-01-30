@@ -1,18 +1,16 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { from } from 'rxjs';
 import { concatMap, filter, take } from 'rxjs/operators';
+import { itemAnimations } from 'src/business/animations/item.animations';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
-import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuthService } from 'src/business/services/auth.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
 import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
-import { itemAnimations } from 'src/business/animations/item.animations';
 
 @Component({
   selector: 'app-item-details',
@@ -81,6 +79,14 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     // console.log(currentItem)
     // console.log("\n\n")
 
+    if(!previousItem || !currentItem) {
+      return;
+    }
+    
+    if(previousItem.id != currentItem.id) {
+      return;
+    }
+
     if (JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
       return;
     }
@@ -90,6 +96,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     const userChanged = currentItem?.user != previousItem?.user;
 
     if (notNewRender && (bidChanged || userChanged)) {
+      console.log("doing change");
       this.onItemChange();
     }
   }

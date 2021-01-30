@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Gallery, ImageItem, VideoItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { from, noop } from 'rxjs';
+import { from, noop, Observable } from 'rxjs';
 import { mergeMap, take, map, toArray, tap, concatMap } from 'rxjs/operators';
 import { FirebaseFile } from 'src/app/features/auction-feature/auction/auction-form/auction-form.component';
 import { StorageService } from 'src/business/services/storage.service';
@@ -15,32 +15,26 @@ import { StorageService } from 'src/business/services/storage.service';
 export class ItemMediaComponent implements OnInit {
 
   constructor(
-    private readonly storage: StorageService,
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox
   ) { }
 
   @Input('media') dbMedia: FirebaseFile[];
   @Input() galleryId: string;
+  @Input('first') onlyFirst: boolean = false;
 
-  media: { src: string, thumb: string, type: 'image' | 'video' }[] = [];
+  firstUrl$: Observable<string>;
 
   ngOnInit(): void {
-    this.getUrls();
-  }
 
-  /* Gets download URLS for 1 ITEM and stores them in MAP */
-  getUrls() {
-    from(this.dbMedia)
-    .pipe(
-      map((media, index) => Object.assign(media, { index })),
-      mergeMap(media => this.storage.getDownloadUrl(media.path).pipe(take(1), map(path => [path, media.type, media.index]))),
-      map(([src, type, index]) => ({ src, thumb: src, type, index })),
-      toArray(),
-      map(mediaArr => this.media = mediaArr.sort((a, b) => a.index > b.index ? 1 : -1)),
-      tap(_ => this.setupGallery()),
-      take(1),
-    ).subscribe(noop, err => console.log(err))
+    // no items
+    if(this.dbMedia?.length == 0)
+      return;
+
+    // show all
+    if(!this.onlyFirst) {
+      this.setupGallery();
+    }
   }
 
   /* Sets up images and videos for gallery component */
@@ -48,12 +42,12 @@ export class ItemMediaComponent implements OnInit {
 
     const galleryRef = this.gallery.ref(this.galleryId);
     
-    for (const { src, thumb, type } of this.media) {
+    for (const { url, type } of this.dbMedia) {
       if(type == 'image') 
-        galleryRef.addImage({ src, thumb, type });
+        galleryRef.addImage({ src: url, thumb: url, type });
   
       if(type == 'video')
-        galleryRef.addVideo({ src, thumb, type });
+        galleryRef.addVideo({ src: url, thumb: url, type });
     }
   }
 
@@ -63,12 +57,12 @@ export class ItemMediaComponent implements OnInit {
     this.gallery.ref(this.galleryId).setConfig({imageSize: 'contain'});
     
     let lightboxData = [];
-    for (const { src, thumb, type } of this.media) {
+    for (const { url, type } of this.dbMedia) {
       if(type == 'image') 
-        lightboxData.push(new ImageItem({ src, thumb, type }));
+        lightboxData.push({ src: url, thumb: url, type });
   
       if(type == 'video')
-        lightboxData.push(new VideoItem({ src, thumb, type }));
+        lightboxData.push({ src: url, thumb: url, type });
     }
 
     this.lightbox.open(imageIdx, this.galleryId, {

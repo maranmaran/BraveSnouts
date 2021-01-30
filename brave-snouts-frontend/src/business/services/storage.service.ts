@@ -7,21 +7,18 @@ export class StorageService {
     
     constructor(private storage: AngularFireStorage) { }
 
-    uploadFile(file, filePath = 'images') {
-        // const fileRef = this.storage.ref(filePath);
-        return this.storage.upload(filePath, file);
+    uploadFile(file, filePath = null) {
+        if(!filePath) {
+            filePath = `images/${file.name}`;
+        }
+        
+        const ref = this.storage.ref(filePath);
+
+        return { ref, task: this.storage.upload(filePath, file) };
     }
 
     deleteFile(url) {
         // const fileRef = this.storage.ref(filePath);
         return this.storage.storage.refFromURL(url).delete();
-    }
-
-    getDownloadUrl(path: string) {
-        if(path.startsWith('https://') || path.startsWith('http://'))
-            return of(path);
-
-        const ref = this.storage.ref(path);
-        return ref.getDownloadURL();
     }
 }

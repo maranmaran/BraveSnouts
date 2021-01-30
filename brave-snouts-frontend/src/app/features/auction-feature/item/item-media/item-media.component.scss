@@ -1,3 +1,9 @@
 img, video {
     width: 100%;
 }
+
+.img-fluid {
+    width: auto !important;
+    height: 100% !important;
+}
+

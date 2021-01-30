@@ -54,7 +54,8 @@ const store = admin.firestore();
           {
             name: `Media ${i}`,
             path: `auction-items/5f74c211-e1d4-6727-baef-0fa21331aabe.jpg`,
-            type: 'image'
+            type: 'image',
+            url: `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F5f74c211-e1d4-6727-baef-0fa21331aabe.jpg?alt=media&token=a675d63a-bf44-4bb1-8f1d-1b7a98243e99`
           }
         ],
       });

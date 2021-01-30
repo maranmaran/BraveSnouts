@@ -1,0 +1,11 @@
+virtual-scroller {
+    width: 100%;
+    height: 100%;
+}
+.media-container {
+    height: 110px;
+    // height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

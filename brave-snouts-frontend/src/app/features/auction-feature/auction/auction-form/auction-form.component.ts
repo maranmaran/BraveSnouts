@@ -16,10 +16,14 @@ import { SubSink } from 'subsink';
 import { StorageService } from './../../../../../business/services/storage.service';
 
 export interface FirebaseFile {
-  path: string,
-  type: string,
   name: string,
+  type: string,
+
+  path: string,
+  url: string,
+  
   compressedPath: string
+  compressedUrl: string
 }
 
 @Component({
@@ -183,17 +187,18 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     this._subsink.add(
       from(event.addedFiles)
         .pipe(
-          mergeMap((file: File) => {
+          mergeMap(async (file: File) => {
 
             const name = `${Guid.create()}.jpg`;
             const path = `auction-items/${name}`;
             const type = this.getFirebaseFileType(file.type);
 
-            return from(this.storage.uploadFile(file, path))
-              .pipe(
-                map(_ => ({ name, type, path }) as FirebaseFile),
-                tap((firebaseFile: FirebaseFile) => this.files[index].push(firebaseFile))
-              )
+            let {ref, task} = this.storage.uploadFile(file, path);
+            await task;
+            let url = await ref.getDownloadURL().toPromise();
+
+            let finalFile = { name, type, path, url } as FirebaseFile;
+            this.files[index].push(finalFile);
           }),
           // tap(res => console.log(res)),
           finalize(() => this.uploadStates$[index].next(false))

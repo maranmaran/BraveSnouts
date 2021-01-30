@@ -8,6 +8,7 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { SubSink } from 'subsink';
 import { mergeArrays } from 'src/business/services/items.service';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-item-list',
@@ -17,10 +18,13 @@ import { mergeArrays } from 'src/business/services/items.service';
 })
 export class ItemListComponent implements OnInit, OnDestroy {
 
+  useGallery = true;
+
   constructor(
     private readonly authSvc: AuthService,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
+    public readonly mediaObs: MediaObserver,
   ) { }
 
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";

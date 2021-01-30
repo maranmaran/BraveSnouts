@@ -85,7 +85,7 @@
     
                                         <div class="item" drag-scroll-item *ngFor="let file of files[scroll.viewPortInfo.startIndex + i]">
     
-                                            <ng-container *ngIf="(file.path | firebasePath | async) as url">
+                                            <ng-container *ngIf="file.url as url">
                                                 <img *ngIf="file.type == 'image'" [src]="url" />
                                                 <video *ngIf="file.type == 'video'" [src]="url"></video>
                                                 <button id="remove-file-btn" type="button" mat-icon-button
