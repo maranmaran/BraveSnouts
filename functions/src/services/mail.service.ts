@@ -18,7 +18,7 @@ import { AuctionItem, Bid, UserInfo } from "../models/models";
 //   },
 // });
 
-export const sendEndAuctionMail = async (auctionId: string, user: UserInfo, items: Bid[]) => {
+export const sendEndAuctionMail = async (auctionId: string, handoverDetails: string, user: UserInfo, items: Bid[]) => {
 
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
@@ -50,6 +50,8 @@ export const sendEndAuctionMail = async (auctionId: string, user: UserInfo, item
     <p>Hvala ti na sudjelovanju</p>
 
     <p>Osvojio si ${items.length} predmeta.</p>
+    
+    <p>Osobno preuzimanje bit će ${handoverDetails}</p>
     
     <p>Za preuzimanje postom klikni <a href="${postConfirmURL}">ovdje</a></p>
     <p>Za potvrdu osobnog preuzimanja klikni <a href="${handoverConfirmURL}">ovdje</a></p>

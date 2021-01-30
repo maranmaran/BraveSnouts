@@ -24,12 +24,12 @@ export function mergeArrays(originalArr: AuctionItem[], nextArr: DocumentChangeA
       // new document
       if (idx == -1) {
         original.push(document.payload.doc.data());
-        console.log("Added");
+        // console.log("Added");
       }
       // modified document
       else if (document.type == 'modified') {
         original[idx] = document.payload.doc.data();
-        console.log('Modified');
+        // console.log('Modified');
       }
 
     }

@@ -39,6 +39,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
+import { HandoverDialogComponent } from './features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 
 @NgModule({
   imports: [
@@ -97,6 +98,8 @@ import { AdminPageComponent } from './features/auction-feature/user/admin-page/a
     LoginMethodComponent,
 
     AdminPageComponent,
+
+    HandoverDialogComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },

@@ -21,6 +21,7 @@ import { IPageInfo } from 'ngx-virtual-scroller';
 import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 
 @Component({
   selector: 'app-admin-page',
@@ -153,10 +154,26 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
   }
 
-  closeAuction(auctionId) {
-    this.functionsSvc.endAuction(auctionId)
+  endAuction(auctionId) {
+    const dialogRef = this.dialog.open(HandoverDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '30rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+    });
+
+    dialogRef.afterClosed()
+    .pipe(take(1))
+    .subscribe(handoverDetails => {
+      if(!handoverDetails) return;
+
+      this.functionsSvc.endAuction(auctionId, handoverDetails)
       // TODO
       .subscribe(res => console.log(res), err => console.log(err));
+
+    }, err => console.log(err))
+
   }
 
   openPostalInformation(data) {

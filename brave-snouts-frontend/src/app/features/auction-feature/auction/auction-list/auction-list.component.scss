@@ -5,11 +5,20 @@
     
     .auctions-grid {
         margin-top: 3rem;
-        padding: 1rem;
 
         display: grid;
         grid-template-columns: repeat(2, minmax(0px, 1fr));
         gap: 1rem;
+
+        #auctions {
+            overflow: auto;
+            max-height: 35rem;
+            padding: 0.5rem;
+        }
+
+        #donate {
+            padding: 0.5rem
+        }
     }
     
     @media(max-width: 600px) {

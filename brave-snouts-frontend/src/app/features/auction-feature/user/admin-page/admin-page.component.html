@@ -30,7 +30,8 @@
     </div>
 
     <div id="admin-actions" fxLayout="row wrap" class="section">
-        <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="closeAuction(auction.id)">Zatvori aukciju</button>
+        <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="endAuction(auction.id)">Zatvori aukciju</button>
+        <!-- <button mat-flat-button color="warn" (click)="endAuction(auction.id)">Zatvori aukciju</button> -->
     </div>
 
     <div class="h-100">

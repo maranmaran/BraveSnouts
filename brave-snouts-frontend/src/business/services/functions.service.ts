@@ -15,9 +15,9 @@ export class FunctionsService {
     }
 
     /** Calls cloud function to process auction end */
-    endAuction(auctionId: string) {
+    endAuction(auctionId: string, handoverDetails: string) {
         const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
         
-        return callable({ auctionId });
+        return callable({ auctionId, handoverDetails });
     }
 }

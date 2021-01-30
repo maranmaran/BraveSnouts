@@ -12,6 +12,7 @@ export const endAuctionFn = europeFunctions.https.onCall(
   async (data, context) => {
 
     const auctionId = data.auctionId;
+    const handoverDetails = data.handoverDetails;
 
     try {
       // process auction
@@ -55,7 +56,7 @@ const auctionEnd = async (auctionId: string) => {
     await clearTrackedItems(auctionId);
 
     // Inform users
-    await sendMails(auctionId, userBids);
+    await sendMails(auctionId, userBids, handoverDetails);
 
     // Mark processed auctions
     await markAuctionProcessed(auction);
@@ -185,9 +186,9 @@ const getUserBids = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserI
 }
 
 /** Sends mails to relevant users with their won items */
-const sendMails = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) => {
+const sendMails = async (auctionId: string, userBids: Map<UserInfo, Bid[]>, handoverDetails: string) => {
   for (const [userInfo, bids] of userBids) {
-      await sendEndAuctionMail(auctionId, userInfo, bids);
+      await sendEndAuctionMail(auctionId, handoverDetails, userInfo, bids);
   }
 }
 
