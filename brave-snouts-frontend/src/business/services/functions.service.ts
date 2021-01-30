@@ -20,4 +20,11 @@ export class FunctionsService {
         
         return callable({ auctionId, handoverDetails });
     }
+
+    /** Sends email update for handover via cloud function */
+    changeHandoverDetails(auctionId: string, handoverDetails: string) {
+        const callable = this.functions.httpsCallable('changeHandoverDetails-changeHandoverDetailsFn');
+        
+        return callable({ auctionId, handoverDetails });
+    }
 }

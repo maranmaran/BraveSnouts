@@ -16,6 +16,8 @@ export class PostConfirmComponent implements OnInit {
 
   postDeliveryInfoForm: FormGroup;
 
+  success = false;
+
   private _auctionId: string;
   private _userId: string;
 
@@ -62,8 +64,8 @@ export class PostConfirmComponent implements OnInit {
       map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
       mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
     ).subscribe(
-      // TODO: Toast notification for successful submit
-      () => this.router.navigate(['/']), 
+      () => this.success = true, 
+      // () => this.router.navigate(['/']), 
       err => console.log(err)
     );
 

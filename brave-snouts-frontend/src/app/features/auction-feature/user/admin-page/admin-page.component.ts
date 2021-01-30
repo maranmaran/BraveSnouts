@@ -176,6 +176,28 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   }
 
+  changeHandoverDetails(auctionId) {
+    const dialogRef = this.dialog.open(HandoverDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '30rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+    });
+
+    dialogRef.afterClosed()
+    .pipe(take(1))
+    .subscribe(handoverDetails => {
+      if(!handoverDetails) return;
+
+      this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
+      // TODO
+      .subscribe(res => console.log(res), err => console.log(err));
+
+    }, err => console.log(err))
+
+  }
+
   openPostalInformation(data) {
 
     const dialogRef = this.dialog.open(PostDetailsComponent, {

@@ -29,9 +29,9 @@
 
     </div>
 
-    <div id="admin-actions" fxLayout="row wrap" class="section">
+    <div id="admin-actions" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1rem" class="section">
         <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="endAuction(auction.id)">Zatvori aukciju</button>
-        <!-- <button mat-flat-button color="warn" (click)="endAuction(auction.id)">Zatvori aukciju</button> -->
+        <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn" (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
     </div>
 
     <div class="h-100">
