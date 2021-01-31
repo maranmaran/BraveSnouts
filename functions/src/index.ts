@@ -7,7 +7,6 @@ import * as functions from 'firebase-functions';
 export const store = admin.firestore();
 export const europeFunctions = functions.region('europe-west1');
 export const config = functions.config();
-export const firebaseAdmin = admin;
 
 // function exports
 const bidChangeFn = require('./functions/bid-change.function');
