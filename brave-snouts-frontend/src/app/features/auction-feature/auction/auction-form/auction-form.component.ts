@@ -189,7 +189,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
         .pipe(
           mergeMap(async (file: File) => {
 
-            const name = `${Guid.create()}.jpg`;
+            const name = `${Guid.create()}`;
             const path = `auction-items/${name}`;
             const type = this.getFirebaseFileType(file.type);
 

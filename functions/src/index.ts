@@ -13,14 +13,10 @@ export const firebaseAdmin = admin;
 const bidChangeFn = require('./functions/bid-change.function');
 const endAuctionFn = require('./functions/end-auction.function');
 const archiveAuctionFn = require('./functions/archive-auction.function');
-// const instagramLoginFns = require('./functions/instagram-login.function');
-// import * as compressImageFunction from './functions/compress-image.function';
 
 export const bidChange = bidChangeFn;
 export const endAuction = endAuctionFn;
 export const archiveAuction = archiveAuctionFn;
-// export const instagramLogin = instagramLoginFns;
-// export const compressImage = compressImageFunction;
 
 
 
