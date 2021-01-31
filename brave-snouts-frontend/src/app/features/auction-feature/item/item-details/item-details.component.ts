@@ -96,7 +96,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     const userChanged = currentItem?.user != previousItem?.user;
 
     if (notNewRender && (bidChanged || userChanged)) {
-      console.log("doing change");
       this.onItemChange();
     }
   }

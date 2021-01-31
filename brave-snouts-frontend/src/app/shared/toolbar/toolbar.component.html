@@ -31,24 +31,32 @@
 
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
         <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
-        
-        <img *ngIf="(user$ | async) as user" class="avatar pointer elevate hover default" src="{{user.photoURL}}"
-            matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
 
-        <mat-menu #profileMenu="matMenu">
-            <button mat-menu-item routerLink="/my-items">
-                <mat-icon matPrefix>
-                    redeem
-                </mat-icon>
-                Moji predmeti
-            </button>
-            <button mat-menu-item (click)="onLogout()">
-                <mat-icon matPrefix>
-                    exit_to_app
-                </mat-icon>
-                Odjava
-            </button>
-        </mat-menu>
+        <ng-container *ngIf="(user$ | async) as user">
+            
+            <img *ngIf="user?.photoURL; else noPhoto" class="avatar pointer elevate hover default" src="{{ user.photoURL}}" matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
+            
+            <ng-template #noPhoto>
+                {{ user.displayName }}
+                <img class="avatar pointer elevate hover default" src="assets/placeholders/anonymous.svg" matTooltip="{{ user.displayName ? user.displayName : user.email }}" [matMenuTriggerFor]="profileMenu" />
+            </ng-template>
+
+            <mat-menu #profileMenu="matMenu">
+                <button mat-menu-item routerLink="/my-items">
+                    <mat-icon matPrefix>
+                        redeem
+                    </mat-icon>
+                    Moji predmeti
+                </button>
+                <button mat-menu-item (click)="onLogout()">
+                    <mat-icon matPrefix>
+                        exit_to_app
+                    </mat-icon>
+                    Odjava
+                </button>
+            </mat-menu>
+        
+        </ng-container>
     </div>
 
 </mat-toolbar>

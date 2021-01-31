@@ -11,13 +11,13 @@
         border-radius: 15px;
         border-bottom-right-radius: 0px !important;
         z-index: 10;
-        width: max-content;
+        width: 205px;
 
         @include mat-elevation(4);
 
         position: absolute;
-        bottom: 3.3rem;
-        right: 3.1rem;
+        bottom: 60px;
+        right: 42px;
     }
 
     .background {

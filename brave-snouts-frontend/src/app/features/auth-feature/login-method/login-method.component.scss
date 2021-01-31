@@ -3,3 +3,15 @@
     bottom: 1.5rem;
     left: 1.5rem;
 }
+
+.login-btn {
+    height: 40px;
+    width: auto;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &#instagram, &#mail {
+        padding: 2px;
+        height: 36px;
+    }
+}

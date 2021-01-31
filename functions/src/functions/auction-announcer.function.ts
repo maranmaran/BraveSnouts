@@ -36,33 +36,33 @@ export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
     // inform users with emails enabled if 
     
     for(const auction of startingAuctions) {
-        var duration = moment.duration(moment(auction.startDate.toDate()).diff(today()));
-        var hours = duration.asHours();
+        const duration = moment.duration(moment(auction.startDate.toDate()).diff(today()));
+        const hours = duration.asHours();
         
         console.log(`Auction ${auction.id} with start ${auction.startDate} duration in hours ${hours}`);
         
         // if auction starts in 24 hours
-        if(hours == 24) {
+        if(hours === 24) {
             console.log(`starting in 24 hours`);
         }
         // if auction starts in 1 hour
-        if(hours == 1) {
+        if(hours === 1) {
             console.log(`starting in 1 hour`);
         }
     }
     
     for(const auction of endingAuctions) {
-        var duration = moment.duration(moment(auction.endDate.toDate()).diff(today()));
-        var hours = duration.asHours();
+        const duration = moment.duration(moment(auction.endDate.toDate()).diff(today()));
+        const hours = duration.asHours();
         
         console.log(`Auction ${auction.id} with end ${auction.endDate} duration in hours ${hours}`);
         
         // if auction ends in 1 hour
-        if(hours == 24) {
+        if(hours === 24) {
             console.log(`ending in 24 hours`);
         }
         // if auction ends in 24 hours
-        if(hours == 1) {
+        if(hours === 1) {
             console.log(`ending in 1 hour`);
         }
 

@@ -16,7 +16,7 @@ export const endAuctionFn = europeFunctions.https.onCall(
 
     try {
       // process auction
-      return await auctionEnd(auctionId);
+      return await auctionEnd(auctionId, handoverDetails);
     } 
     catch(error) {
       logger.error(error);
@@ -30,7 +30,7 @@ export const endAuctionFn = europeFunctions.https.onCall(
  * Checks for today auction and whether or not it's finished
  * If it's done it retrieves all best bids 
  */
-const auctionEnd = async (auctionId: string) => {
+const auctionEnd = async (auctionId: string, handoverDetails: string) => {
 
     // get auction data
     const auction = await getAuction(auctionId);
@@ -133,7 +133,7 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
     
     // const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
 
-    let winnerObj = Object.assign({}, winnerInstance);
+    const winnerObj = Object.assign({}, winnerInstance);
 
     await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update({winner: winnerObj});
   }
@@ -143,7 +143,7 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
 const clearTrackedItems = async (auctionId: string) => {
   const trackedItems = await store.collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
   for(const item of trackedItems.docs) {
-    let trackedItem = item.data() as TrackedItem;
+    const trackedItem = item.data() as TrackedItem;
     await store.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
   }
 }

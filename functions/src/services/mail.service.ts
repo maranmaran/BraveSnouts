@@ -32,9 +32,6 @@ export const sendEndAuctionMail = async (auctionId: string, handoverDetails: str
     },
   });
 
-  let n = "https://bravesnoutsdev.firebaseapp.com/post-confirm;auctionId=u6tb7z8G9AYITV3LbAYi&amp;userId=eHvEhL154WaLC7hgFgvG8MisMWs1"
-  let n2 = "https://bravesnoutsdev.firebaseapp.com/post-confirm;auctionId=u6tb7z8G9AYITV3LbAYi&userId=eHvEhL154WaLC7hgFgvG8MisMWs1"
-
   const baseURL = `https://bravesnoutsdev.firebaseapp.com`;
   const postConfirmURL = `${baseURL}/post-confirm;auctionId=${auctionId};userId=${user.id}`
   const handoverConfirmURL = `${baseURL}/handover-confirm;auctionId=${auctionId};userId=${user.id}`
