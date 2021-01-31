@@ -1,7 +1,7 @@
 <mat-toolbar class="toolbar" color="primary" fxLayout="row">
 
-    <div fxFlex="30" class="">
-        <button mat-icon-button *ngIf="(admin$ | async)" [matMenuTriggerFor]="adminMenu">
+    <div fxFlex="30">
+        <button mat-icon-button *ngIf="(admin$ | async); privacyPolicy" [matMenuTriggerFor]="adminMenu">
             <mat-icon>menu</mat-icon>
         </button>
         <mat-menu #adminMenu="matMenu">
@@ -12,6 +12,8 @@
                 Napravi aukciju
             </button>
         </mat-menu>
+
+        <button mat-icon-button routerLink="privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button>
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
@@ -38,9 +40,10 @@
             
             <ng-template #noPhoto>
                 {{ user.displayName }}
-                <img class="avatar pointer elevate hover default" src="assets/placeholders/anonymous.svg" matTooltip="{{ user.displayName ? user.displayName : user.email }}" [matMenuTriggerFor]="profileMenu" />
+                <img id="anonymous" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
             </ng-template>
 
+            
             <mat-menu #profileMenu="matMenu">
                 <button mat-menu-item routerLink="/my-items">
                     <mat-icon matPrefix>
@@ -57,6 +60,7 @@
             </mat-menu>
         
         </ng-container>
+
     </div>
 
 </mat-toolbar>

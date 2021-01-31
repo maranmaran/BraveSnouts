@@ -10,6 +10,7 @@ import { SingleItemComponent } from 'src/app/features/auction-feature/item/singl
 import { AdminPageComponent } from 'src/app/features/auction-feature/user/admin-page/admin-page.component';
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 import { EmailLoginComponent } from 'src/app/features/auth-feature/email-login/email-login.component';
+import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-policy.component';
 import { AdminGuard } from 'src/business/guards/admin.guard';
 import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
 import { AuctionFormGuard } from 'src/business/guards/auction-form.guard';
@@ -43,6 +44,9 @@ const routes: Routes = [
   // login pages
   { path: 'email-login', component: EmailLoginComponent },
   // { path: 'instagram-login', component: AdminPageComponent },
+
+  // privacy and regulations
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
   
   // non matched routes
   { path: '**', redirectTo: '/' } 

@@ -37,6 +37,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 
 const MY_DATEPICKER_FORMAT = {
@@ -134,6 +135,7 @@ const MY_DATEPICKER_FORMAT = {
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true, strict: true } },
     { provide: MAT_DATE_FORMATS, useValue: MY_DATEPICKER_FORMAT },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }
-  ]
+  ],
+  declarations: [PrivacyPolicyComponent]
 })
 export class MaterialModule { }
