@@ -16,6 +16,14 @@
             padding: 0.5rem;
         }
 
+        @media(max-width: 600px) {
+            #auctions {
+                overflow: unset;
+                max-height: unset;
+                padding: 0.5rem;
+            }
+        }
+
         #donate {
             padding: 0.5rem
         }
