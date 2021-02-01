@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
 import { noop, Observable } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { finalize, take, tap } from 'rxjs/operators';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -168,9 +168,10 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     .subscribe(handoverDetails => {
       if(!handoverDetails) return;
 
+      this.loadingSvc.active$.next(true);
       this.functionsSvc.endAuction(auctionId, handoverDetails)
-      // TODO
-      .subscribe(res => console.log(res), err => console.log(err));
+      .pipe(take(1), finalize(() => this.loadingSvc.active$.next(false)))
+      .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
 
     }, err => console.log(err))
 
@@ -191,8 +192,8 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       if(!handoverDetails) return;
 
       this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
-      // TODO
-      .subscribe(res => console.log(res), err => console.log(err));
+      .pipe(take(1), finalize(() => this.loadingSvc.active$.next(false)))
+      .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
 
     }, err => console.log(err))
 
