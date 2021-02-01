@@ -95,3 +95,8 @@ export interface TrackedItem {
     itemId: string,
     userId: string,
 }
+
+export interface EmailSettings {
+    auctionAnnouncements: boolean,
+    bidUpdates: boolean,
+}
