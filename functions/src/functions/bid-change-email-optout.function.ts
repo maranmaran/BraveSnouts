@@ -1,13 +1,13 @@
 import { europeFunctions, store } from "..";
 
-export const bidChangeEmailOptOutFn = europeFunctions.https.onRequest((req, resp) => {
+export const bidChangeEmailOptOutFn = europeFunctions.https.onRequest(async (req, resp) => {
 
-    let userId = req.params.userId;
+    const userId = req.params.userId;
 
-    store.collection("users").doc(userId).update({
+    await store.collection("users").doc(userId).update({
         emailSettings: {
-            bidUpdates: false
-        }
+            bidUpdates: false,
+        },
     });
 
     resp.jsonp({ status: 'ok', code: 200 });

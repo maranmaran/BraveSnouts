@@ -19,6 +19,7 @@ export const changeHandoverFunction = europeFunctions.https.onCall(
                 await sendHandoverDetailsUpdateMail(winner as UserInfo, handoverDetails);
             }
 
+            return { status: 'ok', code: 200 };
         }
         catch (error) {
             return { status: 'error', code: 401, message: 'Failed to send handover details update' }
