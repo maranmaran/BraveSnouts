@@ -74,6 +74,8 @@ export class AuctionItem {
     bidId: string;
     bid: number = 0;
     user: string;
+
+    winner: Winner;
 }
 
 export interface Bid {
