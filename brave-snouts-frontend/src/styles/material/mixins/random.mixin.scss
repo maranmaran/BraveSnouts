@@ -11,13 +11,13 @@
         border-radius: 15px;
         border-bottom-right-radius: 0px !important;
         z-index: 10;
-        width: max-content;
+        width: 205px;
 
         @include mat-elevation(4);
 
         position: absolute;
-        bottom: 3.3rem;
-        right: 3.1rem;
+        bottom: 60px;
+        right: 42px;
     }
 
     .background {
@@ -40,4 +40,40 @@
         }
     }
 
+    .spinner {
+        position: relative;
+        top: -8px;
+        left: -8px;
+        z-index: 100000;
+
+        width: 106px !important;
+        height: 106px !important;
+
+        svg {
+            width: 106px !important;
+            height: 106px !important;
+
+            circle {
+                stroke-width: 5px !important;
+            }
+        }
+    }
+
+    .item-dialog {
+
+        mat-dialog-container {
+            margin: 0 !important;
+            padding: 0px !important;
+            border-radius: 30px !important;
+        }
+
+        .container {
+            margin: 0 !important;
+            padding: 0 !important;
+
+            mat-card {
+                box-shadow: none;
+            }
+        }
+    }
 }

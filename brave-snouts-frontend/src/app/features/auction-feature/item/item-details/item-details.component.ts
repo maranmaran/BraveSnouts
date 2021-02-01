@@ -1,47 +1,23 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { DocumentData, QueryFn } from '@angular/fire/firestore';
-import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
-import { from, noop, Observable, of } from 'rxjs';
-import { concatMap, filter, skip, take, tap } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { concatMap, filter, take } from 'rxjs/operators';
+import { itemAnimations } from 'src/business/animations/item.animations';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuthService } from 'src/business/services/auth.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
-import { BidsRepository } from './../../../../../business/services/bids.repository';
+import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
 
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
-  animations: [
-    trigger('skipInitAnimation', [
-      transition(':enter', [])
-    ]),
-    trigger('priceOnBidChanged', [
-      state('no-change', style({})),
-      state('change', style({ color: '#0a94a7', transform: "scale(1.4)" })),
-      transition('no-change <=> change', animate('225ms ease-in-out'))
-    ]),
-    trigger('starOnBidChanged', [
-      state(':enter', style({})),
-      state(':leave', style({})),
-      transition(':enter',
-        animate('0.7s', keyframes([
-          style({ opacity: 1 }),
-          style({ transform: 'scale(1) translateY(0)' }),
-          style({ transform: 'scale(1.1) translateY(-8px)' }),
-          style({ transform: 'scale(1) translateY(0)' }),
-          style({ transform: 'scale(1.05) translateY(-4px)' }),
-          style({ transform: 'scale(1) translateY(0)' }),
-        ])),
-      )
-    ])
-  ]
+  providers: [AuctionItemRepository, AuthService, BidsRepository],
+  animations: itemAnimations
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -49,17 +25,14 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
-    public readonly mediaObs: MediaObserver,
   ) { }
 
   // Data
   @Input() item: AuctionItem;
   @Input('trackedItems') userTrackedItems: Set<string>;
-  userId$: Observable<string>;
-  isAuthenticated$: Observable<boolean>;
-  // bids: Bid[]; // item bids
 
-  // workaround because animations are broken
+  // For animations 
+  // not observables because - animations are broken
   // https://github.com/angular/angular/issues/21331
   userId: string
   isAuthenticated: boolean;
@@ -85,38 +58,47 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   bidStepSize = environment.itemCardConfig.bidStepSize;
 
   ngOnInit(): void {
-    this.userId$ = this.authSvc.userId$;
-    this.isAuthenticated$ = this.authSvc.isAuthenticated$;
 
     this.setupControls(this.item);
 
-    this.bootstrapped = true;
+    this._subsink.add(
+      ...this.onAuthDataChange(),
+    )
 
-    // react to changes only (skip first)
-    setTimeout(async _ => {
-      this._subsink.add(
-        // this.onBidsChange(this.item.id),
-        // this.onItemChange(),
-        ...this.onAuthDataChange(),
-      )
-    });
+    this.bootstrapped = true;
   }
 
-  
-  public ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
 
-    let previousItem = changes.item?.previousValue;
-    let currentItem = changes.item?.currentValue;
+    const previousItem = changes.item?.previousValue;
+    const currentItem = changes.item?.currentValue;
 
-    if(JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
+    // console.log("\n\n")
+    // console.log(currentItem?.name)
+    // console.log(previousItem)
+    // console.log(currentItem)
+    // console.log("\n\n")
+
+    if(!previousItem || !currentItem) {
+      return;
+    }
+    
+    if(previousItem.id != currentItem.id) {
       return;
     }
 
-    if(currentItem?.bid != previousItem?.bid || currentItem?.user != previousItem?.user) {
+    if (JSON.stringify(previousItem) == JSON.stringify(currentItem)) {
+      return;
+    }
+
+    const notNewRender = previousItem;
+    const bidChanged = currentItem?.bid != previousItem?.bid;
+    const userChanged = currentItem?.user != previousItem?.user;
+
+    if (notNewRender && (bidChanged || userChanged)) {
       this.onItemChange();
     }
   }
-  
 
   ngOnDestroy(): void {
     this._subsink.unsubscribe();
@@ -130,62 +112,17 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   */
   onAuthDataChange() {
     return [
-      this.userId$.subscribe(userId => this.userId = userId),
-      this.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth)
+      this.authSvc.userId$.subscribe(userId => this.userId = userId, err => console.log(err)),
+      this.authSvc.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth, err => console.log(err))
     ]
   }
 
   /* Does work when item bid changes */
   onItemChange() {
-    // const document = this.itemsRepo.getOne(this.item.auctionId, this.item.id);
-
-    // this.item = item;
-    // console.log(this.item);
     this.setupControls(this.item);
     this.disableBidding(750);
     this.topBidChange(750);
-
-    // return document.pipe(
-    //   tap(r => console.log(r)),
-    //   skip(1),
-    // return of(this.item).pipe(
-    //   filter(nextItem => nextItem.bid != this.item.bid || nextItem.user != this.item.user),
-      // switchmap because if two items come in ALMOST same time
-      // second coming in (newest) will interrupt procedures from first and reset
-      // meaning user won't see flashing STAR and PRICE animations
-      // switchMap(item => of(item)
-      //   .pipe(
-      //     tap(() => this.disableBidding(1250)),
-      //     delay(250),
-      //   )
-      // ),
-    // )
-    //   .subscribe(item => {
-    //     this.item = item;
-    //     this.setupControls(item);
-    //     this.disableBidding(750);
-    //     this.topBidChange(750);
-    //   });
   }
-
-  // /* Watches and updates bids collection to track all bids on current item */
-  // onBidsChange(itemId: string) {
-
-  //   const query: QueryFn<DocumentData> = ref => ref
-  //     .where("itemId", '==', itemId)
-  //     .orderBy("date", 'desc');
-
-  //   return this.bidsRepo.getAll(query)
-  //     .pipe(
-  //       tap(r => console.log(r)),
-  //       // firebase server timestamp triggers collection events twice
-  //       // first time it's saved as date: null and then it modifies that field
-  //       // with actual firebase server time
-  //       // causing document to trigger 'modified' event and value change
-  //       filter(bids => bids.length == 0 ? true : bids[0].date != null),
-  //     )
-  //     .subscribe(bids => this.bids = bids)
-  // }
 
   /* Sets up slider and custom bid control */
   setupControls(item: AuctionItem) {
@@ -211,7 +148,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
    * Places a bid on item
    * @param item item that the user is bidding on
    */
-  onBid(item: AuctionItem) {
+  async onBid(item: AuctionItem) {
 
     item = Object.assign({}, item);
 
@@ -219,119 +156,50 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       return;
 
     // guard with login
-    from(this.authSvc.login())
+
+    const userDataPromise = from(this.authSvc.login())
       .pipe(
         take(1),
-        concatMap(_ => this.authSvc.user$),
-        filter(user => !!user))
-      .subscribe(user => {
+        concatMap(_ => this.authSvc.user$.pipe(take(1))),
+        filter(user => !!user),
+      ).toPromise();
 
-        // check if someone placed bid in the middle of bidding of this user
-        // item.user -> item the current user is bidding on and it's highest user
-        // this.item.user -> realtime highest bidder on the item
-        if (item.user != this.item.user) {
-          // if someone placed the bid.. cancel this bid request
-          console.warn('Somebody placed bid while you were in process of placing the bid');
-          return null;
-        }
+    const user = await userDataPromise;
+    if (!user) {
+      return;
+    }
 
-        // construct bid
-        let bid = new Bid({
-          itemId: item.id,
-          userId: user.uid,
-          userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email},
-          date: this.bidsRepo.timestamp,
-          bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
-        });
+    // check if someone placed bid in the middle of bidding of this user
+    // item.user -> item the current user is bidding on and it's highest user
+    // this.item.user -> realtime highest bidder on the item
+    if (item.user != this.item.user) {
+      // if someone placed the bid.. cancel this bid request
+      console.warn('Somebody placed bid while you were in process of placing the bid');
+      return null;
+    }
 
-        // update bids array for historic data
+    // construct bid
+    let bid = new Bid({
+      // itemId: item.id,
+      userId: user.uid,
+      userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email },
+      date: this.bidsRepo.timestamp,
+      bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
+    });
 
-        // create bid and update item
-        from(this.bidsRepo.create(bid))
-        .pipe(
-          concatMap(createdBid => this.itemsRepo.update(item.auctionId, item.id, {
-            bidId: createdBid.id,
-            bid: bid.bid,
-            user: bid.userId,
-          })),
-          tap(_ => {
+    // add bid to historic collection
+    const createdBid = await this.bidsRepo.create(bid);
 
-            if(this.userTrackedItems && this.userTrackedItems.has(item.id)){
-              return;
-            }
+    // update item bid data
+    const bidData = { bidId: createdBid.id, bid: bid.bid, user: bid.userId, };
+    await this.itemsRepo.update(item.auctionId, item.id, bidData);
 
-            this.itemsRepo.addItemToUser(item, this.userId);
-          })
-        ).subscribe(noop);
+    // add item to tracked collection
+    if (!this.userTrackedItems?.has(item.id)) {
+      await this.authSvc.addItemToUser(item, this.userId);
+    }
 
-      });
   }
-
-  //#region @deprecated - BS-6 "Brave Snouts Requirements
-
-  /** Undo last bid placed by THIS particular user
-   * Only if last price applied is from THIS user
-   * */
-  // onUndoBid(item: AuctionItem) {
-
-  //   from(this.authSvc.login())
-  //     .pipe(
-  //       take(1),
-  //       concatMap(_ => this.authSvc.user$),
-  //       filter(user => !!user))
-  //     .subscribe(user => {
-
-  //       if (item.user != user.uid)
-  //         return;
-
-  //       let bids = [...this.bids];
-
-  //       const lastBid = this.deleteLastBid(bids);
-
-  //       // undo item bid
-  //       this.itemsRepo.update(item.auctionId, item.id, {
-  //         bid: lastBid.bid,
-  //         user: lastBid.userId,
-  //       });
-
-  //     });
-  // }
-
-  /** Deletes last bid and any bid that matches it's value (because of possible same time bids)
-   *  Retrieves first deleted bid
-   */
-  // deleteLastBid(bids) {
-
-  //   const bidsToDelete: Bid[] = [];
-  //   bidsToDelete.push(bids.splice(0, 1)[0]);
-
-  //   // take next (now new last) bid
-  //   // get last bid which isn't the same value (ignore duplicates)
-  //   // TODO: Extract and refactor
-  //   let lastBid = bids[0];
-  //   if(!lastBid) {
-  //     lastBid = new Bid({ bid: 0, userId: null });
-  //   } else {
-  //     while (lastBid.bid == this.item.bid) {
-  //       bidsToDelete.push(bids.splice(0, 1)[0]);
-  //       lastBid = bids[0];
-
-  //       if (!lastBid) {
-  //         // default state for auction item
-  //         lastBid = new Bid({ bid: 0, userId: null });
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   for (const bidToDelete of bidsToDelete) {
-  //     this.bidsRepo.delete(bidToDelete.id);
-  //   }
-
-  //   return lastBid;
-  // }
-
-  //#endregion
 
   /* Validates current bid price */
   checkBidPrice(item: AuctionItem) {

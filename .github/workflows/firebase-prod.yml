@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build-prod
         env: 
+          BASE_URL: ${{ secrets.BASE_URL_PROD }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_PROD }}
           FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN_PROD }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID_PROD }}

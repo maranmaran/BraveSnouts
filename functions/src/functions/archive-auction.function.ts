@@ -16,6 +16,7 @@ export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
     
     const auctionsQuery = store.collection('auctions')
     .where('isProcessed', '==', true)
+    .orderBy("endDate", "desc")
     .endAt(today().subtract(30, 'days').endOf('day').toDate());
     
     const auctionsSnapshot = await auctionsQuery.get();

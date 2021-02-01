@@ -31,12 +31,18 @@ import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuctionBidsComponent } from './features/auction-feature/auction/auction-bids/auction-bids.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { FirebasePathPipe } from 'src/business/pipes/firebase-path.pipe';
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
+import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
+import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
+import { HandoverDialogComponent } from './features/auction-feature/delivery/handover-dialog/handover-dialog.component';
+import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
+import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
+import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 
 @NgModule({
   imports: [
@@ -46,7 +52,7 @@ import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-a
 
     // Core stuff
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule,
+    AngularFirestoreModule.enablePersistence(),
     AngularFireStorageModule,
     AngularFireFunctionsModule,
 
@@ -78,7 +84,6 @@ import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-a
     ItemListComponent,
     ItemDetailsComponent,
     ItemMediaComponent,
-    AuctionBidsComponent,
     PostConfirmComponent,
     HandoverConfirmComponent,
     PostDetailsComponent,
@@ -90,13 +95,24 @@ import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-a
     // shared
     TruncatedTextComponent,
     TruncatePipe,
-    FirebasePathPipe,
     ConfirmDialogComponent,
 
     // auth
     LoginMethodComponent,
+
+    AdminPageComponent,
+
+    HandoverDialogComponent,
+
+    SingleItemComponent,
+
+    ItemGalleryComponent,
+
+    EmailLoginComponent,
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: REGION, useValue: 'europe-west1' },
     // { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
     {

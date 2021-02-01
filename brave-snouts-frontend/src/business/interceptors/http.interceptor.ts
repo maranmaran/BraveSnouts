@@ -13,11 +13,11 @@ export class HttpInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        this.loadingSvc.active$.next(true);
+        // this.loadingSvc.active$.next(true);
 
         return next.handle(req)
             .pipe(
-                finalize(() => this.loadingSvc.active$.next(false))
+                // finalize(() => this.loadingSvc.active$.next(false))
             );
     }
 }

@@ -15,7 +15,11 @@ Run:
 
 [Environment configuration](https://firebase.google.com/docs/functions/config-env)
 
-`firebase functions:config:set mail.user="patience56@ethereal.email" mail.password="jYsRxVBXdsfU6W8nHv"`
+List of variables:
+* Mail - user / pass
+    * Etheral mail secret: `firebase functions:config:set mail.user="patience56@ethereal.email" mail.password="jYsRxVBXdsfU6W8nHv"` 
+* Instagram API - user / pass
+    * Instagram secret: `firebase functions:config:set instagram.client_id="yourClientID" instagram.client_secret="yourClientSecret"` 
 
 ## Deployment 
 

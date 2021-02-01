@@ -2,6 +2,12 @@
   height: 56px !important;
 }
 
+#anonymous {
+  border-radius: 50%;
+  height: 33px;
+  padding: 5px;
+}
+
 .avatar {
   border-radius: 50%;
   height: 70%;
@@ -9,6 +15,7 @@
 }
 
 .logo-base {
+  cursor: pointer;
   z-index: 100;
   position: relative;
   top: 35px;

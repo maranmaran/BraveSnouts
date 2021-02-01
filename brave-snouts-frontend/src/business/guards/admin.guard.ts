@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { from, of } from "rxjs";
 import { switchMap } from "rxjs/operators";
@@ -8,7 +8,7 @@ import { AuthService } from "src/business/services/auth.service";
 export class AdminGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService,
+    private  authService: AuthService,
   ) {
   }
 

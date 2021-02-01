@@ -18,7 +18,7 @@ import { AuctionItem, Bid, UserInfo } from "../models/models";
 //   },
 // });
 
-export const sendEndAuctionMail = async (auctionId: string, user: UserInfo, items: Bid[]) => {
+export const sendEndAuctionMail = async (auctionId: string, handoverDetails: string, user: UserInfo, items: Bid[]) => {
 
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
@@ -31,9 +31,6 @@ export const sendEndAuctionMail = async (auctionId: string, user: UserInfo, item
       pass: config.mail.password,
     },
   });
-
-  let n = "https://bravesnoutsdev.firebaseapp.com/post-confirm;auctionId=u6tb7z8G9AYITV3LbAYi&amp;userId=eHvEhL154WaLC7hgFgvG8MisMWs1"
-  let n2 = "https://bravesnoutsdev.firebaseapp.com/post-confirm;auctionId=u6tb7z8G9AYITV3LbAYi&userId=eHvEhL154WaLC7hgFgvG8MisMWs1"
 
   const baseURL = `https://bravesnoutsdev.firebaseapp.com`;
   const postConfirmURL = `${baseURL}/post-confirm;auctionId=${auctionId};userId=${user.id}`
@@ -50,6 +47,8 @@ export const sendEndAuctionMail = async (auctionId: string, user: UserInfo, item
     <p>Hvala ti na sudjelovanju</p>
 
     <p>Osvojio si ${items.length} predmeta.</p>
+    
+    <p>Osobno preuzimanje bit će ${handoverDetails}</p>
     
     <p>Za preuzimanje postom klikni <a href="${postConfirmURL}">ovdje</a></p>
     <p>Za potvrdu osobnog preuzimanja klikni <a href="${handoverConfirmURL}">ovdje</a></p>

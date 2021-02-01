@@ -1,4 +1,4 @@
-<div class="center mt-5" *ngIf="postDeliveryInfoForm">
+<div class="center mt-5" *ngIf="postDeliveryInfoForm && !success">
     <div class="section mw-100" style="width: 25rem" fxLayout="column" fxLayoutGap="1rem">
     
         <h1>Dostava poštom</h1>
@@ -26,3 +26,5 @@
         
     </div>
 </div>
+
+<app-handover-confirm *ngIf="success"></app-handover-confirm>

@@ -1,0 +1,25 @@
+virtual-scroller {
+    width: 100%;
+    height: 100%;
+}
+
+.media-container {
+    height: 100%;
+    // height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 700px) {
+    .items-gallery-grid {
+  
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0px, 1fr));
+      gap: 0.5rem;
+    
+      padding: 0.25rem;
+      padding-top: 0.5rem;
+    }
+  }
+  

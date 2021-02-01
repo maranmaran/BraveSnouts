@@ -2,8 +2,7 @@
 
 [Brave Snouts is animal rescue non profit organization](https://www.facebook.com/hrabrenjuske) 
 
-Which can be helped only through donating.
-Brave Snouts often organize auctions on which they place items that they were given or collected up for sale so people can bid on them and once it's over highest bidder wins the item and the money goes to organization to help animals get food, shelter and necessary vet treatments.
+Brave Snouts often organize auctions on which they place items that they collected or were donated to them up for sale so people can bid on them and once it's over highest bidder wins the item and the money goes to organization to help animals get food, shelter and necessary vet treatments.
 
 This task which was usually made on facebook is a bit gruelsome to organize and hard to keep track of. So I developed this small application to help them with just that -> ***auctions***.
 
@@ -11,7 +10,7 @@ There will possibly be future plans or turning this into their official public w
 
 If you wish to contribute please contact me by mail
 
-Visit current version in production [here](https://bravesnoutsprod.firebaseapp.com)
+Visit current version in development [here](https://bravesnoutsdev.firebaseapp.com)
 
 # Application
 

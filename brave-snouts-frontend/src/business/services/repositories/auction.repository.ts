@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
 import { Auction } from 'src/business/models/auction.model';
 
-
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AuctionRepository {
 
     constructor(

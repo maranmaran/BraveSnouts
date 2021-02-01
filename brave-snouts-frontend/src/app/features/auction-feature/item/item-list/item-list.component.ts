@@ -1,166 +1,130 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
+import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { noop, Observable, Subscription } from 'rxjs';
-import { concatMap, map, take, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { concatMap, map, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
-import { AuctionItemRepository } from 'src/business/services/auction-item.repository';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { SubSink } from 'subsink';
+import { mergeArrays } from 'src/business/services/items.service';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.scss']
+  styleUrls: ['./item-list.component.scss'],
+  providers: [AuctionItemRepository, AuthService]
 })
 export class ItemListComponent implements OnInit, OnDestroy {
 
+  useGallery = true;
+
   constructor(
+    private readonly authSvc: AuthService,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
-    private readonly mediaObs: MediaObserver,
-    private readonly authSvc: AuthService,
+    public readonly mediaObs: MediaObserver,
   ) { }
 
-  // Input data and user info
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
   @Input() parentScroll: ElementRef;
 
-  useScroll = true;
-
-  userTrackedItems$: Observable<Set<string>>;
-
-  items: AuctionItem[];
-  first: AuctionItem;
-  last: AuctionItem;
-  
-  nextDisabled = false;
-
-  firstEver: AuctionItem;
-  get previousDisabled(): boolean {
-    return this.first ? this.firstEver?.name == this.first.name : false;
-  };
-
-  itemsSubscription: Subscription;
-
   private _subsink = new SubSink();
   
-  ngOnInit(): void {
-
-    this.loadingSvc.active$.next(true);
-    
-    this.itemsSubscription = this.itemsRepo.getInitialPage(this.auctionId)
-      .pipe(
-        tap(items => this.items = items),
-        tap(items => (this.first = items[0], this.firstEver = items[0])),
-        tap(items => this.last = items[items.length - 1]),
-        tap(() => this.loadingSvc.active$.next(false)),
-      ).subscribe(noop)
-
+  async ngOnInit() {
+    this.onLoadMore({endIndex: -1} as IPageInfo);
     this.getUserTrackedItems();
-
   }
 
   ngOnDestroy(): void {
     this._subsink.unsubscribe();
   }
-  
+
   trackByFn(_, item) {
     return item.id;
   }
 
+  userTrackedItems$: Observable<Set<string>>;
+
   /** Retrieves user relevant items */
   getUserTrackedItems() {
-    this.userTrackedItems$ =  this.authSvc.userId$.pipe(
-      take(1),
-      concatMap(userId => this.itemsRepo.getUserItems(userId)),
-      map(items => new Set<string>(items.map(item => item.id))),
-    )
+    this.userTrackedItems$ = this.authSvc.userId$
+      .pipe(
+        concatMap(userId => {
+
+          if (!userId) return of(null);
+
+          return this.authSvc.getUserItems(userId).pipe(take(1))
+        }),
+        map(items => {
+
+          if (!items) return null;
+
+          return new Set<string>(items.map(item => item.id))
+        }),
+      )
   }
+
+  //#region  Pagination 
+
+  items: AuctionItem[] = [];
+  last: AuctionItem;
+
+  fetchInProgress = false;
+  noMoreData = false;
 
   /** Loads more data when page hits bottom */
-  previous: AuctionItem;
   onLoadMore(event: IPageInfo) {
 
-    if(!this.items || this.items.length == 0)
+    // only if no other fetch is in progress
+    if (this.fetchInProgress) {
       return;
-    
-    if(!this.last) 
-      return;
-    
-    if(event.endIndex !== this.items.length - 1)
-      return;
+    }
 
-    if(this.previous?.id == this.last?.id)
+    // only if you have clearence to go to next page
+    if (this.noMoreData) {
       return;
-      
-    this.previous = this.last;
+    }
 
+    // only if you scrolled to bottom
+    if (event.endIndex !== this.items.length - 1) {
+      return;
+    }
+
+    this.fetchInProgress = true;
     this.loadingSvc.active$.next(true);
-    this.itemsRepo.getNextPage(this.last)
-    .pipe(
-      take(1),
-      // append
-      map(items => [...this.items, ...items]),
-      
-      // map necessary data
-      tap(items => this.items = items),
-      tap(items => this.first = items[0]),
-      tap(items => this.last = items[items.length - 1]),
-      tap(() => this.loadingSvc.active$.next(false)))
-    .subscribe(noop);
+
+    const subscription = this.itemsRepo.getScrollPage(this.auctionId, this.last)
+      .pipe(
+
+      ).subscribe(items => {
+        
+          // disable next if no more items
+          if (items.length < this.itemsRepo.pageSize) {
+            this.noMoreData = true;
+          }
+          
+          // join items
+          this.items = mergeArrays(this.items, items);
+          // console.log(`Currently having ${this.items.length} items.`, this.items)
+          // console.log("Types are", items.map(item => item.type))
+          // console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
+          // console.log("\n")
+
+          // set last item
+          this.last = this.items[this.items.length - 1];
+
+          // update flags
+          this.fetchInProgress = false;
+          this.loadingSvc.active$.next(false);
+
+      }, err => console.log(err));
+
+    this._subsink.add(subscription);
   }
 
-  /** Goes to next page*/
-  nextPage() {
+  //#endregion
 
-    if(!this.items || this.items.length == 0)
-      return;
-    
-    if(!this.last)
-      return; 
-
-    if(this.nextDisabled)
-      return;
-
-    this.loadingSvc.active$.next(true);
-    this.itemsSubscription.unsubscribe();
-    this.itemsSubscription = this.itemsRepo.getNextPage(this.last)
-    .pipe(
-      // disable next button if no more items
-      tap(items => items?.length < this.itemsRepo.pageSize ? this.nextDisabled = true : noop),
-      // map necessary data
-      tap(items => this.items = items),
-      tap(items => this.first = items[0]),
-      tap(items => this.last = items[items.length - 1]),
-      tap(() => this.loadingSvc.active$.next(false)))
-    .subscribe(noop, err => console.log(err));
-  }
-
-  /** Goes to previous page */
-  previousPage() {
-
-    if(!this.items || this.items.length == 0)
-      return;
-    
-    if(!this.first)
-      return; 
-
-    if(this.previousDisabled)
-      return;
-
-    this.loadingSvc.active$.next(true);
-    this.itemsSubscription.unsubscribe();
-    this.itemsSubscription = this.itemsRepo.getPreviousPage(this.first)
-    .pipe(
-      // map necessary data
-      tap(items => this.items = items),
-      tap(items => this.first = items[0]),
-      tap(items => this.last = items[items.length - 1]),
-      tap(() => this.nextDisabled = false),
-      tap(() => this.loadingSvc.active$.next(false)))
-    .subscribe(noop);
-  }
 
 }

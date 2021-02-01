@@ -44,5 +44,6 @@ export class AuctionItem {
 export interface FirebaseFile {
     path: string,
     type: string,
-    name: string
+    name: string,
+    url: string,
 }

@@ -1,7 +1,7 @@
 <mat-toolbar class="toolbar" color="primary" fxLayout="row">
 
-    <div fxFlex="30" class="">
-        <button mat-icon-button *ngIf="(admin$ | async)" [matMenuTriggerFor]="adminMenu">
+    <div fxFlex="30">
+        <button mat-icon-button *ngIf="(admin$ | async); privacyPolicy" [matMenuTriggerFor]="adminMenu">
             <mat-icon>menu</mat-icon>
         </button>
         <mat-menu #adminMenu="matMenu">
@@ -12,15 +12,20 @@
                 Napravi aukciju
             </button>
         </mat-menu>
+
+        <button mat-icon-button routerLink="privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button>
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+
 
         <div #logo 
             class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" 
             (click)="onLogoClick()" 
             [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
-        ></div>
+        >
+            <mat-progress-spinner *ngIf="(active$ | async)" class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
+        </div>
         
         <div class="logo-animated" [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="!clickFlag"></div>
         <!-- <div class="logo-animated" ></div> -->
@@ -28,25 +33,36 @@
 
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
         <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
-        
-        <img *ngIf="(user$ | async) as user" class="avatar pointer elevate hover default" src="{{user.photoURL}}"
-            matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
 
-        <mat-menu #profileMenu="matMenu">
-            <button mat-menu-item routerLink="/my-items">
-                <mat-icon matPrefix>
-                    redeem
-                </mat-icon>
-                Moji predmeti
-            </button>
-            <button mat-menu-item (click)="onLogout()">
-                <mat-icon matPrefix>
-                    exit_to_app
-                </mat-icon>
-                Odjava
-            </button>
-        </mat-menu>
+        <ng-container *ngIf="(user$ | async) as user">
+            
+            <img *ngIf="user?.photoURL; else noPhoto" class="avatar pointer elevate hover default" src="{{ user.photoURL}}" matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
+            
+            <ng-template #noPhoto>
+                {{ user.displayName }}
+                <img id="anonymous" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
+            </ng-template>
+
+            
+            <mat-menu #profileMenu="matMenu">
+                <button mat-menu-item routerLink="/my-items">
+                    <mat-icon matPrefix>
+                        redeem
+                    </mat-icon>
+                    Moji predmeti
+                </button>
+                <button mat-menu-item (click)="onLogout()">
+                    <mat-icon matPrefix>
+                        exit_to_app
+                    </mat-icon>
+                    Odjava
+                </button>
+            </mat-menu>
+        
+        </ng-container>
+
     </div>
 
 </mat-toolbar>
-<mat-progress-bar style="position: absolute" *ngIf="(active$ | async)" mode="indeterminate"></mat-progress-bar>
+
+<!-- <mat-progress-bar style="position: absolute" *ngIf="(active$ | async)" mode="indeterminate"></mat-progress-bar> -->

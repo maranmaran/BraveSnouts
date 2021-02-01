@@ -1,2 +1,13 @@
-<gallery class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
-<img *ngIf="dbMedia.length == 0" src="assets/placeholders/PlaceholderProductImage.svg" />
+<ng-container *ngIf="dbMedia && dbMedia?.length > 0; else noMedia">
+    <gallery *ngIf="!onlyFirst; else singelMedia" class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
+    
+    <ng-template #singelMedia>
+        <img class="img-fluid" [src]="dbMedia[0].url" />
+    </ng-template>
+</ng-container>
+
+<ng-template #noMedia>
+    <img *ngIf="!dbMedia || dbMedia?.length == 0" src="assets/placeholders/PlaceholderProductImage.svg" />
+</ng-template>
+
+

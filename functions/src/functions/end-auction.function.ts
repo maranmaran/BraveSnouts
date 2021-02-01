@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
-import { Auction, AuctionItem, Bid, UserInfo, Winner } from "../models/models";
+import { Auction, AuctionItem, Bid, TrackedItem, UserInfo, Winner } from "../models/models";
 import { sendEndAuctionMail } from "../services/mail.service";
 
 /** Processes auctions end
@@ -12,10 +12,11 @@ export const endAuctionFn = europeFunctions.https.onCall(
   async (data, context) => {
 
     const auctionId = data.auctionId;
+    const handoverDetails = data.handoverDetails;
 
     try {
       // process auction
-      return await auctionEnd(auctionId);
+      return await auctionEnd(auctionId, handoverDetails);
     } 
     catch(error) {
       logger.error(error);
@@ -29,7 +30,7 @@ export const endAuctionFn = europeFunctions.https.onCall(
  * Checks for today auction and whether or not it's finished
  * If it's done it retrieves all best bids 
  */
-const auctionEnd = async (auctionId: string) => {
+const auctionEnd = async (auctionId: string, handoverDetails: string) => {
 
     // get auction data
     const auction = await getAuction(auctionId);
@@ -51,8 +52,11 @@ const auctionEnd = async (auctionId: string) => {
     // Save all winning users
     await saveWinners(auctionId, bids, userInfo);
 
+    // clear tracked items
+    await clearTrackedItems(auctionId);
+
     // Inform users
-    await sendMails(auctionId, userBids);
+    await sendMails(auctionId, userBids, handoverDetails);
 
     // Mark processed auctions
     await markAuctionProcessed(auction);
@@ -110,7 +114,7 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
 
     const user = userInfo.get(bid.user) as UserInfo;
 
-    const winner = new Winner({
+    const winnerInstance = new Winner({
       userId: user.id,
       auctionId: auctionId,
       itemId: bid.item.id,
@@ -124,11 +128,23 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
       paymentStatus: 'pending',
       deliveryChoice: null,
       postalInformation: null,
+
     })
+    
+    // const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
 
-    const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
+    const winnerObj = Object.assign({}, winnerInstance);
 
-    await store.collection('winners').doc(id).set(Object.assign({}, winner));
+    await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update({winner: winnerObj});
+  }
+}
+
+/** Clears all user tracked items for processed auction */
+const clearTrackedItems = async (auctionId: string) => {
+  const trackedItems = await store.collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
+  for(const item of trackedItems.docs) {
+    const trackedItem = item.data() as TrackedItem;
+    await store.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
   }
 }
 
@@ -170,9 +186,9 @@ const getUserBids = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserI
 }
 
 /** Sends mails to relevant users with their won items */
-const sendMails = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) => {
+const sendMails = async (auctionId: string, userBids: Map<UserInfo, Bid[]>, handoverDetails: string) => {
   for (const [userInfo, bids] of userBids) {
-      await sendEndAuctionMail(auctionId, userInfo, bids);
+      await sendEndAuctionMail(auctionId, handoverDetails, userInfo, bids);
   }
 }
 

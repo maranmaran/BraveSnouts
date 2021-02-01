@@ -1,18 +1,37 @@
-<div class="container" fxLayout="column" fxLayoutAlign="center center">
-    
+<div class="container" fxLayout="column" fxLayoutAlign="start center">
+
     <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
         <mat-icon>
             close
         </mat-icon>
     </button>
 
-    <div class="mb-3 w-50" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
-        <button mat-icon-button (click)="onClose('gmail')">
-            <img style="width: 100%; height: auto" src="assets/social-logo/google.svg" />
-        </button>
-    
-        <button mat-icon-button (click)="onClose('facebook')">
-            <img style="width: 100%; height: auto" src="assets/social-logo/facebook.svg" />
-        </button>
+
+    <div class="mb-4" fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="space-between center">
+
+        <img id="google" class="login-btn elevate hover-big" src="assets/social-logo/google.svg"
+            (click)="selectMethod('gmail')" matTooltip="Gmail prijava" />
+
+        <img id="facebook" class="login-btn elevate hover-big " src="assets/social-logo/facebook.svg"
+            (click)="selectMethod('facebook')" matTooltip="Facebook prijava" />
+
+        <img id="mail" class="login-btn elevate hover-big" src="assets/social-logo/message.svg"
+            (click)="selectMethod('email')" matTooltip="Prijava putem maila" />
     </div>
+
+    <div id="privacy" class="foreground primary lighter link" routerLink="/privacy-policy">Polica privatnosti</div>
+
+    <div *ngIf="method == 'email' && !emailSentForVerification" class="mt-5 mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [formControl]="email">
+        </mat-form-field>
+
+        <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">Prijava</button>
+    </div>
+
+    <div *ngIf="emailSentForVerification" class="mt-3 mb-3 w-100 center">
+        Poslali smo vam e-poštu za potvrdu prijave
+    </div>
+
 </div>

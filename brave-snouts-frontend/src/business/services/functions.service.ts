@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/functions';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FunctionsService {
 
     constructor(private functions: AngularFireFunctions) { }
@@ -15,9 +15,16 @@ export class FunctionsService {
     }
 
     /** Calls cloud function to process auction end */
-    endAuction(auctionId: string) {
+    endAuction(auctionId: string, handoverDetails: string) {
         const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
         
-        return callable({ auctionId });
+        return callable({ auctionId, handoverDetails });
+    }
+
+    /** Sends email update for handover via cloud function */
+    changeHandoverDetails(auctionId: string, handoverDetails: string) {
+        const callable = this.functions.httpsCallable('changeHandoverDetails-changeHandoverDetailsFn');
+        
+        return callable({ auctionId, handoverDetails });
     }
 }

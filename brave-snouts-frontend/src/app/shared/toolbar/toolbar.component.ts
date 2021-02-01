@@ -13,6 +13,7 @@ import * as moment from 'moment';
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
+  providers: [AuthService],
   animations: [
     trigger('logoClick', [
       state('no-click', style({  })),

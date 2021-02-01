@@ -1,5 +1,6 @@
 import { FirebaseFile } from "src/app/features/auction-feature/auction/auction-form/auction-form.component";
 import firebase from 'firebase/app';
+import { Winner } from "src/business/models/winner.model";
 
 export class AuctionItem {
 
@@ -19,4 +20,6 @@ export class AuctionItem {
     bidId: string;
     bid: number = 0;
     user: string;
+
+    winner: Winner;
 }
