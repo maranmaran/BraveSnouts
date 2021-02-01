@@ -18,6 +18,8 @@ import { AuctionItem, Bid, UserInfo } from "../models/models";
 //   },
 // });
 
+const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.url}/email-optout;userId=${userId};optout=${optout}`
+
 export const sendEndAuctionMail = async (auctionId: string, handoverDetails: string, user: UserInfo, items: Bid[]) => {
 
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
@@ -32,9 +34,9 @@ export const sendEndAuctionMail = async (auctionId: string, handoverDetails: str
     },
   });
 
-  const baseURL = `https://bravesnoutsdev.firebaseapp.com`;
-  const postConfirmURL = `${baseURL}/post-confirm;auctionId=${auctionId};userId=${user.id}`
-  const handoverConfirmURL = `${baseURL}/handover-confirm;auctionId=${auctionId};userId=${user.id}`
+  const postConfirmURL = `${config.baseURL}/post-confirm;auctionId=${auctionId};userId=${user.id}`
+  const handoverConfirmURL = `${config.baseURL}/handover-confirm;auctionId=${auctionId};userId=${user.id}`
+
 
   const email = {
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
@@ -52,7 +54,6 @@ export const sendEndAuctionMail = async (auctionId: string, handoverDetails: str
     
     <p>Za preuzimanje postom klikni <a href="${postConfirmURL}">ovdje</a></p>
     <p>Za potvrdu osobnog preuzimanja klikni <a href="${handoverConfirmURL}">ovdje</a></p>
-
     `,
   };
 
@@ -73,6 +74,8 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
     },
   });
 
+  const optoutEmail = getEmailOptoutLink(user.id, "bidchange");
+
   const email = {
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
     from: '"Admin" <urh.marko@gmail.com>',
@@ -85,8 +88,12 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
       od <b>${itemBefore.bid} kn</b> nadmašena i trenutno iznosi <b>${itemAfter.bid} kn</b>.</p>
       
       <p>Predmet možeš pronaći na ovoj 
-      <a href="https://bravesnoutsdev.firebaseapp.com/auction;id=${itemAfter.auctionId}">aukciji</a>.
-      </p>`,
+        <a href="${config.base.url}/auction;id=${itemAfter.auctionId}">aukciji</a>.
+      </p>
+      
+      <p>Ako ne želiš više primat ovakve mailove klikni <a href="${optoutEmail}">ovdje</a> </p>
+      
+      `,
   };
 
   await testMailService.sendMail(email);

@@ -42,6 +42,7 @@ import { HandoverDialogComponent } from './features/auction-feature/delivery/han
 import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
 import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
+import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 
 @NgModule({
   imports: [
@@ -107,6 +108,8 @@ import { EmailLoginComponent } from './features/auth-feature/email-login/email-l
     ItemGalleryComponent,
 
     EmailLoginComponent,
+
+    EmailOptoutComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
