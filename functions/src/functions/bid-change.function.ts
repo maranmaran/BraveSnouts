@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import { europeFunctions } from "../index";
-import { AuctionItem, UserInfo } from "../models/models";
+import { europeFunctions, store } from "../index";
+import { AuctionItem, EmailSettings, UserInfo } from "../models/models";
 import { sendOutbiddedMail } from "../services/mail.service";
 
 
@@ -24,6 +24,12 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
     if (after.user === before.user) {
       functions.logger.warn(`Same bidder`);
       return null;
+    }
+
+    // check permission
+    const userEmailSettings = ((await store.collection("users").doc(before.user).get()).data()?.emailSettings as EmailSettings)?.bidUpdates;
+    if(!userEmailSettings) {
+      console.warn(`Didn't send bid update to user because he either opted out or was not found. ${before.user}`);
     }
 
     // get outbidded user information

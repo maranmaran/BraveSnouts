@@ -23,7 +23,7 @@ export class FunctionsService {
 
     /** Sends email update for handover via cloud function */
     changeHandoverDetails(auctionId: string, handoverDetails: string) {
-        const callable = this.functions.httpsCallable('changeHandoverDetails-changeHandoverDetailsFn');
+        const callable = this.functions.httpsCallable('changeHandover-changeHandoverFn');
         
         return callable({ auctionId, handoverDetails });
     }

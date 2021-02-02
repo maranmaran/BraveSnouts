@@ -74,6 +74,8 @@ export class AuctionItem {
     bidId: string;
     bid: number = 0;
     user: string;
+
+    winner: Winner;
 }
 
 export interface Bid {
@@ -92,4 +94,9 @@ export interface TrackedItem {
     auctionId: string,
     itemId: string,
     userId: string,
+}
+
+export interface EmailSettings {
+    auctionAnnouncements: boolean,
+    bidUpdates: boolean,
 }

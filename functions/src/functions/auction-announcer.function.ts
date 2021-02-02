@@ -65,7 +65,6 @@ export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
         if(hours === 1) {
             console.log(`ending in 1 hour`);
         }
-
     }
 })
 

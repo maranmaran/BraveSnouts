@@ -20,6 +20,9 @@ List of variables:
     * Etheral mail secret: `firebase functions:config:set mail.user="patience56@ethereal.email" mail.password="jYsRxVBXdsfU6W8nHv"` 
 * Instagram API - user / pass
     * Instagram secret: `firebase functions:config:set instagram.client_id="yourClientID" instagram.client_secret="yourClientSecret"` 
+* BaseURL
+    * Protocol + domain: `firebase functions:config:set base.url="baseurl"`
+    * https://bravesnoutsdev.firebaseapp.com for example 
 
 ## Deployment 
 

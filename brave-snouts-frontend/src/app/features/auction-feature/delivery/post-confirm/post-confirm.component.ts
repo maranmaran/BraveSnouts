@@ -15,8 +15,9 @@ import { WinnersRepository } from 'src/business/services/repositories/winners.re
 export class PostConfirmComponent implements OnInit {
 
   postDeliveryInfoForm: FormGroup;
-
-  success = false;
+   
+  success: boolean;
+  bootstrap: boolean = false;
 
   private _auctionId: string;
   private _userId: string;
@@ -65,8 +66,8 @@ export class PostConfirmComponent implements OnInit {
       mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
     ).subscribe(
       () => this.success = true, 
-      // () => this.router.navigate(['/']), 
-      err => console.log(err)
+      err => (console.log(err), this.success = false),
+      () => this.bootstrap = true
     );
 
   }

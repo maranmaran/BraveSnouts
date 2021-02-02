@@ -13,6 +13,9 @@ import { WinnersRepository } from 'src/business/services/repositories/winners.re
   providers: [AuctionItemRepository]
 })
 export class HandoverConfirmComponent implements OnInit {
+  
+  success: boolean;
+  bootstrap: boolean = false;
 
   
   private _auctionId: string;
@@ -50,9 +53,9 @@ export class HandoverConfirmComponent implements OnInit {
       map(winner => [winner.itemId, Object.assign({}, winner, {deliveryChoice: 'handover'}) ]),
       mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
     ).subscribe(
-      // TODO: Toast notification for successful submit
-      () => this.router.navigate(['/']), 
-      err => console.log(err)
+      () => this.success = true, 
+      err => (console.log(err), this.success = false),
+      () => this.bootstrap = true
     );
 
   }

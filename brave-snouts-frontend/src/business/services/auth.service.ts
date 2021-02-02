@@ -205,6 +205,10 @@ export class AuthService {
             avatar: cred.user.photoURL,
             signInMethod: cred.credential.signInMethod,
             providerId: cred.credential.providerId,
+            emailSettings: {
+                auctionAnnouncements: true,
+                bidUpdates: true,
+            }
         }
 
         return this.store.collection(`users`).doc(user.id).set(user);
