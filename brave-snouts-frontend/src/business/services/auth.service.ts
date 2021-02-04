@@ -4,7 +4,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import firebase from 'firebase/app';
 import { from, noop, of } from "rxjs";
-import { map, switchMap, take } from "rxjs/operators";
+import { map, mergeMap, switchMap, take } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 import { AuctionItem } from "src/business/models/auction-item.model";
 import { environment } from "src/environments/environment";
@@ -228,6 +228,16 @@ export class AuthService {
     getUserItems(userId: string) {
         return this.store.collection(`users/${userId}/tracked-items`)
             .valueChanges({ idField: 'id' })
+    }
+
+    deleteTrackedItems(auctionId: string) {
+        return this.store.collectionGroup("tracked-items", ref => ref.where("auctionId", "==", auctionId))
+        .valueChanges()
+        .pipe(
+            take(1),
+            mergeMap(items => [...items]),
+            mergeMap((item: any) => this.store.doc(`users/${item.userId}/tracked-items/${item.itemId}`).delete())
+        )
     }
 
 }
