@@ -124,25 +124,28 @@ const importData = async (path: string) => {
     // generate items
     for (let row of rows as any[]) {
 
-        const images = (row[headers.images] as string).split(',').map(s => s.trim());
         const imagesArr = [];
-        for(const image of images) {
-
-            // image
-            await storage.bucket().upload(path + `\\transformed-images\\${image}.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
-            const imageUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}?alt=media`
-
-            // thumb
-            await storage.bucket().upload(path + `\\transformed-images\\${image}_thumb.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
-            const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}_thumb?alt=media`
-
-            imagesArr.push({
-                name: image,
-                path: `auction-items/${image}`,
-                type: 'image',
-                url: imageUrl,
-                thumb: thumbUrl
-            });
+        let imagesStr: string = (row[headers.images])?.toString()?.trim();
+        if(imagesStr && imagesStr != "") {
+            const images = imagesStr.split(',').map(s => s.trim());
+            for(const image of images) {
+    
+                // image
+                await storage.bucket().upload(path + `\\transformed-images\\${image}.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
+                const imageUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}?alt=media`
+    
+                // thumb
+                await storage.bucket().upload(path + `\\transformed-images\\${image}_thumb.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
+                const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}_thumb?alt=media`
+    
+                imagesArr.push({
+                    name: image,
+                    path: `auction-items/${image}`,
+                    type: 'image',
+                    url: imageUrl,
+                    thumb: thumbUrl
+                });
+            }
         }
 
         const itemDoc = store.doc(`auctions/${auctionDoc.id}`).collection('items').doc(`${row[headers.id]}`)
