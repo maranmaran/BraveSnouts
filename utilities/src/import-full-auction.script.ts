@@ -6,18 +6,35 @@ import * as pathLib from 'path';
 import { Picsum } from 'picsum-photos';
 import request from 'request';
 import * as XLSX from 'xlsx';
-import { v4 as uuidv4 } from 'uuid';
+const path = require('path')
+require('dotenv').config({path: path.resolve(__dirname, '../.env') });
+
+var firebaseConfig = {
+    credential: admin.credential.applicationDefault(),
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+};
+
+const app = admin.initializeApp(firebaseConfig);
+const store = app.firestore();
+const storage = app.storage();
 
 const magick = GM.subClass({imageMagick: true});
 
 require('dotenv').config();
 
-const downloadImages = async (number = 100, path = './utilities/data/images') => {
+const downloadImages = async (number = 100, path: string) => {
 
     for (let i = 0; i < number; i++) {
 
         const image = await Picsum.random();
-        const dest = `${path}/${i}.jpg`;
+        const dest = path + `\\images\\${i}.jpg`;
 
         const file = fs.createWriteStream(dest);
         file.on('finish', () => file.close());
@@ -26,7 +43,7 @@ const downloadImages = async (number = 100, path = './utilities/data/images') =>
     }
 }
 
-const transformImages = async (path = 'C:\\Repos\\BraveSnouts\\utilities\\data\\images') => {
+const transformImages = async (path: string) => {
 
     // get list of all filenames
     // read images one by one
@@ -37,13 +54,13 @@ const transformImages = async (path = 'C:\\Repos\\BraveSnouts\\utilities\\data\\
     // save into processed_images
     // save as image.jpg and image_thumb.jpg
 
-    let files = await fs.readdirSync(path);
+    let files = await fs.readdirSync(path + "\\images");
 
     for (const file of files) {
 
 
-        const originalPath = path;
-        const transformedPath = "C:\\Repos\\BraveSnouts\\utilities\\data\\transformed-images";
+        const originalPath = path + "\\images";
+        const transformedPath = path + "\\transformed-images";
 
         const fileName = pathLib.basename(file, pathLib.extname(file));
 
@@ -69,29 +86,14 @@ const transformImages = async (path = 'C:\\Repos\\BraveSnouts\\utilities\\data\\
     }
 }
 
-const importData = async (path = './data/import.xlsx') => {
-
-    var firebaseConfig = {
-        credential: admin.credential.applicationDefault(),
-        apiKey: process.env.FIREBASE_API_KEY,
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID,
-        measurementId: process.env.FIREBASE_MEASUREMENT_ID,
-    };
-
-    admin.initializeApp(firebaseConfig);
-    const store = admin.firestore();
-    const storage = admin.storage();
+const importData = async (path: string) => {
 
     console.log("Import started");
 
-    const filePath = process.cwd() + ".\\data\\import.xlsx";
+    const filePath = path + "\\import.xlsx";
     const options: XLSX.ParsingOptions = {};
     const headers = {
+        id: 'ID',
         name: 'Ime',
         desc: 'Opis',
         price: 'Cijena',
@@ -125,27 +127,36 @@ const importData = async (path = './data/import.xlsx') => {
         const images = (row[headers.images] as string).split(',');
         const imagesArr = [];
         for(const image of images) {
-            // get url
-            // let response = await storage.bucket('auction-items').upload("....");
-            // console.log(response);
 
-            let res = await storage.bucket("auction-items").upload(`C:\\Repos\\BraveSnouts\\utilities\\data\\transformed-images\\${image}`, { destination: image, contentType: 'image/jpeg' });
+            // image
+            await storage.bucket().upload(path + `\\transformed-images\\${image}.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
+            const imageUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}?alt=media`
+
+            // thumb
+            await storage.bucket().upload(path + `\\transformed-images\\${image}_thumb.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
+            const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}_thumb?alt=media`
 
             imagesArr.push({
                 name: image,
                 path: `auction-items/${image}`,
-                type: 'image/jpeg',
-                // url: ,
+                type: 'image',
+                url: imageUrl,
+                thumb: thumbUrl
             });
         }
 
-        const itemDoc = store.doc(`auctions/${auctionDoc.id}`).collection('items').doc()
+        const itemDoc = store.doc(`auctions/${auctionDoc.id}`).collection('items').doc(`${row[headers.id]}`)
         const item = {
-            id: itemDoc.id,
+            id: row[headers.id],
             auctionId: auctionDoc.id,
+
             name: row[headers.name],
-            startBid: row[headers.price],
             description: row[headers.desc],
+            
+            startBid: row[headers.price],
+            media: imagesArr,
+
+            bid: row[headers.price],
         };
 
         itemDoc.set(item);
@@ -154,6 +165,6 @@ const importData = async (path = './data/import.xlsx') => {
     console.log("Import finished");
 }
 
-// downloadImages();
-// transformImages();
-importData();
+// downloadImages(process.cwd() + "\\utilities\\data");
+// transformImages(process.cwd() + "\\utilities\\data");
+importData(process.cwd() + "\\utilities\\data");

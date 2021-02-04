@@ -1,4 +1,4 @@
-import { FirebaseFile } from "src/app/features/auction-feature/auction/auction-form/auction-form.component";
+import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { Winner } from "src/business/models/winner.model";
 
 export class AuctionItem {
