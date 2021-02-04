@@ -83,11 +83,16 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
+    const startTime = moment(auction.startDate).format('HH:mm');
+    const endTime = moment(auction.endDate).format('HH:mm');
+
     this.auction = this.formBuilder.group({
       id: [auction.id], // hidden
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       startDate: [auction.startDate, [Validators.required]],
       endDate: [auction.endDate, [Validators.required]],
+      startTime: [startTime, [Validators.required]],
+      endTime: [endTime, [Validators.required]]
     });
   }
 
@@ -120,7 +125,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   /**Gets new item control group */
   getItemFormGroup(item?: AuctionItem) {
     return this.formBuilder.group({
-
+      
       // changeable stuff
       id: [item?.id ?? this.auctionItemRepo.getId()],
       name: [item?.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
@@ -235,9 +240,9 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     if (!this.isValid)
       return;
 
-    const startDate = moment(this.auction.value.startDate).utc().toDate();
-    const endDate = moment(this.auction.value.endDate).utc().toDate();
-
+    const startDate = moment(moment(this.auction.value.startDate).format('L') + ' ' + this.auction.value.startTime, 'L HH:mm').toDate();
+    const endDate = moment(moment(this.auction.value.endDate).format('L') + ' ' + this.auction.value.endTime, 'L HH:mm').toDate();
+    
     const auction = new Auction({
       name: this.auction.value.name,
       startDate: firebase.firestore.Timestamp.fromDate(startDate),
