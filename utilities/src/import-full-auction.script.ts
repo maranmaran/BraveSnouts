@@ -124,7 +124,7 @@ const importData = async (path: string) => {
     // generate items
     for (let row of rows as any[]) {
 
-        const images = (row[headers.images] as string).split(',');
+        const images = (row[headers.images] as string).split(',').map(s => s.trim());
         const imagesArr = [];
         for(const image of images) {
 
