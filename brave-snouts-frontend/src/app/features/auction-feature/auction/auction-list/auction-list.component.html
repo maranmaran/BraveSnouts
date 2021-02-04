@@ -20,13 +20,13 @@
 
                             <ng-container [ngSwitch]="getAuctionState(auction)">
                                 <mat-card-subtitle *ngSwitchCase="'future'">
-                                    Počinje: {{ auction.startDate.toDate() | date: 'MMM d, h:mm:ss' }}
+                                    Počinje: {{ auction.startDate.toDate() | date: 'dd.MM.yy, HH:mm' }}
                                 </mat-card-subtitle>
                                 <mat-card-subtitle *ngSwitchCase="'expired'">
-                                    Završila: {{ auction.endDate.toDate() | date: 'MMM d, h:mm:ss' }}
+                                    Završila: {{ auction.endDate.toDate() | date: 'dd.MM.yy, HH:mm' }}
                                 </mat-card-subtitle>
                                 <mat-card-subtitle *ngSwitchDefault>
-                                    Traje do: {{ auction.endDate.toDate() | date: 'MMM d, h:mm:ss' }}
+                                    Traje do: {{ auction.endDate.toDate() | date: 'dd.MM.yy, HH:mm' }}
                                 </mat-card-subtitle>
                             </ng-container>
 
