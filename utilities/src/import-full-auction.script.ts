@@ -131,7 +131,7 @@ const importData = async (path: string) => {
             for(const image of images) {
     
                 // image
-                await storage.bucket().upload(path + `\\transformed-images\\${image}.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
+                await storage.bucket().upload(path + `\\transformed-images\\${image}.jpg`, { destination: `auction-items/${image}`, contentType: 'image/jpeg' });
                 const imageUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}?alt=media`
     
                 // thumb

@@ -2,7 +2,9 @@
     <gallery *ngIf="!onlyFirst; else singleMedia" class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
     
     <ng-template #singleMedia>
-        <img class="img-fluid" [src]="mobileImageUrl" />
+        <div class="h-100 w-100 center">
+            <img class="img-fluid" [src]="mobileImageUrl" />
+        </div>
     </ng-template>
 </ng-container>
 
