@@ -14,17 +14,7 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
 import { AuthService } from 'src/business/services/auth.service';
 import { SubSink } from 'subsink';
 import { StorageService } from './../../../../../business/services/storage.service';
-
-export interface FirebaseFile {
-  name: string,
-  type: string,
-
-  path: string,
-  url: string,
-  
-  compressedPath: string
-  compressedUrl: string
-}
+import { FirebaseFile } from '../../../../../business/models/firebase-file.model';
 
 @Component({
   selector: 'app-auction-form',

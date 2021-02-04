@@ -3,7 +3,7 @@ import { Gallery, ImageItem, VideoItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { from, noop, Observable } from 'rxjs';
 import { mergeMap, take, map, toArray, tap, concatMap } from 'rxjs/operators';
-import { FirebaseFile } from 'src/app/features/auction-feature/auction/auction-form/auction-form.component';
+import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { StorageService } from 'src/business/services/storage.service';
 
 @Component({
@@ -25,6 +25,8 @@ export class ItemMediaComponent implements OnInit {
 
   firstUrl$: Observable<string>;
 
+  mobileImageUrl: string;
+
   ngOnInit(): void {
 
     // no items
@@ -34,6 +36,8 @@ export class ItemMediaComponent implements OnInit {
     // show all
     if(!this.onlyFirst) {
       this.setupGallery();
+    } else {
+      this.mobileImageUrl = this.dbMedia[0].thumb ?? this.dbMedia[0].url
     }
   }
 
@@ -42,12 +46,12 @@ export class ItemMediaComponent implements OnInit {
 
     const galleryRef = this.gallery.ref(this.galleryId);
     
-    for (const { url, type } of this.dbMedia) {
+    for (const { url, type, thumb } of this.dbMedia) {
       if(type == 'image') 
-        galleryRef.addImage({ src: url, thumb: url, type });
+        galleryRef.addImage({ src: url, thumb: thumb ?? url, type });
   
       if(type == 'video')
-        galleryRef.addVideo({ src: url, thumb: url, type });
+        galleryRef.addVideo({ src: url, thumb: thumb ?? url, type });
     }
   }
 
