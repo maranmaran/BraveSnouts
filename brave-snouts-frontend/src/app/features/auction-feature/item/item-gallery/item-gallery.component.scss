@@ -5,13 +5,17 @@ virtual-scroller {
 
 .media-container {
     $maxHeight: 150px;
-    max-height: $maxHeight !important;
+    height: $maxHeight !important;
     app-item-media {
-      max-height: $maxHeight !important;
-      img#single-image, img#placeholder {
-        max-height: $maxHeight !important;
-        height: $maxHeight !important;
-      }
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      height: $maxHeight !important;
+      // img#single-image, img#placeholder {
+        // height: $maxHeight !important;
+      // }
     }
 
     display: flex;
