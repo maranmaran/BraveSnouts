@@ -105,24 +105,30 @@ export class AuthService {
 
         let cred: firebase.auth.UserCredential = null;
 
-        switch (method) {
-            case 'gmail':
-                cred = await this.handleGmailLogin();
-                break;
-            case 'facebook':
-                cred = await this.handleFacebookLogin();
-                break;
-            case 'instagram':
-                cred = await this.handleInstagramLogin();
-                break;
-            case 'email':
-                await this.handleEmailLogin(data.email);
-                break;
-            default:
-                break;
-        }
+        try {
+            switch (method) {
+                case 'gmail':
+                    cred = await this.handleGmailLogin();
+                    break;
+                case 'facebook':
+                    cred = await this.handleFacebookLogin();
+                    break;
+                case 'instagram':
+                    cred = await this.handleInstagramLogin();
+                    break;
+                case 'email':
+                    await this.handleEmailLogin(data.email);
+                    break;
+                default:
+                    break;
+            }
 
-        return cred;
+            return cred;
+        } 
+        catch (err) {
+            this.handleErrors(err);
+            return null;
+        }
     }
 
     handleGmailLogin(): Promise<firebase.auth.UserCredential> {
@@ -177,6 +183,17 @@ export class AuthService {
                 position: "bottom-center"
             })
         });
+    }
+
+    /** Handles different login errors */
+    handleErrors(err) {
+        if(err?.code == "auth/account-exists-with-different-credential") {
+            this.toastSvc.error("Račun već postoji", {
+                position: "bottom-center",
+                dismissible: true,
+                autoClose: true
+            });
+        }
     }
 
     async completeEmailLogin() {
