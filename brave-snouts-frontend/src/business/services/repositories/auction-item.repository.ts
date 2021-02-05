@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 import { AuctionItem } from 'src/business/models/auction-item.model';
-import { RepositoryBase } from 'src/business/services/repositories/base.repository';
 import { environment } from 'src/environments/environment';
 
 @Injectable()

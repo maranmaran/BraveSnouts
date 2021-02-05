@@ -44,6 +44,7 @@ import { SingleItemComponent } from './features/auction-feature/item/single-item
 import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
+import { HotToastModule } from '@ngneat/hot-toast';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { EmailOptoutComponent } from './features/auth-feature/email-optout/email
     MaterialModule,
     ReactiveFormsModule,
     VirtualScrollerModule,
+    HotToastModule.forRoot(),
 
   ],
   declarations: [

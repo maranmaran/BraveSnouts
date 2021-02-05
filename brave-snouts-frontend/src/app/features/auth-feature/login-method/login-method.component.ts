@@ -11,7 +11,6 @@ import { AuthService } from 'src/business/services/auth.service';
 export class LoginMethodComponent implements OnInit {
 
   constructor(
-    private readonly authService: AuthService,
     private dialogRef: MatDialogRef<LoginMethodComponent>) { }
 
   email: FormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -29,12 +28,10 @@ export class LoginMethodComponent implements OnInit {
   } 
 
   onSubmit() {
-
     // send email verification link for mail and wait for 10 seconds before exiting
     if(this.method == 'email' && this.email.valid) {
-      this.authService.doAuth(this.method, { email: this.email.value });
-      this.emailSentForVerification = true;
-      setTimeout(() => this.onClose(null), 10000);
+      let data = { method: this.method, data: { email: this.email.value } };
+      this.onClose(data);
     }
   }
 

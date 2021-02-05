@@ -39,8 +39,7 @@
             <img *ngIf="user?.photoURL; else noPhoto" class="avatar pointer elevate hover default" src="{{ user.photoURL}}" matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
             
             <ng-template #noPhoto>
-                {{ user.displayName }}
-                <img id="anonymous" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
+                <img id="anonymous" matTooltip="{{ (userInfo$ | async).displayName }}" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
             </ng-template>
 
             
