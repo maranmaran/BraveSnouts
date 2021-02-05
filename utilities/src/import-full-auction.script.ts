@@ -6,6 +6,7 @@ import * as pathLib from 'path';
 import { Picsum } from 'picsum-photos';
 import request from 'request';
 import * as XLSX from 'xlsx';
+import { Auction } from './models';
 const path = require('path')
 require('dotenv').config({path: path.resolve(__dirname, '../.env') });
 
@@ -29,12 +30,11 @@ const magick = GM.subClass({imageMagick: true});
 
 require('dotenv').config();
 
-const downloadImages = async (number = 100, path: string) => {
-
+const downloadImagesFn = async (imagesDir: string, number: number) => {
     for (let i = 0; i < number; i++) {
 
         const image = await Picsum.random();
-        const dest = path + `\\images\\${i}.jpg`;
+        const dest = imagesDir;
 
         const file = fs.createWriteStream(dest);
         file.on('finish', () => file.close());
@@ -43,7 +43,7 @@ const downloadImages = async (number = 100, path: string) => {
     }
 }
 
-const transformImages = async (path: string) => {
+const transformImagesFn = async (imagesDir: string, transformDir: string) => {
 
     // get list of all filenames
     // read images one by one
@@ -54,71 +54,67 @@ const transformImages = async (path: string) => {
     // save into processed_images
     // save as image.jpg and image_thumb.jpg
 
-    let files = await fs.readdirSync(path + "\\images");
-
+    console.log(`Clearing ${transformDir}`);
+    // reset transform dir
+    fs.rmdirSync(transformDir, { recursive: true });
+    fs.mkdirSync(transformDir)
+    
+    console.log(`Reading ${imagesDir} for images to transform`);
+    let files = fs.readdirSync(imagesDir);
+    
     for (const file of files) {
-
-
-        const originalPath = path + "\\images";
-        const transformedPath = path + "\\transformed-images";
-
+        
+        const originalPath = imagesDir;
+        const transformedPath = transformDir;
+        
         const fileName = pathLib.basename(file, pathLib.extname(file));
-
+        
         // image
         magick(`${originalPath}\\${file}`)
-            .strip()
-            .interlace('Plane')
-            .gaussian(0.05)
-            .resize(500, 500)
-            .quality(50)
-            .compress('JPEG')
-            .write(`${transformedPath}\\${fileName}.jpg`, (err) => console.log(err));
-
+        .strip()
+        .interlace('Plane')
+        .gaussian(0.05)
+        .resize(500, 500)
+        .quality(50)
+        .compress('JPEG')
+        .write(`${transformedPath}\\${fileName}.jpg`, (err) => console.log(err));
+        
         // thumbnail
         magick(`${originalPath}\\${file}`)
-            .strip()
-            .interlace('Plane')
-            .gaussian(0.05)
-            .resize(150, 150)
-            .quality(50)
-            .compress('JPEG')
-            .write(`${transformedPath}\\${fileName}_thumb.jpg`, (err) => console.log(err));
+        .strip()
+        .interlace('Plane')
+        .gaussian(0.05)
+        .resize(150, 150)
+        .quality(50)
+        .compress('JPEG')
+        .write(`${transformedPath}\\${fileName}_thumb.jpg`, (err) => console.log(err));
     }
+
+    console.log(`Finished transformation`);
 }
 
-const importData = async (path: string) => {
-
+const importDataFn = async (importFilePath: string, transformDir: string, auction: Auction) => {
+    
     console.log("Import started");
-
-    const filePath = path + "\\import.xlsx";
+    
     const options: XLSX.ParsingOptions = {};
     const headers = {
         id: 'ID',
-        name: 'Ime',
+        name: 'Naziv',
         desc: 'Opis',
         price: 'Cijena',
         images: 'Slike'
     }
 
-    const book: XLSX.WorkBook = XLSX.readFile(filePath, options);
+    const book: XLSX.WorkBook = XLSX.readFile(importFilePath, options);
     const sheet = book.Sheets[book.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet);
 
     console.log(`File loaded with ${rows.length} rows`);
-
     // generate auction
-    let auctionDoc = await store.collection('auctions').doc("imported-auction");
-    let auction = {
-        id: auctionDoc.id,
-        name: `Imported auction`,
-        description: "This auction has been imported through XLSX",
-        startDate: admin.firestore.Timestamp.fromDate(new Date()),
-        endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
-        archived: false,
-        processed: false,
-    };
+    let auctionDoc = await store.collection('auctions').doc(auction.id);
+    await auctionDoc.set(Object.assign({}, auction));
 
-    await auctionDoc.set(auction);
     console.log("Auction generated, seeding items...");
 
     // generate items
@@ -126,16 +122,18 @@ const importData = async (path: string) => {
 
         const imagesArr = [];
         let imagesStr: string = (row[headers.images])?.toString()?.trim();
+
         if(imagesStr && imagesStr != "") {
             const images = imagesStr.split(',').map(s => s.trim());
+
             for(const image of images) {
     
                 // image
-                await storage.bucket().upload(path + `\\transformed-images\\${image}.jpg`, { destination: `auction-items/${image}`, contentType: 'image/jpeg' });
+                await storage.bucket().upload(`${transformDir}\\${image}.jpg`, { destination: `auction-items/${image}`, contentType: 'image/jpeg' });
                 const imageUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}?alt=media`
     
                 // thumb
-                await storage.bucket().upload(path + `\\transformed-images\\${image}_thumb.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
+                await storage.bucket().upload(`${transformDir}\\${image}_thumb.jpg`, { destination: `auction-items/${image}_thumb`, contentType: 'image/jpeg' });
                 const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}_thumb?alt=media`
     
                 imagesArr.push({
@@ -168,6 +166,42 @@ const importData = async (path: string) => {
     console.log("Import finished");
 }
 
-// downloadImages(process.cwd() + "\\utilities\\data");
-// transformImages(process.cwd() + "\\utilities\\data");
-importData(process.cwd() + "\\utilities\\data");
+export const importFullAuction = async (
+    // flags
+    downloadTestImages: boolean = false,
+    transformImages: boolean = true,
+    importData: boolean = true,
+
+    // dirs
+    imagesDir?: string, 
+    transformImagesDir?: string,
+    importFilePath?: string,
+    
+    // data
+    auction?: Auction,
+    amountOfImages?: number,
+    simulateBids?: boolean,
+    ) => {
+   
+    if(downloadTestImages) {
+        await downloadImagesFn(imagesDir as string, amountOfImages as number);
+    }
+
+    if(transformImages) {
+        await transformImagesFn(imagesDir as string, transformImagesDir as string);
+    }
+
+    if(importData) {
+        await importDataFn(importFilePath as string, transformImagesDir as string, auction as Auction);
+    }
+}
+
+    // auction = {
+    //     id: auctionDoc.id,
+    //     name: `Imported auction`,
+    //     description: "This auction has been imported through XLSX",
+    //     startDate: admin.firestore.Timestamp.fromDate(new Date()),
+    //     endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
+    //     archived: false,
+    //     processed: false,
+    // };
