@@ -78,7 +78,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   onLogin() {
-    this.authSvc.login();
+    this.authSvc.login().subscribe(noop);
   }
 
   onLogout() {

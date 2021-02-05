@@ -69,13 +69,6 @@ export class AuthService {
                 }),
                 // concatMap(cred => cred ? this.getUserInternalInformation(cred.user.uid) : of(null))
             )
-            .subscribe(noop);
-            // .subscribe(userData => {
-            //     if(!userData)
-            //         return;
-
-            //     this._internalUserInformation.next(userData);
-            // })
     }
 
     /** This refers to users collection in firebase */
