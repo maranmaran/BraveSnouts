@@ -180,7 +180,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // construct bid
     let bid = new Bid({
-      // itemId: item.id,
+      itemId: item.id,
       userId: user.uid,
       userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email },
       date: this.bidsRepo.timestamp,

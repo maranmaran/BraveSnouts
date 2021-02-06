@@ -22,6 +22,7 @@ import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
   selector: 'app-admin-page',
@@ -41,6 +42,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
     private readonly loadingSvc: ProgressBarService,
+    private readonly toastSvc: HotToastService
   ) { }
 
   private _auctionId: string;
@@ -168,9 +170,17 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     .subscribe(handoverDetails => {
       if(!handoverDetails) return;
 
-      this.loadingSvc.active$.next(true);
       this.functionsSvc.endAuction(auctionId, handoverDetails)
-      .pipe(take(1), finalize(() => this.loadingSvc.active$.next(false)))
+      .pipe(
+        take(1),
+        this.toastSvc.observe(
+          {
+            loading: 'Aukcija se zatvara..',
+            success: "Uspješno završena aukcija",
+            error: "Nešto je pošlo po zlu",
+          }
+        )
+      )
       .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
 
     }, err => console.log(err))
@@ -192,7 +202,16 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       if(!handoverDetails) return;
 
       this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
-      .pipe(take(1), finalize(() => this.loadingSvc.active$.next(false)))
+      .pipe(
+        take(1), 
+        this.toastSvc.observe(
+          {
+            loading: 'Mijenjam..',
+            success: "Uspješna izmjena",
+            error: "Nešto je pošlo po zlu",
+          }
+        ), 
+      )
       .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
 
     }, err => console.log(err))
