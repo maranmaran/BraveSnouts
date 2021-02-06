@@ -88,13 +88,13 @@
 
     <div class="container">
         <div class="logo-container center">
-            <!-- <img class="logo" src="cid:logo" alt="Hrabre njuške logo"> -->
-            <img class="logo" src="./../../../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuške logo">
+            <img class="logo" src="cid:logo" alt="Hrabre njuške logo">
+            <!-- <img class="logo" src="./../../../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuške logo"> -->
         </div>
     
         <div class="title-container center">
-            <!-- <h2 class="title">Pozdrav {{user_name}},</h2> -->
-            <h2 class="title">Pozdrav Marko,</h2>
+            <h2 class="title">Pozdrav {{user_name}},</h2>
+            <!-- <h2 class="title">Pozdrav Marko,</h2> -->
             <h6 class="subtitle">Hvala ti na sudjelovanju!</h6>
         </div>
     
@@ -102,14 +102,14 @@
     
         <div class="item-details">
             <h5>Osvojeni predmeti</h5>
-            <!-- {{items_html}} -->
-            <!-- <p>Ukupno: {{total}}</p> -->
-            <ul>
+            {{items_html}}
+            <p>Ukupno: {{total}}</p>
+            <!-- <ul>
                 <li>Predmet 1 - 30kn</li>
                 <li>Predmet 1 - 30kn</li>
                 <li>Predmet 1 - 30kn</li>
             </ul>
-            <p>Ukupno: {90kn}</p>
+            <p>Ukupno: {90kn}</p> -->
         </div>
     
         <hr class="solid">
@@ -134,10 +134,10 @@
                 <li>Paypal - hrabre.njuske1@gmail.com</li>
                 <li>Keks - 0994513163</li>
             </ul>
-            <!-- <p>Opis plaćanja: <i>{{payment_detail}}</i></p> -->
             <div style="margin-top: 2rem; display: flex; flex-direction: row; flex-wrap: wrap;">
                 <p style="text-decoration: underline;">Opis plaćanja:</p> 
-                <i style="text-decoration: none; margin-left: 10px;">"Marko Urh Aukcija 4 - 2313"</i>
+                <!-- <i style="text-decoration: none; margin-left: 10px;">"Marko Urh Aukcija 4 - 2313"</i> -->
+                <i style="text-decoration: none; margin-left: 10px;">"{{payment_detail}}"</i>
             </div>
         </div>
     
@@ -145,8 +145,8 @@
     
         <div class="handover-details">
             <h5>Informacije za osobno preuzimanje</h5>
-            <!-- <i>{{handover_details}}</i> -->
-            <i>Trg bana Josipa Jelačića, 24.09.2021, 18:00</i>
+            <i>{{handover_details}}</i>
+            <!-- <i>Trg bana Josipa Jelačića, 24.09.2021, 18:00</i> -->
         </div>
     
         <h6 class="subtitle center" style="margin-top: 2rem;">Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama.!</h6>

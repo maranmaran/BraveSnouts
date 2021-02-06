@@ -4,8 +4,7 @@ import * as handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
 import * as path from 'path';
 import { config } from "..";
-import { AuctionItem, Bid, UserInfo } from "../models/models";
-import { Auction } from './../models/models';
+import { AuctionItem, Bid, UserInfo, Auction } from "../models/models";
 import Mail = require("nodemailer/lib/mailer");
 
 // Configure the email transport using the default SMTP transport and a GMail account.
@@ -47,19 +46,19 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     items_html: `<ul>${items.map(item => `<li>${item.item.name} - ${item.value}kn</li>`).join("\n")}</ul>`,
     total: items.map(x => x.value).reduce((prev, cur) => prev + cur),
   }
-  let rawTemplate = fs.readFileSync(path.join(__dirname, 'mail-templates', 'end-auction.mail.html'));
-  let emailTemplate = handlebars.compile(rawTemplate)
-  emailTemplate = handlebars.template(emailVariables);
+  const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.html'), 'utf8');
+  let emailTemplatePrecompiled = handlebars.compile(rawTemplate)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
   // send it
   const email: Mail.Options = {
     from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
     to: user.email,
     subject: 'Čestitamo na osvojenim predmetima!',
-    html: emailTemplate.toString(),
+    html: emailTemplate,
     attachments: [{
       filename: 'njuske-kapica-compressed.jpg',
-      path: './../../assets/',
+      path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
       cid: 'logo' 
     }]
   };

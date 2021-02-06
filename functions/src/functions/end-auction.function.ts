@@ -14,15 +14,8 @@ export const endAuctionFn = europeFunctions.https.onCall(
     const auctionId = data.auctionId;
     const handoverDetails = data.handoverDetails;
 
-    try {
-      // process auction
-      return await auctionEnd(auctionId, handoverDetails);
-    } 
-    catch(error) {
-      logger.error(error);
-      return { status: 'error', code: 401, message: 'Failed to process auction' }
-    }
-
+    // process auction
+    return await auctionEnd(auctionId, handoverDetails);
   }
 );
 
