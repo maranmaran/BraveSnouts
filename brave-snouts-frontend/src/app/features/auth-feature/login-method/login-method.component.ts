@@ -14,13 +14,12 @@ export class LoginMethodComponent implements OnInit {
     private dialogRef: MatDialogRef<LoginMethodComponent>) { }
 
   email: FormControl = new FormControl('', [Validators.required, Validators.email]);
-  method: 'gmail' | 'facebook' | 'instagram' | 'email';
-  emailSentForVerification = false;
+  method: 'gmail' | 'facebook' | 'email';
 
   ngOnInit() {
   }
 
-  selectMethod(method: 'gmail' | 'facebook' | 'instagram' | 'email') {
+  selectMethod(method: 'gmail' | 'facebook' | 'email') {
     this.method = method;
 
     if(method == 'gmail' || method == 'facebook')

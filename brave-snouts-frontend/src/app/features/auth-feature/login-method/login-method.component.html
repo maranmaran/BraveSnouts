@@ -21,7 +21,7 @@
 
     <div id="privacy" class="foreground primary lighter link" routerLink="/privacy-policy">Polica privatnosti</div>
 
-    <div *ngIf="method == 'email' && !emailSentForVerification" class="mt-5 mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
+    <div *ngIf="method == 'email'" class="mt-5 mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
         <mat-form-field>
             <mat-label>Email</mat-label>
             <input matInput type="email" [formControl]="email">
@@ -30,8 +30,5 @@
         <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">Prijava</button>
     </div>
 
-    <div *ngIf="emailSentForVerification" class="mt-3 mb-3 w-100 center">
-        Poslali smo vam e-poštu za potvrdu prijave
-    </div>
 
 </div>

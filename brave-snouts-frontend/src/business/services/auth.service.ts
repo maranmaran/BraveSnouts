@@ -4,8 +4,8 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import { HotToastService } from "@ngneat/hot-toast";
 import firebase from 'firebase/app';
-import { BehaviorSubject, from, noop, of, ReplaySubject } from "rxjs";
-import { concatMap, map, mergeMap, switchMap, take } from "rxjs/operators";
+import { BehaviorSubject, from, noop, of, ReplaySubject, throwError } from "rxjs";
+import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 import { AuctionItem } from "src/business/models/auction-item.model";
 import { User } from "src/business/models/user.model";
@@ -113,9 +113,6 @@ export class AuthService {
                 case 'facebook':
                     cred = await this.handleFacebookLogin();
                     break;
-                case 'instagram':
-                    cred = await this.handleInstagramLogin();
-                    break;
                 case 'email':
                     await this.handleEmailLogin(data.email);
                     break;
@@ -126,6 +123,7 @@ export class AuthService {
             return cred;
         } 
         catch (err) {
+            this.logout();
             this.handleErrors(err);
             return null;
         }
@@ -133,6 +131,7 @@ export class AuthService {
 
     handleGmailLogin(): Promise<firebase.auth.UserCredential> {
         const google = new firebase.auth.GoogleAuthProvider();
+        google.setCustomParameters({ prompt: 'select_account' })
 
         return this.auth.signInWithPopup(google);
     }
@@ -141,15 +140,20 @@ export class AuthService {
         const facebook = new firebase.auth.FacebookAuthProvider();
         facebook.addScope('email');
         facebook.addScope('user_link');
-        facebook.setCustomParameters({
-            'display': 'popup'
+        // facebook.setCustomParameters({
+        //     'display': 'popup'
+        // })
+
+        return this.auth.signInWithPopup(facebook)
+        .then(cred => {
+            console.log(cred);
+            
+            if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
+                throw { code: "no-email"}; 
+            }
+
+            return cred;
         })
-
-        return this.auth.signInWithPopup(facebook);
-    }
-
-    handleInstagramLogin(): Promise<firebase.auth.UserCredential> {
-        throw new Error("Not implemented");
     }
 
     handleEmailLogin(email: string): Promise<firebase.auth.UserCredential | void> {
@@ -189,6 +193,14 @@ export class AuthService {
     handleErrors(err) {
         if(err?.code == "auth/account-exists-with-different-credential") {
             this.toastSvc.error("Račun već postoji", {
+                position: "bottom-center",
+                dismissible: true,
+                autoClose: true
+            });
+        }
+
+        if(err?.code == "no-email") {
+            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-pošta", {
                 position: "bottom-center",
                 dismissible: true,
                 autoClose: true
