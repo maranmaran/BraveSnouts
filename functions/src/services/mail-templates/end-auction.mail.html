@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Hrabre Njuške</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: 'Mali', cursive !important;
+        margin-bottom: 3rem;
+        font-size: 90%;
+    }
+
+    .container {
+        width: 40%
+    }
+
+    .logo-container {
+        margin-bottom: 1rem;
+    }
+
+    .logo {
+        border-radius: 50%;
+        width: auto;
+        max-height: 120px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h5,
+    h5,
+    h6,
+    p {
+        margin: 0;
+    }
+
+    h5 {
+        margin-bottom: 1rem;
+    }
+
+    .subtitle {
+        color: #bbb
+    }
+
+    hr.solid {
+        margin-top: 1rem;
+        margin-bottom: calc(1rem - 0.5px);
+        border-top: 0.5px solid #bbb;
+    }
+
+    .center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .handover-options {
+        padding: 0 3rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    @media(max-width: 600px) {
+        .container {
+            width: 90%;
+        }
+    }
+</style>
+
+<body class="center">
+    <div class="logo-container">
+        <img class="logo"
+            src="cid:logo"
+            alt="Hrabre njuške logo">
+    </div>
+
+    <div class="title-container center">
+        <h2 class="title">Pozdrav {{user_name}},</h2>
+        <h6 class="subtitle">Hvala ti na sudjelovanju!</h6>
+    </div>
+
+    <hr class="solid container">
+
+    <div class="container item-details">
+        <h5>Osvojeni predmeti</h5>
+        {{items_html}}
+        <p>Ukupno: {{total}}</p>
+        <!-- <ul>
+            <li>Predmet 1 - 30kn</li>
+            <li>Predmet 1 - 30kn</li>
+            <li>Predmet 1 - 30kn</li>
+        </ul> -->
+        <!-- <p>Ukupno: {90kn}</p> -->
+    </div>
+
+    <hr class="solid container">
+
+    <div class="container handover-container">
+        <h5>Potvrda preuzimanja</h5>
+
+        <div class="handover-options">
+            <a href="{post_confirm_url}">Poštom</a>
+
+            <a href="{handover_confirm_url}">Osobno</a>
+        </div>
+    </div>
+
+    <hr class="solid container">
+
+    <div class="container payment-details">
+        <h5>Plaćanje</h5>
+        <ul>
+            <li>PBZ - HR4223400091110951628</li>
+            <li>Revolut - 0994513163</li>
+            <li>Paypal - hrabre.njuske1@gmail.com</li>
+            <li>Keks - 0994513163</li>
+        </ul>
+        <p>Opis plaćanja: <i>{{payment_detail}}</i></p>
+        <!-- <p>Opis plaćanja: <i>Marko Urh Aukcija 4 - 2313</i></p> -->
+    </div>
+
+    <hr class="solid container">
+
+    <div class="container handover-details">
+        <h5>Informacije za osobno preuzimanje</h5>
+        <i>{{handover_details}}</i>
+        <!-- <i>Trg bana Josipa Jelačića, 24.09.2021, 18:00</i> -->
+    </div>
+
+    <h6 class="subtitle container" style="margin-top: 2rem;">Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama.!</h6>
+
+</body>
+
+</html>

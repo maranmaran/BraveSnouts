@@ -33,16 +33,20 @@ export const endAuctionFn = europeFunctions.https.onCall(
 const auctionEnd = async (auctionId: string, handoverDetails: string) => {
 
     // get auction data
+    console.info("Retrieving auction")
     const auction = await getAuction(auctionId);
 
     // Get auction items data
     // Filter out only items that were bid on
+    console.info("Retrieving items")
     const items: AuctionItem[] = await getAuctionItems(auctionId);
 
     // Retrieve bids
+    console.info("Retrieving bids")
     const bids = getBids(items);
 
     // Retrieve user information
+    console.info("Retrieving user information")
     const userIds = [...(new Set(bids.map(bid => bid.user)))];
     const userInfo = await getUserInformation(userIds);
     
@@ -50,15 +54,19 @@ const auctionEnd = async (auctionId: string, handoverDetails: string) => {
     const userBids = getUserBids(bids, userInfo);
 
     // Save all winning users
+    console.info("Saving bids")
     await saveWinners(auctionId, bids, userInfo);
 
     // clear tracked items
+    console.info("Deleting tracked items")
     await clearTrackedItems(auctionId);
 
     // Inform users
-    await sendMails(auctionId, userBids, handoverDetails);
+    console.info("Sending emails")
+    await sendMails(auction, userBids, handoverDetails);
 
     // Mark processed auctions
+    console.info("Update auction as processed")
     await markAuctionProcessed(auction);
 
     return null;
@@ -144,6 +152,7 @@ const clearTrackedItems = async (auctionId: string) => {
   const trackedItems = await store.collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
   for(const item of trackedItems.docs) {
     const trackedItem = item.data() as TrackedItem;
+    console.info(`users/${trackedItem.userId}/tracked-items/${item.id}`);
     await store.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
   }
 }
@@ -186,9 +195,9 @@ const getUserBids = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserI
 }
 
 /** Sends mails to relevant users with their won items */
-const sendMails = async (auctionId: string, userBids: Map<UserInfo, Bid[]>, handoverDetails: string) => {
+const sendMails = async (auction: Auction, userBids: Map<UserInfo, Bid[]>, handoverDetails: string) => {
   for (const [userInfo, bids] of userBids) {
-      await sendEndAuctionMail(auctionId, handoverDetails, userInfo, bids);
+      await sendEndAuctionMail(auction, handoverDetails, userInfo, bids);
   }
 }
 

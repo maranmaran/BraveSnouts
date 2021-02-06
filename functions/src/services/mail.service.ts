@@ -1,16 +1,19 @@
 import { logger } from "firebase-functions";
+import * as fs from 'fs';
+import * as handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
-import { config, europeFunctions } from "..";
+import * as path from 'path';
+import { config } from "..";
 import { AuctionItem, Bid, UserInfo } from "../models/models";
-
-// import * as functions from 'firebase-functions';
+import { Auction } from './../models/models';
+import Mail = require("nodemailer/lib/mailer");
 
 // Configure the email transport using the default SMTP transport and a GMail account.
 // For other types of transports such as Sendgrid see https://nodemailer.com/transports/
 // TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
 // const gmailEmail = functions.config().gmail?.email ?? 'urh.marko@gmail.com';
 // const gmailPassword = functions.config().gmail?.password ?? 'urhmarko1295';
-// const mailService = nodemailer.createTransport({
+// const mailService = nodem  ailer.createTransport({
 //   service: 'gmail',
 //   auth: {
 //     user: gmailEmail,
@@ -20,7 +23,7 @@ import { AuctionItem, Bid, UserInfo } from "../models/models";
 
 const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.url}/email-optout;userId=${userId};optout=${optout}`
 
-export const sendEndAuctionMail = async (auctionId: string, handoverDetails: string, user: UserInfo, items: Bid[]) => {
+export const sendEndAuctionMail = async (auction: Auction, handoverDetails: string, user: UserInfo, items: Bid[]) => {
 
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
@@ -34,27 +37,31 @@ export const sendEndAuctionMail = async (auctionId: string, handoverDetails: str
     },
   });
 
-  const postConfirmURL = `${config.baseURL}/post-confirm;auctionId=${auctionId};userId=${user.id}`
-  const handoverConfirmURL = `${config.baseURL}/handover-confirm;auctionId=${auctionId};userId=${user.id}`
+  // load and customize html template
+  const emailVariables = {
+    post_confirm_url: `${config.baseURL}/post-confirm;auctionId=${auction.id};userId=${user.id}`,
+    handover_confirm_url: `${config.baseURL}/handover-confirm;auctionId=${auction.id};userId=${user.id}`,
+    user_name: user.name.trim().split(" ")[0],
+    handover_details: handoverDetails,
+    payment_details: `${auction.name} - ${user.email}`,
+    items_html: `<ul>${items.map(item => `<li>${item.item.name} - ${item.value}kn</li>`).join("\n")}</ul>`,
+    total: items.map(x => x.value).reduce((prev, cur) => prev + cur),
+  }
+  let rawTemplate = fs.readFileSync(path.join(__dirname, 'mail-templates', 'end-auction.mail.html'));
+  let emailTemplate = handlebars.compile(rawTemplate)
+  emailTemplate = handlebars.template(emailVariables);
 
-
-  const email = {
-    // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Admin" <urh.marko@gmail.com>',
+  // send it
+  const email: Mail.Options = {
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
     to: user.email,
-    subject: 'Osvojio si predmete na aukciji!',
-    html: `
-    <p>Pozdrav ${user.name},</p> 
-    
-    <p>Hvala ti na sudjelovanju</p>
-
-    <p>Osvojio si ${items.length} predmeta.</p>
-    
-    <p>Osobno preuzimanje bit će ${handoverDetails}</p>
-    
-    <p>Za preuzimanje postom klikni <a href="${postConfirmURL}">ovdje</a></p>
-    <p>Za potvrdu osobnog preuzimanja klikni <a href="${handoverConfirmURL}">ovdje</a></p>
-    `,
+    subject: 'Čestitamo na osvojenim predmetima!',
+    html: emailTemplate.toString(),
+    attachments: [{
+      filename: 'njuske-kapica-compressed.jpg',
+      path: './../../assets/',
+      cid: 'logo' 
+    }]
   };
 
   await testMailService.sendMail(email);
