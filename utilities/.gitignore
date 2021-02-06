@@ -15,3 +15,6 @@ dist/
 
 **/key.json
 **/.env
+
+/data/images
+/data/transformed-images

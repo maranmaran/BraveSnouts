@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { Auction } from 'src/business/models/auction.model';
 import * as moment from 'moment';
+import { User } from 'src/business/models/user.model';
 
 @Component({
   selector: 'app-toolbar',
@@ -32,6 +33,7 @@ export class ToolbarComponent implements OnInit {
   ) { }
 
   user$: Observable<firebase.User | null>;
+  userInfo$: Observable<User | null>;
   admin$: Observable<boolean>;
   active$: Observable<boolean>; // whether or not progress bar is active
   
@@ -39,6 +41,7 @@ export class ToolbarComponent implements OnInit {
     this.user$ = this.authSvc.user$
     this.admin$ = this.authSvc.isAdmin$;
     this.active$ = this.loadingSvc.active$;
+    this.userInfo$ = this.authSvc.getUserInformation();
   }
   
   clickFlag = false;
@@ -75,7 +78,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   onLogin() {
-    this.authSvc.login();
+    this.authSvc.login().subscribe(noop);
   }
 
   onLogout() {

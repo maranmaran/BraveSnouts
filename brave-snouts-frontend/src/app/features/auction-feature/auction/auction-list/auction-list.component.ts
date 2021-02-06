@@ -4,8 +4,8 @@ import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
-import { noop, Observable, of, Subscription } from 'rxjs';
-import { concatMap, distinct, distinctUntilChanged, map, take, tap } from 'rxjs/operators';
+import { from, noop, Observable, of, Subscription } from 'rxjs';
+import { concatMap, distinct, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { staggerFadeIn } from 'src/business/animations/stagger-fade-in.animation';
@@ -187,14 +187,16 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
         // delete items subcollection
         // finally delete auction
+        this.loadingSvc.active$.next(true);
         this.itemsRepo.getAll(auctionObj.id)
           .pipe(
             take(1),
             map(items => items.map(item => this.itemsRepo.delete(auctionObj.id, item.id))),
-            concatMap(deletePromises => Promise.all(deletePromises)),
+            concatMap(deletePromises => from(Promise.all(deletePromises))),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
+            concatMap(() => this.authSvc.deleteTrackedItems(auctionObj.id)),
+            finalize(() => this.loadingSvc.active$.next(false)) 
           ).subscribe(noop, err => console.log(err))
-
       })
 
   }

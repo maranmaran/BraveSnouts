@@ -11,6 +11,7 @@ import { LightboxModule, LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
 import { CountdownModule } from 'ngx-countdown';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { QuillModule } from 'ngx-quill';
 import { AuctionDetailsComponent } from 'src/app/features/auction-feature/auction/auction-details/auction-details.component';
 import { AuctionFormComponent } from 'src/app/features/auction-feature/auction/auction-form/auction-form.component';
@@ -43,6 +44,7 @@ import { SingleItemComponent } from './features/auction-feature/item/single-item
 import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
+import { HotToastModule } from '@ngneat/hot-toast';
 
 @NgModule({
   imports: [
@@ -57,6 +59,7 @@ import { EmailOptoutComponent } from './features/auth-feature/email-optout/email
     AngularFireFunctionsModule,
 
     // Auction 
+    NgxMaterialTimepickerModule,
     NgxDropzoneModule,
     GalleryModule,
     LightboxModule,
@@ -68,6 +71,7 @@ import { EmailOptoutComponent } from './features/auth-feature/email-optout/email
     MaterialModule,
     ReactiveFormsModule,
     VirtualScrollerModule,
+    HotToastModule.forRoot(),
 
   ],
   declarations: [

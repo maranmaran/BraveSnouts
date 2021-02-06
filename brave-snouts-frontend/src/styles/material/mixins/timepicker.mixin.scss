@@ -1,0 +1,205 @@
+@import "~@angular/material/theming";
+
+
+
+//lightness 0darkest 100lightest
+@function get-darker-color($color) {
+
+  // if light.. darken more
+  @if (lightness($color) > 50) {
+    @return darken($color, 5%);
+  }
+
+  @return $color;
+}
+
+@function get-conditioned-text-color($background) {
+
+  $original: white;
+  $inverted: black;
+
+  $condition: false;
+  @if (lightness($background) > 60) {
+    $condition: true;
+  }
+
+  @if($condition) {
+    @return $inverted;
+  }
+
+  @return $original;
+}
+
+@function enchance-brightness($background, $percentage) {
+  @if (lightness($background) < 50) { // dark
+    @return lighten($background, $percentage);
+  } @else { // light
+    @return darken($background, $percentage);
+  }
+}
+
+@mixin timepicker-theme($theme) {
+
+
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+
+  $foreground-palette: map-get($theme, foreground); //palette
+  $background-palette: map-get($theme, background); //palette
+
+  $theme-text: map-get($foreground-palette, text);
+
+  $theme-dialog: map-get($background-palette, dialog);
+  $theme-background: map-get($background-palette, background);
+  $theme-card: map-get($background-palette, card);
+
+
+  // component with manual inputs -- this actually wraps everything
+  .ngx-timepicker {
+    border-bottom: none !important;
+
+    .ngx-timepicker-control--active:after, *:focus:after, button:focus:active:after, .period-control__button:not(.period-control__button--disabled):focus:after   {
+      border-bottom: none !important;
+      background-color: unset !important;
+    }
+
+    path {
+      fill: $theme-text !important; // svg color
+    }
+
+    .ngx-timepicker-control {
+      padding-left: 0px !important;
+    }
+
+    .period-selector {
+      background: $theme-dialog !important;
+      border-radius: 5% !important;
+      width: calc(100% + 10px) !important;
+      right: calc(-110%) !important;
+
+      &__button {
+        color: $theme-text !important;
+
+        &:focus {
+          background-color: lighten($theme-dialog, 5%) !important;
+        }
+
+        &--active {
+          color: mat-color($accent) !important;
+        }
+      }
+    }
+
+    .ngx-timepicker-control__input {
+      background: $theme-dialog;
+    }
+
+    .ngx-timepicker-control__arrow,
+    .period-control__arrow {
+      color: $theme-text !important;
+    }
+  }
+
+  // backdrop behind clock component
+  .timepicker-overlay {
+    z-index: 1000 !important;
+  }
+
+  // clock component
+  .timepicker {
+    // --clock-hand-color: mat-color($accent) !important;
+    $accentColor: mat-color($accent);
+    --clock-hand-color:  #{$accentColor};
+
+    // UPPER DIAL
+    .timepicker-dial {
+
+      &__period--hidden {
+        display: none !important;
+      }
+
+      &__time {
+        // color: $theme-text !important;
+        color: get-conditioned-text-color(mat-color($primary)) !important;
+      }
+
+      &__container {
+        justify-content: center !important;
+      }
+    }
+
+    .timepicker-period__btn {
+      // color: $theme-text !important;
+      color: get-conditioned-text-color(mat-color($primary)) !important;
+
+
+      &:focus {
+        background-color: enchance-brightness(mat-color($primary), 30%) !important;
+      }
+    }
+
+    // Bottom - CANCEL OK buttons
+    .timepicker-button {
+      color: mat-color($accent) !important;
+    }
+
+    .clock-face {
+      background-color: get-darker-color($theme-card) !important;
+
+      &__number {
+
+        &--outer > span, > span {
+          cursor: pointer !important;
+          // color: white !important;
+          color: get-conditioned-text-color(get-darker-color($theme-card)) !important;
+        }
+
+        > span.active {
+          background-color: mat-color($accent) !important;
+          color: get-conditioned-text-color(mat-color($accent)) !important;
+        }
+      }
+    }
+
+    &__header {
+      background-color: mat-color($primary) !important;
+    }
+    &__body {
+      background-color: $theme-background !important;
+    }
+    &__actions {
+      background-color: $theme-background !important;
+    }
+  }
+
+  // placement of controls
+  .ngx-timepicker {
+    justify-content: center !important;
+
+    .ngx-timepicker-control {
+      position: unset !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+
+      &__arrows {
+        position: unset !important;
+      }
+      &__input {
+        padding: 0 !important;
+      }
+      &__time-colon {
+        margin: 0 !important;
+      }
+    }
+
+    .ngx-material-timepicker-toggle {
+      position: unset !important;
+      margin-left: 1rem;
+      > span {
+        display: flex !important;
+      }
+    }
+  }
+
+}

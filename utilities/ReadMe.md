@@ -4,7 +4,7 @@ Read
 
 Init
 * Setup .env file
-* Add google key
+* Add google key and setup google credentials environment var
 
 Run and debug options
 1) Run command `npx ts-node src/generate-big-auction.script.ts`

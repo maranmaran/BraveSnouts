@@ -2,11 +2,13 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
+import { HotToastService } from "@ngneat/hot-toast";
 import firebase from 'firebase/app';
-import { from, noop, of } from "rxjs";
-import { map, switchMap, take } from "rxjs/operators";
+import { BehaviorSubject, from, noop, of, ReplaySubject, throwError } from "rxjs";
+import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 import { AuctionItem } from "src/business/models/auction-item.model";
+import { User } from "src/business/models/user.model";
 import { environment } from "src/environments/environment";
 
 
@@ -17,7 +19,9 @@ export class AuthService {
         private readonly auth: AngularFireAuth,
         private readonly store: AngularFirestore,
         private readonly dialog: MatDialog,
-    ) { }
+        private toastSvc: HotToastService
+    ) { 
+    }
 
     public get user$() {
         return this.auth.user;
@@ -41,24 +45,40 @@ export class AuthService {
     }
 
     login() {
-        return this.auth.currentUser.then(user => {
+        return from(this.auth.currentUser)
+            .pipe(
+                concatMap(user => {
 
-            if (user)
-                return;
+                    if (user)
+                        return of(null);
 
-            let dialogRef = this.dialog.open(LoginMethodComponent, {
-                height: 'auto',
-                width: '98%',
-                maxWidth: '20rem',
-                autoFocus: false,
-                closeOnNavigation: true
-            });
+                    let dialogRef = this.dialog.open(LoginMethodComponent, {
+                        height: 'auto',
+                        width: '98%',
+                        maxWidth: '20rem',
+                        autoFocus: false,
+                        closeOnNavigation: true
+                    });
 
-            return dialogRef.afterClosed()
-                .pipe(take(1))
-                .subscribe(async (login) => login ? await this.doAuth(login.method, login.data) : noop(), err => console.log(err))
+                    // inner observable that resolves auth
+                    return dialogRef.afterClosed()
+                        .pipe(
+                            take(1),
+                            switchMap(login => login ? from(this.doAuth(login.method, login.data)) : of(null) )
+                        )
+                }),
+                // concatMap(cred => cred ? this.getUserInternalInformation(cred.user.uid) : of(null))
+            )
+    }
 
-        }).catch(err => console.log(err))
+    /** This refers to users collection in firebase */
+    getUserInformation() {
+        return this.user$.pipe(
+            switchMap(user => this.store.doc<User>(`users/${user.uid}`)
+                                        .valueChanges({ idField: 'id'  })
+                                        .pipe(take(1))
+            )
+        )
     }
 
     logout() {
@@ -69,46 +89,49 @@ export class AuthService {
      * If user chose method then it logs him in
      * Registers user if he's new
      */
-    async doAuth(method, data) {
-
-        if (!method)
-            return;
+    async doAuth(method, data): Promise<firebase.auth.UserCredential>  {
 
         const cred = await this.loginUser(method, data);
 
         if (cred && cred.additionalUserInfo.isNewUser) {
             await this.addNewUser(cred);
         }
-    }
-
-    /** Logs user in depending on method */
-    async loginUser(method, data) {
-        if (!method) return;
-
-        let cred: firebase.auth.UserCredential = null;
-
-        switch (method) {
-            case 'gmail':
-                cred = await this.handleGmailLogin();
-                break;
-            case 'facebook':
-                cred = await this.handleFacebookLogin();
-                break;
-            case 'instagram':
-                cred = await this.handleInstagramLogin();
-                break;
-            case 'email':
-                await this.handleEmailLogin(data.email);
-                break;
-            default:
-                break;
-        }
 
         return cred;
     }
 
+    /** Logs user in depending on method */
+    async loginUser(method, data) {
+
+        let cred: firebase.auth.UserCredential = null;
+
+        try {
+            switch (method) {
+                case 'gmail':
+                    cred = await this.handleGmailLogin();
+                    break;
+                case 'facebook':
+                    cred = await this.handleFacebookLogin();
+                    break;
+                case 'email':
+                    await this.handleEmailLogin(data.email);
+                    break;
+                default:
+                    break;
+            }
+
+            return cred;
+        } 
+        catch (err) {
+            this.logout();
+            this.handleErrors(err);
+            return null;
+        }
+    }
+
     handleGmailLogin(): Promise<firebase.auth.UserCredential> {
         const google = new firebase.auth.GoogleAuthProvider();
+        google.setCustomParameters({ prompt: 'select_account' })
 
         return this.auth.signInWithPopup(google);
     }
@@ -117,15 +140,20 @@ export class AuthService {
         const facebook = new firebase.auth.FacebookAuthProvider();
         facebook.addScope('email');
         facebook.addScope('user_link');
-        facebook.setCustomParameters({
-            'display': 'popup'
+        // facebook.setCustomParameters({
+        //     'display': 'popup'
+        // })
+
+        return this.auth.signInWithPopup(facebook)
+        .then(cred => {
+            console.log(cred);
+            
+            if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
+                throw { code: "no-email"}; 
+            }
+
+            return cred;
         })
-
-        return this.auth.signInWithPopup(facebook);
-    }
-
-    handleInstagramLogin(): Promise<firebase.auth.UserCredential> {
-        throw new Error("Not implemented");
     }
 
     handleEmailLogin(email: string): Promise<firebase.auth.UserCredential | void> {
@@ -144,8 +172,40 @@ export class AuthService {
             // Save the email locally so you don't need to ask the user for it again
             // if they open the link on the same device.
             window.localStorage.setItem('emailForSignIn', email);
-            // ...
+            this.toastSvc.success("Poslali smo vam e-poštu za potvrdu prijave", {
+                duration: 10000,
+                dismissible: true,
+                autoClose: true,
+                position: "bottom-center"
+            })
+        }).catch(err => {
+            console.log(err);
+            this.toastSvc.error("Imali smo poteškoća sa prijavom. Molimo vas pokušajte ponovno ili nas kontaktirajte.", {
+                duration: 10000,
+                dismissible: true,
+                autoClose: true,
+                position: "bottom-center"
+            })
         });
+    }
+
+    /** Handles different login errors */
+    handleErrors(err) {
+        if(err?.code == "auth/account-exists-with-different-credential") {
+            this.toastSvc.error("Račun već postoji", {
+                position: "bottom-center",
+                dismissible: true,
+                autoClose: true
+            });
+        }
+
+        if(err?.code == "no-email") {
+            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-pošta", {
+                position: "bottom-center",
+                dismissible: true,
+                autoClose: true
+            });
+        }
     }
 
     async completeEmailLogin() {
@@ -228,6 +288,16 @@ export class AuthService {
     getUserItems(userId: string) {
         return this.store.collection(`users/${userId}/tracked-items`)
             .valueChanges({ idField: 'id' })
+    }
+
+    deleteTrackedItems(auctionId: string) {
+        return this.store.collectionGroup("tracked-items", ref => ref.where("auctionId", "==", auctionId))
+            .valueChanges()
+            .pipe(
+                take(1),
+                mergeMap(items => [...items]),
+                mergeMap((item: any) => this.store.doc(`users/${item.userId}/tracked-items/${item.itemId}`).delete())
+            )
     }
 
 }
