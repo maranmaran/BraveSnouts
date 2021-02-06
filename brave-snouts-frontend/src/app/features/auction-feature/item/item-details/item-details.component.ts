@@ -1,8 +1,10 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { from } from 'rxjs';
 import { concatMap, filter, take } from 'rxjs/operators';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { itemAnimations } from 'src/business/animations/item.animations';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
@@ -25,6 +27,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
+    private readonly dialog: MatDialog
   ) { }
 
   // Data
@@ -157,14 +160,22 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // guard with login
 
-    const userDataPromise = from(this.authSvc.login())
-      .pipe(
-        take(1),
-        concatMap(_ => this.authSvc.user$.pipe(take(1))),
-        filter(user => !!user),
-      ).toPromise();
+    const loggedIn = await this.authSvc.isAuthenticated$.toPromise();
 
-    const user = await userDataPromise;
+    // if not logged in prompt the user with it
+    if(!loggedIn) {
+      return this.authSvc.login();
+    }
+
+    // const userDataPromise = from(this.authSvc.login())
+    //   .pipe(
+    //     take(1),
+    //     concatMap(_ => this.authSvc.user$.pipe(take(1))),
+    //     filter(user => !!user),
+    //   ).toPromise();
+
+    // continue only if user is logged in
+    const user = await this.authSvc.user$.toPromise();
     if (!user) {
       return;
     }
@@ -268,5 +279,18 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   //#endregion
+
+  onShowDescription(description: string) {
+    this.dialog.open(MessageDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: ['item-dialog', 'mat-elevation-z8'],
+      data: description
+    });
+
+  }
 
 }

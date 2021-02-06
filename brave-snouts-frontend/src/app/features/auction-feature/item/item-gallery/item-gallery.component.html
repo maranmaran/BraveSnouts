@@ -2,7 +2,7 @@
     <div #container class="items-gallery-grid">
         <div class="media-container center" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index">
         <!-- <div class="media-container" *ngFor="let item of items; trackBy: trackByFn"> -->
-            <app-item-media class="elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)"></app-item-media>
+            <app-item-media class="media elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)"></app-item-media>
         </div>
     </div>
 </virtual-scroller>

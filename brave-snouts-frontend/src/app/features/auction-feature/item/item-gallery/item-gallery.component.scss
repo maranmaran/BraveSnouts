@@ -3,19 +3,17 @@ virtual-scroller {
     height: 100%;
 }
 
+$maxHeight: 80px;
 .media-container {
-    $maxHeight: 150px;
     height: $maxHeight !important;
-    app-item-media {
+
+    .media {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
 
       height: $maxHeight !important;
-      // img#single-image, img#placeholder {
-        // height: $maxHeight !important;
-      // }
     }
 
     display: flex;
@@ -23,12 +21,13 @@ virtual-scroller {
     align-items: center;
 }
 
+
 @media (max-width: 700px) {
     .items-gallery-grid {
   
       display: grid;
-      grid-template-columns: repeat(2, minmax(0px, 1fr));
-      gap: 0.5rem;
+      grid-template-columns: repeat(3, minmax(0px, 1fr));
+      gap: 0.25rem;
     
       padding: 0.25rem;
       padding-top: 0.5rem;

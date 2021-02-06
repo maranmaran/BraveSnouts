@@ -2,8 +2,12 @@ img, video {
     width: 100%;
 }
 
-
 .img-fluid {
     width: 100% !important;
     height: auto !important;
 }
+
+img#single-image.img-fluid, img#placeholder.img-fluid {
+    height: 80px !important;
+    object-fit: fill !important;
+  }
