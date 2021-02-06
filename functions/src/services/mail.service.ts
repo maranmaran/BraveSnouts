@@ -42,7 +42,7 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     handover_confirm_url: `${config.baseURL}/handover-confirm;auctionId=${auction.id};userId=${user.id}`,
     user_name: user.name.trim().split(" ")[0],
     handover_details: handoverDetails,
-    payment_details: `${auction.name} - ${user.email}`,
+    payment_detail: `${auction.name} - ${user.email}`,
     items_html: `<ul>${items.map(item => `<li>${item.item.name} - ${item.value}kn</li>`).join("\n")}</ul>`,
     total: items.map(x => x.value).reduce((prev, cur) => prev + cur),
   }
