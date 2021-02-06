@@ -34,75 +34,73 @@
         <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn" (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
     </div>
 
-    <div class="h-100">
-        <virtual-scroller id="items-and-winners" #scroll [items]="items" [horizontal]="true" (vsEnd)="onLoadMore($event)">
-            <div #container fxLayout="row" fxLayoutGap="0.5rem">
-                <div *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" fxLayout="column" fxLayoutGap="0.5rem">
-        
-                    <mat-card id="item" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
-                        <mat-card-header>
-                            <mat-card-title>{{ item.name }}</mat-card-title>
-                        </mat-card-header>
-                        <mat-card-actions>
-                            <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje
-                                ponude</button>
-                        </mat-card-actions>
-                    </mat-card>
+    <virtual-scroller id="items-and-winners" #scroll [items]="items" [horizontal]="true" (vsEnd)="onLoadMore($event)">
+        <div #container fxLayout="row" fxLayoutGap="0.5rem">
+            <div *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" fxLayout="column" fxLayoutGap="0.5rem">
+    
+                <mat-card id="item" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
+                    <mat-card-header>
+                        <mat-card-title>{{ item.name }}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-actions>
+                        <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje
+                            ponude</button>
+                    </mat-card-actions>
+                </mat-card>
+                
+                <mat-card id="winner" *ngIf="item.winner as winner; else filler" class="elevate hover selected mt-2" [ngClass]="{'selected': activeItemId == winner.itemId}">
+                    <mat-card-header>
+                        <mat-card-title fxLayout="row" fxLayoutAlign="start center"> 
+                            <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon> {{ winner.userInfo.name }}
+                        </mat-card-title>
+                        <mat-card-subtitle>{{ winner.userInfo.email }}</mat-card-subtitle>
+                    </mat-card-header>
                     
-                    <mat-card id="winner" *ngIf="item.winner as winner; else filler" class="elevate hover selected mt-2" [ngClass]="{'selected': activeItemId == winner.itemId}">
-                        <mat-card-header>
-                            <mat-card-title fxLayout="row" fxLayoutAlign="start center"> 
-                                <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon> {{ winner.userInfo.name }}
-                            </mat-card-title>
-                            <mat-card-subtitle>{{ winner.userInfo.email }}</mat-card-subtitle>
-                        </mat-card-header>
-                        
-                        <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
-        
-                            <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
-                                <label class="pb-0 bold center">Odabir dostave:</label> 
-                                <ng-container [ngSwitch]="winner.deliveryChoice">
-                                    <label *ngSwitchCase="'handover'" class=" foreground primary lighter"> Osobno </label>
-                                    <label *ngSwitchCase="'postal'" style="color: #c326ff"> 
-                                        Poštom
-                                        <button mat-icon-button 
-                                        *ngIf="winner.deliveryChoice == 'postal' && winner.postalInformation" 
-                                        (click)="openPostalInformation(winner.postalInformation)" 
-                                        matTooltip="Detalji za slanje">
-                                            <mat-icon>drafts</mat-icon>
-                                        </button>     
-                                    </label>
-                                    <label *ngSwitchDefault class="foreground primary lighter"> Nije odabrano </label>
-                                </ng-container>
-                            </div>
-        
-                            <div id="payment" class="mat-small pb-0" fxLayout="row" fxLayoutGap="0.5rem">
-        
-                                <label class="pb-0 bold center">Status plaćanja:</label>
-                                <mat-button-toggle-group [value]="winner.paymentStatus" (change)="markPaymentStatus($event, winner)">
-                                    <mat-button-toggle value="paid" class="foreground primary lighter">Plaćeno</mat-button-toggle>
-                                    <mat-button-toggle value="pending">U toku</mat-button-toggle>
-                                    <mat-button-toggle value="notpaid" class="foreground warn default">Nije plaćeno</mat-button-toggle>
-                                    </mat-button-toggle-group>
-                            </div>
-        
-        
-                        </mat-card-content>
-        
-                        <mat-card-actions>
-                            <!-- <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje ponude</button> -->
-                        </mat-card-actions>
-                    </mat-card>
-                    <ng-template #filler>
-                        <div class="section elevate hover center mt-2 p-5 pr-3 pl-3">
-                            <i>Nema najbolje ponude</i>
+                    <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
+    
+                        <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
+                            <label class="pb-0 bold center">Odabir dostave:</label> 
+                            <ng-container [ngSwitch]="winner.deliveryChoice">
+                                <label *ngSwitchCase="'handover'" class=" foreground primary lighter"> Osobno </label>
+                                <label *ngSwitchCase="'postal'" style="color: #c326ff"> 
+                                    Poštom
+                                    <button mat-icon-button 
+                                    *ngIf="winner.deliveryChoice == 'postal' && winner.postalInformation" 
+                                    (click)="openPostalInformation(winner.postalInformation)" 
+                                    matTooltip="Detalji za slanje">
+                                        <mat-icon>drafts</mat-icon>
+                                    </button>     
+                                </label>
+                                <label *ngSwitchDefault class="foreground primary lighter"> Nije odabrano </label>
+                            </ng-container>
                         </div>
-                    </ng-template>
-        
-                </div>
+    
+                        <div id="payment" class="mat-small pb-0" fxLayout="row" fxLayoutGap="0.5rem">
+    
+                            <label class="pb-0 bold center">Status plaćanja:</label>
+                            <mat-button-toggle-group [value]="winner.paymentStatus" (change)="markPaymentStatus($event, winner)">
+                                <mat-button-toggle value="paid" class="foreground primary lighter">Plaćeno</mat-button-toggle>
+                                <mat-button-toggle value="pending">U toku</mat-button-toggle>
+                                <mat-button-toggle value="notpaid" class="foreground warn default">Nije plaćeno</mat-button-toggle>
+                                </mat-button-toggle-group>
+                        </div>
+    
+    
+                    </mat-card-content>
+    
+                    <mat-card-actions>
+                        <!-- <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje ponude</button> -->
+                    </mat-card-actions>
+                </mat-card>
+                <ng-template #filler>
+                    <div class="section elevate hover center mt-2 p-5 pr-3 pl-3">
+                        <i>Nema najbolje ponude</i>
+                    </div>
+                </ng-template>
+    
             </div>
-        </virtual-scroller>
-    </div>
+        </div>
+    </virtual-scroller>
 
     <ng-container *ngIf="!!(bids$ | async)">
 
