@@ -1,0 +1,67 @@
+@import "~@angular/material/theming";
+
+@mixin grids-theme($theme) {
+
+    virtual-scroller.full-items-grid {
+        .items-grid {
+            display: grid;
+            // grid-template-columns: repeat(4, minmax(0px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 0.5rem;
+
+            padding: 0.25rem;
+            padding-top: 0.5rem;
+            // padding-right: 0;
+
+            // mat-card {
+            //   padding-right: 0.5rem;
+            //   padding-bottom: 0.5rem;
+            // }
+        }
+    }
+
+    virtual-scroller.items-gallery-grid-scroller {
+        width: 100%;
+        height: 100%;
+
+        // 4 rows
+        $maxHeight: 100%;
+        $maxWidth: 100%;
+        .media-container {
+            // height: $maxHeight !important;
+            // width: $maxWidth !important;
+
+            position: relative !important;
+            padding-top: 100%; /* added */
+            
+            #single-image, #placeholder {
+                height: $maxHeight !important;
+                width: $maxWidth !important;
+
+                position: absolute !important;
+                top: 0;
+                left: 0;
+
+                display: block !important;
+                object-fit: cover !important;
+            }
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 700px) {
+            .items-gallery-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+                gap: 0.25rem;
+
+                padding: 0.25rem;
+                padding-top: 0.5rem;
+            }
+        }
+    }
+
+
+}

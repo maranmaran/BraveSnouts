@@ -37,7 +37,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   // For animations 
   // not observables because - animations are broken
   // https://github.com/angular/angular/issues/21331
-  userId: string
+  userId: string;
+  userData: firebase.default.User;
   isAuthenticated: boolean;
 
   // elements
@@ -115,7 +116,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   */
   onAuthDataChange() {
     return [
-      this.authSvc.userId$.subscribe(userId => this.userId = userId, err => console.log(err)),
+      this.authSvc.user$.subscribe(user => (this.userId = user.uid, this.userData = user), err => console.log(err)),
       this.authSvc.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth, err => console.log(err))
     ]
   }
@@ -160,22 +161,13 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // guard with login
 
-    const loggedIn = await this.authSvc.isAuthenticated$.toPromise();
-
     // if not logged in prompt the user with it
-    if(!loggedIn) {
+    if(!this.isAuthenticated) {
       return this.authSvc.login();
     }
-
-    // const userDataPromise = from(this.authSvc.login())
-    //   .pipe(
-    //     take(1),
-    //     concatMap(_ => this.authSvc.user$.pipe(take(1))),
-    //     filter(user => !!user),
-    //   ).toPromise();
-
-    // continue only if user is logged in
-    const user = await this.authSvc.user$.toPromise();
+    
+    // continue only if user is logged in and we have data
+    let user = this.userData
     if (!user) {
       return;
     }
