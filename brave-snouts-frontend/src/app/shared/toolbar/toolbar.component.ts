@@ -5,6 +5,8 @@ import firebase from 'firebase/app';
 import { MediaObserver } from '@angular/flex-layout';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { SupportComponent } from 'src/app/shared/support/support.component';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { Auction } from 'src/business/models/auction.model';
 import * as moment from 'moment';
@@ -29,7 +31,8 @@ export class ToolbarComponent implements OnInit {
     private readonly authSvc: AuthService,
     public readonly mediaObs: MediaObserver,
     private readonly router: Router,
-    private readonly loadingSvc: ProgressBarService
+    private readonly loadingSvc: ProgressBarService,
+    private readonly dialog: MatDialog
   ) { }
 
   user$: Observable<firebase.User | null>;
@@ -77,6 +80,18 @@ export class ToolbarComponent implements OnInit {
     this.router.navigate(['create-auction'], { state: { auction, items: [], action: 'create' } })
   }
 
+  onShowContactHelp(){
+    this.dialog.open(SupportComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+    });
+
+  }
+  
+  
   onLogin() {
     this.authSvc.login().subscribe(noop);
   }
