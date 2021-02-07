@@ -64,11 +64,14 @@
         align-items: center;
     }
 
-    .handover-options {
-        padding: 0 3rem;
+    .details {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column;
+    }
+
+    .handover-details {
+        margin-top: 1rem;
+        align-self: center;
     }
 
     @media(max-width: 1024px) {
@@ -88,66 +91,19 @@
 
     <div class="container">
         <div class="logo-container center">
-            <!-- <img class="logo" src="cid:logo" alt="Hrabre njuške logo"> -->
-            <img class="logo" src="./../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuške logo">
+            <img class="logo" src="cid:logo" alt="Hrabre njuške logo">
         </div>
     
         <div class="title-container center">
-            <!-- <h2 class="title">Pozdrav {{user_name}},</h2> -->
-            <h2 class="title">Pozdrav Marko,</h2>
+            <h2 class="title">Pozdrav {{user_name}},</h2>
             <h6 class="subtitle">Hvala ti na sudjelovanju!</h6>
         </div>
     
         <hr class="solid">
     
-        <div class="item-details">
-            <h5>Osvojeni predmeti</h5>
-            <!--Triple bars to escape html and render it-->
-            <!-- {{{items_html}}}
-            <p>Ukupno: {{total}}</p> -->
-            <ul>
-                <li>Predmet 1 - 30kn</li>
-                <li>Predmet 2 - 30kn</li>
-                <li>Predmet 3 - 30kn</li>
-            </ul>
-            <p>Ukupno: 90kn</p>
-        </div>
-    
-        <hr class="solid">
-    
-        <div class="handover-container center">
-            <h5>Potvrda preuzimanja</h5>
-    
-            <div class="handover-options" style="width: 150px">
-                <a href="{{post_confirm_url}}">Poštom</a>
-    
-                <a href="{{handover_confirm_url}}">Osobno</a>
-            </div>
-        </div>
-    
-        <hr class="solid">
-    
-        <div class="payment-details">
-            <h5>Plaćanje</h5>
-            <ul>
-                <li>PBZ - HR4223400091110951628</li>
-                <li>Revolut - 0994513163</li>
-                <li>Paypal - hrabre.njuske1@gmail.com</li>
-                <li>Keks - 0994513163</li>
-            </ul>
-            <div style="margin-top: 2rem; display: flex; flex-direction: row; flex-wrap: wrap;">
-                <p style="text-decoration: underline;">Opis plaćanja:</p> 
-                <i style="text-decoration: none; margin-left: 10px;">"Aukcija 4 - Marko Urh"</i>
-                <!-- <i style="text-decoration: none; margin-left: 10px;">"{{payment_detail}}"</i> -->
-            </div>
-        </div>
-    
-        <hr class="solid">
-    
-        <div class="handover-details">
-            <h5>Informacije za osobno preuzimanje</h5>
-            <!-- <i>{{handover_details}}</i> -->
-            <i>Europski trg, 24.09.2021, 18:00</i>
+        <div class="details">
+            <h5>Došlo je do promjene informacija za osobno preuzimanje</h5>
+            <i class="handover-details">"{{handover_details}}"</i>
         </div>
     
         <h6 class="subtitle center" style="margin-top: 2rem;">Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama.!</h6>

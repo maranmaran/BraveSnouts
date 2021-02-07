@@ -83,6 +83,11 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
   // load and customize html template
   const emailVariables = {
     optout_url: getEmailOptoutLink(user.id, "bidchange"),
+    item_url: `${config.base.url}/auction;id=${itemAfter.auctionId}`,
+    item_name: itemAfter.name,
+    item_bid_before: itemBefore.bid,
+    item_bid_after: itemAfter.bid,
+    user_name: user.name.trim().split(" ")[0]
   }
   
   const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.html'), 'utf8');
@@ -100,19 +105,6 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
       path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
       cid: 'logo' 
     }]
-    // html: `
-    //   <p>Pozdrav ${user.name},</p> 
-      
-    //   <p>Htjeli smo ti javiti da je tvoja ponuda za predmet <b>${itemBefore.name}"</b> 
-    //   od <b>${itemBefore.bid} kn</b> nadmašena i trenutno iznosi <b>${itemAfter.bid} kn</b>.</p>
-      
-    //   <p>Predmet možeš pronaći na ovoj 
-    //     <a href="${config.base.url}/auction;id=${itemAfter.auctionId}">aukciji</a>.
-    //   </p>
-      
-    //   <p>Ako ne želiš više primat ovakve mailove klikni <a href="${optoutEmail}">ovdje</a> </p>
-      
-    //   `,
   };
 
   await mailSvc.sendMail(email);
@@ -134,6 +126,8 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDeta
   
   // load and customize html template
   const emailVariables = {
+    handover_details: handoverDetails,
+    user_name: user.name.trim().split(" ")[0]
   }
   
   const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
@@ -151,14 +145,6 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDeta
       path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
       cid: 'logo' 
     }]
-    // html: `
-    // <p>Pozdrav ${user.name},</p> 
-    
-    // <p>Došlo je do promjene lokacije za osobno preuzimanje.</p>
-    // <p>Nove infomracije su: ${handoverDetails}</p>
-
-    // <p>Hvala ti na sudjelovanju u aukciji!</p>
-    // `,
   };
 
   await mailSvc.sendMail(email);
