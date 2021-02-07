@@ -3,7 +3,7 @@ import { AuctionItem, UserInfo } from "../models/models";
 import { sendHandoverDetailsUpdateMail } from "../services/mail.service";
 
 /** Sends email update to all people with new handover details for auction */
-export const changeHandoverFunction = europeFunctions.https.onCall(
+export const changeHandoverFn = europeFunctions.https.onCall(
     async (data, context) => {
 
         const auctionId = data.auctionId;
