@@ -64,11 +64,22 @@
         align-items: center;
     }
 
-    .handover-options {
-        padding: 0 3rem;
+    .details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .handover-details {
+        margin-top: 1rem;
+        align-self: center;
+    }
+
+    .unsubscribe {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        align-self: center;
+        justify-content: center;
     }
 
     @media(max-width: 1024px) {
@@ -98,49 +109,26 @@
     
         <hr class="solid">
     
-        <div class="item-details">
-            <h5>Osvojeni predmeti</h5>
-            <!--Triple bars to escape html and render it-->
-            {{{items_html}}}
-            <p>Ukupno: {{total}}</p>
-        </div>
+        <div style="display: flex; flex-direction: column;">
+            <p>
+                Htjeli smo ti javiti da je tvoja ponuda za predmet <b>{{item_name}}</b> 
+                od <b>{{item_bid_before}} kn</b> nadmašena i trenutno iznosi <b>{{item_bid_after}} kn</b>.
+            </p>
+            
+            <p style="margin-top: 1rem">
+                Predmet možeš pronaći <a href="{{item_url}}">ovdje</a> 
+                ili na <b>svojim predmetima</b>.
+            </p> 
+        </div>              
     
-        <hr class="solid">
-    
-        <div class="handover-container center">
-            <h5>Potvrda preuzimanja</h5>
-    
-            <div class="handover-options" style="width: 150px">
-                <a href="{{post_confirm_url}}">Poštom</a>
-    
-                <a href="{{handover_confirm_url}}">Osobno</a>
-            </div>
-        </div>
-    
-        <hr class="solid">
-    
-        <div class="payment-details">
-            <h5>Plaćanje</h5>
-            <ul>
-                <li>PBZ - HR4223400091110951628</li>
-                <li>Revolut - 0994513163</li>
-                <li>Paypal - hrabre.njuske1@gmail.com</li>
-                <li>Keks - 0994513163</li>
-            </ul>
-            <div style="margin-top: 2rem; display: flex; flex-direction: row; flex-wrap: wrap;">
-                <p style="text-decoration: underline;">Opis plaćanja:</p> 
-                <i style="text-decoration: none; margin-left: 10px;">"{{payment_detail}}"</i>
-            </div>
-        </div>
-    
-        <hr class="solid">
-    
-        <div class="handover-details">
-            <h5>Informacije za osobno preuzimanje</h5>
-            <i>{{handover_details}}</i>
-        </div>
-    
-        <h6 class="subtitle center" style="margin-top: 2rem;">Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama.!</h6>
+      
+        <h6 class="unsubscribe subtitle center" style="margin-top: 2rem;">
+            <p>
+                Ako ne želiš više primat ovakve mailove klikni 
+            </p>
+            <a style="margin-left: 5px" href="{{optout_url}}">ovdje</a>
+        </h6>
+        <h6 class="subtitle center">Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama.!</h6>
     </div>
     
 

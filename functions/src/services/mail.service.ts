@@ -70,7 +70,7 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
 
   logger.info(`Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}-${itemBefore.bid} kn to ${itemAfter.bid} kn!`);
 
-  const testMailService = nodemailer.createTransport({
+  const mailSvc = nodemailer.createTransport({
     host: "smtp.ethereal.email",
     port: 587,
     secure: false, // true for 465, false for other ports
@@ -80,35 +80,40 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
     },
   });
 
-  const optoutEmail = getEmailOptoutLink(user.id, "bidchange");
+  // load and customize html template
+  const emailVariables = {
+    optout_url: getEmailOptoutLink(user.id, "bidchange"),
+    item_url: `${config.base.url}/auction;id=${itemAfter.auctionId}`,
+    item_name: itemAfter.name,
+    item_bid_before: itemBefore.bid,
+    item_bid_after: itemAfter.bid,
+    user_name: user.name.trim().split(" ")[0]
+  }
+  
+  const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.html'), 'utf8');
+  let emailTemplatePrecompiled = handlebars.compile(rawTemplate)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
   const email = {
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Admin" <urh.marko@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
     to: user.email,
     subject: `Tvoja ponuda za predmet "${itemBefore.name}" je nadmašena!`,
-    html: `
-      <p>Pozdrav ${user.name},</p> 
-      
-      <p>Htjeli smo ti javiti da je tvoja ponuda za predmet <b>${itemBefore.name}"</b> 
-      od <b>${itemBefore.bid} kn</b> nadmašena i trenutno iznosi <b>${itemAfter.bid} kn</b>.</p>
-      
-      <p>Predmet možeš pronaći na ovoj 
-        <a href="${config.base.url}/auction;id=${itemAfter.auctionId}">aukciji</a>.
-      </p>
-      
-      <p>Ako ne želiš više primat ovakve mailove klikni <a href="${optoutEmail}">ovdje</a> </p>
-      
-      `,
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-kapica-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
+      cid: 'logo' 
+    }]
   };
 
-  await testMailService.sendMail(email);
+  await mailSvc.sendMail(email);
 }
 
 export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDetails: string) => {
   logger.info(`Sending mail to ${user.email} for handover details update`);
 
-  const testMailService = nodemailer.createTransport({
+  const mailSvc = nodemailer.createTransport({
     host: "smtp.ethereal.email",
     port: 587,
     secure: false, // true for 465, false for other ports
@@ -118,20 +123,29 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDeta
     },
   });
 
+  
+  // load and customize html template
+  const emailVariables = {
+    handover_details: handoverDetails,
+    user_name: user.name.trim().split(" ")[0]
+  }
+  
+  const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
+  let emailTemplatePrecompiled = handlebars.compile(rawTemplate)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
+
   const email = {
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Admin" <urh.marko@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
     to: user.email,
     subject: 'Promjena informacija za osobno preuzimanje!',
-    html: `
-    <p>Pozdrav ${user.name},</p> 
-    
-    <p>Došlo je do promjene lokacije za osobno preuzimanje.</p>
-    <p>Nove infomracije su: ${handoverDetails}</p>
-
-    <p>Hvala ti na sudjelovanju u aukciji!</p>
-    `,
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-kapica-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
+      cid: 'logo' 
+    }]
   };
 
-  await testMailService.sendMail(email);
+  await mailSvc.sendMail(email);
 }

@@ -1,4 +1,4 @@
-<virtual-scroller *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [bufferAmount]="8" [items]="items" [parentScroll]="parentScroll" (vsEnd)="onLoadMore($event)">
+<virtual-scroller class="full-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [bufferAmount]="8" [items]="items" [parentScroll]="parentScroll" (vsEnd)="onLoadMore($event)">
     <div #container class="items-grid">
         <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
     </div>

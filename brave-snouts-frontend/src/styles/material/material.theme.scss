@@ -7,6 +7,7 @@
 @import "./mixins/elevation.mixin.scss";
 @import "./mixins/colors.mixin.scss";
 @import "./mixins/timepicker.mixin.scss";
+@import "./mixins/grids.mixin.scss";
 
 
 @mixin custom-components-theme($theme) {
@@ -17,6 +18,7 @@
   @include random-theme($theme);
   @include elevation-theme($theme);
   @include colors-theme($theme);
+  @include grids-theme($theme);
   @include timepicker-theme($theme);
 }
 
