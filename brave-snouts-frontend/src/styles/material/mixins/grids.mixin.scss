@@ -4,6 +4,8 @@
 
     virtual-scroller.full-items-grid {
         .items-grid {
+            height: 100%;
+            
             display: grid;
             // grid-template-columns: repeat(4, minmax(0px, 1fr));
             grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
@@ -20,11 +22,15 @@
         }
     }
 
-    // For item gallery grid
-    app-auction-details {
-        >.container {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+
+
+    @media (max-width: 700px) {
+        // For item gallery grid
+        app-auction-details {
+            >.container {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
         }
     }
 
