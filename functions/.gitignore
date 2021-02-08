@@ -10,3 +10,7 @@ typings/
 
 # Node.js dependency directory
 node_modules/
+
+**/*key.json
+**/*keydev.json
+**/*keyprod.json

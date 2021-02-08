@@ -14,7 +14,13 @@ node_modules/
 dist/
 
 **/key.json
+**/keydev.json
+**/keyprod.json
 **/.env
 
 /data/images
 /data/transformed-images
+
+**/*key.json
+**/*keydev.json
+**/*keyprod.json
