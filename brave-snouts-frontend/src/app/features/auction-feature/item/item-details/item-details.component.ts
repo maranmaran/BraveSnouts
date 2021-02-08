@@ -18,7 +18,7 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
-  providers: [AuctionItemRepository, AuthService, BidsRepository],
+  providers: [AuctionItemRepository, BidsRepository],
   animations: itemAnimations
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
