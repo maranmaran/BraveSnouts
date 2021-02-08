@@ -11,7 +11,7 @@ import Mail = require("nodemailer/lib/mailer");
 let mailOpts = {};
 
 // PROD
-if(config.FIREBASE_PROJECT_ID == "bravesnoutsprod") {
+if(config.gmail?.email && config.gmail?.password) {
 
   // TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
   const gmailEmail = config.gmail?.email;
@@ -34,8 +34,8 @@ else {
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: config.mail.user,
-      pass: config.mail.password,
+      user: config.mail?.user,
+      pass: config.mail?.password,
     }
   };
 
