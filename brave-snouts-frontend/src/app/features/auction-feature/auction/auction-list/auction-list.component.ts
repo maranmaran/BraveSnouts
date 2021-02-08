@@ -21,7 +21,7 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
   templateUrl: './auction-list.component.html',
   styleUrls: ['./auction-list.component.scss'],
   animations: [ fadeIn ],
-  providers: [AuctionItemRepository, AuctionRepository, AuthService]
+  providers: [AuctionItemRepository, AuctionRepository]
 })
 export class AuctionListComponent implements OnInit, OnDestroy {
 

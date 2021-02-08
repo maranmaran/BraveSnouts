@@ -10,7 +10,7 @@ import { StorageService } from 'src/business/services/storage.service';
   selector: 'app-item-media',
   templateUrl: './item-media.component.html',
   styleUrls: ['./item-media.component.scss'],
-  providers: [StorageService]
+  providers: []
 })
 export class ItemMediaComponent implements OnInit {
 

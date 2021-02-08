@@ -116,7 +116,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   */
   onAuthDataChange() {
     return [
-      this.authSvc.user$.subscribe(user => (this.userId = user.uid, this.userData = user), err => console.log(err)),
+      this.authSvc.user$.subscribe(user => (this.userId = user?.uid, this.userData = user), err => console.log(err)),
       this.authSvc.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth, err => console.log(err))
     ]
   }

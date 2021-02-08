@@ -20,7 +20,7 @@ import { FirebaseFile } from '../../../../../business/models/firebase-file.model
   selector: 'app-auction-form',
   templateUrl: './auction-form.component.html',
   styleUrls: ['./auction-form.component.scss'],
-  providers: [AuctionRepository, AuctionItemRepository, StorageService, AuthService]
+  providers: [AuctionRepository, AuctionItemRepository]
 })
 export class AuctionFormComponent implements OnInit, OnDestroy {
 
