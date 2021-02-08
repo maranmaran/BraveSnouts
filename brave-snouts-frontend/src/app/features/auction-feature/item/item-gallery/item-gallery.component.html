@@ -1,8 +1,6 @@
-<virtual-scroller class="items-gallery-grid-scroller" #scroll [items]="items" [bufferAmount]="8" [parentScroll]="parentScroll" (vsEnd)="onLoadMore($event)">
+<virtual-scroller class="items-gallery-grid-scroller" #scroll [items]="items" [parentScroll]="parentScroll" (vsEnd)="onLoadMore($event)">
     <div #container class="items-gallery-grid">
         <div class="media-container center" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index">
-        <!-- <div class="media-container" *ngFor="let item of items; trackBy: trackByFn"> -->
-            <!-- <img id="single-image" src="https://source.unsplash.com/random?sig={{idx}}"/> -->
             <app-item-media class="media elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)"></app-item-media>
         </div>
     </div>
