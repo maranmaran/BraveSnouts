@@ -84,7 +84,7 @@ export class ToolbarComponent implements OnInit {
     this.dialog.open(SupportComponent, {
       height: 'auto',
       width: '98%',
-      maxWidth: '20rem',
+      maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
     });

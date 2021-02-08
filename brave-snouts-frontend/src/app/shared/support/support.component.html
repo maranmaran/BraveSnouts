@@ -1,3 +1,16 @@
-<h2>KONTAKT EMAIL</h2>
-<br>
-<p>support.hrabre-njuske@gmail.com</p>
+<div class="container" fxLayout="column" fxLayoutAlign="center start">
+    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+    <div class="container" fxLayout="row" fxLayoutAlign="center center" >
+        <textarea disabled id="clipboard-example-textarea" cols="31" rows="1" [(ngModel)]="value"></textarea>
+        <button         
+            matTooltip="Kopiraj"
+            [cdkCopyToClipboard]="value"><mat-icon>
+               content_copy
+        </mat-icon></button>
+    </div>
+</div>
+
