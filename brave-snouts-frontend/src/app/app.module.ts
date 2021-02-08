@@ -4,6 +4,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireFunctionsModule, REGION } from '@angular/fire/functions';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GalleryModule, GALLERY_CONFIG } from 'ng-gallery';
@@ -31,6 +32,7 @@ import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ClipboardModule } from '@angular/cdk/clipboard'
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
@@ -43,6 +45,9 @@ import { HandoverDialogComponent } from './features/auction-feature/delivery/han
 import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
 import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
+import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-policy.component';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { SupportComponent } from 'src/app/shared/support/support.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { HotToastModule } from '@ngneat/hot-toast';
 
@@ -69,6 +74,8 @@ import { HotToastModule } from '@ngneat/hot-toast';
     
     // Shared
     MaterialModule,
+    ClipboardModule,
+    FormsModule,
     ReactiveFormsModule,
     VirtualScrollerModule,
     HotToastModule.forRoot(),
@@ -99,6 +106,9 @@ import { HotToastModule } from '@ngneat/hot-toast';
     TruncatedTextComponent,
     TruncatePipe,
     ConfirmDialogComponent,
+    PrivacyPolicyComponent, 
+    MessageDialogComponent, 
+    SupportComponent,
 
     // auth
     LoginMethodComponent,
@@ -138,5 +148,6 @@ import { HotToastModule } from '@ngneat/hot-toast';
     }
   ],
   bootstrap: [AppComponent]
+  
 })
 export class AppModule { }
