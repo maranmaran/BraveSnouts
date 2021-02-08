@@ -163,7 +163,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // if not logged in prompt the user with it
     if(!this.isAuthenticated) {
-      return this.authSvc.login();
+      return await this.authSvc.login().toPromise();
     }
     
     // continue only if user is logged in and we have data
