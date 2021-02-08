@@ -10,15 +10,15 @@ import Mail = require("nodemailer/lib/mailer");
 
 let mailOpts = {};
 
+// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
+const gmailEmail = config.gmail?.user;
+const gmailPassword = config.gmail?.password;
+
 // PROD
-if(config.gmail?.email && config.gmail?.password) {
-
-  // TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
-  const gmailEmail = config.gmail?.email;
-  const gmailPassword = config.gmail?.password;
-
+if(gmailEmail && gmailPassword) {
+  
   mailOpts = {
-    service: 'gmail',
+    service: 'Gmail',
     auth: {
       user: gmailEmail,
       pass: gmailPassword,
