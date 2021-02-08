@@ -7,34 +7,47 @@ import { config } from "..";
 import { AuctionItem, Bid, UserInfo, Auction } from "../models/models";
 import Mail = require("nodemailer/lib/mailer");
 
-// Configure the email transport using the default SMTP transport and a GMail account.
-// For other types of transports such as Sendgrid see https://nodemailer.com/transports/
-// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
-// const gmailEmail = functions.config().gmail?.email ?? 'urh.marko@gmail.com';
-// const gmailPassword = functions.config().gmail?.password ?? 'urhmarko1295';
-// const mailService = nodem  ailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: gmailEmail,
-//     pass: gmailPassword,
-//   },
-// });
 
-const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.url}/email-optout;userId=${userId};optout=${optout}`
+let mailOpts = {};
 
-export const sendEndAuctionMail = async (auction: Auction, handoverDetails: string, user: UserInfo, items: Bid[]) => {
+// PROD
+if(config.FIREBASE_PROJECT_ID == "bravesnoutsprod") {
 
-  logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
+  // TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
+  const gmailEmail = config.gmail?.email;
+  const gmailPassword = config.gmail?.password;
 
-  const testMailService = nodemailer.createTransport({
+  mailOpts = {
+    service: 'gmail',
+    auth: {
+      user: gmailEmail,
+      pass: gmailPassword,
+    },
+  };
+
+} 
+// DEV
+else {
+
+  mailOpts = {
     host: "smtp.ethereal.email",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
       user: config.mail.user,
       pass: config.mail.password,
-    },
-  });
+    }
+  };
+
+}
+
+const mailSvc = nodemailer.createTransport(mailOpts);
+
+const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.url}/email-optout;userId=${userId};optout=${optout}`
+
+export const sendEndAuctionMail = async (auction: Auction, handoverDetails: string, user: UserInfo, items: Bid[]) => {
+
+  logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
   // load and customize html template
   const emailVariables = {
@@ -63,22 +76,12 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     }]
   };
 
-  await testMailService.sendMail(email);
+  await mailSvc.sendMail(email);
 }
 
 export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem, itemAfter: AuctionItem) => {
 
   logger.info(`Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}-${itemBefore.bid} kn to ${itemAfter.bid} kn!`);
-
-  const mailSvc = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: config.mail.user,
-      pass: config.mail.password,
-    },
-  });
 
   // load and customize html template
   const emailVariables = {
@@ -112,16 +115,6 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
 
 export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDetails: string) => {
   logger.info(`Sending mail to ${user.email} for handover details update`);
-
-  const mailSvc = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: config.mail.user,
-      pass: config.mail.password,
-    },
-  });
 
   
   // load and customize html template
