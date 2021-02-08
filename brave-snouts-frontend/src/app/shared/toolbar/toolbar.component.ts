@@ -16,7 +16,7 @@ import { User } from 'src/business/models/user.model';
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
-  providers: [AuthService],
+  providers: [],
   animations: [
     trigger('logoClick', [
       state('no-click', style({  })),

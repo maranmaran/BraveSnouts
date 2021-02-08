@@ -14,7 +14,7 @@ import { MediaObserver } from '@angular/flex-layout';
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss'],
-  providers: [AuctionItemRepository, AuthService]
+  providers: [AuctionItemRepository]
 })
 export class ItemListComponent implements OnInit, OnDestroy {
 

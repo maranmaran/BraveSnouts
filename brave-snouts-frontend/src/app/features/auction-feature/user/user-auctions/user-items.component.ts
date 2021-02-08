@@ -12,7 +12,7 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
   selector: 'app-user-items',
   templateUrl: './user-items.component.html',
   styleUrls: ['./user-items.component.scss'],
-  providers: [AuctionItemRepository, AuthService]
+  providers: [AuctionItemRepository]
 })
 export class UserItemsComponent implements OnInit {
 
