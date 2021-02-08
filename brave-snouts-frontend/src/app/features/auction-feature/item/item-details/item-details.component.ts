@@ -18,7 +18,7 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
-  providers: [AuctionItemRepository, AuthService, BidsRepository],
+  providers: [AuctionItemRepository, BidsRepository],
   animations: itemAnimations
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
@@ -163,7 +163,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // if not logged in prompt the user with it
     if(!this.isAuthenticated) {
-      return this.authSvc.login();
+      return await this.authSvc.login().toPromise();
     }
     
     // continue only if user is logged in and we have data
