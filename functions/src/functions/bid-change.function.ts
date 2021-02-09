@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { europeFunctions, store } from "../index";
-import { AuctionItem, EmailSettings, UserInfo } from "../models/models";
+import { AuctionItem, EmailSettings, User, UserInfo } from "../models/models";
 import { sendOutbiddedMail } from "../services/mail.service";
 
 
@@ -33,7 +33,11 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
     }
 
     // get outbidded user information
-    const outbiddedUserData = await admin.auth().getUser(before.user);
+    const outbiddedUserData = await (await store.collection("users").doc(before.user).get()).data() as User;
+    if(!outbiddedUserData) {
+      console.error("Can not find user");
+    }
+    
     const oubiddedUser: UserInfo = {
       id: before.user,
       name: outbiddedUserData.displayName as string,
@@ -44,8 +48,12 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
     // Send to outbidded user information about which item name was outbidded
     // and by how much (previous and new bid value)
 
-    // TODO - send only if user is not present currently on browser (online) 
-    await sendOutbiddedMail(oubiddedUser, before, after);
+    if(outbiddedUserData?.emailSettings?.bidUpdates) {
+      // TODO - send only if user is not present currently on browser (online) 
+      await sendOutbiddedMail(oubiddedUser, before, after);
+    } else {
+      console.warn("User chose to opt out")
+    }
 
     return null;
   });
