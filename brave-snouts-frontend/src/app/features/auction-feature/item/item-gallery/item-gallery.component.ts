@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SingleItemComponent } from 'src/app/features/auction-feature/item/single-item/single-item.component';
+import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 
@@ -38,7 +38,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges {
 
   openItem(item: AuctionItem) {
 
-    let dialogRef = this.dialog.open(SingleItemComponent, {
+    let dialogRef = this.dialog.open(SingleItemDialogComponent, {
       height: 'auto',
       width: '98%',
       maxWidth: '20rem',

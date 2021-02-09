@@ -1,0 +1,90 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Mali" href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500" />
+    <mj-style inline="inline">
+      .h1,
+      .h2,
+      .h3,
+      .h4,
+      .h5,
+      .h6 {
+        margin: 0;
+        padding: 0;
+      }
+    </mj-style>
+    <mj-attributes>
+      <mj-text padding-bottom="0" />
+      <mj-section padding="0" />
+      <mj-all font-family="Mali" />
+      <mj-image border-radius="50%" />
+      <mj-divider padding-top="10px" padding-bottom="10px" border-color="#bbb" border-width="0.5px" />
+      <mj-body background-color="teal"/>
+      <mj-wrapper background-color="whitesmoke" border-radius="0 0 8px 8px" padding-bottom="50px" padding-left="10px" padding-right="10px"/>
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-wrapper>
+      <mj-section>
+        <mj-column>
+          <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
+          <!-- <mj-image width="100px" src="./../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
+          <mj-text align="center" font-weight="bold" font-size="23px">
+            Pozdrav {{user_name}},
+          </mj-text>
+          <mj-text align="center" font-size="14px" color="#bbb">
+            Hvala ti na sudjelovanju!
+          </mj-text>
+          <mj-divider></mj-divider>
+
+          <mj-text font-weight="bold" font-size="14px">
+            Osvojeni predmeti
+          </mj-text>
+          <mj-text>
+            {{items_html}}
+          </mj-text>
+          <mj-text font-size="14px">
+            Ukupno: {{total}}
+          </mj-text>
+          <mj-divider></mj-divider>
+          <mj-text align="center" font-weight="bold" font-size="14px">
+            Potvrda preuzimanja
+          </mj-text>
+
+          <mj-text align="center">
+            <a href="{{post_confirm_url}}">Poštom</a>
+            <a style="margin-left: 30px" href="{{handover_confirm_url}}">Osobno</a>
+          </mj-text>
+
+          <mj-divider></mj-divider>
+
+          <mj-text font-weight="bold" font-size="14px">
+            Plaćanje
+          </mj-text>
+          <mj-text>
+            <ul>
+              <li>PBZ - HR4223400091110951628</li>
+              <li>Revolut - 0994513163</li>
+              <li>Paypal - hrabre.njuske1@gmail.com</li>
+              <li>Keks - 0994513163</li>
+            </ul>
+          </mj-text>
+          <mj-text>
+            <span style="text-decoration: underline;">Opis plaćanja:</span>
+            <i style="text-decoration: none;">"{{payment_detail}}"</i>
+          </mj-text>
+          <mj-divider></mj-divider>
+          <mj-text font-weight="bold" font-size="14px">
+            Informacije za osobno preuzimanje
+          </mj-text>
+          <mj-text>
+            {{ handover_details }}
+          </mj-text>
+
+          <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px">
+            Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama!
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

@@ -45,6 +45,7 @@ import { ItemGalleryComponent } from './features/auction-feature/item/item-galle
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { HotToastModule } from '@ngneat/hot-toast';
+import { SingleItemDialogComponent } from './features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 
 @NgModule({
   imports: [
@@ -108,11 +109,11 @@ import { HotToastModule } from '@ngneat/hot-toast';
     HandoverDialogComponent,
 
     SingleItemComponent,
+    SingleItemDialogComponent,
 
     ItemGalleryComponent,
 
     EmailLoginComponent,
-
     EmailOptoutComponent,
   ],
   providers: [

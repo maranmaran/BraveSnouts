@@ -6,8 +6,10 @@ import * as path from 'path';
 import { config } from "..";
 import { AuctionItem, Bid, UserInfo, Auction } from "../models/models";
 import Mail = require("nodemailer/lib/mailer");
+import mjml2html = require("mjml");
 
 
+//#region Mail service
 let mailOpts = {};
 
 // TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
@@ -42,9 +44,13 @@ else {
 }
 
 const mailSvc = nodemailer.createTransport(mailOpts);
+//#endregion
 
+//#region Links
 const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.url}/email-optout;userId=${userId};optout=${optout}`
+//#endregion
 
+/**Sends auction end mail */
 export const sendEndAuctionMail = async (auction: Auction, handoverDetails: string, user: UserInfo, items: Bid[]) => {
 
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
@@ -59,8 +65,9 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     items_html: `<ul>${items.map(item => `<li>${item.item.name} - ${item.value}kn</li>`).join("\n")}</ul>`,
     total: items.map(x => x.value).reduce((prev, cur) => prev + cur),
   }
-  const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.html'), 'utf8');
-  let emailTemplatePrecompiled = handlebars.compile(rawTemplate)
+  // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.html'), 'utf8');
+  var endAuctionTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(endAuctionTemplate.html)
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
   // send it
@@ -79,6 +86,7 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
   await mailSvc.sendMail(email);
 }
 
+/**Sends outbidded mail */
 export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem, itemAfter: AuctionItem) => {
 
   logger.info(`Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}-${itemBefore.bid} kn to ${itemAfter.bid} kn!`);
@@ -86,15 +94,16 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
   // load and customize html template
   const emailVariables = {
     optout_url: getEmailOptoutLink(user.id, "bidchange"),
-    item_url: `${config.base.url}/auction;id=${itemAfter.auctionId}`,
+    item_url: `${config.base.url}/item;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
     item_name: itemAfter.name,
     item_bid_before: itemBefore.bid,
     item_bid_after: itemAfter.bid,
     user_name: user.name.trim().split(" ")[0]
   }
   
-  const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.html'), 'utf8');
-  let emailTemplatePrecompiled = handlebars.compile(rawTemplate)
+  // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.html'), 'utf8');
+  var outbiddedTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(outbiddedTemplate.html)
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
   const email = {
@@ -113,6 +122,7 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
   await mailSvc.sendMail(email);
 }
 
+/**Sends new handover details mail */
 export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDetails: string) => {
   logger.info(`Sending mail to ${user.email} for handover details update`);
 
@@ -123,8 +133,9 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDeta
     user_name: user.name.trim().split(" ")[0]
   }
   
-  const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
-  let emailTemplatePrecompiled = handlebars.compile(rawTemplate)
+  // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
+  var handoverDetailsTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(handoverDetailsTemplate.html)
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
   const email = {

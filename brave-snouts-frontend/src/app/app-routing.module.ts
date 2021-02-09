@@ -43,7 +43,6 @@ const routes: Routes = [
   
   // login pages
   { path: 'email-login', component: EmailLoginComponent },
-  // { path: 'instagram-login', component: AdminPageComponent },
 
   // privacy and regulations
   { path: 'privacy-policy', component: PrivacyPolicyComponent },

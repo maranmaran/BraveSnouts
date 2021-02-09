@@ -17,6 +17,7 @@
   "dependencies": {
     "@types/cookie-parser": "^1.4.2",
     "@types/handlebars": "^4.1.0",
+    "@types/mjml": "^4.7.0",
     "@types/nodemailer": "^6.4.0",
     "child-process-promise": "^2.2.1",
     "cors": "^2.8.5",
@@ -24,6 +25,7 @@
     "firebase-functions": "^3.13.1",
     "gm": "^1.23.1",
     "handlebars": "^4.7.6",
+    "mjml": "^4.8.1",
     "mkdirp": "^1.0.3",
     "mkdirp-promise": "^5.0.1",
     "moment": "^2.29.1",

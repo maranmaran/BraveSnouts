@@ -1,0 +1,67 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Mali" href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500" />
+    <mj-style inline="inline">
+      .h1,
+      .h2,
+      .h3,
+      .h4,
+      .h5,
+      .h6 {
+        margin: 0;
+        padding: 0;
+      }
+    </mj-style>
+    <mj-attributes>
+      <mj-text padding-bottom="0" />
+      <mj-section padding="0" />
+      <mj-all font-family="Mali" />
+      <mj-image border-radius="50%" />
+      <mj-divider padding-top="20px" padding-bottom="10px" border-color="#bbb" border-width="0.5px" />
+      <mj-body background-color="teal" />
+      <mj-wrapper background-color="whitesmoke" border-radius="0 0 8px 8px" padding-bottom="50px" padding-left="10px" padding-right="10px"/>
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-wrapper>
+      <!--Logo-->
+      <mj-section>
+        <mj-column>
+
+          <!--Logo + greetings-->
+
+          <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
+          <!-- <mj-image width="100px" src="./../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
+
+          <mj-text align="center" font-weight="bold" font-size="23px">
+            Pozdrav {{user_name}},
+          </mj-text>
+          <mj-text align="center" font-size="14px" color="#bbb">
+            Hvala ti na sudjelovanju!
+          </mj-text>
+
+          <mj-divider></mj-divider>
+
+          <!--Outbidded message body-->
+          <mj-text>
+            Htjeli smo ti javiti da je tvoja ponuda za predmet <b>{{item_name}}</b>
+            od <b>{{item_bid_before}} kn</b> nadmašena i trenutno iznosi <b>{{item_bid_after}} kn</b>.
+          </mj-text>
+          <mj-text padding-top="30px">
+            Predmet možeš pronaći <a href="{{item_url}}">ovdje</a>
+            ili na <b>svojim predmetima</b>.
+          </mj-text>
+
+          <!--Footer-->
+          <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px">
+            Ako ne želiš više primat ovakve mailove klikni <a style="margin-left: 5px" href="{{optout_url}}">ovdje</a>
+          </mj-text>
+          <mj-text align="center" color="#bbb" font-size="10px">
+            Hrabre njuške su neprofitna organizacija i sve uplate idu udruzi u obliku donacije za skrb o njuškama!
+          </mj-text>
+
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>
