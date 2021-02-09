@@ -25,7 +25,7 @@ export class EmailOptoutComponent implements OnInit {
     private authSvc: AuthService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     let userId = this.route.snapshot.paramMap.get('userId');
     this.optout = this.route.snapshot.paramMap.get('optout');
 
@@ -33,41 +33,58 @@ export class EmailOptoutComponent implements OnInit {
       return;
     }
 
-    this.authSvc.login()
+
+    // verify login
+    const isAuth = await this.authSvc.isAuthenticated$.toPromise();
+
+    let user: User = null;
+    if(!isAuth) {
+      user = await this.authSvc.getUserInformation().toPromise();
+    } else {
+      user = await this.authSvc.login().toPromise();
+    }
+
+    // verify wanted data
+
+    if(!user) {
+      this.bootstrap = true;
+      this.success = false;
+      return;
+    }
+
+    if(user.id != userId) {
+      this.bootstrap = true;
+      this.success = false;
+      return;
+    }
+
+    // do optout
+    this.store.collection("users").doc(userId).valueChanges()
     .pipe(take(1))
-    .subscribe(user => {
-
-      if(user) {
-
-        this.store.collection("users").doc(userId).valueChanges()
-        .pipe(take(1))
-        .subscribe((user: User) => {
-          
-          let emailSettings = user.emailSettings;
-  
-          switch (this.optout) {
-            case "acountannouncements":
-              emailSettings.auctionAnnouncements = false
-              break;
-            case "bidchange":
-              emailSettings.bidUpdates = false
-              break;
-          
-            default:
-              break;
-          }
+    .subscribe((user: User) => {
       
-          this.store.collection("users").doc(userId).update({ emailSettings })
-          .then(() => this.success = true)
-          .catch(err => (console.log(err), this.success = false))
-          .finally(() => this.bootstrap = true);
-  
-        })
-        
+      let emailSettings = user.emailSettings;
+
+      switch (this.optout) {
+        case "acountannouncements":
+          emailSettings.auctionAnnouncements = false
+          break;
+        case "bidchange":
+          emailSettings.bidUpdates = false
+          break;
+      
+        default:
+          break;
       }
 
-    });
+      this.store.collection("users").doc(userId).update({ emailSettings })
+      .then(() => this.success = true)
+      .catch(err => (console.log(err), this.success = false))
+      .finally(() => this.bootstrap = true);
+
+    }, err => (console.log(err), this.bootstrap = true, this.success = false));
 
   }
+        
 
 }
