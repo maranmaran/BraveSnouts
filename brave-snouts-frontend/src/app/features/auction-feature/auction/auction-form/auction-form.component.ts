@@ -68,7 +68,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     // route back to home if use is not admin
     this._subsink.add(
       this.authSvc.isAdmin$.subscribe(
-        isAdmin => isAdmin ? noop() : this.router.navigate(['/']),
+        isAdmin => isAdmin ? noop() : this.router.navigate(['/app']),
         err => console.log(err)
       )
     )
@@ -307,14 +307,14 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
    * Navigate back to root for list of auctions once done
    */
   postCreate() {
-    this.router.navigate(['']);
+    this.router.navigate(['/app']);
   }
 
   /* Post update actions
    * ...
    */
   postUpdate() {
-    this.router.navigate(['']);
+    this.router.navigate(['/app']);
   }
 
 

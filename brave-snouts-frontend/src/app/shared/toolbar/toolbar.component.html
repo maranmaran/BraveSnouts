@@ -22,12 +22,12 @@
         <div #logo 
             class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" 
             (click)="onLogoClick()" 
-            [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
+            [hidden]="clickFlag"
         >
             <mat-progress-spinner *ngIf="(active$ | async)" class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
         </div>
         
-        <div class="logo-animated" [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="!clickFlag"></div>
+        <div class="logo-animated"  [hidden]="!clickFlag"></div>
         <!-- <div class="logo-animated" ></div> -->
     </div>
 

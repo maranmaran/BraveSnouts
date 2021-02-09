@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
         switchMap(result => {
 
             if(!result) {
-                return from(this.router.navigate(['/']));
+                return from(this.router.navigate(['/app']));
             }
             
             return of(true);

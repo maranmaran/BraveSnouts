@@ -34,7 +34,7 @@ export class SingleItemComponent implements OnInit, OnDestroy {
         const itemId = this.route.snapshot.paramMap.get('itemId');
     
         if(!auctionId || !itemId) {
-          this.router.navigate(['/']);
+          this.router.navigate(['/app']);
         } else {
           this._subsink.add(
             this.itemRepo.getOne(auctionId, itemId).subscribe(

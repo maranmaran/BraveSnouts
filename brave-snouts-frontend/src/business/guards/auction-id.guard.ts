@@ -16,7 +16,7 @@ export class AuctionIdGuard implements CanActivate {
     let auctionId = next.paramMap.get('id');
 
     if(!auctionId) {
-      return this.router.navigate([''])
+      return this.router.navigate(['/app'])
     }
 
     return of(true);

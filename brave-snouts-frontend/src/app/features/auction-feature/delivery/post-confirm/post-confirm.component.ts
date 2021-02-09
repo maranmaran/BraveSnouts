@@ -34,7 +34,7 @@ export class PostConfirmComponent implements OnInit {
     this._userId = this.route.snapshot.paramMap.get('userId');
 
     if(!this._auctionId || !this._userId) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/app']);
       return null;
     }
 

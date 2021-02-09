@@ -1,0 +1,36 @@
+
+.logo-base {
+    cursor: pointer;
+    z-index: 100;
+    position: relative;
+    top: 35px;
+    max-height: 200px;
+    border-radius: 50%;
+    border: 5px solid white;
+    height: 200px;
+    width: 200px;
+  
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -o-user-select: none !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+    -webkit-tap-highlight-color: none !important;
+  }
+  .logo {
+    @extend .logo-base;
+    background-image: url("/assets/snouts-logo/njuske-kapica-krug-compressed.jpg");
+    background-size: contain;
+  
+    &:hover {
+      background-image: url("/assets/snouts-logo/njuske-kapica-animated-compressed.gif");
+      background-size: contain;
+    }
+  }
+  .logo-animated {
+    @extend .logo-base;
+    background-image: url("/assets/snouts-logo/njuske-kapica-animated-compressed.gif");
+    background-size: contain;
+  }
+  

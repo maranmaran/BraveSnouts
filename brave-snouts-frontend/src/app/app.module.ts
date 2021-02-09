@@ -46,6 +46,7 @@ import { EmailLoginComponent } from './features/auth-feature/email-login/email-l
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { HotToastModule } from '@ngneat/hot-toast';
 import { SingleItemDialogComponent } from './features/auction-feature/item/single-item-dialog/single-item-dialog.component';
+import { AppContainerComponent } from './core/app-container/app-container.component';
 
 @NgModule({
   imports: [
@@ -115,6 +116,7 @@ import { SingleItemDialogComponent } from './features/auction-feature/item/singl
 
     EmailLoginComponent,
     EmailOptoutComponent,
+    AppContainerComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },

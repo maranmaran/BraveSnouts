@@ -144,7 +144,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   /**Navigate to selected auction */
   onClick(auction: Auction) {
-    this.router.navigate(['auction', { id: auction.id } ], { state: { auction } });
+    this.router.navigate(['/app/auction', { id: auction.id } ], { state: { auction } });
   }
 
   onEdit(auctionObj: Auction, event: Event) {
@@ -160,7 +160,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
     this.itemsRepo.getAll(auctionObj.id).pipe(take(1))
       .subscribe(items => this.router.navigate(
-        ['edit-auction'],
+        ['/app/edit-auction'],
         { state: { auction, items, action: 'edit' } }
       ), err => console.log(err));
 
@@ -205,7 +205,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
+    this.router.navigate(['/app/admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
   }
 
   //#endregion
