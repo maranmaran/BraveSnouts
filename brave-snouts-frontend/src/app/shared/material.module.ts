@@ -37,6 +37,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { HotToastModule } from '@ngneat/hot-toast';
 
 
 const MY_DATEPICKER_FORMAT = {
@@ -90,7 +91,8 @@ const MY_DATEPICKER_FORMAT = {
     MatSortModule,
     MatPaginatorModule,
     DragDropModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    HotToastModule.forRoot()
   ],
   exports: [
     ScrollingModule,
