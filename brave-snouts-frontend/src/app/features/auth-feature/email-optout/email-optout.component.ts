@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { User } from 'src/business/models/user.model';
 
 @Component({
@@ -30,31 +31,30 @@ export class EmailOptoutComponent implements OnInit {
       return;
     }
 
-    let update: any;
-    switch (this.optout) {
-      case "acountannouncements":
-        update = {
-          emailSettings: {
-            auctionAnnouncements: false
-          }
-        }
-        break;
-      case "bidchange":
-        update = {
-          emailSettings: {
-            bidUpdates: false
-          }
-        }
-        break;
-    
-      default:
-        break;
-    }
+    this.store.collection("users").doc(userId).valueChanges()
+    .pipe(take(1))
+    .subscribe((user: User) => {
+      
+      let emailSettings = user.emailSettings;
 
-    this.store.collection("users").doc(userId).update(update)
-    .then(() => this.success = true)
-    .catch(err => (console.log(err), this.success = false))
-    .finally(() => this.bootstrap = true);
+      switch (this.optout) {
+        case "acountannouncements":
+          emailSettings.auctionAnnouncements = false
+          break;
+        case "bidchange":
+          emailSettings.bidUpdates = false
+          break;
+      
+        default:
+          break;
+      }
+  
+      this.store.collection("users").doc(userId).update({ emailSettings })
+      .then(() => this.success = true)
+      .catch(err => (console.log(err), this.success = false))
+      .finally(() => this.bootstrap = true);
+
+    })
   }
 
 }
