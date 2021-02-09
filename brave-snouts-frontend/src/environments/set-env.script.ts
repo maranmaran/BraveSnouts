@@ -70,6 +70,13 @@ if(!appId)
 if(!measurementId)
   throw new Error(`measurementId missing`);
 
+if(projectId == "bravesnoutsprod") {
+  console.error("\n\n\n")
+  console.error("===========================================================")
+  console.error("==============Watch out you are in PROD env================")
+  console.error("===========================================================")
+  console.error("\n\n\n")
+}
 
 // Build environment file
 const buildEnvironmentFileContent = `

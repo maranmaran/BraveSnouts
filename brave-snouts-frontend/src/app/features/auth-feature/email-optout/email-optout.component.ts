@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { noop, Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
 
@@ -35,13 +35,13 @@ export class EmailOptoutComponent implements OnInit {
 
 
     // verify login
-    const isAuth = await this.authSvc.isAuthenticated$.toPromise();
+    const isAuth = await this.authSvc.isAuthenticated$.pipe(take(1)).toPromise();
 
-    let user: User = null;
+    let user = null;
     if(!isAuth) {
-      user = await this.authSvc.getUserInformation().toPromise();
+      user = await this.authSvc.login().pipe(take(1), map(cred => cred.user)).toPromise();
     } else {
-      user = await this.authSvc.login().toPromise();
+      user = await this.authSvc.getUserInformation().pipe(take(1)).toPromise();
     }
 
     // verify wanted data
@@ -52,7 +52,8 @@ export class EmailOptoutComponent implements OnInit {
       return;
     }
 
-    if(user.id != userId) {
+    let currentId = user?.uid || user?.id;
+    if(currentId != userId) {
       this.bootstrap = true;
       this.success = false;
       return;

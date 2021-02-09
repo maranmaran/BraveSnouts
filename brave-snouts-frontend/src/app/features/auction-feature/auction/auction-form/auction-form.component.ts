@@ -6,7 +6,7 @@ import firebase from 'firebase/app';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -190,7 +190,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
             let {ref, task} = this.storage.uploadFile(file, path);
             await task;
-            let url = await ref.getDownloadURL().toPromise();
+            let url = await ref.getDownloadURL().pipe(take(1)).toPromise();
 
             let finalFile = { name, type, path, url } as FirebaseFile;
             this.files[index].push(finalFile);

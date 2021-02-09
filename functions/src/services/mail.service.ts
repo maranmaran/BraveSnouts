@@ -47,6 +47,10 @@ const mailSvc = nodemailer.createTransport(mailOpts);
 //#endregion
 
 //#region Links
+
+//item;auctionId=auctionActive100;itemId=0497a875-0839-4d7d-84dc-470d5f829e10
+//email-optout;userId=ERra2BpsIiWPpOqCcCIiU4iDVRH3;optout=bidchange
+
 const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.url}/email-optout;userId=${userId};optout=${optout}`
 //#endregion
 
