@@ -49,6 +49,8 @@ import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-po
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { SupportComponent } from 'src/app/shared/support/support.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
+import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
+
 
 @NgModule({
   imports: [
@@ -116,11 +118,11 @@ import { EmailOptoutComponent } from './features/auth-feature/email-optout/email
     HandoverDialogComponent,
 
     SingleItemComponent,
+    SingleItemDialogComponent,
 
     ItemGalleryComponent,
 
     EmailLoginComponent,
-
     EmailOptoutComponent,
   ],
   providers: [

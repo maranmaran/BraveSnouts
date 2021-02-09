@@ -20,7 +20,7 @@ import { importFullAuction } from "./import-full-auction.script";
     }
     
     let auctionActive400 = new Auction({
-            id: uuidv4(),
+            id: "auctionActive400",
             name: `Active auction 400 `,
             description: "This auction has 400 items",
             startDate: admin.firestore.Timestamp.fromDate(new Date()),
@@ -31,7 +31,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathActive400 = process.cwd() + "\\utilities\\data\\items_400.xlsx"
     
     let auctionActive100 = new Auction({
-        id: uuidv4(),
+        id: "auctionActive100",
         name: `Active auction 100 `,
         description: "This auction has 100 items",
         startDate: admin.firestore.Timestamp.fromDate(new Date()),
@@ -42,7 +42,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathActive100 = process.cwd() + "\\utilities\\data\\items_100.xlsx"
     
     let auctionActive20 = new Auction({
-        id: uuidv4(),
+        id: "auctionActive20",
         name: `Active auction 20`,
         description: "This auction has 20 items",
         startDate: admin.firestore.Timestamp.fromDate(new Date()),
@@ -53,7 +53,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathActive20 = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
     let auctionFutureShort = new Auction({
-        id: uuidv4(),
+        id: "auctionFutureShort",
         name: `Future auction short`,
         description: "This auction is in short future and has 20 items",
         startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(4, 'days').toDate()),
@@ -64,7 +64,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathFutureShort = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
     let auctionFutureFar = new Auction({
-        id: uuidv4(),
+        id: "auctionFutureFar",
         name: `Future auction far`,
         description: "This auction is in far future and has 20 items",
         startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
@@ -75,7 +75,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathFutureFar = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
     let auctionPastNonProcessed = new Auction({
-        id: uuidv4(),
+        id: "auctionPastNonProcessed",
         name: `Past auction non processed`,
         description: "This auction is in past and is not processed and has 20 items",
         startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(20, 'days').toDate()),
@@ -86,7 +86,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathPastNonProcessed = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
     let auctionPastProcessedSoonToBeArchived = new Auction({
-        id: uuidv4(),
+        id: "auctionPastProcessedSoonToBeArchived",
         name: `Past auction processed soon for archive`,
         description: "This auction is in past and is processed should be archived soon",
         startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(28, 'days').toDate()),
@@ -97,7 +97,7 @@ import { importFullAuction } from "./import-full-auction.script";
     let importFilePathPastProcessedSoonToBeArchived = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
     let auctionPastNonProcessedSoonToBeArchived = new Auction({
-        id: uuidv4(),
+        id: "auctionPastNonProcessedSoonToBeArchived",
         name: `Past auction non processed`,
         description: "This auction is in past and is not processed soon to be archived",
         startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(28, 'days').toDate()),
@@ -109,28 +109,36 @@ import { importFullAuction } from "./import-full-auction.script";
     
     
     console.log("\nSeeding active auction with 400 items")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive400, auctionActive400, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive400, auctionActive400, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive400, auctionActive400, 100, false);
     
     console.log("\nSeeding active auction with 100 items")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive100, auctionActive100, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive100, auctionActive100, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive100, auctionActive100, 100, false);
     
-    // console.log("\nSeeding active auction with 20 items")
+    console.log("\nSeeding active auction with 20 items")
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive20, auctionActive20, 100, false);
     // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathActive20, auctionActive20, 100, false);
     
     console.log("\nSeeding auction in short future")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathFutureShort, auctionFutureShort, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathFutureShort, auctionFutureShort, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathFutureShort, auctionFutureShort, 100, false);
     
     console.log("\nSeeding auction in far future")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathFutureFar, auctionFutureFar, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathFutureFar, auctionFutureFar, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathFutureFar, auctionFutureFar, 100, false);
     
     console.log("\nSeeding past non processed auction")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastNonProcessed, auctionPastNonProcessed, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastNonProcessed, auctionPastNonProcessed, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastNonProcessed, auctionPastNonProcessed, 100, false);
     
     console.log("\nSeeding past about to be archived auction")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastProcessedSoonToBeArchived, auctionPastProcessedSoonToBeArchived, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastProcessedSoonToBeArchived, auctionPastProcessedSoonToBeArchived, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastProcessedSoonToBeArchived, auctionPastProcessedSoonToBeArchived, 100, false);
     
     console.log("\nSeeding past about to be archived that's not processed auction")
-    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastNonProcessedSoonToBeArchived, auctionPastNonProcessedSoonToBeArchived, 100, false);
+    importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastNonProcessedSoonToBeArchived, auctionPastNonProcessedSoonToBeArchived, 100, false);
+    // await importFullAuction(false, false, true, imagesDir, transformDir, importFilePathPastNonProcessedSoonToBeArchived, auctionPastNonProcessedSoonToBeArchived, 100, false);
 
     console.log("Everything is finished");
 })()

@@ -10,6 +10,7 @@ import { SingleItemComponent } from 'src/app/features/auction-feature/item/singl
 import { AdminPageComponent } from 'src/app/features/auction-feature/user/admin-page/admin-page.component';
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 import { EmailLoginComponent } from 'src/app/features/auth-feature/email-login/email-login.component';
+import { EmailOptoutComponent } from 'src/app/features/auth-feature/email-optout/email-optout.component';
 import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-policy.component';
 import { AdminGuard } from 'src/business/guards/admin.guard';
 import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
@@ -21,31 +22,21 @@ const routes: Routes = [
   // root
   { path: '', component: AuctionListComponent},
 
-  // user confirmations for delivery
   { path: 'post-confirm', component: PostConfirmComponent },
   { path: 'handover-confirm', component: HandoverConfirmComponent },
 
-  // forms
   { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
   { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },  
 
-  // auction details for bidding
   { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent }, 
-  
-  // single item details 
   { path: 'item', component: SingleItemComponent },
 
-  // user page for auction tracking
   { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent }, 
-
-  // admin page
   { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
-  
-  // login pages
-  { path: 'email-login', component: EmailLoginComponent },
-  // { path: 'instagram-login', component: AdminPageComponent },
 
-  // privacy and regulations
+  { path: 'email-login', component: EmailLoginComponent },
+  { path: 'email-optout', component: EmailOptoutComponent },
+
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   
   // non matched routes

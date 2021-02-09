@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -15,7 +15,8 @@ import { SubSink } from 'subsink';
 })
 export class SingleItemComponent implements OnInit, OnDestroy {
 
-  item$: BehaviorSubject<any>;
+  @Input() item$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  @Input() fromDialog: boolean = false;
 
   private readonly _subsink = new SubSink();
 
@@ -23,45 +24,30 @@ export class SingleItemComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly itemRepo: AuctionItemRepository,
-    @Inject(MAT_DIALOG_DATA) public data: { item: AuctionItem, svc: ItemDialogService }
   ) { }
 
   ngOnInit(): void {
 
-    const isDialog = this.data && this.data.item;
-
-    if(!isDialog) {
-
-      const auctionId = this.route.snapshot.paramMap.get('auctionId');
-      const itemId = this.route.snapshot.paramMap.get('itemId');
-  
-      if(!auctionId || !itemId) {
-        this.router.navigate(['/']);
-      } else {
-        this.item$ = new BehaviorSubject(this.itemRepo.getOne(auctionId, itemId));
-      } 
+    setTimeout(() => {
+      if(!this.fromDialog) {
+        const auctionId = this.route.snapshot.paramMap.get('auctionId');
+        const itemId = this.route.snapshot.paramMap.get('itemId');
     
-    } else {
+        if(!auctionId || !itemId) {
+          this.router.navigate(['/']);
+        } else {
+          this._subsink.add(
+            this.itemRepo.getOne(auctionId, itemId).subscribe(
+              item => {
+                this.item$.next(item);
+              }
+            )
+          )
 
-      this.item$ = new BehaviorSubject(this.data.item);
-
-      this._subsink.add(
-        this.onItemsChange()
-      )
-
-    }
-
-  }
-
-  onItemsChange() {
-
-    return this.data.svc.items.subscribe(items => {
-
-      let idx = items.findIndex(i => i.id == this.data.item.id);
-      if(idx == -1) return;
-
-      this.item$.next(items[idx]);
-    });
+        } 
+      }
+    })
+  
   }
 
   ngOnDestroy(): void {
