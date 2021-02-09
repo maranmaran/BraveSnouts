@@ -19,7 +19,7 @@ export class SupportComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  value = `support.hrabre-njuske@gmail.com`;
+  value = `app.hrabrenjuske@gmail.com`;
   onClose(){
     return this.dialog.close();
   }
