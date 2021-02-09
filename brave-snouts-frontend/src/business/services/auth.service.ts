@@ -50,7 +50,7 @@ export class AuthService {
                 concatMap(user => {
 
                     if (user)
-                        return of(null);
+                        return of(user);
 
                     let dialogRef = this.dialog.open(LoginMethodComponent, {
                         height: 'auto',
