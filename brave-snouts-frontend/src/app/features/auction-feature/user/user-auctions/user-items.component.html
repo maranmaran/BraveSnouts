@@ -14,14 +14,14 @@
     </virtual-scroller>
      -->
 
-    <virtual-scroller class="full-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="(trackedItems$ | async)" [parentScroll]="scrollingBlock">
+    <virtual-scroller class="full-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="items" [parentScroll]="scrollingBlock">
         <div #container class="items-grid">
             <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
         </div>
     </virtual-scroller>
     
     <ng-template #gallery>
-        <app-item-gallery [items]="(trackedItems$ | async)" [parentScroll]="scrollingBlock"></app-item-gallery>
+        <app-item-gallery [items]="items" [parentScroll]="scrollingBlock"></app-item-gallery>
     </ng-template>
     
 

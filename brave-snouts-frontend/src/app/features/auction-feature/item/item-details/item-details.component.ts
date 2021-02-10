@@ -199,7 +199,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // add item to tracked collection
     if (!this.userTrackedItems?.has(item.id)) {
-      await this.authSvc.addItemToUser(item, this.userId);
+      await this.itemsRepo.addItemToUser(item, this.userId);
     }
 
   }

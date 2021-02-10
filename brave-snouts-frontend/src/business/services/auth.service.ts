@@ -274,30 +274,6 @@ export class AuthService {
         return this.store.collection(`users`).doc(user.id).set(user);
     }
 
-    /** Adds item on which user bid on to the database */
-    addItemToUser(item: AuctionItem, userId: string) {
-        return this.store.collection(`users/${userId}/tracked-items`)
-            .doc(item.id).set({
-                auctionId: item.auctionId,
-                itemId: item.id,
-                userId: userId,
-            });
-    }
 
-    /** Retrieves only items on which user bid on */
-    getUserItems(userId: string) {
-        return this.store.collection(`users/${userId}/tracked-items`)
-            .valueChanges({ idField: 'id' })
-    }
-
-    deleteTrackedItems(auctionId: string) {
-        return this.store.collectionGroup("tracked-items", ref => ref.where("auctionId", "==", auctionId))
-            .valueChanges()
-            .pipe(
-                take(1),
-                mergeMap(items => [...items]),
-                mergeMap((item: any) => this.store.doc(`users/${item.userId}/tracked-items/${item.itemId}`).delete())
-            )
-    }
 
 }

@@ -55,7 +55,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
           if (!userId) return of(null);
 
-          return this.authSvc.getUserItems(userId).pipe(take(1))
+          return this.itemsRepo.getUserItems(userId).pipe(take(1))
         }),
         map(items => {
 

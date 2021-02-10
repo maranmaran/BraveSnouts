@@ -133,7 +133,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   getIfUserTrackesItems() {
     return this.authSvc.userId$
     .pipe(
-      concatMap(id => id ? this.authSvc.getUserItems(id).pipe(take(1)) : of(null)),
+      concatMap(id => id ? this.itemsRepo.getUserItems(id).pipe(take(1)) : of(null)),
       map(items => !!items)
     )
   }
@@ -194,7 +194,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
             map(items => items.map(item => this.itemsRepo.delete(auctionObj.id, item.id))),
             concatMap(deletePromises => from(Promise.all(deletePromises))),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
-            concatMap(() => this.authSvc.deleteTrackedItems(auctionObj.id)),
+            concatMap(() => this.itemsRepo.deleteTrackedItems(auctionObj.id)),
             finalize(() => this.loadingSvc.active$.next(false)) 
           ).subscribe(noop, err => console.log(err))
       })
