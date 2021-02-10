@@ -26,7 +26,7 @@
     
 
 
-    <div *ngIf="(trackedItems$ | async)?.length == 0 && !(isLoading$ | async)">
+    <div *ngIf="(items)?.length == 0 && !(isLoading$ | async)">
         <div><i>Trenutno ne pratite niti jedan predmet</i></div>
         <div><i>Sudjelujte u aukciji kako bi pratili predmete</i></div>
     </div>
