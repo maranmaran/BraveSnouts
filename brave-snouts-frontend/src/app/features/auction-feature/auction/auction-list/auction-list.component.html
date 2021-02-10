@@ -5,13 +5,15 @@
         <ng-container *ngIf="(auctions$ | async) as auctions; else noAuctions">
             <div @fadeIn id="auctions" fxLayout="column" fxLayoutGap="0.5rem">
 
-                <button mat-raised-button color="warn" class="w-100 mb-3 elevate hover-big" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+                <div fxLayout="row" fxLayoutGap="0.5rem">
+                    <button id="tracked-items-btn" mat-raised-button color="primary" *ngIf="(userTracksItems$ | async)"
+                        routerLink="/app/my-items" class="w-100 mb-3 elevate hover-big" [ngClass]="{
+                        }">
+                        Moji predmeti
+                    </button>
 
-                <button id="tracked-items-btn" mat-raised-button color="primary" *ngIf="(userTracksItems$ | async)"
-                    routerLink="/app/my-items" class="w-100 mb-3 elevate hover-big" [ngClass]="{
-                    }">
-                    Moji predmeti
-                </button>
+                    <button mat-raised-button color="warn" class="w-100 mb-3 elevate hover-big" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+                </div>
 
                 <mat-card *ngFor="let auction of auctions" class="pointer background lighter elevate hover"
                     (click)="onClick(auction)"

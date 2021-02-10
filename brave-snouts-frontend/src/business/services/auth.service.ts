@@ -202,7 +202,7 @@ export class AuthService {
                 duration: 10000,
                 dismissible: true,
                 autoClose: true,
-                position: "bottom-center"
+                position: "top-center"
             })
         }).catch(err => {
             console.log(err);
@@ -210,7 +210,7 @@ export class AuthService {
                 duration: 10000,
                 dismissible: true,
                 autoClose: true,
-                position: "bottom-center"
+                position: "top-center"
             })
         });
     }
@@ -222,7 +222,7 @@ export class AuthService {
             // this.store.collection("users").doc()
 
             this.toastSvc.error("Račun je već napravljen. Probajte Google ili Email prijavu.", {
-                position: "bottom-center",
+                position: "top-center",
                 dismissible: true,
                 autoClose: true,
                 duration: 20000
@@ -231,7 +231,7 @@ export class AuthService {
 
         if(err?.code == "no-email") {
             this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-pošta", {
-                position: "bottom-center",
+                position: "top-center",
                 dismissible: true,
                 autoClose: true
             });
