@@ -225,12 +225,16 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     let inputBid = this.currentBidControl.value;
     let sliderBid = this.sliderBid;
 
-    // slider value (between min and max)
-    if (inputBid <= currentBid + environment.itemCardConfig.maxBidOffset) {
-      return sliderBid; // this is what user wants
+    let inputChanged = this.currentBidControl.touched
+    
+    if(!inputChanged) {
+      // slider value (between min and max)
+      if (inputBid <= currentBid + environment.itemCardConfig.maxBidOffset) {
+        return sliderBid; // this is what user wants
+      }
     }
 
-    if(inputBid - currentBid > 500) {
+    if(inputChanged && inputBid - currentBid > 500) {
       this.toastSvc.warning("Nije moguće unijeti vrijednost veću od 500kn, ako želite unijeti veću vrijednost ponudite više manjih.", {
         position: 'top-center'
       })
