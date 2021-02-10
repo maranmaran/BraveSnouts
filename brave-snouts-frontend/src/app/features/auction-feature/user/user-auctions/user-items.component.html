@@ -7,12 +7,25 @@
         'mt-4': mediaObs.isActive('lt-sm')
     }" >Praćeni predmeti</div>
     
-    <virtual-scroller class="full-items-grid" #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0" [parentScroll]="scrollingBlock">
+    <!-- <virtual-scroller class="full-items-grid" #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0" [parentScroll]="scrollingBlock">
         <div #container class="items-grid">
             <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
         </div>
     </virtual-scroller>
+     -->
+
+    <virtual-scroller class="full-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="items" [parentScroll]="parentScroll">
+        <div #container class="items-grid">
+            <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
+        </div>
+    </virtual-scroller>
     
+    <ng-template #gallery>
+        <app-item-gallery [items]="items" [parentScroll]="parentScroll"></app-item-gallery>
+    </ng-template>
+    
+
+
     <div *ngIf="(trackedItems$ | async)?.length == 0 && !(isLoading$ | async)">
         <div><i>Trenutno ne pratite niti jedan predmet</i></div>
         <div><i>Sudjelujte u aukciji kako bi pratili predmete</i></div>

@@ -61,8 +61,8 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
 
   // load and customize html template
   const emailVariables = {
-    post_confirm_url: `${config.baseURL}/post-confirm;auctionId=${auction.id};userId=${user.id}`,
-    handover_confirm_url: `${config.baseURL}/handover-confirm;auctionId=${auction.id};userId=${user.id}`,
+    post_confirm_url: `${config.base.url}/post-confirm;auctionId=${auction.id};userId=${user.id}`,
+    handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auction.id};userId=${user.id}`,
     user_name: user.name.trim().split(" ")[0],
     handover_details: handoverDetails,
     payment_detail: `${auction.name} - ${user.email}`,

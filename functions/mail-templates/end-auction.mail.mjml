@@ -38,7 +38,7 @@
           Osvojeni predmeti
         </mj-text>
         <mj-text>
-          {{items_html}}
+          {{{items_html}}}
         </mj-text>
         <mj-text font-size="14px">
           Ukupno: {{total}}

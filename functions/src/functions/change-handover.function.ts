@@ -11,12 +11,14 @@ export const changeHandoverFn = europeFunctions.https.onCall(
 
         try {
             // get winners by auctionId
-            const items = await store.collection(`auctions/${auctionId}/items`).get();
+            const itemDocs = await store.collection(`auctions/${auctionId}/items`).get();
 
-            const winners = items.docs.map(item => (item.data() as AuctionItem).winner.userInfo);
+            const items = itemDocs.docs.map(item => (item.data() as AuctionItem));
 
-            for (const winner of winners) {
-                await sendHandoverDetailsUpdateMail(winner as UserInfo, handoverDetails);
+            for (const item of items) {
+                if(item.winner?.userInfo) {
+                    await sendHandoverDetailsUpdateMail(item.winner?.userInfo as UserInfo, handoverDetails);
+                }
             }
 
             return { status: 'ok', code: 200 };
