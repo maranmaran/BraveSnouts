@@ -7,3 +7,14 @@
         min-width: 100%;
     }
 }
+
+.container {
+    position: relative;
+    
+    .close-btn {
+        position: absolute;
+        left: 17.5rem;
+        z-index: 100;
+        top: -0.5rem;
+    }
+}

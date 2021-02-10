@@ -5,6 +5,7 @@ import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { from } from 'rxjs';
 import { concatMap, filter, take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { itemAnimations } from 'src/business/animations/item.animations';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
@@ -19,7 +20,7 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
   providers: [AuctionItemRepository, BidsRepository],
-  animations: itemAnimations
+  animations: [itemAnimations, fadeIn]
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
