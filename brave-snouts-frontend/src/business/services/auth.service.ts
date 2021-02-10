@@ -205,7 +205,7 @@ export class AuthService {
                 position: "top-center"
             })
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
             this.toastSvc.error("Imali smo poteškoća sa prijavom. Molimo vas pokušajte ponovno ili nas kontaktirajte.", {
                 duration: 10000,
                 dismissible: true,
@@ -245,7 +245,7 @@ export class AuthService {
 
         this.auth.getRedirectResult()
         .then(cred => {
-            console.log(cred);
+            // console.log(cred);
 
             if(cred == null || cred.user == null) {
                 return;
@@ -260,7 +260,7 @@ export class AuthService {
             }
 
             if (cred && cred.additionalUserInfo.isNewUser) {
-                console.log("adding user")
+                // console.log("adding user")
                 setTimeout(() => this.addNewUser(cred), 500);
             }
         })

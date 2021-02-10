@@ -1,7 +1,7 @@
 import { getLocaleDateFormat } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
-import { noop, Observable } from 'rxjs';
+import { noop, Observable, of } from 'rxjs';
 import { concatMap, finalize, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -19,6 +19,7 @@ export class UserItemsComponent implements OnInit, OnDestroy {
 
   useGallery = true;
 
+  empty: boolean = false;
   total: number = 0;
   items: AuctionItem[] = [];
   isLoading$: Observable<boolean>;
@@ -50,10 +51,25 @@ export class UserItemsComponent implements OnInit, OnDestroy {
       take(1),
       concatMap(id => this.itemsRepo.getUserItems(id).pipe(take(1))),
       tap(items => this.total = items?.length),
-      mergeMap(items => [...items]),
-      mergeMap((item: any) => this.itemsRepo.getOne(item.auctionId, item.id)),
-    ).subscribe(item => {
+      mergeMap(items => this.total > 0 ? [...items] : [ "empty" ] ),
+      mergeMap((item: any) => {
+
+        if(item == "empty")
+          return of(item);
+
+        return this.itemsRepo.getOne(item.auctionId, item.id);
+      }),
+      ).subscribe(item => {
+      
+      if(item == "empty") {
+        this.total = 0;
+        this.items = [];
+        setTimeout(() => this.loadingSvc.active$.next(false));
+        return;
+      }
+      
       const idx = this.items.findIndex(it => it.id == item.id);
+      
       if(idx != -1) {
         this.items[idx] = item;
         this.items = [...this.items];
