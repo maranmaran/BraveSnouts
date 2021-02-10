@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChil
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { HotToastService } from '@ngneat/hot-toast';
 import { from } from 'rxjs';
 import { concatMap, filter, take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
@@ -28,7 +29,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly toastSvc: HotToastService
   ) { }
 
   // Data
@@ -226,6 +228,12 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     // slider value (between min and max)
     if (inputBid <= currentBid + environment.itemCardConfig.maxBidOffset) {
       return sliderBid; // this is what user wants
+    }
+
+    if(inputBid - currentBid > 500) {
+      this.toastSvc.warning("Nije moguće unjeti vrijednost veću od 500kn, ako želite unjeti veću vrijednost ponudite više manjih.", {
+        position: 'top-center'
+      })
     }
 
     // custom input value.. more then max slider
