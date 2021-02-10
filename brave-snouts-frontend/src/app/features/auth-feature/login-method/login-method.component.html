@@ -7,6 +7,7 @@
     </button>
 
 
+
     <div class="mb-4" fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="space-between center">
 
         <img id="google" class="login-btn elevate hover-big" src="assets/social-logo/google.svg"
@@ -19,7 +20,7 @@
             (click)="selectMethod('email')" matTooltip="Prijava putem maila" />
     </div>
 
-    <div id="privacy" class="foreground primary lighter link" routerLink="/app/privacy-policy">Polica privatnosti</div>
+    <div id="privacy" class="foreground primary lighter link" routerLink="/app/privacy-policy" (click)="onClose()">Polica privatnosti</div>
 
     <div *ngIf="method == 'email'" class="mt-5 mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
         <mat-form-field>

@@ -231,7 +231,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if(inputBid - currentBid > 500) {
-      this.toastSvc.warning("Nije moguće unjeti vrijednost veću od 500kn, ako želite unjeti veću vrijednost ponudite više manjih.", {
+      this.toastSvc.warning("Nije moguće unijeti vrijednost veću od 500kn, ako želite unijeti veću vrijednost ponudite više manjih.", {
         position: 'top-center'
       })
 

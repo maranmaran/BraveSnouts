@@ -45,11 +45,12 @@ export class UserItemsComponent implements OnInit, OnDestroy {
   }
 
   getTrackedItems() {
+    
     this.loadingSvc.active$.next(true);
     return this.authSvc.userId$
     .pipe(
       take(1),
-      concatMap(id => this.itemsRepo.getUserItems(id).pipe(take(1))),
+      concatMap(id => this.itemsRepo.getUserItems(id)),
       tap(items => this.total = items?.length),
       mergeMap(items => this.total > 0 ? [...items] : [ "empty" ] ),
       mergeMap((item: any) => {
@@ -57,7 +58,9 @@ export class UserItemsComponent implements OnInit, OnDestroy {
         if(item == "empty")
           return of(item);
 
-        return this.itemsRepo.getOne(item.auctionId, item.id);
+        const idx = this.items.findIndex(it => it.id == item.id);
+
+        return idx != -1 ? of(this.items[idx]) : this.itemsRepo.getOne(item.auctionId, item.id);
       }),
       ).subscribe(item => {
       
