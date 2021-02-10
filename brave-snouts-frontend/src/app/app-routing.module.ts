@@ -12,6 +12,7 @@ import { AdminPageComponent } from 'src/app/features/auction-feature/user/admin-
 import { UserItemsComponent } from 'src/app/features/auction-feature/user/user-auctions/user-items.component';
 import { EmailLoginComponent } from 'src/app/features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from 'src/app/features/auth-feature/email-optout/email-optout.component';
+import { AuctionRulesComponent } from 'src/app/shared/auction-rules/auction-rules.component';
 import { MaintenanceComponent } from 'src/app/shared/maintenance/maintenance.component';
 import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-policy.component';
 import { AdminGuard } from 'src/business/guards/admin.guard';
@@ -47,6 +48,7 @@ const routes: Routes = [
     { path: 'email-optout', component: EmailOptoutComponent },
   
     { path: 'privacy-policy', component: PrivacyPolicyComponent },
+    { path: 'rules', component: AuctionRulesComponent },
     
   ]},
   
