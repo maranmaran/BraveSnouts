@@ -117,6 +117,10 @@ gallery {
   white-space: nowrap;
 }
 
+.wrap {
+  white-space: pre-wrap !important;
+}
+
 .bold {
   font-weight: bold !important;
 }
@@ -143,8 +147,8 @@ label {
   padding-top: 1rem;
   margin-bottom: 10px;
   height: calc(100% - 56px - 1rem) !important; // because of toolbar height
+  // height: calc(100%) !important; // because of toolbar height
 }
-
 
 .email-auth-hot-toast {
   margin-top: 100px;
@@ -152,4 +156,12 @@ label {
 
 .text-center {
   text-align: center;
+}
+
+.toolbar-btn {
+  position: relative;
+  right: 5px;
+  font-size: 10px !important; 
+  line-height: 2 !important;
+  padding: 0 !important;
 }

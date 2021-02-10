@@ -41,6 +41,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { AuctionRulesComponent } from './auction-rules/auction-rules.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 const MY_DATEPICKER_FORMAT = {
@@ -139,6 +140,6 @@ const MY_DATEPICKER_FORMAT = {
     { provide: MAT_DATE_FORMATS, useValue: MY_DATEPICKER_FORMAT },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }
   ],
-  declarations: [PrivacyPolicyComponent, MessageDialogComponent, MaintenanceComponent, AuctionRulesComponent]
+  declarations: []
 })
 export class MaterialModule { }

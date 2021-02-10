@@ -47,6 +47,11 @@ import { EmailOptoutComponent } from './features/auth-feature/email-optout/email
 import { HotToastModule } from '@ngneat/hot-toast';
 import { SingleItemDialogComponent } from './features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AppContainerComponent } from './core/app-container/app-container.component';
+import { FooterComponent } from 'src/app/shared/footer/footer.component';
+import { AuctionRulesComponent } from 'src/app/shared/auction-rules/auction-rules.component';
+import { MaintenanceComponent } from 'src/app/shared/maintenance/maintenance.component';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-policy.component';
 
 @NgModule({
   imports: [
@@ -117,6 +122,12 @@ import { AppContainerComponent } from './core/app-container/app-container.compon
     EmailLoginComponent,
     EmailOptoutComponent,
     AppContainerComponent,
+
+    PrivacyPolicyComponent, 
+    MessageDialogComponent, 
+    MaintenanceComponent, 
+    AuctionRulesComponent, 
+    FooterComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },

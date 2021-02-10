@@ -1,6 +1,6 @@
 <mat-toolbar class="toolbar" color="primary" fxLayout="row">
 
-    <div fxFlex="30">
+    <div fxFlex="30" fxLayout="row">
         <button mat-icon-button *ngIf="(admin$ | async); privacyPolicy" [matMenuTriggerFor]="adminMenu">
             <mat-icon>menu</mat-icon>
         </button>
@@ -13,7 +13,16 @@
             </button>
         </mat-menu>
 
-        <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button>
+        <span fxLayout="column" fxLayoutGap="5px" *ngIf="mediaObs.isActive('lt-sm'); else desktopBtns">
+            <button mat-stroked-button class="toolbar-btn" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
+            <button mat-stroked-button class="toolbar-btn" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+        </span>
+        <ng-template #desktopBtns>
+            <button mat-stroked-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
+            <button mat-stroked-button class="ml-2" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+        </ng-template>
+        
+        <!-- <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button> -->
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
@@ -49,6 +58,18 @@
                         redeem
                     </mat-icon>
                     Moji predmeti
+                </button>
+                <button mat-menu-item routerLink="/app/privacy-policy">
+                    <mat-icon matPrefix>
+                        security
+                    </mat-icon>
+                    Polica privatnosti
+                </button>
+                <button mat-menu-item routerLink="/app/auction-rules">
+                    <mat-icon matPrefix>
+                        gavel
+                    </mat-icon>
+                    Pravila aukcije
                 </button>
                 <button mat-menu-item (click)="onLogout()">
                     <mat-icon matPrefix>
