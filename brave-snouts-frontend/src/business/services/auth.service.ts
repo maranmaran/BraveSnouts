@@ -257,8 +257,7 @@ export class AuthService {
 
             if (cred && cred.additionalUserInfo.isNewUser) {
                 console.log("adding user")
-                setTimeout(() => this.addNewUser(cred)
-                , 500);
+                setTimeout(() => this.addNewUser(cred), 500);
             }
         })
         .catch(err => {

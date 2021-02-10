@@ -14,12 +14,12 @@
         </mat-menu>
 
         <span fxLayout="column" fxLayoutGap="5px" *ngIf="mediaObs.isActive('lt-sm'); else desktopBtns">
-            <button mat-stroked-button class="toolbar-btn" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
-            <button mat-stroked-button class="toolbar-btn" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+            <button mat-raised-button color="warn" class="toolbar-btn" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
+            <button mat-raised-button color="warn" class="toolbar-btn" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
         </span>
         <ng-template #desktopBtns>
-            <button mat-stroked-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
-            <button mat-stroked-button class="ml-2" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+            <button mat-raised-button color="warn" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
+            <button mat-raised-button color="warn" class="ml-2" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
         </ng-template>
         
         <!-- <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button> -->
