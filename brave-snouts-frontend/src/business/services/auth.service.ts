@@ -221,7 +221,7 @@ export class AuthService {
 
             // this.store.collection("users").doc()
 
-            this.toastSvc.error("Račun je već napravljen. Probajte Google ili Email prijavu.", {
+            this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
                 position: "top-center",
                 dismissible: true,
                 autoClose: true,
