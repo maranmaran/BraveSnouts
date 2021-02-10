@@ -55,9 +55,10 @@ export class UserItemsComponent implements OnInit, OnDestroy {
     ).subscribe(item => {
       const idx = this.items.findIndex(it => it.id == item.id);
       if(idx != -1) {
-        this.items[idx] = item
+        this.items[idx] = item;
+        this.items = [...this.items];
       } else {
-        this.items.push(item);
+        this.items = [...this.items, item];
       }
       
       if(this.items?.length == this.total) {
