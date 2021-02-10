@@ -30,7 +30,7 @@ export class ItemMediaComponent implements OnInit {
   ngOnInit(): void {
 
     // no items
-    if(this.dbMedia?.length == 0)
+    if(!this.dbMedia || this.dbMedia.length == 0)
       return;
 
     // show all

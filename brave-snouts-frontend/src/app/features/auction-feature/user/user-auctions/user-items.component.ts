@@ -16,6 +16,8 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
 })
 export class UserItemsComponent implements OnInit {
 
+  useGallery = true;
+
   trackedItems$: Observable<AuctionItem[]>;
   isLoading$: Observable<boolean>;
 
