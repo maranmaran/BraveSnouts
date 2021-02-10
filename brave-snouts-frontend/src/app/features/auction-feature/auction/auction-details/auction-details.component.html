@@ -1,10 +1,17 @@
 <div class="container" #scrollingBlock [ngClass]="{'mt-2': mediaObs.isActive('lt-sm')}" *ngIf="(auction$ | async) as auction" fxLayout="column" fxLayoutGap="1rem">
 
-    <button routerLink="/app/auctions" class="back-btn w-min btn-small m-0 ml-1" mat-raised-button color="warn" >
-        <mat-icon>arrow_back</mat-icon>
-        Natrag
-    </button>
-    
+    <div class="back-btn m-0 ml-1 mr-1" fxLayout="row" fxLayoutAlign="space-between">
+        <button routerLink="/app/auctions" class="btn-small" mat-raised-button color="warn" >
+            <mat-icon>arrow_back</mat-icon>
+            Natrag
+        </button>
+        
+        
+        <button routerLink="/app/my-items" class="btn-small" mat-raised-button color="primary" >
+            Moji predmeti
+        </button>
+    </div>
+
     <div fxLayout="row">
         <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem"
         fxFlex="45%" fxFlex.lt-md="100%">

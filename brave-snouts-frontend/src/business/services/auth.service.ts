@@ -255,7 +255,7 @@ export class AuthService {
                 this.handleErrors(cred);
             }
 
-            if(!cred.user.email || cred.user.email.trim() == "") {
+            if(cred.user.email?.trim() == "") {
                 this.handleErrors({ code: "no-email" }); 
             }
 
