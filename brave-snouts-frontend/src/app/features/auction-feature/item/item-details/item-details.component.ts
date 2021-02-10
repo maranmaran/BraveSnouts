@@ -234,6 +234,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       this.toastSvc.warning("Nije moguće unjeti vrijednost veću od 500kn, ako želite unjeti veću vrijednost ponudite više manjih.", {
         position: 'top-center'
       })
+
+      throw new Error();
     }
 
     // custom input value.. more then max slider
