@@ -251,7 +251,11 @@ export class AuthService {
                 return;
             }
 
-            if(!cred.user.email || cred.user.email?.trim() == "") {
+            if((cred as any).code) {
+                this.handleErrors(cred);
+            }
+
+            if(!cred.user.email || cred.user.email.trim() == "") {
                 this.handleErrors({ code: "no-email" }); 
             }
 
@@ -261,7 +265,11 @@ export class AuthService {
             }
         })
         .catch(err => {
-            console.log(err)
+            
+            if(err.code == "auth/account-exists-with-different-credential") {
+                this.handleErrors({ code: err.code })
+            }
+            
         })
     }
 
