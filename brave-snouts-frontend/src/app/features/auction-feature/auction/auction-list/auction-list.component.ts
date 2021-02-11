@@ -5,16 +5,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
 import { from, noop, Observable, of, Subscription } from 'rxjs';
-import { concatMap, distinct, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
-import { staggerFadeIn } from 'src/business/animations/stagger-fade-in.animation';
 import { Auction } from 'src/business/models/auction.model';
-import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { getAuctionState } from 'src/business/services/auction.service';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 
 @Component({
   selector: 'app-auction-list',
