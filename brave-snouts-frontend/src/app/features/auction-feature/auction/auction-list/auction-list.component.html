@@ -38,16 +38,22 @@
 
                         </mat-card-title>
 
-                        <div fxLayout="row" *ngIf="(admin$ | async)">
-                            <button mat-icon-button color="primary" (click)="onViewBids(auction, $event)">
-                                <mat-icon>shopping_cart</mat-icon>
+                        <div fxLayout="row">
+                            <button mat-raised-button color="primary" class="h-min" (click)="onViewDescription(auction, $event)">
+                                Opis aukcije
                             </button>
-                            <button mat-icon-button color="primary" (click)="onEdit(auction, $event)">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                            <button mat-icon-button color="warn" (click)="onDelete(auction, $event)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
+                            <ng-container  *ngIf="(admin$ | async)">
+                                <button mat-icon-button color="primary" (click)="onViewBids(auction, $event)">
+                                    <mat-icon>shopping_cart</mat-icon>
+                                </button>
+                                <button mat-icon-button color="primary" (click)="onEdit(auction, $event)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn" (click)="onDelete(auction, $event)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </ng-container>
+                            
                         </div>
                     </mat-card-header>
 
