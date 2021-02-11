@@ -76,4 +76,25 @@
             }
         }
     }
+
+    .items-dialog {
+
+        mat-dialog-container {
+            margin: 0 !important;
+            padding: 0px !important;
+        }
+
+        .container {
+            margin: 0 !important;
+            padding: 0 !important;
+
+            mat-card {
+                box-shadow: none;
+            }
+
+            app-item-list {
+                padding-top: 33px !important;
+            }
+        }
+    }
 }

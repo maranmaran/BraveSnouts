@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 import { concatMap, map, take } from 'rxjs/operators';
@@ -18,7 +18,11 @@ import { MediaObserver } from '@angular/flex-layout';
 })
 export class ItemListComponent implements OnInit, OnDestroy {
 
-  useGallery = true;
+  @Input() useGallery = true;
+  // overrides some functions like pagination since it's coming from different source
+  // we will instead send event outside
+  @Input() fromDialog = false; 
+  @Output() onFetchMore = new EventEmitter<IPageInfo>();
 
   constructor(
     private readonly authSvc: AuthService,
@@ -68,7 +72,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   //#region  Pagination 
 
-  items: AuctionItem[] = [];
+  @Input() items: AuctionItem[] = [];
   last: AuctionItem;
 
   fetchInProgress = false;
@@ -77,6 +81,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
   /** Loads more data when page hits bottom */
   onLoadMore(event: IPageInfo) {
 
+    if(this.fromDialog) {
+      this.onFetchMore.emit(event);
+      return;
+    }
     // only if no other fetch is in progress
     if (this.fetchInProgress) {
       return;

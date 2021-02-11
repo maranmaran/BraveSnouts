@@ -2,6 +2,12 @@
 
 @mixin grids-theme($theme) {
 
+    #items-list-dialog {
+        .items-grid {
+            grid-template-columns: minmax(auto, 1fr) !important;
+        }
+    }
+
     virtual-scroller.full-items-grid {
         .items-grid {
             height: 100%;

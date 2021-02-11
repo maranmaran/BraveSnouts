@@ -1,0 +1,15 @@
+<div id="items-list-dialog" class="container center">
+    <app-item-list class="items" *ngIf="(items$ | async) as items" 
+        [useGallery]="false"
+        [items]="items" 
+        [fromDialog]="true"
+        (onFetchMore)="onFetchMore($event)"
+    ></app-item-list>
+    
+    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+    
+</div>

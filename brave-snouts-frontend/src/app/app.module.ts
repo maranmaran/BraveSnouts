@@ -55,6 +55,7 @@ import hrLocale from '@angular/common/locales/hr';
 import { registerLocaleData } from '@angular/common';
 import { AuctionDatePipe } from 'src/business/pipes/custom-date.pipe';
 import { environment } from 'src/environments/environment';
+import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 
 registerLocaleData(hrLocale);
 
@@ -133,7 +134,8 @@ registerLocaleData(hrLocale);
     MessageDialogComponent, 
     MaintenanceComponent, 
     AuctionRulesComponent, 
-    FooterComponent
+    FooterComponent, 
+    ItemsListDialogComponent
   ],
   providers: [
     { provide: LOCALE_ID, useValue: "hr" }, 
