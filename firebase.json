@@ -32,7 +32,7 @@
             "value": "no-cache, no-store, must-revalidate"
           }
         ]
-      },
+      }
       // { 
       //   "source":"/service-worker.js", 
       //   "headers": [
