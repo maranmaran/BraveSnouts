@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireFunctionsModule, REGION } from '@angular/fire/functions';
@@ -28,7 +28,6 @@ import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
 import { TruncatedTextComponent } from 'src/app/shared/truncated-text/truncated-text.component';
 import { modules } from 'src/business/models/editor.config';
 import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
-import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
@@ -52,6 +51,12 @@ import { AuctionRulesComponent } from 'src/app/shared/auction-rules/auction-rule
 import { MaintenanceComponent } from 'src/app/shared/maintenance/maintenance.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-policy.component';
+import hrLocale from '@angular/common/locales/hr';
+import { registerLocaleData } from '@angular/common';
+import { AuctionDatePipe } from 'src/business/pipes/custom-date.pipe';
+import { environment } from 'src/environments/environment';
+
+registerLocaleData(hrLocale);
 
 @NgModule({
   imports: [
@@ -105,6 +110,7 @@ import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-po
     // shared
     TruncatedTextComponent,
     TruncatePipe,
+    AuctionDatePipe,
     ConfirmDialogComponent,
 
     // auth
@@ -130,6 +136,7 @@ import { PrivacyPolicyComponent } from 'src/app/shared/privacy-policy/privacy-po
     FooterComponent
   ],
   providers: [
+    { provide: LOCALE_ID, useValue: "hr" }, 
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: REGION, useValue: 'europe-west1' },

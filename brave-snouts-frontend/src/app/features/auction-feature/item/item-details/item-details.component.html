@@ -27,7 +27,7 @@
     <div class="best-bid-label background warn lighter mat-small" [@fadeIn]="userId === item.user && isAuthenticated"
         *ngIf="userId == item.user && isAuthenticated" matTooltip="Tvoja ponuda je najbolja"
         [matTooltipPosition]="'above'">
-        Moja ponuda je trenutno najbolja
+        Vaša ponuda je trenutno najbolja
     </div>
     <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
 
@@ -63,7 +63,7 @@
                             Cijena mora biti prirodan broj
                         </div>
                         <div *ngIf="currentBidControl.errors.min">
-                            Minimalna cijena mora biti 5 kuna viša
+                            Nova ponuda mora biti barem 5kn viša od trenutne
                         </div>
                     </div>
                 </mat-form-field>
