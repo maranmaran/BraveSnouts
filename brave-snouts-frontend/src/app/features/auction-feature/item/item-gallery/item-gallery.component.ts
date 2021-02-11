@@ -79,7 +79,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['items-dialog', 'mat-elevation-z8'],
-      data: { items: this.items, svc: this.itemDialogSvc }
+      data: { items: this.items, initItem: item, svc: this.itemDialogSvc }
     });
 
     // dialogRef.afterClosed()

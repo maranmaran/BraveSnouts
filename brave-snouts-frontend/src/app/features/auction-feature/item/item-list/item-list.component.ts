@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IPageInfo } from 'ngx-virtual-scroller';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 import { concatMap, map, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -22,8 +22,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
   // overrides some functions like pagination since it's coming from different source
   // we will instead send event outside
   @Input() fromDialog = false; 
+  @Input('initItem') initItemFromDialog: AuctionItem;
   @Output() onFetchMore = new EventEmitter<IPageInfo>();
 
+  @ViewChild('itemsScroller', { static: false }) scroller: VirtualScrollerComponent
   constructor(
     private readonly authSvc: AuthService,
     private readonly itemsRepo: AuctionItemRepository,
@@ -37,6 +39,14 @@ export class ItemListComponent implements OnInit, OnDestroy {
   private _subsink = new SubSink();
   
   async ngOnInit() {
+
+    if(this.fromDialog) {
+      setTimeout(() => {
+        this.scrollInto(this.initItemFromDialog);
+      })
+    }
+
+
     this.onLoadMore({endIndex: -1} as IPageInfo);
     this.getUserTrackedItems();
   }
@@ -130,6 +140,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
       }, err => console.log(err));
 
     this._subsink.add(subscription);
+  }
+
+  scrollInto(item: AuctionItem) {
+
+    this.scroller.scrollInto(item, true, 20, 0);
+
   }
 
   //#endregion

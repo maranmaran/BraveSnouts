@@ -20,7 +20,7 @@ export class ItemsListDialogComponent implements OnInit {
 
   constructor(
     private readonly dialog: MatDialogRef<ItemsListDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { items: AuctionItem[], svc: ItemDialogService } = null
+    @Inject(MAT_DIALOG_DATA) public data: { items: AuctionItem[], initItem: AuctionItem, svc: ItemDialogService } = null
   ) { }
 
   ngOnInit(): void {
