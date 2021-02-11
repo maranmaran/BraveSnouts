@@ -230,7 +230,7 @@ export class AuthService {
         }
 
         if(err?.code == "no-email") {
-            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-pošta", {
+            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-mail", {
                 position: "top-center",
                 dismissible: true,
                 autoClose: true
