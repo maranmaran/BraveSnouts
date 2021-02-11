@@ -27,7 +27,7 @@ export class AuctionDatePipe implements PipeTransform {
             case "utorak":
                 day = option1 ? "utorka" : "utorak";
                 break;
-            case "srijed":
+            case "srijeda":
                 day = option1 ? "srijede" : "srijedu";
                 break;
             case "četvrtak":
