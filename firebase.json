@@ -13,6 +13,17 @@
       }
     ],
     "headers": [
+      // cache images
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=7200"
+          }
+        ]
+      }
+      // Hard reset -remove cache
       // { 
       //   "source":"**", 
       //   "headers": [
