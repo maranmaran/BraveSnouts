@@ -14,25 +14,25 @@
     ],
     "headers": [
       // cache images
-      {
-        "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=604800"
-          }
-        ]
-      }
-      // Hard reset -remove cache
-      // { 
-      //   "source":"**", 
+      // {
+      //   "source": "**/*.@(jpg|jpeg|gif|png|svg)",
       //   "headers": [
       //     {
       //       "key": "Cache-Control",
-      //       "value": "no-cache, no-store, must-revalidate"
+      //       "value": "max-age=604800"
       //     }
       //   ]
-      // },
+      // }
+      // Hard reset -remove cache
+      { 
+        "source":"**", 
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
       // { 
       //   "source":"/service-worker.js", 
       //   "headers": [

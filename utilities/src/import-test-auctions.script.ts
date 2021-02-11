@@ -18,7 +18,7 @@ import { importFullAuction } from "./import-full-auction.script";
         // only transform images
         await importFullAuction(false, true, false, imagesDir, transformDir);
     }
-    
+
     let auctionActive400 = new Auction({
             id: "auctionActive400",
             name: `Active auction 400 `,
