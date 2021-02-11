@@ -3,19 +3,8 @@ virtual-scroller {
     width: 100%;
 }
 
-
-.custom-height {
-    height: 615px !important;
-    padding-bottom: 20px;
-}
-
 @media(max-width: 600px) {
     .container {
         height: calc(100% - 56px - 1.5rem) !important;
-    }
-
-    .custom-height {
-        height: 170px !important;
-        padding-bottom: 10px;
     }
 }
