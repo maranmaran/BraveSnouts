@@ -81,7 +81,7 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     subject: 'Čestitamo na osvojenim predmetima!',
     html: emailTemplate,
     attachments: [{
-      filename: 'njuske-kapica-compressed.jpg',
+      filename: 'njuske-original-compressed.jpg',
       path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
       cid: 'logo' 
     }]
@@ -117,7 +117,7 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
     subject: `Tvoja ponuda za predmet "${itemBefore.name}" je nadmašena!`,
     html: emailTemplate,
     attachments: [{
-      filename: 'njuske-kapica-compressed.jpg',
+      filename: 'njuske-original-compressed.jpg',
       path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
       cid: 'logo' 
     }]
@@ -149,7 +149,7 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDeta
     subject: 'Promjena informacija za osobno preuzimanje!',
     html: emailTemplate,
     attachments: [{
-      filename: 'njuske-kapica-compressed.jpg',
+      filename: 'njuske-original-compressed.jpg',
       path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
       cid: 'logo' 
     }]
