@@ -115,7 +115,7 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
     console.log(`File loaded with ${rows.length} rows`);
     // generate auction
     let auctionDoc = await store.collection('auctions').doc(auction.id);
-    await auctionDoc.set(Object.assign({}, auction));
+    await auctionDoc.update(Object.assign({}, auction));
 
     console.log("Auction generated, seeding items...");
 
@@ -181,7 +181,7 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
             bid: row[headers.price],
         };
 
-        itemDoc.set(item);
+        itemDoc.update(item);
     }
 
     console.log("Import finished");
