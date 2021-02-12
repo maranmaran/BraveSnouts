@@ -66,7 +66,7 @@ registerLocaleData(hrLocale);
 
     // Core stuff
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule.enablePersistence(),
+    AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireFunctionsModule,
 
