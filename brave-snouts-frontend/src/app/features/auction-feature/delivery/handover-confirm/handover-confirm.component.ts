@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { from } from 'rxjs';
 import { take, mergeMap, map } from 'rxjs/operators';
 import { Winner } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -51,7 +52,7 @@ export class HandoverConfirmComponent implements OnInit {
       mergeMap(items => [...items]),
       map(item => item.winner),
       map(winner => [winner.itemId, Object.assign({}, winner, {deliveryChoice: 'handover'}) ]),
-      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
+      mergeMap(([id, data]) => from(this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner} )).pipe(take(1)) )
     ).subscribe(
       () => this.success = true, 
       err => (console.log(err), this.success = false),
