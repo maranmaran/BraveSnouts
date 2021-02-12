@@ -37,15 +37,15 @@ export class PostConfirmComponent implements OnInit {
     this._auctionId = this.route.snapshot.paramMap.get('auctionId');
     this._userId = this.route.snapshot.paramMap.get('userId');
     this.originalDonation = parseFloat(this.route.snapshot.paramMap.get('donation'));
-    this.paymentDetail = this.route.snapshot.paramMap.get('paymentDetails');
+    this.paymentDetail = this.route.snapshot.paramMap.get('paymentDetail');
     
-    // if(!this._auctionId || !this._userId || !this.originalDonation) {
-    //   this.success = false;
-    //   this.bootstrap = true;
+    if(!this._auctionId || !this._userId || !this.originalDonation) {
+      this.success = false;
+      this.bootstrap = true;
 
-    //   setTimeout(() => this.router.navigate(["/app"]), 10000);
-    //   return;
-    // }
+      setTimeout(() => this.router.navigate(["/app"]), 10000);
+      return;
+    }
 
 
     this.totalDonation = this.originalDonation + 20;
