@@ -82,7 +82,7 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     html: emailTemplate,
     attachments: [{
       filename: 'njuske-original-compressed.jpg',
-      path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
       cid: 'logo' 
     }]
   };
@@ -118,7 +118,7 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
     html: emailTemplate,
     attachments: [{
       filename: 'njuske-original-compressed.jpg',
-      path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
       cid: 'logo' 
     }]
   };
@@ -150,7 +150,7 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDeta
     html: emailTemplate,
     attachments: [{
       filename: 'njuske-original-compressed.jpg',
-      path: path.join(process.cwd(), 'assets', 'njuske-kapica-compressed.jpg'),
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
       cid: 'logo' 
     }]
   };

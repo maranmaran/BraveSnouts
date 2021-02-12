@@ -28,7 +28,7 @@
         <!--Logo + greetings-->
 
         <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
-        <!-- <mj-image width="100px" src="./../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
+        <!-- <mj-image width="100px" src="./../assets/njuske-original-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
 
         <mj-text align="center" font-weight="bold" font-size="23px">
           Pozdrav {{user_name}},
