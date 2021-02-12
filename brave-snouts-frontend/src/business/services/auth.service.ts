@@ -217,10 +217,10 @@ export class AuthService {
 
     /** Handles different login errors */
     handleErrors(err) {
+        console.error(err);
+
         if(err?.code == "auth/account-exists-with-different-credential") {
-
             // this.store.collection("users").doc()
-
             this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
                 position: "top-center",
                 dismissible: true,
@@ -231,6 +231,14 @@ export class AuthService {
 
         if(err?.code == "no-email") {
             this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-mail", {
+                position: "top-center",
+                dismissible: true,
+                autoClose: true
+            });
+        }
+
+        if(err?.code == "auth/web-storage-unsupported") {
+            this.toastSvc.error("Keksići moraju biti uključeni, ako ste u incognito modu molim vas promjenite browser.", {
                 position: "top-center",
                 dismissible: true,
                 autoClose: true
