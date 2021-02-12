@@ -86,7 +86,7 @@ const getAuctionItems = async (auctionId: string) => {
 
   if(items.length === 0) {
     const message = 'No items found';
-    logger.log(message);
+    logger.warn(message);
     throw new Error(message);
   }
 
@@ -101,7 +101,7 @@ const getBids = (items: AuctionItem[]) => {
 
   if(bids.length === 0) {
     const message = 'No bids found';
-    logger.log(message);
+    logger.warn(message);
     throw new Error(message);
   }
 
@@ -113,9 +113,14 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
   
   for (const bid of bids) {
 
+    if(!userInfo.has(bid.user)) {
+      // skip
+      console.warn(`Skipping ${bid.user}`)
+      continue;
+    }
     const user = userInfo.get(bid.user) as UserInfo;
 
-    const winnerInstance = new Winner({
+    const winnerInstance = {
       userId: user.id,
       auctionId: auctionId,
       itemId: bid.item.id,
@@ -130,13 +135,13 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
       deliveryChoice: null,
       postalInformation: null,
 
-    })
+    }
     
     // const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
 
     const winnerObj = Object.assign({}, winnerInstance);
 
-    await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update({winner: winnerObj});
+    await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update(Object.assign({}, { winner: winnerObj } ));
   }
 }
 
@@ -166,7 +171,7 @@ const getUserInformation = async (userIds: string[]) => {
 
       } catch (error) {
           logger.error(`${error}`);
-          throw new Error('User not found');
+          console.warn(`User not found ${userId}`);
       }
   }
 

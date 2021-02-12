@@ -9,7 +9,7 @@
                     <button id="tracked-items-btn" mat-raised-button color="primary" *ngIf="(userTracksItems$ | async)"
                         routerLink="/app/my-items" class="w-100 mb-3 elevate hover-big" [ngClass]="{
                         }">
-                        Praćeni predmeti
+                        Moji predmeti
                     </button>
 
                     <button mat-raised-button color="warn" class="w-100 mb-3 elevate hover-big" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
@@ -38,16 +38,22 @@
 
                         </mat-card-title>
 
-                        <div fxLayout="row" *ngIf="(admin$ | async)">
-                            <button mat-icon-button color="primary" (click)="onViewBids(auction, $event)">
-                                <mat-icon>shopping_cart</mat-icon>
+                        <div fxLayout="row">
+                            <button mat-raised-button *ngIf="!(admin$ | async)" color="primary" class="h-min" (click)="onViewDescription(auction, $event)">
+                                Opis aukcije
                             </button>
-                            <button mat-icon-button color="primary" (click)="onEdit(auction, $event)">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                            <button mat-icon-button color="warn" (click)="onDelete(auction, $event)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
+                            <ng-container  *ngIf="(admin$ | async)">
+                                <button mat-icon-button color="primary" (click)="onViewBids(auction, $event)">
+                                    <mat-icon>shopping_cart</mat-icon>
+                                </button>
+                                <button mat-icon-button color="primary" (click)="onEdit(auction, $event)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn" (click)="onDelete(auction, $event)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </ng-container>
+                            
                         </div>
                     </mat-card-header>
 

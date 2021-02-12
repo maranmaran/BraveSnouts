@@ -7,6 +7,7 @@ import firebase from 'firebase/app';
 import { from, noop, Observable, of, Subscription } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { Auction } from 'src/business/models/auction.model';
 import { getAuctionState } from 'src/business/services/auction.service';
@@ -207,10 +208,27 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app/admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
   }
 
+  onViewDescription(auction: Auction, event: Event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+    
+    this.dialog.open(MessageDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: ['item-dialog', 'mat-elevation-z8'],
+      data: auction.description
+    });
+  } 
+
   //#endregion
 
   getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
     return getAuctionState(auction);
   }
+
 
 }

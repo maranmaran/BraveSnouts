@@ -28,7 +28,7 @@
         <!--Logo + greetings-->
 
         <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
-        <!-- <mj-image width="100px" src="./../assets/njuske-kapica-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
+        <!-- <mj-image width="100px" src="./../assets/njuske-original-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
 
         <mj-text align="center" font-weight="bold" font-size="23px">
           Pozdrav {{user_name}},
@@ -54,7 +54,10 @@
           Ukoliko više ne želite primati ovakve poruke, kliknite <a style="margin-left: 5px" href="{{optout_url}}">ovdje</a>
         </mj-text>
         <mj-text align="center" color="#bbb" font-size="10px" padding="0">
-          Hrabre njuške je neprofitna udurga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
+          Ukoliko trebate pomoć, možete nam se obratiti na mail app.hrabrenjuske@gmail.com 
+        </mj-text>
+        <mj-text align="center" color="#bbb" font-size="10px" padding="0">
+          Hrabre njuške je neprofitna udruga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
         </mj-text>
       </mj-column>
     </mj-section>

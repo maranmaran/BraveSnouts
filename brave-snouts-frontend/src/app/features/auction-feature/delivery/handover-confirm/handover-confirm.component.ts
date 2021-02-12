@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { take, mergeMap, map } from 'rxjs/operators';
+import { from, Subscription } from 'rxjs';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Winner } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 
 @Component({
   selector: 'app-handover-confirm',
@@ -12,7 +12,7 @@ import { WinnersRepository } from 'src/business/services/repositories/winners.re
   styleUrls: ['./handover-confirm.component.scss'],
   providers: [AuctionItemRepository]
 })
-export class HandoverConfirmComponent implements OnInit {
+export class HandoverConfirmComponent implements OnInit, OnDestroy {
   
   success: boolean;
   bootstrap: boolean = false;
@@ -27,16 +27,26 @@ export class HandoverConfirmComponent implements OnInit {
     private readonly router: Router,
   ) { }
 
+  _sub: Subscription;
+
   ngOnInit(): void {
     this._auctionId = this.route.snapshot.paramMap.get('auctionId');
     this._userId = this.route.snapshot.paramMap.get('userId');
 
     if(!this._auctionId || !this._userId) {
+      console.log("Redirecting")
       this.router.navigate(['/app']);
       return null;
     }
+    
+    console.log("Submitting")
+    setTimeout(() => {
+      this._sub = this.onSubmit()
+    }, 1500)
+  }
 
-    this.onSubmit();
+  ngOnDestroy() {
+    this._sub.unsubscribe();
   }
 
   onSubmit() {
@@ -46,17 +56,22 @@ export class HandoverConfirmComponent implements OnInit {
 
     let items$ = this.itemsRepo.getAll(this._auctionId, query);
 
-    items$.pipe(
+    return items$.pipe(
       take(1),
       mergeMap(items => [...items]),
       map(item => item.winner),
-      map(winner => [winner.itemId, Object.assign({}, winner, {deliveryChoice: 'handover'}) ]),
-      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
+      map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover' }) ]),
+      mergeMap(([id, data]) => {
+     
+        var partialData = { winner: data } as AuctionItem;
+  
+        return this.itemsRepo.getDocument(this._auctionId, id as string).set(partialData, {merge: true})
+      }),
     ).subscribe(
       () => this.success = true, 
       err => (console.log(err), this.success = false),
       () => this.bootstrap = true
-    );
+    );;
 
   }
 

@@ -1,8 +1,9 @@
-// .container {
-//     height: inherit !important;
-// }
+.container {
+    height: unset !important;
+}
 
 virtual-scroller {
-    height: 350px;
+    height: auto;
+    min-height: 350px;
     width: 100%;
 }
