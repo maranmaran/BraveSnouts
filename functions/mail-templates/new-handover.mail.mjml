@@ -43,8 +43,8 @@
         <mj-text font-weight="bold">
           Došlo je do promjene informacija za osobno preuzimanje
         </mj-text>
-        <mj-text padding-top="30px" align="center">
-          "{{handover_details}}"
+        <mj-text padding-top="30px">
+          {{{handover_details}}}
         </mj-text>
 
         <!--Footer-->

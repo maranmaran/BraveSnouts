@@ -41,7 +41,7 @@
           {{{items_html}}}
         </mj-text>
         <mj-text font-size="14px">
-          Ukupno: {{total}}
+          Ukupno: {{total}} kn
         </mj-text>
         <mj-divider></mj-divider>
         <mj-text align="center" font-weight="bold" font-size="14px">
@@ -75,7 +75,7 @@
           Informacije za osobno preuzimanje
         </mj-text>
         <mj-text>
-          {{ handover_details }}
+          {{{ handover_details }}}
         </mj-text>
 
         <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px">

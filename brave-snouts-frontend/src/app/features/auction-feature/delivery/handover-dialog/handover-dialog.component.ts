@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-handover-dialog',
@@ -11,12 +11,20 @@ export class HandoverDialogComponent implements OnInit {
 
   constructor(
     private readonly dialog: MatDialogRef<HandoverDialogComponent>,
+    private readonly fb: FormBuilder,
   ) { }
 
-  handoverDetails: FormControl;
+  handoverDetails: FormArray;
 
   ngOnInit(): void {
-    this.handoverDetails = new FormControl('', Validators.required);
+    this.handoverDetails = this.fb.array([
+      this.fb.control(""),
+      this.fb.control(""),
+    ])
+  }
+
+  onAdd() {
+    this.handoverDetails.push(this.fb.control(""));
   }
 
   onClose() {

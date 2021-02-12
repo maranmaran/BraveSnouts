@@ -55,7 +55,7 @@ const getEmailOptoutLink = (userId: string, optout: string) => `${config.base.ur
 //#endregion
 
 /**Sends auction end mail */
-export const sendEndAuctionMail = async (auction: Auction, handoverDetails: string, user: UserInfo, items: Bid[]) => {
+export const sendEndAuctionMail = async (auction: Auction, handoverDetails: string[], user: UserInfo, items: Bid[]) => {
 
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
@@ -64,7 +64,7 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     post_confirm_url: `${config.base.url}/post-confirm;auctionId=${auction.id};userId=${user.id}`,
     handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auction.id};userId=${user.id}`,
     user_name: user.name.trim().split(" ")[0],
-    handover_details: handoverDetails,
+    handover_details: `<ul>${handoverDetails.map(detail => `<li>${detail}</li>`).join("\n")}</ul>`,
     payment_detail: `${auction.name} - ${user.email}`,
     items_html: `<ul>${items.map(item => `<li>${item.item.name} - ${item.value}kn</li>`).join("\n")}</ul>`,
     total: items.map(x => x.value).reduce((prev, cur) => prev + cur),
@@ -127,13 +127,13 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
 }
 
 /**Sends new handover details mail */
-export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDetails: string) => {
+export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDetails: string[]) => {
   logger.info(`Sending mail to ${user.email} for handover details update`);
 
   
   // load and customize html template
   const emailVariables = {
-    handover_details: handoverDetails,
+    handover_details: `<ul>${handoverDetails.map(detail => `<li>${detail}</li>`).join("\n")}</ul>`,
     user_name: user.name.trim().split(" ")[0]
   }
   

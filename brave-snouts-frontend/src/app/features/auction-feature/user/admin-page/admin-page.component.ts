@@ -163,6 +163,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
+      panelClass: 'restrict-height-handover'
     });
 
     dialogRef.afterClosed()
@@ -188,18 +189,20 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   changeHandoverDetails(auctionId) {
-    const dialogRef = this.dialog.open(HandoverDialogComponent, {
+
+    const dialogRef = this.dialog.open(HandoverDialogComponent,  {
       height: 'auto',
       width: '98%',
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
+      panelClass: 'restrict-height-handover'
     });
 
     dialogRef.afterClosed()
     .pipe(take(1))
     .subscribe(handoverDetails => {
-      if(!handoverDetails) return;
+      if(!handoverDetails || handoverDetails.length == 0) return;
 
       this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
       .pipe(

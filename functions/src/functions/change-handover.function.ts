@@ -21,6 +21,9 @@ export const changeHandoverFn = europeFunctions.https.onCall(
                 }
             }
 
+            // update auction
+            await store.collection('auctions').doc(auctionId).set({ handoverDetails }, { merge: true });
+
             return { status: 'ok', code: 200 };
         }
         catch (error) {

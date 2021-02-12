@@ -207,3 +207,9 @@ label {
     background-size: contain;
   }
 }
+
+.restrict-height-handover {
+  .mat-dialog-container {
+      max-height: 60vh !important;
+  }
+}

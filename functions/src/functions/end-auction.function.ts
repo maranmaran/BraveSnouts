@@ -23,7 +23,7 @@ export const endAuctionFn = europeFunctions.https.onCall(
  * Checks for today auction and whether or not it's finished
  * If it's done it retrieves all best bids 
  */
-const auctionEnd = async (auctionId: string, handoverDetails: string) => {
+const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
 
     // get auction data
     console.info("Retrieving auction")
@@ -60,7 +60,7 @@ const auctionEnd = async (auctionId: string, handoverDetails: string) => {
 
     // Mark processed auctions
     console.info("Update auction as processed")
-    await markAuctionProcessed(auction);
+    await updateAuction(auction, handoverDetails);
 
     return null;
 }
@@ -193,16 +193,17 @@ const getUserBids = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserI
 }
 
 /** Sends mails to relevant users with their won items */
-const sendMails = async (auction: Auction, userBids: Map<UserInfo, Bid[]>, handoverDetails: string) => {
+const sendMails = async (auction: Auction, userBids: Map<UserInfo, Bid[]>, handoverDetails: string[]) => {
   for (const [userInfo, bids] of userBids) {
       await sendEndAuctionMail(auction, handoverDetails, userInfo, bids);
   }
 }
 
 /** Marks all auctions as processed */
-const markAuctionProcessed = async (auction: Auction) => {
+const updateAuction = async (auction: Auction, handoverDetails: string[]) => {
     auction.processed = true;
-    await store.collection('auctions').doc(auction.id).update(auction);
+    auction.handoverDetails = handoverDetails;
+    await store.collection('auctions').doc(auction.id).set(auction, { merge: true });
 }
 
 
