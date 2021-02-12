@@ -6,8 +6,8 @@
   $radius: 5px;
 
   *::-webkit-scrollbar {
-    width: 0.3em;
-    height: 0.3em;
+    width: 0.5em;
+    height: 0.5em;
     border-radius: $radius;
   }
 
@@ -21,5 +21,12 @@
     background-color: $primary-lighter;
     outline: none;
     border-radius: $radius;
+  }
+
+  #admin-page {
+    *::-webkit-scrollbar {
+      width: 0.8em;
+      height: 0.8em;
+    }
   }
 }

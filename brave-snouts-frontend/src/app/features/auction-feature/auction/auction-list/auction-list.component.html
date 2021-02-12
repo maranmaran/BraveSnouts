@@ -39,7 +39,7 @@
                         </mat-card-title>
 
                         <div fxLayout="row">
-                            <button mat-raised-button color="primary" class="h-min" (click)="onViewDescription(auction, $event)">
+                            <button mat-raised-button *ngIf="!(admin$ | async)" color="primary" class="h-min" (click)="onViewDescription(auction, $event)">
                                 Opis aukcije
                             </button>
                             <ng-container  *ngIf="(admin$ | async)">
