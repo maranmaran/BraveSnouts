@@ -20,6 +20,9 @@ dist/
 **/devkey.json
 **/.env
 
+/data/aukcija
+/data/aukcija-transformed
+/data/Aukcija.xlsx
 /data/images
 /data/transformed-images
 

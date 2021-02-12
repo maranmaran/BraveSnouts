@@ -4,7 +4,7 @@ import * as GM from 'gm';
 import moment from 'moment';
 import * as pathLib from 'path';
 import { Picsum } from 'picsum-photos';
-import request from 'request';
+import request, { head } from 'request';
 import * as XLSX from 'xlsx';
 import { Auction } from './models';
 import { v4 as uuidv4 } from 'uuid';
@@ -115,7 +115,7 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
     console.log(`File loaded with ${rows.length} rows`);
     // generate auction
     let auctionDoc = await store.collection('auctions').doc(auction.id);
-    await auctionDoc.update(Object.assign({}, auction));
+    await auctionDoc.set(Object.assign({}, auction), { merge: true });
 
     console.log("Auction generated, seeding items...");
 
@@ -130,10 +130,10 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
 
             for (const image of images) {
 
-                // image
-                const imageUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}?alt=media`
+
+                const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.FIREBASE_PROJECT_ID}.appspot.com/o/auction-items%2F${auction.id}%2F${image}?alt=media`
                 await storage.bucket().upload(`${transformDir}\\${image}.jpg`, {
-                    destination: `auction-items/${image}`, gzip: true, public: true, metadata: {
+                    destination: `auction-items/${auction.id}/${image}`, gzip: true, public: true, metadata: {
                         cacheControl: 'public,max-age=604800',
                         contentType: 'image/jpeg',
                         metadata: {
@@ -142,11 +142,10 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
                     }
                 });
 
-
                 // thumb
-                const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/bravesnoutsdev.appspot.com/o/auction-items%2F${image}_thumb?alt=media`
+                const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.FIREBASE_PROJECT_ID}.appspot.com/o/auction-items%2F${auction.id}%2F${image}_thumb?alt=media`
                 await storage.bucket().upload(`${transformDir}\\${image}_thumb.jpg`, {
-                    destination: `auction-items/${image}_thumb`, gzip: true, public: true,
+                    destination: `auction-items/${auction.id}/${image}_thumb`, gzip: true, public: true,
                     metadata: {
                         cacheControl: 'public,max-age=604800',
                         contentType: 'image/jpeg',
@@ -173,15 +172,15 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
             auctionId: auctionDoc.id,
 
             name: row[headers.name],
-            description: row[headers.desc],
+            description: row[headers.desc] ?? "",
 
-            startBid: row[headers.price],
+            startBid: row[headers.price] ?? 0,
             media: imagesArr,
 
             bid: row[headers.price],
         };
 
-        itemDoc.update(item);
+        itemDoc.set(item, { merge: true });
     }
 
     console.log("Import finished");

@@ -32,8 +32,12 @@
     <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
 
     <mat-card-content class="m-0">
-        <button class="w-100" mat-stroked-button color="primary" (click)="onShowDescription(item.description)">Prikaži
-            opis predmeta</button>
+        <button class="w-100" 
+        mat-stroked-button color="primary" 
+        [ngStyle]="{'visibility': (!item.description || item.description == '') ? 'hidden' : 'visible' }"
+        (click)="onShowDescription(item.description)">
+            Prikaži opis predmeta
+        </button>
         <!-- <app-truncated-text class="text" [text]="item.description" [fallbackText]="'Nema opisa predmeta'"></app-truncated-text> -->
     </mat-card-content>
 
