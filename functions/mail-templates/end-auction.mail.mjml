@@ -30,7 +30,7 @@
           Pozdrav {{user_name}},
         </mj-text>
         <mj-text align="center" font-size="14px" color="#bbb">
-          Hvala ti na sudjelovanju!
+          Hvala na sudjelovanju!
         </mj-text>
         <mj-divider></mj-divider>
 
@@ -79,7 +79,7 @@
         </mj-text>
 
         <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px">
-          Hrabre njuške je neprofitna udurga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
+          Hrabre njuške je neprofitna udruga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
         </mj-text>
       </mj-column>
     </mj-section>
