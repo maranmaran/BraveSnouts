@@ -253,10 +253,12 @@ export class AuthService {
 
             if((cred as any).code) {
                 this.handleErrors(cred);
+                return;
             }
 
-            if(cred.user.email?.trim() == "") {
-                this.handleErrors({ code: "no-email" }); 
+            if(!cred.user.email || cred.user.email?.trim() == "") {
+                this.handleErrors({ code: "no-email" });
+                return; 
             }
 
             if (cred && cred.additionalUserInfo.isNewUser) {
@@ -270,6 +272,9 @@ export class AuthService {
                 this.handleErrors({ code: err.code })
             }
             
+            if(err.code) {
+                this.handleErrors(err);
+            }
         })
     }
 
