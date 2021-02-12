@@ -61,11 +61,21 @@
                         <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
                             <label class="pb-0 bold center">Odabir dostave:</label> 
                             <ng-container [ngSwitch]="winner.deliveryChoice">
-                                <label *ngSwitchCase="'handover'" class=" foreground primary lighter"> Osobno </label>
+                                <label *ngSwitchCase="'handover'" class="foreground warn default"> 
+                                    Osobno 
+                                    <button mat-icon-button 
+                                    color="warn"
+                                    *ngIf="winner.handoverOption" 
+                                    (click)="openHandoverInformation(winner.handoverOption)" 
+                                    matTooltip="{{winner.handoverOption}}">
+                                        <mat-icon>location_on</mat-icon>
+                                    </button>     
+                                </label>
+                                
                                 <label *ngSwitchCase="'postal'" style="color: #c326ff"> 
                                     Poštom
                                     <button mat-icon-button 
-                                    *ngIf="winner.deliveryChoice == 'postal' && winner.postalInformation" 
+                                    *ngIf="winner.postalInformation" 
                                     (click)="openPostalInformation(winner.postalInformation)" 
                                     matTooltip="Detalji za slanje">
                                         <mat-icon>drafts</mat-icon>

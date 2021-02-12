@@ -60,14 +60,17 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
   logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
   // load and customize html template
+  const totalDonation = items.map(x => x.value).reduce((prev, cur) => prev + cur);
+  const paymentDetail = `${auction.name} - ${user.name}`;
+
   const emailVariables = {
-    post_confirm_url: `${config.base.url}/post-confirm;auctionId=${auction.id};userId=${user.id}`,
+    post_confirm_url: `${config.base.url}/post-confirm;auctionId=${auction.id};userId=${user.id};donation=${totalDonation};paymentDetails=${paymentDetail}`,
     handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auction.id};userId=${user.id}`,
     user_name: user.name.trim().split(" ")[0],
     handover_details: `<ul>${handoverDetails.map(detail => `<li>${detail}</li>`).join("\n")}</ul>`,
-    payment_detail: `${auction.name} - ${user.email}`,
+    payment_detail: paymentDetail,
     items_html: `<ul>${items.map(item => `<li>${item.item.name} - ${item.value}kn</li>`).join("\n")}</ul>`,
-    total: items.map(x => x.value).reduce((prev, cur) => prev + cur),
+    total: totalDonation
   }
   // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.html'), 'utf8');
   var endAuctionTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.mjml'), 'utf8'), { });
@@ -127,13 +130,14 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
 }
 
 /**Sends new handover details mail */
-export const sendHandoverDetailsUpdateMail = async (user: UserInfo, handoverDetails: string[]) => {
+export const sendHandoverDetailsUpdateMail = async (user: UserInfo, auctionId: string, handoverDetails: string[]) => {
   logger.info(`Sending mail to ${user.email} for handover details update`);
 
   
   // load and customize html template
   const emailVariables = {
     handover_details: `<ul>${handoverDetails.map(detail => `<li>${detail}</li>`).join("\n")}</ul>`,
+    handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auctionId};userId=${user.id}`,
     user_name: user.name.trim().split(" ")[0]
   }
   

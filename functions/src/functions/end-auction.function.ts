@@ -127,6 +127,7 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
       bidId: bid.item.bidId,
       
       userInfo: {
+        id: user.id,
         name: user.name,
         email: user.email,
       },

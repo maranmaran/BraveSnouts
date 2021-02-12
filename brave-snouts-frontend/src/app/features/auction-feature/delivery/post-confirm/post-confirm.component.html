@@ -1,48 +1,64 @@
-<div class="center mt-5" *ngIf="postDeliveryInfoForm && !success">
-    <div class="section mw-100" style="width: 25rem" fxLayout="column" fxLayoutGap="1rem">
-    
-        <h1>Dostava poštom</h1>
-    
-        <form class="mt-3" [formGroup]="postDeliveryInfoForm">
-            
-            <mat-form-field>
-                <mat-label>Ime i prezime</mat-label>
-                <input matInput formControlName="fullName">
-            </mat-form-field>
-        
-            <mat-form-field>
-                <mat-label>Adresa</mat-label>
-                <input matInput formControlName="address">
-            </mat-form-field>
-        
-            <mat-form-field>
-                <mat-label>Broj mobitela</mat-label>
-                <input matInput formControlName="phoneNumber">
-            </mat-form-field>
-    
-        </form>
-    
-        <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!postDeliveryInfoForm.valid">Spremi</button>
-        
-    </div>
-</div>
-
-<div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
-    <div class="animation-ctn">
-        <div class="icon icon--order-success svg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">  
-              <g fill="none" stroke="#22AE73" stroke-width="2"> 
-                <circle cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
-                <circle id="colored" fill="#22AE73" cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
-                <polyline class="st0" stroke="#fff" stroke-width="10" points="43.5,77.8 63.7,97.9 112.2,49.4 " style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;"/>   
-              </g> 
-            </svg>
-          </div>
-    </div>
-    
-    <h1>Hvala na potvrdi</h1>
-</div>
-
-<div *ngIf="bootstrap && !success">
-  <h1>Nešto je pošlo po zlu i nismo mogli potvrditi preuzimanje poštom. Molim Vas kontaktirajte nas kroz korisničku službu !</h1>
+<div class="container center mt-5"  fxLayout="column" fxFlex="center">
+   
+   <div *ngIf="postDeliveryInfoForm && !bootstrap" class="form-content" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="1rem">
+       <div class="section p-3" fxLayout="column" fxLayoutGap="1rem">
+       
+           <h1>Dostava poštom</h1>
+       
+           <form class="mt-3" [formGroup]="postDeliveryInfoForm">
+               
+               <mat-form-field>
+                   <mat-label>Ime i prezime</mat-label>
+                   <input matInput formControlName="fullName">
+               </mat-form-field>
+           
+               <mat-form-field>
+                   <mat-label>Adresa</mat-label>
+                   <input matInput formControlName="address">
+               </mat-form-field>
+           
+               <mat-form-field>
+                   <mat-label>Broj mobitela</mat-label>
+                   <input matInput formControlName="phoneNumber">
+               </mat-form-field>
+       
+           </form>
+       
+           <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!postDeliveryInfoForm.valid">Spremi</button>
+           
+       </div>
+       <div class="section mat-title text-center">
+           <div>Ukoliko niste u mogućnosti doći na primopredaju, osvojene predmete šaljemo poštom.</div>  
+           <div class="mt-3 bold">U tom slučaju potrebno je uplatiti dodatnih <span class="foreground warn default">20kn</span> za poštarinu.</div>
+           <div class="mt-3 bold">Ukupno {{ originalDonation }} kn + 20 kn = {{ totalDonation }} kn</div>
+       </div>
+       <app-donate class="w-100" [text]="false"></app-donate>
+       <div class="section mat-title text-center">
+           <div class="bold">Opis plaćanja: </div>  
+           <div class="mt-3">{{paymentDetail}}</div>
+       </div>
+   </div>
+   
+   <div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
+   <!-- <div class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center"> -->
+       <div class="animation-ctn">
+           <div class="icon icon--order-success svg">
+               <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">  
+                 <g fill="none" stroke="#22AE73" stroke-width="2"> 
+                   <circle cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+                   <circle id="colored" fill="#22AE73" cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+                   <polyline class="st0" stroke="#fff" stroke-width="10" points="43.5,77.8 63.7,97.9 112.2,49.4 " style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;"/>   
+                 </g> 
+               </svg>
+             </div>
+       </div>
+       
+       <h1>Hvala na potvrdi</h1>
+   </div>
+   
+   <div *ngIf="bootstrap && !success" class="text-center p-5">
+   <!-- <div  class="text-center p-5"> -->
+     <h3>Nešto je pošlo po zlu i nismo mogli potvrditi preuzimanje poštom. Molim Vas kontaktirajte nas kroz korisničku službu !</h3>
+   </div>
+   
 </div>

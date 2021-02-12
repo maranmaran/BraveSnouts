@@ -53,10 +53,10 @@
         <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px">
           Ukoliko više ne želite primati ovakve poruke, kliknite <a style="margin-left: 5px" href="{{optout_url}}">ovdje</a>
         </mj-text>
-        <mj-text align="center" color="#bbb" font-size="10px" padding="0">
-          Ukoliko trebate pomoć, možete nam se obratiti na mail app.hrabrenjuske@gmail.com 
+        <mj-text align="center" color="#bbb" padding-top="8px" font-size="10px" padding="0">
+          Ukoliko trebate pomoć, možete nam se obratiti na mail <a>app.hrabrenjuske@gmail.com</a>
         </mj-text>
-        <mj-text align="center" color="#bbb" font-size="10px" padding="0">
+        <mj-text align="center" color="#bbb"  padding-top="8px"  font-size="10px" padding="0">
           Hrabre njuške je neprofitna udruga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
         </mj-text>
       </mj-column>

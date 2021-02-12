@@ -17,7 +17,7 @@ export const changeHandoverFn = europeFunctions.https.onCall(
 
             for (const item of items) {
                 if(item.winner?.userInfo) {
-                    await sendHandoverDetailsUpdateMail(item.winner?.userInfo as UserInfo, handoverDetails);
+                    await sendHandoverDetailsUpdateMail(item.winner?.userInfo as UserInfo, auctionId, handoverDetails);
                 }
             }
 

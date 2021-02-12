@@ -47,8 +47,20 @@
           {{{handover_details}}}
         </mj-text>
 
+
+        <mj-text padding-top="30px">
+          Potvrditi dolazak na lokaciju možete klikom 
+          <a href="{{handover_confirm_url}}">ovdje</a>.
+        </mj-text>
+        <mj-text>
+          Molimo, na primopredaju donesite točan iznos donacije.
+        </mj-text>
+        
         <!--Footer-->
-        <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px" padding="0">
+        <mj-text padding-top="50px" align="center" color="#bbb" font-size="10px" padding="0">
+          Ukoliko trebate pomoć, možete nam se obratiti na mail <a>app.hrabrenjuske@gmail.com</a>
+        </mj-text>
+        <mj-text align="center"  color="#bbb" font-size="10px"  padding-top="8px" >
           Hrabre njuške je neprofitna udruga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
         </mj-text>
       </mj-column>

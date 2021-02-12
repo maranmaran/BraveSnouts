@@ -22,6 +22,10 @@ export class PostConfirmComponent implements OnInit {
   private _auctionId: string;
   private _userId: string;
 
+  public originalDonation: number;
+  public totalDonation: number;
+  public paymentDetail: string;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
@@ -32,11 +36,19 @@ export class PostConfirmComponent implements OnInit {
   ngOnInit(): void {
     this._auctionId = this.route.snapshot.paramMap.get('auctionId');
     this._userId = this.route.snapshot.paramMap.get('userId');
+    this.originalDonation = parseFloat(this.route.snapshot.paramMap.get('donation'));
+    this.paymentDetail = this.route.snapshot.paramMap.get('paymentDetails');
+    
+    // if(!this._auctionId || !this._userId || !this.originalDonation) {
+    //   this.success = false;
+    //   this.bootstrap = true;
 
-    if(!this._auctionId || !this._userId) {
-      this.router.navigate(['/app']);
-      return null;
-    }
+    //   setTimeout(() => this.router.navigate(["/app"]), 10000);
+    //   return;
+    // }
+
+
+    this.totalDonation = this.originalDonation + 20;
 
     this.postDeliveryInfoForm = this.fb.group({
       fullName: this.fb.control('', Validators.required),
