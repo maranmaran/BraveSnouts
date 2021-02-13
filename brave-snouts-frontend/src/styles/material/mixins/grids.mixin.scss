@@ -8,7 +8,7 @@
 
             display: grid;
             // grid-template-columns: repeat(4, minmax(0px, 1fr));
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(351px, 1fr));
             gap: 0.5rem;
 
             padding: 0.25rem;
@@ -19,6 +19,13 @@
             //   padding-right: 0.5rem;
             //   padding-bottom: 0.5rem;
             // }
+        }
+
+        @media(max-width: 700px) {
+          .items-grid {
+            grid-template-columns: 1fr;
+
+          }
         }
     }
 
@@ -66,8 +73,6 @@
         }
 
         @media (max-width: 700px) {
-
-
             .items-gallery-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
