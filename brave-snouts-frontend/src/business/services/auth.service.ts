@@ -145,7 +145,7 @@ export class AuthService {
         const google = new firebase.auth.GoogleAuthProvider();
         google.addScope('profile');
         google.addScope('email'); 
-        
+
         google.setCustomParameters({ prompt: 'select_account' })
 
         // return await this.auth.signInWithPopup(google);
@@ -258,7 +258,7 @@ export class AuthService {
 
         this.auth.getRedirectResult()
         .then(cred => {
-            // console.log(cred);
+            console.log(cred);
 
             if(cred == null || cred.user == null) {
                 return;
@@ -280,6 +280,8 @@ export class AuthService {
             }
         })
         .catch(err => {
+            
+            console.log(err);
             
             if(err.code == "auth/account-exists-with-different-credential") {
                 this.handleErrors({ code: err.code })
