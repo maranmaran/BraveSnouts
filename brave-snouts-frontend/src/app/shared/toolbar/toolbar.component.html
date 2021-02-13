@@ -15,17 +15,29 @@
 
         <ng-container *ngIf="!(admin$ | async)">
 
-            <span fxLayout="column" fxLayoutGap="5px" *ngIf="mediaObs.isActive('lt-sm'); else desktopBtns">
+            <button mat-icon-button class="elevate hover default" matTooltip="Polica privatnosti" routerLink="/app/privacy-policy">
+                <mat-icon>policy</mat-icon>
+            </button>
+
+            <button mat-icon-button class="elevate hover default" matTooltip="Pravila aukcije" routerLink="/app/rules">
+                <mat-icon>info</mat-icon>
+            </button>
+
+        </ng-container>
+
+            <!-- <mat-icon class="mr-3 help-btn pointer elevate hover default" matTooltip="Polica privatnosti" routerLink="/app/privacy-policy">policy</mat-icon>
+            <mat-icon class="help-btn pointer elevate hover default" matTooltip="Pravila aukcije" routerLink="/app/rules">info</mat-icon> -->
+
+            <!-- <span fxLayout="column" fxLayoutGap="5px" *ngIf="mediaObs.isActive('lt-sm'); else desktopBtns">
                 <button mat-raised-button color="warn" class="toolbar-btn" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
                 <button mat-raised-button color="warn" class="toolbar-btn" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
             </span>
             <ng-template #desktopBtns>
                 <button mat-raised-button color="warn" class="btn-small" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
                 <button mat-raised-button color="warn" class="ml-2 btn-small" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
-            </ng-template>
+            </ng-template> -->
+            <!-- <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button> -->
             
-        </ng-container>
-        <!-- <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button> -->
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
@@ -45,9 +57,14 @@
     
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
 
-        <mat-icon class="mr-3 help-btn pointer elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">help</mat-icon>
+        
+        <button mat-icon-button class="elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">
+            <mat-icon>help</mat-icon>
+        </button>
 
-        <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
+        <!-- <mat-icon class="mr-3 help-btn pointer elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">help</mat-icon> -->
+
+        <button *ngIf="!(user$ | async)" mat-stroked-button class="p-0" (click)="onLogin()">Prijava</button>
 
         <ng-container *ngIf="(user$ | async) as user">
             
