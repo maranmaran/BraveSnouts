@@ -157,7 +157,7 @@ export class AuthService {
     async handleFacebookLogin(): Promise<firebase.auth.UserCredential> {
         const facebook = new firebase.auth.FacebookAuthProvider();
         facebook.addScope('email');
-        facebook.addScope('user_link');
+        // facebook.addScope('user_link');
 
         // return this.auth.signInWithPopup(facebook)
         // .then(cred => {
@@ -233,7 +233,7 @@ export class AuthService {
         }
 
         if(err?.code == "no-email") {
-            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-mail", {
+            this.toastSvc.error("Nije se moguće prijaviti nismo dobili email od pružatelja usluge.", {
                 position: "top-center",
                 dismissible: true,
                 autoClose: true
