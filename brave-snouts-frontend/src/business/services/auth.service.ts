@@ -143,6 +143,9 @@ export class AuthService {
 
     async handleGmailLogin() {
         const google = new firebase.auth.GoogleAuthProvider();
+        google.addScope('profile');
+        google.addScope('email'); 
+        
         google.setCustomParameters({ prompt: 'select_account' })
 
         // return await this.auth.signInWithPopup(google);
@@ -153,8 +156,8 @@ export class AuthService {
 
     async handleFacebookLogin(): Promise<firebase.auth.UserCredential> {
         const facebook = new firebase.auth.FacebookAuthProvider();
-        // facebook.addScope('email');
-        // facebook.addScope('user_link');
+        facebook.addScope('email');
+        facebook.addScope('user_link');
 
         // return this.auth.signInWithPopup(facebook)
         // .then(cred => {
@@ -244,6 +247,8 @@ export class AuthService {
                 autoClose: true
             });
         }
+
+        setTimeout(() => this.logout());
     }
 
     async completeSocialLogin() {
@@ -283,6 +288,7 @@ export class AuthService {
             if(err.code) {
                 this.handleErrors(err);
             }
+
         })
     }
 
