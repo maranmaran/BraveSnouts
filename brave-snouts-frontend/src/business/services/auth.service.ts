@@ -5,7 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { HotToastService } from "@ngneat/hot-toast";
 import firebase from 'firebase/app';
 import { from, noop, of } from "rxjs";
-import { concatMap, map, mergeMap, switchMap, take } from "rxjs/operators";
+import { concatMap, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 import { AuctionItem } from "src/business/models/auction-item.model";
 import { User } from "src/business/models/user.model";
@@ -21,7 +21,7 @@ export class AuthService {
         private readonly auth: AngularFireAuth,
         private readonly store: AngularFirestore,
         private readonly dialog: MatDialog,
-        private toastSvc: HotToastService
+        private toastSvc: HotToastService,
     ) { 
         
     }
@@ -252,31 +252,41 @@ export class AuthService {
     }
 
     async completeSocialLogin() {
+
         if(!this._usingRedirectFlag) {
             return;
         }
 
-        this.auth.getRedirectResult()
+        await this.auth.getRedirectResult()
         .then(cred => {
             console.log(cred);
-
-            if(cred == null || cred.user == null) {
-                return;
-            }
-
+            
             if((cred as any).code) {
                 this.handleErrors(cred);
                 return;
             }
 
-            if(!cred.user.email || cred.user.email?.trim() == "") {
+            if(cred == null || cred.user == null || cred.additionalUserInfo?.profile == null) {
+                return;
+            }
+
+            const profile = cred.additionalUserInfo.profile as any;
+            console.log(profile);
+
+            if(!profile.email || profile.email?.trim() == "") {
                 this.handleErrors({ code: "no-email" });
                 return; 
             }
 
             if (cred && cred.additionalUserInfo.isNewUser) {
                 // console.log("adding user")
-                setTimeout(() => this.addNewUser(cred), 500);
+                // save only when user is authenticated. Because of firestore rules
+                from(this.isAuthenticated$)
+                .pipe(
+                    filter(x => !!x), 
+                    take(1)
+                ).subscribe(() => this.addNewUser(cred))
+                // setTimeout(, 500);
             }
         })
         .catch(err => {
@@ -290,7 +300,6 @@ export class AuthService {
             if(err.code) {
                 this.handleErrors(err);
             }
-
         })
     }
 
@@ -343,13 +352,34 @@ export class AuthService {
     }
 
     getNewUser(cred: firebase.auth.UserCredential) {
+
+        const profile = cred.additionalUserInfo.profile as any; 
+        let email = "";
+        let avatar = "";
+        let displayName = "";
+
+        if(cred.additionalUserInfo.providerId == "google.com") {
+           email = profile.email;
+           avatar = profile.picture;
+           displayName = profile.name; 
+        }
+        if(cred.additionalUserInfo.providerId == "facebook.com") {
+            email = profile.email;
+            avatar = profile.picture?.data?.url;
+            displayName = profile.name; 
+        }
+
+        if(email?.trim() == "") {
+            this.handleErrors({code: "no-email"});
+        }
+
         return {
             id: cred.user.uid,
-            displayName: cred.user.displayName,
-            email: cred.user.email,
-            avatar: cred.user.photoURL,
+            displayName: displayName,
+            email: email,
+            avatar: avatar,
             signInMethod: cred.credential.signInMethod,
-            providerId: cred.credential.providerId,
+            providerId: cred.additionalUserInfo.providerId,
             emailSettings: {
                 auctionAnnouncements: true,
                 bidUpdates: true,
@@ -360,7 +390,8 @@ export class AuthService {
     /** Saves new user to the users collection */
     addNewUser(cred: firebase.auth.UserCredential) {
         let user = this.getNewUser(cred);
-        return this.store.collection(`users`).doc(user.id).set(user);
+        console.log("Saving")
+        return this.store.collection(`users`).doc(user.id).set(user, { merge: true}).catch(err => console.log(err));
     }
 
 
