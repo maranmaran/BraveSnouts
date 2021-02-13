@@ -37,11 +37,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { MessageDialogComponent } from './message-dialog/message-dialog.component';
-import { MaintenanceComponent } from './maintenance/maintenance.component';
-import { AuctionRulesComponent } from './auction-rules/auction-rules.component';
-import { FooterComponent } from './footer/footer.component';
+import { HotToastModule } from '@ngneat/hot-toast';
 
 
 const MY_DATEPICKER_FORMAT = {
@@ -95,7 +91,8 @@ const MY_DATEPICKER_FORMAT = {
     MatSortModule,
     MatPaginatorModule,
     DragDropModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    HotToastModule.forRoot()
   ],
   exports: [
     ScrollingModule,

@@ -42,8 +42,11 @@
         <div class="logo-animated"  [hidden]="!clickFlag"></div>
         <!-- <div class="logo-animated" ></div> -->
     </div>
-
+    
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
+
+        <mat-icon class="mr-3 help-btn pointer elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">help</mat-icon>
+
         <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
 
         <ng-container *ngIf="(user$ | async) as user">
@@ -54,13 +57,15 @@
                 <img id="anonymous" matTooltip="{{ (userInfo$ | async)?.displayName }}" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
             </ng-template>
 
-            
             <mat-menu #profileMenu="matMenu">
                 <button mat-menu-item routerLink="/app/my-items">
                     <mat-icon matPrefix>
                         redeem
                     </mat-icon>
                     Praćeni predmeti
+                </button>
+                <button mat-menu-item  (click)="onShowContactHelp()"><mat-icon>help</mat-icon>
+                    Pomoć
                 </button>
                 <!-- <button mat-menu-item routerLink="/app/privacy-policy">
                     <mat-icon matPrefix>
