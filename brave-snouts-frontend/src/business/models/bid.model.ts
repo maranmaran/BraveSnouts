@@ -8,6 +8,7 @@ export class Bid {
   userId: string;
   userInfo: UserInfo;
   bid: number;
+  bidBefore: number;
   date: any;
 }
 

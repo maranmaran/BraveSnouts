@@ -191,6 +191,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email },
       date: this.bidsRepo.timestamp,
       bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
+      bidBefore: item.bid
     });
 
     // add bid to historic collection
