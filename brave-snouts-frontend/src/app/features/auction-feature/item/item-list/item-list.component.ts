@@ -18,7 +18,7 @@ import { MediaObserver } from '@angular/flex-layout';
 })
 export class ItemListComponent implements OnInit, OnDestroy {
 
-  useGallery = true;
+  useGallery = false;
 
   constructor(
     private readonly authSvc: AuthService,
