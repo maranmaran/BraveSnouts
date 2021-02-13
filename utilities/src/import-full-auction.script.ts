@@ -73,23 +73,25 @@ const transformImagesFn = async (imagesDir: string, transformDir: string) => {
 
         // image
         magick(`${originalPath}\\${file}`)
-            .strip()
-            .interlace('Plane')
-            .gaussian(0.05)
-            .resize(500, 500)
-            .quality(50)
-            .compress('JPEG')
-            .write(`${transformedPath}\\${fileName}.jpg`, (err) => console.log(err));
+        .strip()
+        .autoOrient()
+        .interlace('Plane')
+        .gaussian(0.05)
+        .resize(500, 500)
+        .quality(50)
+        .compress('JPEG')
+        .write(`${transformedPath}\\${fileName}.jpg`, (res, err) => console.log(res, err));
 
         // thumbnail
         magick(`${originalPath}\\${file}`)
-            .strip()
-            .interlace('Plane')
-            .gaussian(0.05)
-            .resize(150, 150)
-            .quality(50)
-            .compress('JPEG')
-            .write(`${transformedPath}\\${fileName}_thumb.jpg`, (err) => console.log(err));
+        .strip()
+        .autoOrient()
+        .interlace('Plane')
+        .gaussian(0.05)
+        .resize(150, 150)
+        .quality(50)
+        .compress('JPEG')
+        .write(`${transformedPath}\\${fileName}_thumb.jpg`, (res, err) => console.log(res, err));
     }
 
     console.log(`Finished transformation`);

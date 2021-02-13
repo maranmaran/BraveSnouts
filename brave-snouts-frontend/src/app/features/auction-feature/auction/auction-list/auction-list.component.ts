@@ -75,7 +75,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     /** If regular user. They don't need to see non started auctions (future ones) */
     if (!admin) {
       auctions$ = auctions$.pipe(map(auctions => this.filterOutArchived(auctions)));
-      auctions$ = auctions$.pipe(map(auctions => this.filterOutFutureStartDate(auctions)));
+      // auctions$ = auctions$.pipe(map(auctions => this.filterOutFutureStartDate(auctions)));
       // custom order for admins
     } else {
       auctions$ = auctions$.pipe(map(auctions => this.sortAdminAuctions(auctions)));
@@ -216,7 +216,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.dialog.open(MessageDialogComponent, {
       height: 'auto',
       width: '98%',
-      maxWidth: '20rem',
+      maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['item-dialog', 'mat-elevation-z8'],
