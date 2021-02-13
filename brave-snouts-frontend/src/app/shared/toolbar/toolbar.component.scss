@@ -14,6 +14,7 @@
   width: auto;
 }
 
+
 .logo-base {
   cursor: pointer;
   z-index: 100;
@@ -35,16 +36,20 @@
 }
 .logo {
   @extend .logo-base;
-  background-image: url("/assets/snouts-logo/njuske-kapica-krug-compressed.jpg");
+  background-image: url("/assets/snouts-logo/njuske-original-krug-compressed.jpg");
   background-size: contain;
 
   &:hover {
-    background-image: url("/assets/snouts-logo/njuske-kapica-animated-compressed.gif");
+    background-image: url("/assets/snouts-logo/njuske-original-animated-compressed.gif");
     background-size: contain;
   }
 }
 .logo-animated {
   @extend .logo-base;
-  background-image: url("/assets/snouts-logo/njuske-kapica-animated-compressed.gif");
+  background-image: url("/assets/snouts-logo/njuske-original-animated-compressed.gif");
   background-size: contain;
+}
+
+.help-btn {
+  font-size: 40px; height:40px; width: 40px
 }

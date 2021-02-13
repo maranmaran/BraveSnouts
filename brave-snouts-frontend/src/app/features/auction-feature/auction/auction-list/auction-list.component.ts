@@ -5,16 +5,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
 import { from, noop, Observable, of, Subscription } from 'rxjs';
-import { concatMap, distinct, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
-import { staggerFadeIn } from 'src/business/animations/stagger-fade-in.animation';
 import { Auction } from 'src/business/models/auction.model';
-import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { getAuctionState } from 'src/business/services/auction.service';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 
 @Component({
   selector: 'app-auction-list',
@@ -133,7 +133,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   getIfUserTrackesItems() {
     return this.authSvc.userId$
     .pipe(
-      concatMap(id => id ? this.authSvc.getUserItems(id).pipe(take(1)) : of(null)),
+      concatMap(id => id ? this.itemsRepo.getUserItems(id).pipe(take(1)) : of(null)),
       map(items => !!items)
     )
   }
@@ -144,7 +144,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   /**Navigate to selected auction */
   onClick(auction: Auction) {
-    this.router.navigate(['auction', { id: auction.id } ], { state: { auction } });
+    this.router.navigate(['/app/auction', { id: auction.id } ], { state: { auction } });
   }
 
   onEdit(auctionObj: Auction, event: Event) {
@@ -160,7 +160,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
     this.itemsRepo.getAll(auctionObj.id).pipe(take(1))
       .subscribe(items => this.router.navigate(
-        ['edit-auction'],
+        ['/app/edit-auction'],
         { state: { auction, items, action: 'edit' } }
       ), err => console.log(err));
 
@@ -194,7 +194,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
             map(items => items.map(item => this.itemsRepo.delete(auctionObj.id, item.id))),
             concatMap(deletePromises => from(Promise.all(deletePromises))),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
-            concatMap(() => this.authSvc.deleteTrackedItems(auctionObj.id)),
+            concatMap(() => this.itemsRepo.deleteTrackedItems(auctionObj.id)),
             finalize(() => this.loadingSvc.active$.next(false)) 
           ).subscribe(noop, err => console.log(err))
       })
@@ -205,13 +205,30 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
+    this.router.navigate(['/app/admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
   }
+
+  onViewDescription(auction: Auction, event: Event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+    
+    this.dialog.open(MessageDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: ['item-dialog', 'mat-elevation-z8'],
+      data: auction.description
+    });
+  } 
 
   //#endregion
 
   getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
     return getAuctionState(auction);
   }
+
 
 }

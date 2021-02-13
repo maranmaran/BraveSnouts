@@ -2,9 +2,11 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChil
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { HotToastService } from '@ngneat/hot-toast';
 import { from } from 'rxjs';
 import { concatMap, filter, take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { itemAnimations } from 'src/business/animations/item.animations';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
@@ -19,7 +21,7 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
   providers: [AuctionItemRepository, BidsRepository],
-  animations: itemAnimations
+  animations: [itemAnimations, fadeIn]
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -27,7 +29,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly toastSvc: HotToastService
   ) { }
 
   // Data
@@ -163,7 +166,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // if not logged in prompt the user with it
     if(!this.isAuthenticated) {
-      return await this.authSvc.login().toPromise();
+      return await this.authSvc.login().pipe(take(1)).toPromise();
     }
     
     // continue only if user is logged in and we have data
@@ -199,7 +202,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // add item to tracked collection
     if (!this.userTrackedItems?.has(item.id)) {
-      await this.authSvc.addItemToUser(item, this.userId);
+      await this.itemsRepo.addItemToUser(item, this.userId);
     }
 
   }
@@ -222,9 +225,21 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     let inputBid = this.currentBidControl.value;
     let sliderBid = this.sliderBid;
 
-    // slider value (between min and max)
-    if (inputBid <= currentBid + environment.itemCardConfig.maxBidOffset) {
-      return sliderBid; // this is what user wants
+    let inputChanged = this.currentBidControl.touched
+    
+    if(!inputChanged) {
+      // slider value (between min and max)
+      if (inputBid <= currentBid + environment.itemCardConfig.maxBidOffset) {
+        return sliderBid; // this is what user wants
+      }
+    }
+
+    if(inputChanged && inputBid - currentBid > 500) {
+      this.toastSvc.warning("Nije moguće unijeti vrijednost veću od 500kn, ako želite unijeti veću vrijednost ponudite više manjih.", {
+        position: 'top-center'
+      })
+
+      throw new Error();
     }
 
     // custom input value.. more then max slider

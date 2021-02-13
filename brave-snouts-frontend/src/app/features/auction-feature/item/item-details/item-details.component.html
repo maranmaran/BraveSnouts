@@ -6,25 +6,38 @@
             {{item.name}}
         </label>
 
-        <div gdColumns="min-content min-content" gdGap="1rem" class="mr-0">
-            <label [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'" class="no-wrap mb-0 mat-title bold center">
+        <div fxLayout="column" class="mr-0">
+            <div class="mat-small text-center no-wrap" style="background: whitesmoke">Trenutna ponuda</div>
+
+            <label class="mat-title" [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'"
+                class="no-wrap mb-0 mat-title bold center">
                 {{item.bid + ' kn'}}
             </label>
         </div>
-
+        <!-- 
         <mat-icon class="best-bid-icon"
             [@starOnBidChanged]="userId === item.user && isAuthenticated"
             *ngIf="userId == item.user && isAuthenticated"
             matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
             star
-        </mat-icon>
+        </mat-icon> -->
 
     </mat-card-title>
 
+    <div class="best-bid-label background warn lighter mat-small" [@fadeIn]="userId === item.user && isAuthenticated"
+        *ngIf="userId == item.user && isAuthenticated" matTooltip="Tvoja ponuda je najbolja"
+        [matTooltipPosition]="'above'">
+        Vaša ponuda je trenutno najbolja
+    </div>
     <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
 
     <mat-card-content class="m-0">
-        <button class="w-100" mat-stroked-button color="primary" (click)="onShowDescription(item.description)">Prikaži opis predmeta</button>
+        <button class="w-100" 
+        mat-stroked-button color="primary" 
+        [ngStyle]="{'visibility': (!item.description || item.description == '') ? 'hidden' : 'visible' }"
+        (click)="onShowDescription(item.description)">
+            Prikaži opis predmeta
+        </button>
         <!-- <app-truncated-text class="text" [text]="item.description" [fallbackText]="'Nema opisa predmeta'"></app-truncated-text> -->
     </mat-card-content>
 
@@ -54,7 +67,7 @@
                             Cijena mora biti prirodan broj
                         </div>
                         <div *ngIf="currentBidControl.errors.min">
-                            Minimalna cijena mora biti 5 kuna viša
+                            Nova ponuda mora biti barem 5kn viša od trenutne
                         </div>
                     </div>
                 </mat-form-field>

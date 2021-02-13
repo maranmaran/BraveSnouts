@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -19,6 +19,7 @@ export class SingleItemDialogComponent implements OnInit {
   private readonly _subsink = new SubSink();
 
   constructor(
+    private readonly dialog: MatDialogRef<SingleItemDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { item: AuctionItem, svc: ItemDialogService } = null
   ) { }
 
@@ -30,6 +31,10 @@ export class SingleItemDialogComponent implements OnInit {
       this.onItemsChange()
     )
 
+  }
+
+  onClose() {
+    this.dialog.close();
   }
 
   onItemsChange() {

@@ -6,7 +6,7 @@ import firebase from 'firebase/app';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -68,7 +68,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     // route back to home if use is not admin
     this._subsink.add(
       this.authSvc.isAdmin$.subscribe(
-        isAdmin => isAdmin ? noop() : this.router.navigate(['/']),
+        isAdmin => isAdmin ? noop() : this.router.navigate(['/app']),
         err => console.log(err)
       )
     )
@@ -190,7 +190,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
             let {ref, task} = this.storage.uploadFile(file, path);
             await task;
-            let url = await ref.getDownloadURL().toPromise();
+            let url = await ref.getDownloadURL().pipe(take(1)).toPromise();
 
             let finalFile = { name, type, path, url } as FirebaseFile;
             this.files[index].push(finalFile);
@@ -307,14 +307,14 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
    * Navigate back to root for list of auctions once done
    */
   postCreate() {
-    this.router.navigate(['']);
+    this.router.navigate(['/app']);
   }
 
   /* Post update actions
    * ...
    */
   postUpdate() {
-    this.router.navigate(['']);
+    this.router.navigate(['/app']);
   }
 
 

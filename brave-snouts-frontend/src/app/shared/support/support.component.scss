@@ -6,3 +6,18 @@ textarea {
     text-align: center;
     resize: none;
 }
+
+#email_clipboard {
+    padding: 0.25rem 0.5rem;
+    height: calc(33.2px - 0.5rem);
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+            
+#clipboard-btn {
+    border: unset;
+    height: 33.2px;
+    width: 40px;
+    position: relative;
+}

@@ -7,21 +7,25 @@ import { importFullAuction } from "./import-full-auction.script";
 (async () => {
     console.log("\nDoing import")
 
-    let imagesDir = process.cwd() + "\\utilities\\data\\images";
-    let transformDir = process.cwd() + "\\utilities\\data\\transformed-images";
+    let imagesDir = process.cwd() + "\\utilities\\data\\aukcija";
+    let transformDir = process.cwd() + "\\utilities\\data\\aukcija-transformed";
 
     let auction = new Auction({
         id: uuidv4(),
-        name: `Past auction non processed`,
-        description: "This auction is in past and is not processed soon to be archived",
-        startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(28, 'days').toDate()),
-        endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(28, 'days').toDate()),
+        name: `Aukcija za Wilmu`,
+        description: `Wilma je maca na skrbi udruge Hrabre njuške koja boluje od FIP-a. 
+                      Prikupljenim donacijama s aukcije nabavit će se dio lijeka za njeno liječenje. 
+                      Aukcija kreće u ponedjeljak 15.02., a traje do subote 20.02. u 20h. 
+                      Najmanja ponuda za svaki od predmeta je navedena u opisu fotografije, a svaka sljedeća mora biti za barem 5kn veća. Predmet osvaja osoba s najvećom ponudom u navedenom vremenu.
+                      Informacije o primopredaji i slanju osvojenih predmeta poslat ćemo svim dobitnicima nakon završetka aukcije.`,
+        startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).toDate()),
+        endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(28, 'days').toDate()),
         archived: false,
-        processed: true,
+        processed: false,
     });
-    let importFilePath = process.cwd() + "\\utilities\\data\\items_20.xlsx"
+    let importFilePath = process.cwd() + "\\utilities\\data\\Aukcija.xlsx"
 
-    await importFullAuction(false, true, true, imagesDir, transformDir, importFilePath, auction, 100, false);
+    await importFullAuction(false, false, true, imagesDir, transformDir, importFilePath, auction, undefined, false);
 
     console.log("Everything is finished");
 })()

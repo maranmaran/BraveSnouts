@@ -4,7 +4,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import { HotToastService } from "@ngneat/hot-toast";
 import firebase from 'firebase/app';
-import { from, of } from "rxjs";
+import { from, noop, of } from "rxjs";
 import { concatMap, map, mergeMap, switchMap, take } from "rxjs/operators";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
 import { AuctionItem } from "src/business/models/auction-item.model";
@@ -15,12 +15,15 @@ import { environment } from "src/environments/environment";
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
+    private _usingRedirectFlag = true;
+
     constructor(
         private readonly auth: AngularFireAuth,
         private readonly store: AngularFirestore,
         private readonly dialog: MatDialog,
         private toastSvc: HotToastService
     ) { 
+        
     }
 
     public get user$() {
@@ -50,7 +53,7 @@ export class AuthService {
                 concatMap(user => {
 
                     if (user)
-                        return of(null);
+                        return of(user);
 
                     let dialogRef = this.dialog.open(LoginMethodComponent, {
                         height: 'auto',
@@ -93,6 +96,10 @@ export class AuthService {
 
         const cred = await this.loginUser(method, data);
 
+        if(this._usingRedirectFlag) {
+            return;
+        }
+
         if (cred && cred.additionalUserInfo.isNewUser) {
             await this.addNewUser(cred);
         }
@@ -106,6 +113,7 @@ export class AuthService {
         let cred: firebase.auth.UserCredential = null;
 
         try {
+
             switch (method) {
                 case 'gmail':
                     cred = await this.handleGmailLogin();
@@ -120,6 +128,10 @@ export class AuthService {
                     break;
             }
 
+            if(cred == null && this._usingRedirectFlag) {
+                return; 
+            }
+
             return cred;
         } 
         catch (err) {
@@ -129,31 +141,45 @@ export class AuthService {
         }
     }
 
-    handleGmailLogin(): Promise<firebase.auth.UserCredential> {
+    async handleGmailLogin() {
         const google = new firebase.auth.GoogleAuthProvider();
         google.setCustomParameters({ prompt: 'select_account' })
 
-        return this.auth.signInWithPopup(google);
+        // return await this.auth.signInWithPopup(google);
+
+        await this.auth.signInWithRedirect(google);
+        return null;
     }
 
-    handleFacebookLogin(): Promise<firebase.auth.UserCredential> {
+    async handleFacebookLogin(): Promise<firebase.auth.UserCredential> {
         const facebook = new firebase.auth.FacebookAuthProvider();
-        facebook.addScope('email');
-        facebook.addScope('user_link');
-        // facebook.setCustomParameters({
-        //     'display': 'popup'
+        // facebook.addScope('email');
+        // facebook.addScope('user_link');
+
+        // return this.auth.signInWithPopup(facebook)
+        // .then(cred => {
+        //     console.log(cred);
+            
+        //     if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
+        //         throw { code: "no-email"}; 
+        //     }
+
+        //     return cred;
         // })
 
-        return this.auth.signInWithPopup(facebook)
+        await this.auth.signInWithRedirect(facebook);
+        const cred = await this.auth.getRedirectResult()
         .then(cred => {
             console.log(cred);
             
             if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
-                throw { code: "no-email"}; 
+                throw { code: "no-email" }; 
             }
 
             return cred;
         })
+
+        return null;
     }
 
     handleEmailLogin(email: string): Promise<firebase.auth.UserCredential | void> {
@@ -176,36 +202,88 @@ export class AuthService {
                 duration: 10000,
                 dismissible: true,
                 autoClose: true,
-                position: "bottom-center"
+                position: "top-center"
             })
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
             this.toastSvc.error("Imali smo poteškoća sa prijavom. Molimo vas pokušajte ponovno ili nas kontaktirajte.", {
                 duration: 10000,
                 dismissible: true,
                 autoClose: true,
-                position: "bottom-center"
+                position: "top-center"
             })
         });
     }
 
     /** Handles different login errors */
     handleErrors(err) {
+        console.error(err);
+
         if(err?.code == "auth/account-exists-with-different-credential") {
-            this.toastSvc.error("Račun već postoji", {
-                position: "bottom-center",
+            // this.store.collection("users").doc()
+            this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
+                position: "top-center",
+                dismissible: true,
+                autoClose: true,
+                duration: 20000
+            });
+        }
+
+        if(err?.code == "no-email") {
+            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-mail", {
+                position: "top-center",
                 dismissible: true,
                 autoClose: true
             });
         }
 
-        if(err?.code == "no-email") {
-            this.toastSvc.error("Nije se moguće prijaviti jer nedostaje e-pošta", {
-                position: "bottom-center",
+        if(err?.code == "auth/web-storage-unsupported") {
+            this.toastSvc.error("Keksići moraju biti uključeni, ako ste u incognito modu molim vas promjenite browser.", {
+                position: "top-center",
                 dismissible: true,
                 autoClose: true
             });
         }
+    }
+
+    async completeSocialLogin() {
+        if(!this._usingRedirectFlag) {
+            return;
+        }
+
+        this.auth.getRedirectResult()
+        .then(cred => {
+            // console.log(cred);
+
+            if(cred == null || cred.user == null) {
+                return;
+            }
+
+            if((cred as any).code) {
+                this.handleErrors(cred);
+                return;
+            }
+
+            if(!cred.user.email || cred.user.email?.trim() == "") {
+                this.handleErrors({ code: "no-email" });
+                return; 
+            }
+
+            if (cred && cred.additionalUserInfo.isNewUser) {
+                // console.log("adding user")
+                setTimeout(() => this.addNewUser(cred), 500);
+            }
+        })
+        .catch(err => {
+            
+            if(err.code == "auth/account-exists-with-different-credential") {
+                this.handleErrors({ code: err.code })
+            }
+            
+            if(err.code) {
+                this.handleErrors(err);
+            }
+        })
     }
 
     async completeEmailLogin() {
@@ -222,7 +300,7 @@ export class AuthService {
         if (!email) {
             // User opened the link on a different device. To prevent session fixation
             // attacks, ask the user to provide the associated email again. For example:
-            email = window.prompt('Please provide your email for confirmation');
+            email = window.prompt('Molim vas unesite email za potvrdu');
         }
         // The client SDK will parse the code from the link for you.
         return this.auth.signInWithEmailLink(email, window.location.href)
@@ -256,9 +334,8 @@ export class AuthService {
             .catch((err) => (console.log(err), window.alert("Neispravan email ili iskorišten link")));
     }
 
-    /** Saves new user to the users collection */
-    addNewUser(cred: firebase.auth.UserCredential) {
-        let user = {
+    getNewUser(cred: firebase.auth.UserCredential) {
+        return {
             id: cred.user.uid,
             displayName: cred.user.displayName,
             email: cred.user.email,
@@ -270,34 +347,14 @@ export class AuthService {
                 bidUpdates: true,
             }
         }
+    }
 
+    /** Saves new user to the users collection */
+    addNewUser(cred: firebase.auth.UserCredential) {
+        let user = this.getNewUser(cred);
         return this.store.collection(`users`).doc(user.id).set(user);
     }
 
-    /** Adds item on which user bid on to the database */
-    addItemToUser(item: AuctionItem, userId: string) {
-        return this.store.collection(`users/${userId}/tracked-items`)
-            .doc(item.id).set({
-                auctionId: item.auctionId,
-                itemId: item.id,
-                userId: userId,
-            });
-    }
 
-    /** Retrieves only items on which user bid on */
-    getUserItems(userId: string) {
-        return this.store.collection(`users/${userId}/tracked-items`)
-            .valueChanges({ idField: 'id' })
-    }
-
-    deleteTrackedItems(auctionId: string) {
-        return this.store.collectionGroup("tracked-items", ref => ref.where("auctionId", "==", auctionId))
-            .valueChanges()
-            .pipe(
-                take(1),
-                mergeMap(items => [...items]),
-                mergeMap((item: any) => this.store.doc(`users/${item.userId}/tracked-items/${item.itemId}`).delete())
-            )
-    }
 
 }

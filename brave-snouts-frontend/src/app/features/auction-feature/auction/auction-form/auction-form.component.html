@@ -52,7 +52,7 @@
             </div>
         </div>
         
-        <virtual-scroller class="full-items-grid" [formGroup]="items" #scroll class="pb-3" [items]="itemsArr.controls" [parentScroll]="scrollingBlock">
+        <virtual-scroller class="full-items-grid pb-5" [formGroup]="items" #scroll [items]="itemsArr.controls" [parentScroll]="scrollingBlock">
             <div #container class="items-grid" formArrayName="items">
                 <form [formGroupName]="scroll.viewPortInfo.startIndex + i" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let i = index" >
                     <mat-card class="mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">

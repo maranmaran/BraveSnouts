@@ -1,39 +1,42 @@
 <div @fadeIn class="h-100" fxLayout="column" fxLayoutGap="2.5rem" fxLayoutAlign="space-between center">
 
-    <div id="reason">
-        <div fxFlex fxFlexAlign="center" fxLayout="column" fxLayoutAlign="center center">
-            <div class="mb-3 mr-0 no-wrap"
-                [ngClass]="{'mat-display-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }">
-                Pozdrav, ukoliko samo
+        <div *ngIf="text" fxFlex fxFlexAlign="center" fxLayout="column" fxLayoutAlign="center center">
+            <div class="mb-3 mr-0">
+                <!-- [ngClass]="{'mat-title-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }"> -->
+                <b>Pomoći možete i na druge načine:</b>
+                <ul>
+                    <li>Donacijom potrepština za životinje</li>
+                    <li>Donacijom predmeta za buduće aukcije - javite nam se putem društvenih mreža ili na mail hrabre.njuske@gmail.com</li>
+                    <li>Direktnom uplatom na račun udruge uz naznaku "donacija".</li>
+                </ul>
             </div>
-            <div class="mb-3 mr-0 no-wrap"
+            <!-- <div class="mb-3 mr-0 no-wrap"
                 [ngClass]="{'mat-display-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }">
                 želiš pomoći primamo i donacije
             </div>
             <div class="mb-3 mr-0 no-wrap"
                 [ngClass]="{'mat-display-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }">
                 Cijenimo podršku !
+            </div> -->
+        </div>
+    
+        <div class="pb-1 payment" fxLayout="column" fxLayoutGap="0.5rem" [ngClass]="{'w-80': mediaObs.isActive('gt-sm'), 'w-100': mediaObs.isActive('lt-md')}">
+            <div class="section" id="pbz" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+                <img class="img-fluid" src="assets/donate-logo/pbz-logo.jpg" alt="PBZ">
+                <div class="m-0" [ngClass]="{'mat-title': mediaObs.isActive('gt-sm')}">HR4223400091110951628</div>
+            </div>
+            <div class="section" id="paypal" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
+                <img class="img-fluid" src="assets/donate-logo/paypal-logo.svg" alt="paypal">
+                <div class="m-0" [ngClass]="{'mat-title': mediaObs.isActive('gt-sm')}">hrabre.njuske1@gmail.com</div>
+            </div>
+            <div class="section" id="keks" fxLayout="row" fxLayoutGap="13px" fxLayoutAlign="start center">
+                <img class="img-fluid" src="assets/donate-logo/keks-logo.jpg" alt="kekspay">
+                <div class="m-0" [ngClass]="{'mat-title': mediaObs.isActive('gt-sm')}">0994513163</div>
+            </div>
+            <div class="section" id="revolut" fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
+                <img class="img-fluid" src="assets/donate-logo/revolut-logo.svg" alt="revolut">
+                <div class="m-0" [ngClass]="{'mat-title': mediaObs.isActive('gt-sm')}">0994513163</div>
             </div>
         </div>
-    </div>
-
-    <div id="payment-methods pb-1" fxLayout="column" fxLayoutGap="0.5rem">
-        <div class="section" id="pbz" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
-            <img class="img-fluid" src="assets/donate-logo/pbz-logo.jpg" alt="PBZ">
-            <div class="mat-title m-0">HR4223400091110951628</div>
-        </div>
-        <div class="section" id="paypal" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
-            <img class="img-fluid" src="assets/donate-logo/paypal-logo.svg" alt="paypal">
-            <div class="mat-title m-0">hrabre.njuske1@gmail.com</div>
-        </div>
-        <div class="section" id="keks" fxLayout="row" fxLayoutGap="13px" fxLayoutAlign="start center">
-            <img class="img-fluid" src="assets/donate-logo/keks-logo.jpg" alt="kekspay">
-            <div class="mat-title m-0">0994513163</div>
-        </div>
-        <div class="section" id="revolut" fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
-            <img class="img-fluid" src="assets/donate-logo/revolut-logo.svg" alt="revolut">
-            <div class="mat-title m-0">0994513163</div>
-        </div>
-    </div>
 
 </div>

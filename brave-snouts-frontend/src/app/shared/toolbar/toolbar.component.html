@@ -1,6 +1,6 @@
 <mat-toolbar class="toolbar" color="primary" fxLayout="row">
 
-    <div fxFlex="30">
+    <div fxFlex="30" fxLayout="row">
         <button mat-icon-button *ngIf="(admin$ | async); privacyPolicy" [matMenuTriggerFor]="adminMenu">
             <mat-icon>menu</mat-icon>
         </button>
@@ -13,7 +13,19 @@
             </button>
         </mat-menu>
 
-        <button mat-icon-button routerLink="privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button>
+        <ng-container *ngIf="!(admin$ | async)">
+
+            <span fxLayout="column" fxLayoutGap="5px" *ngIf="mediaObs.isActive('lt-sm'); else desktopBtns">
+                <button mat-raised-button color="warn" class="toolbar-btn" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
+                <button mat-raised-button color="warn" class="toolbar-btn" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+            </span>
+            <ng-template #desktopBtns>
+                <button mat-raised-button color="warn" class="btn-small" routerLink="/app/privacy-policy" matTooltip="Polica privatnosti">Polica privatnosti</button>
+                <button mat-raised-button color="warn" class="ml-2 btn-small" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
+            </ng-template>
+            
+        </ng-container>
+        <!-- <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button> -->
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
@@ -22,18 +34,18 @@
         <div #logo 
             class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" 
             (click)="onLogoClick()" 
-            [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="clickFlag"
+            [hidden]="clickFlag"
         >
             <mat-progress-spinner *ngIf="(active$ | async)" class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
         </div>
         
-        <div class="logo-animated" [@logoClick]="clickFlag ? 'click' : 'no-click'" [hidden]="!clickFlag"></div>
+        <div class="logo-animated"  [hidden]="!clickFlag"></div>
         <!-- <div class="logo-animated" ></div> -->
     </div>
     
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
 
-        <button mat-icon-button  matTooltip="Pomoć" (click)="onShowContactHelp()"><mat-icon>help</mat-icon></button>
+        <mat-icon class="mr-3 help-btn pointer elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">help</mat-icon>
 
         <button *ngIf="!(user$ | async)" mat-stroked-button (click)="onLogin()">Prijava</button>
 
@@ -45,17 +57,28 @@
                 <img id="anonymous" matTooltip="{{ (userInfo$ | async)?.displayName }}" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
             </ng-template>
 
-            
             <mat-menu #profileMenu="matMenu">
-                <button mat-menu-item routerLink="/my-items">
+                <button mat-menu-item routerLink="/app/my-items">
                     <mat-icon matPrefix>
                         redeem
                     </mat-icon>
-                    Moji predmeti
+                    Praćeni predmeti
                 </button>
                 <button mat-menu-item  (click)="onShowContactHelp()"><mat-icon>help</mat-icon>
                     Pomoć
                 </button>
+                <!-- <button mat-menu-item routerLink="/app/privacy-policy">
+                    <mat-icon matPrefix>
+                        security
+                    </mat-icon>
+                    Polica privatnosti
+                </button>
+                <button mat-menu-item routerLink="/app/auction-rules">
+                    <mat-icon matPrefix>
+                        gavel
+                    </mat-icon>
+                    Pravila aukcije
+                </button> -->
                 <button mat-menu-item (click)="onLogout()">
                     <mat-icon matPrefix>
                         exit_to_app

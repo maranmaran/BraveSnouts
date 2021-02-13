@@ -1,4 +1,4 @@
-<div class="container" fxLayout="column" fxLayoutGap="1rem" *ngIf="(auction$ | async) as auction" >
+<div id="admin-page" class="container" fxLayout="column" fxLayoutGap="1rem" *ngIf="(auction$ | async) as auction" >
 
     <div id="auction-details" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" fxLayout="column" fxLayoutGap="1rem">
 
@@ -34,7 +34,7 @@
         <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn" (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
     </div>
 
-    <virtual-scroller id="items-and-winners" #scroll [items]="items" [horizontal]="true" (vsEnd)="onLoadMore($event)">
+    <virtual-scroller id="items-and-winners" class="mb-3" #scroll [items]="items" [horizontal]="true" (vsEnd)="onLoadMore($event)">
         <div #container fxLayout="row" fxLayoutGap="0.5rem">
             <div *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" fxLayout="column" fxLayoutGap="0.5rem">
     
@@ -61,11 +61,21 @@
                         <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
                             <label class="pb-0 bold center">Odabir dostave:</label> 
                             <ng-container [ngSwitch]="winner.deliveryChoice">
-                                <label *ngSwitchCase="'handover'" class=" foreground primary lighter"> Osobno </label>
+                                <label *ngSwitchCase="'handover'" class="foreground warn default"> 
+                                    Osobno 
+                                    <button mat-icon-button 
+                                    color="warn"
+                                    *ngIf="winner.handoverOption" 
+                                    (click)="openHandoverInformation(winner.handoverOption)" 
+                                    matTooltip="{{winner.handoverOption}}">
+                                        <mat-icon>location_on</mat-icon>
+                                    </button>     
+                                </label>
+                                
                                 <label *ngSwitchCase="'postal'" style="color: #c326ff"> 
                                     Poštom
                                     <button mat-icon-button 
-                                    *ngIf="winner.deliveryChoice == 'postal' && winner.postalInformation" 
+                                    *ngIf="winner.postalInformation" 
                                     (click)="openPostalInformation(winner.postalInformation)" 
                                     matTooltip="Detalji za slanje">
                                         <mat-icon>drafts</mat-icon>
@@ -102,7 +112,7 @@
         </div>
     </virtual-scroller>
 
-    <ng-container *ngIf="!!(bids$ | async)">
+    <div *ngIf="!!(bids$ | async)">
 
         <ng-container *ngIf="(bids$ | async)?.length > 0 ;else noBids">
             <mat-card *ngFor="let bid of (bids$ | async)" class="elevate hover">
@@ -124,6 +134,6 @@
         <ng-template #noBids>
             <i>Nažalost nema ponuda :( </i>
         </ng-template>
-    </ng-container>
+    </div>
 
 </div>

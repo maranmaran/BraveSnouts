@@ -17,13 +17,6 @@ import { User } from 'src/business/models/user.model';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
   providers: [],
-  animations: [
-    trigger('logoClick', [
-      state('no-click', style({  })),
-      state('click', style({ transform: "scale(1.1)" })),
-      transition('no-click <=> click', animate('300ms ease-in-out'))
-    ])
-  ]
 })
 export class ToolbarComponent implements OnInit {
 
@@ -61,7 +54,7 @@ export class ToolbarComponent implements OnInit {
 
     this.clickFlag = true;
     
-    this.router.navigate(['/']).then(
+    this.router.navigate(['/app']).then(
       _ => setTimeout(_ => this.clickFlag = false, 1000) 
     );
   }
@@ -77,16 +70,17 @@ export class ToolbarComponent implements OnInit {
       endDate: moment(new Date()).add(1, 'day').toDate()
     };
 
-    this.router.navigate(['create-auction'], { state: { auction, items: [], action: 'create' } })
+    this.router.navigate(['/app/create-auction'], { state: { auction, items: [], action: 'create' } })
   }
 
   onShowContactHelp(){
     this.dialog.open(SupportComponent, {
       height: 'auto',
       width: '98%',
-      maxWidth: '30rem',
+      maxWidth: '23rem',
       autoFocus: false,
       closeOnNavigation: true,
+      panelClass: "dialog-no-padding"
     });
 
   }

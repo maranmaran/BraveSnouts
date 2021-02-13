@@ -31,11 +31,11 @@
 
 $primary: $mat-cyan;
 $accent: $mat-cyan;
-$warning: $mat-pink;
+$warning: $mat-red;
 
 $theme-light-primary: mat-palette($primary, 700, 400, 900);
 $theme-light-accent: mat-palette($accent, A700);
-$theme-light-warn: mat-palette($warning, A200);
+$theme-light-warn: mat-palette($warning, A700);
 
 $theme-light: mat-light-theme(
   $theme-light-primary,

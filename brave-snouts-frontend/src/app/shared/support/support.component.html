@@ -1,16 +1,28 @@
-<div class="container" fxLayout="column" fxLayoutAlign="center start">
-    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
-        <mat-icon>
-            close
-        </mat-icon>
-    </button>
-    <div class="container" fxLayout="row" fxLayoutAlign="center center" >
-        <textarea disabled id="email_clipboard" cols="31" rows="1" [(ngModel)]="value"></textarea>
-        <button         
-            matTooltip="Kopiraj"
-            [cdkCopyToClipboard]="value"><mat-icon>
-               content_copy
-        </mat-icon></button>
-    </div>
-</div>
+<div fxLayout="column" fxLayoutAlign="center start">
 
+    <div class="w-100" fxLayout="row" fxLayoutAlign="space-between">
+        <div class="mat-title ml-3 mt-3 bold">Pomoć</div>
+
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon>
+                close
+            </mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-body p-3 mb-5" fxFlexAlign="center" fxLayout="column" fxLayoutGap="1rem">
+
+        <div class="container" fxLayout="row" fxLayoutAlign="center center">
+            <div class="section" id="email_clipboard">
+                app.hrabrenjuske@gmail.com
+            </div>
+            
+            <button id="clipboard-btn" matTooltip="Kopiraj" [cdkCopyToClipboard]="value" class="pointer mat-elevation-z2" (cdkCopyToClipboardCopied)="onCopyFinished($event)">
+                <mat-icon>
+                    content_copy
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+
+</div>

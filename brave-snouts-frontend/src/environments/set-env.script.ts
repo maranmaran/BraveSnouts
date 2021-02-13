@@ -70,6 +70,13 @@ if(!appId)
 if(!measurementId)
   throw new Error(`measurementId missing`);
 
+if(projectId == "bravesnoutsprod") {
+  console.error("\n\n\n")
+  console.error("===========================================================")
+  console.error("==============Watch out you are in PROD env================")
+  console.error("===========================================================")
+  console.error("\n\n\n")
+}
 
 // Build environment file
 const buildEnvironmentFileContent = `
@@ -93,7 +100,7 @@ const buildEnvironmentFileContent = `
     itemCardConfig: {
       minBidOffset: ${process.env.APP_MIN_BID_OFFSET ?? 5},
       maxBidOffset: ${process.env.APP_MAX_BID_OFFSET ?? 30},
-      bidStepSize: ${process.env.APP_BID_STEP_SIZE ?? 1}
+      bidStepSize: ${process.env.APP_BID_STEP_SIZE ?? 5}
     }
   };
 `;

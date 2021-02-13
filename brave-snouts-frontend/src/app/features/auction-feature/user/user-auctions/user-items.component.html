@@ -1,19 +1,38 @@
 
 <div class="container" #scrollingBlock>
+
+    <button routerLink="/app/auctions" class="back-btn w-min btn-small m-0 ml-1" mat-raised-button color="warn" >
+        <mat-icon>arrow_back</mat-icon>
+        Natrag
+    </button>
+    
     <div class="section bold" [ngClass]="{
         'mat-headline': mediaObs.isActive('gt-md'), 
         'mat-title': mediaObs.isActive('lt-lg'),
         'mat-body': mediaObs.isActive('lt-sm'),
         'mt-4': mediaObs.isActive('lt-sm')
-    }" >Praćeni predmeti</div>
+    }" >Moji predmeti</div>
     
-    <virtual-scroller class="full-items-grid" #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0" [parentScroll]="scrollingBlock">
+    <!-- <virtual-scroller class="full-items-grid" #scroll [items]="(trackedItems$ | async)" *ngIf="(trackedItems$ | async)?.length > 0" [parentScroll]="scrollingBlock">
         <div #container class="items-grid">
             <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
         </div>
     </virtual-scroller>
-    
-    <div *ngIf="(trackedItems$ | async)?.length == 0 && !(isLoading$ | async)">
+     -->
+
+     <ng-container *ngIf="items.length > 0">
+         <virtual-scroller class="full-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="items" [parentScroll]="scrollingBlock">
+             <div #container class="items-grid">
+                 <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
+             </div>
+         </virtual-scroller>
+         
+         <ng-template #gallery>
+             <app-item-gallery [items]="items" [parentScroll]="scrollingBlock"></app-item-gallery>
+         </ng-template>
+     </ng-container>
+
+    <div *ngIf="(items)?.length == 0 && !(isLoading$ | async)">
         <div><i>Trenutno ne pratite niti jedan predmet</i></div>
         <div><i>Sudjelujte u aukciji kako bi pratili predmete</i></div>
     </div>

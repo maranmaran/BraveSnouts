@@ -2,8 +2,10 @@ import { Route } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { noop, Subject } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { User } from 'src/business/models/user.model';
+import { AuthService } from 'src/business/services/auth.service';
 
 @Component({
   selector: 'app-email-optout',
@@ -19,10 +21,11 @@ export class EmailOptoutComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private store: AngularFirestore
+    private store: AngularFirestore,
+    private authSvc: AuthService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     let userId = this.route.snapshot.paramMap.get('userId');
     this.optout = this.route.snapshot.paramMap.get('optout');
 
@@ -30,31 +33,59 @@ export class EmailOptoutComponent implements OnInit {
       return;
     }
 
-    let update: any;
-    switch (this.optout) {
-      case "acountannouncements":
-        update = {
-          emailSettings: {
-            auctionAnnouncements: false
-          }
-        }
-        break;
-      case "bidchange":
-        update = {
-          emailSettings: {
-            bidUpdates: false
-          }
-        }
-        break;
-    
-      default:
-        break;
+
+    // verify login
+    const isAuth = await this.authSvc.isAuthenticated$.pipe(take(1)).toPromise();
+
+    let user = null;
+    if(!isAuth) {
+      user = await this.authSvc.login().pipe(take(1), map(cred => cred.user)).toPromise();
+    } else {
+      user = await this.authSvc.getUserInformation().pipe(take(1)).toPromise();
     }
 
-    this.store.collection("users").doc(userId).update(update)
-    .then(() => this.success = true)
-    .catch(err => (console.log(err), this.success = false))
-    .finally(() => this.bootstrap = true);
+    // verify wanted data
+
+    if(!user) {
+      this.bootstrap = true;
+      this.success = false;
+      return;
+    }
+
+    let currentId = user?.uid || user?.id;
+    if(currentId != userId) {
+      this.bootstrap = true;
+      this.success = false;
+      return;
+    }
+
+    // do optout
+    this.store.collection("users").doc(userId).valueChanges()
+    .pipe(take(1))
+    .subscribe((user: User) => {
+      
+      let emailSettings = user.emailSettings;
+
+      switch (this.optout) {
+        case "acountannouncements":
+          emailSettings.auctionAnnouncements = false
+          break;
+        case "bidchange":
+          emailSettings.bidUpdates = false
+          break;
+      
+        default:
+          break;
+      }
+
+      this.store.collection("users").doc(userId).update({ emailSettings })
+      .then(() => this.success = true)
+      .catch(err => (console.log(err), this.success = false))
+      .finally(() => this.bootstrap = true);
+
+    }, err => (console.log(err), this.bootstrap = true, this.success = false));
+
   }
+        
 
 }

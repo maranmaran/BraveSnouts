@@ -23,6 +23,7 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 
 @Component({
   selector: 'app-admin-page',
@@ -163,6 +164,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
+      panelClass: 'restrict-height-handover'
     });
 
     dialogRef.afterClosed()
@@ -188,18 +190,20 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   changeHandoverDetails(auctionId) {
-    const dialogRef = this.dialog.open(HandoverDialogComponent, {
+
+    const dialogRef = this.dialog.open(HandoverDialogComponent,  {
       height: 'auto',
       width: '98%',
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
+      panelClass: 'restrict-height-handover'
     });
 
     dialogRef.afterClosed()
     .pipe(take(1))
     .subscribe(handoverDetails => {
-      if(!handoverDetails) return;
+      if(!handoverDetails || handoverDetails.length == 0) return;
 
       this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
       .pipe(
@@ -232,6 +236,22 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
 
   }
+
+  openHandoverInformation(data) {
+
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      height: 'auto',
+      width: 'auto',
+      maxWidth: '98%',
+      autoFocus: false,
+      closeOnNavigation: true,
+      data
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
+
+  }
+
 
   async markPaymentStatus(change: MatButtonToggleChange, winner: Winner) {
     const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';

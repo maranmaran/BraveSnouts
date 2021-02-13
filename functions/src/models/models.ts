@@ -24,7 +24,7 @@ export class Auction {
     // Describes if auction was archived
     archived: boolean;
     // Handover details for auction winners
-    handoverDetails: string;
+    handoverDetails: string[];
 }
 
 export class Winner {
@@ -96,7 +96,17 @@ export interface TrackedItem {
     userId: string,
 }
 
+export class User {
+    id: string;
+    displayName: string;
+    email: string;
+    avatar: string;
+    signInMethod: string;
+    providerId: string;
+    emailSettings: EmailSettings
+}
+
 export interface EmailSettings {
-    auctionAnnouncements: boolean,
-    bidUpdates: boolean,
+    auctionAnnouncements: boolean;
+    bidUpdates: boolean;
 }

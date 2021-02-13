@@ -7,10 +7,14 @@
         </mat-icon>
     </button>
 
-    <mat-form-field class="mb-4" fxFlex="2 1 100%">
-        <mat-label>Detalji preuzimanja</mat-label>
-        <input matInput [formControl]="handoverDetails">
-    </mat-form-field>
+      <div fxLayout="column" fxLayoutGap="0.5rem" class="w-100 mb-4" >
+          <mat-form-field *ngFor="let control of handoverDetails.controls; index as i" fxFlex="2 1 100%">
+              <mat-label>Detalji preuzimanja</mat-label>
+              <input matInput  [formControl]="handoverDetails.controls[i]">
+          </mat-form-field>
+          <button fxFlexAlign="end" mat-flat-button color="warn" (click)="onAdd()">Dodaj mjesto preuzimanja</button>
+          <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!handoverDetails.valid">Spremi</button>
+      </div>
 
-    <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!handoverDetails.valid">Spremi</button>
+
 </div>

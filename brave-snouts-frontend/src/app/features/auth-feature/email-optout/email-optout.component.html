@@ -11,10 +11,11 @@
           </div>
     </div>
     
-    <h1 *ngIf="optout == bidchange">Uspješno si se odjavio od dobivanja e-pošte o nadmašenim ponudama !</h1>
-    <h1 *ngIf="optout == auctionannouncements">Uspješno si se odjavio od dobivanja e-pošte za najavu aukcija !</h1>
+    <h3 style="text-align: center" *ngIf="optout == 'bidchange'">Uspješno si se odjavio od dobivanja e-pošte o nadmašenim ponudama !</h3>
+    <h3 style="text-align: center" *ngIf="optout == 'auctionannouncements'">Uspješno si se odjavio od dobivanja e-pošte za najavu aukcija !</h3>
 </div>
 
-<div *ngIf="bootstrap && !success">
-    <h1>Nešto je pošlo po zlu i nismo te mogli odjaviti od dobivanja e-pošte. Molim vas kontaktirajte nas kroz korisničku službu !</h1>
+<div *ngIf="bootstrap && !success" class="container mt-5" fxLayout="column" fxLayoutAlign="start center">
+    <h3>Nešto je pošlo po zlu i nismo te mogli odjaviti od dobivanja e-pošte.</h3>
+    <h3>Molim vas kontaktirajte nas kroz korisničku službu ! </h3>
 </div>

@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { take, mergeMap, map } from 'rxjs/operators';
+import { from, Subscription } from 'rxjs';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Winner } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 
 @Component({
   selector: 'app-handover-confirm',
   templateUrl: './handover-confirm.component.html',
   styleUrls: ['./handover-confirm.component.scss'],
-  providers: [AuctionItemRepository]
+  providers: [AuctionRepository, AuctionItemRepository]
 })
-export class HandoverConfirmComponent implements OnInit {
+export class HandoverConfirmComponent implements OnInit, OnDestroy {
   
   success: boolean;
   bootstrap: boolean = false;
@@ -25,38 +26,59 @@ export class HandoverConfirmComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
+    private readonly auctionRepo: AuctionRepository
   ) { }
+
+  _sub: Subscription;
+
+  handoverDetails: string[];
 
   ngOnInit(): void {
     this._auctionId = this.route.snapshot.paramMap.get('auctionId');
     this._userId = this.route.snapshot.paramMap.get('userId');
 
     if(!this._auctionId || !this._userId) {
-      this.router.navigate(['/']);
+      console.log("Redirecting")
+      this.router.navigate(['/app']);
       return null;
     }
-
-    this.onSubmit();
+    
+    console.log("Submitting")
+    setTimeout(() => {
+      this.getHnadoverOptions();
+    }, 1500)
   }
 
-  onSubmit() {
+  getHnadoverOptions() {
+    this.auctionRepo.getOne(this._auctionId).pipe(take(1), map(a => a.handoverDetails)).subscribe(details => this.handoverDetails = details); 
+  }
+
+  ngOnDestroy() {
+  }
+
+  onSubmit(option: string) {
 
     // update winner post delivery option data
     let query = ref => ref.where('winner.userId', '==', this._userId);
 
     let items$ = this.itemsRepo.getAll(this._auctionId, query);
 
-    items$.pipe(
+    return items$.pipe(
       take(1),
       mergeMap(items => [...items]),
       map(item => item.winner),
-      map(winner => [winner.itemId, Object.assign({}, winner, {deliveryChoice: 'handover'}) ]),
-      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
+      map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
+      mergeMap(([id, data]) => {
+     
+        var partialData = { winner: data } as AuctionItem;
+  
+        return this.itemsRepo.getDocument(this._auctionId, id as string).set(partialData, {merge: true})
+      }),
     ).subscribe(
       () => this.success = true, 
       err => (console.log(err), this.success = false),
       () => this.bootstrap = true
-    );
+    );;
 
   }
 
