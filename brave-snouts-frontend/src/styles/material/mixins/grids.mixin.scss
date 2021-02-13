@@ -5,10 +5,10 @@
     virtual-scroller.full-items-grid {
         .items-grid {
             height: 100%;
-            
+
             display: grid;
             // grid-template-columns: repeat(4, minmax(0px, 1fr));
-            grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 0.5rem;
 
             padding: 0.25rem;
@@ -47,7 +47,7 @@
 
             position: relative !important;
             padding-top: 100%; /* added */
-            
+
             #single-image, #placeholder {
                 height: $maxHeight !important;
                 width: $maxWidth !important;
