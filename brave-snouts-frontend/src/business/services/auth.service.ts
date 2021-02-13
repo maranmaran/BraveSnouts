@@ -317,10 +317,14 @@ export class AuthService {
             .then(async (cred) => {
                 // Clear email from storage.
 
+                console.log(cred);
+
                 window.localStorage.removeItem('emailForSignIn');
 
                 cred = {
-                    additionalUserInfo: cred.additionalUserInfo,
+                    additionalUserInfo: {
+                        providerId: "email"
+                    },
                     credential: {
                         signInMethod: "email",
                         providerId: "email",
@@ -361,6 +365,11 @@ export class AuthService {
             email = profile.email;
             avatar = profile.picture?.data?.url;
             displayName = profile.name;
+        }
+        if(cred.additionalUserInfo.providerId == "email") {
+            email = cred.user.email;
+            avatar = cred.user.photoURL;
+            displayName = cred.user.email;
         }
 
         if (email?.trim() == "") {
