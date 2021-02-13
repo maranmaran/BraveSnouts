@@ -22,8 +22,8 @@ export class AuthService {
         private readonly store: AngularFirestore,
         private readonly dialog: MatDialog,
         private toastSvc: HotToastService,
-    ) { 
-        
+    ) {
+
     }
 
     public get user$() {
@@ -67,7 +67,7 @@ export class AuthService {
                     return dialogRef.afterClosed()
                         .pipe(
                             take(1),
-                            switchMap(login => login ? from(this.doAuth(login.method, login.data)) : of(null) )
+                            switchMap(login => login ? from(this.doAuth(login.method, login.data)) : of(null))
                         )
                 }),
                 // concatMap(cred => cred ? this.getUserInternalInformation(cred.user.uid) : of(null))
@@ -78,8 +78,8 @@ export class AuthService {
     getUserInformation() {
         return this.user$.pipe(
             switchMap(user => this.store.doc<User>(`users/${user.uid}`)
-                                        .valueChanges({ idField: 'id'  })
-                                        .pipe(take(1))
+                .valueChanges({ idField: 'id' })
+                .pipe(take(1))
             )
         )
     }
@@ -92,11 +92,11 @@ export class AuthService {
      * If user chose method then it logs him in
      * Registers user if he's new
      */
-    async doAuth(method, data): Promise<firebase.auth.UserCredential>  {
+    async doAuth(method, data): Promise<firebase.auth.UserCredential> {
 
         const cred = await this.loginUser(method, data);
 
-        if(this._usingRedirectFlag) {
+        if (this._usingRedirectFlag) {
             return;
         }
 
@@ -128,12 +128,12 @@ export class AuthService {
                     break;
             }
 
-            if(cred == null && this._usingRedirectFlag) {
-                return; 
+            if (cred == null && this._usingRedirectFlag) {
+                return;
             }
 
             return cred;
-        } 
+        }
         catch (err) {
             this.logout();
             this.handleErrors(err);
@@ -144,7 +144,7 @@ export class AuthService {
     async handleGmailLogin() {
         const google = new firebase.auth.GoogleAuthProvider();
         google.addScope('profile');
-        google.addScope('email'); 
+        google.addScope('email');
 
         google.setCustomParameters({ prompt: 'select_account' })
 
@@ -162,7 +162,7 @@ export class AuthService {
         // return this.auth.signInWithPopup(facebook)
         // .then(cred => {
         //     console.log(cred);
-            
+
         //     if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
         //         throw { code: "no-email"}; 
         //     }
@@ -172,15 +172,15 @@ export class AuthService {
 
         await this.auth.signInWithRedirect(facebook);
         const cred = await this.auth.getRedirectResult()
-        .then(cred => {
-            console.log(cred);
-            
-            if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
-                throw { code: "no-email" }; 
-            }
+            .then(cred => {
+                console.log(cred);
 
-            return cred;
-        })
+                if (!cred?.user?.email || cred?.user?.email?.trim() == "") {
+                    throw { code: "no-email" };
+                }
+
+                return cred;
+            })
 
         return null;
     }
@@ -222,7 +222,7 @@ export class AuthService {
     handleErrors(err) {
         console.error(err);
 
-        if(err?.code == "auth/account-exists-with-different-credential") {
+        if (err?.code == "auth/account-exists-with-different-credential") {
             // this.store.collection("users").doc()
             this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
                 position: "top-center",
@@ -232,7 +232,7 @@ export class AuthService {
             });
         }
 
-        if(err?.code == "no-email") {
+        if (err?.code == "no-email") {
             this.toastSvc.error("Nije se moguće prijaviti nismo dobili email od pružatelja usluge.", {
                 position: "top-center",
                 dismissible: true,
@@ -240,7 +240,7 @@ export class AuthService {
             });
         }
 
-        if(err?.code == "auth/web-storage-unsupported") {
+        if (err?.code == "auth/web-storage-unsupported") {
             this.toastSvc.error("Keksići moraju biti uključeni, ako ste u incognito modu molim vas promjenite browser.", {
                 position: "top-center",
                 dismissible: true,
@@ -253,54 +253,47 @@ export class AuthService {
 
     async completeSocialLogin() {
 
-        if(!this._usingRedirectFlag) {
+        if (!this._usingRedirectFlag) {
             return;
         }
 
         await this.auth.getRedirectResult()
-        .then(cred => {
-            console.log(cred);
-            
-            if((cred as any).code) {
-                this.handleErrors(cred);
-                return;
-            }
+            .then(cred => {
+                console.log(cred);
 
-            if(cred == null || cred.user == null || cred.additionalUserInfo?.profile == null) {
-                return;
-            }
+                if ((cred as any).code) {
+                    this.handleErrors(cred);
+                    return;
+                }
 
-            const profile = cred.additionalUserInfo.profile as any;
-            console.log(profile);
+                if (cred == null || cred.user == null || cred.additionalUserInfo?.profile == null) {
+                    return;
+                }
 
-            if(!profile.email || profile.email?.trim() == "") {
-                this.handleErrors({ code: "no-email" });
-                return; 
-            }
+                const profile = cred.additionalUserInfo.profile as any;
+                console.log(profile);
 
-            if (cred && cred.additionalUserInfo.isNewUser) {
-                // console.log("adding user")
-                // save only when user is authenticated. Because of firestore rules
-                from(this.isAuthenticated$)
-                .pipe(
-                    filter(x => !!x), 
-                    take(1)
-                ).subscribe(() => this.addNewUser(cred))
-                // setTimeout(, 500);
-            }
-        })
-        .catch(err => {
-            
-            console.log(err);
-            
-            if(err.code == "auth/account-exists-with-different-credential") {
-                this.handleErrors({ code: err.code })
-            }
-            
-            if(err.code) {
-                this.handleErrors(err);
-            }
-        })
+                if (!profile.email || profile.email?.trim() == "") {
+                    this.handleErrors({ code: "no-email" });
+                    return;
+                }
+
+                if (cred && cred.additionalUserInfo.isNewUser) {
+                    this.addNewUser(cred);
+                }
+            })
+            .catch(err => {
+
+                console.log(err);
+
+                if (err.code == "auth/account-exists-with-different-credential") {
+                    this.handleErrors({ code: err.code })
+                }
+
+                if (err.code) {
+                    this.handleErrors(err);
+                }
+            })
     }
 
     async completeEmailLogin() {
@@ -323,7 +316,22 @@ export class AuthService {
         return this.auth.signInWithEmailLink(email, window.location.href)
             .then(async (cred) => {
                 // Clear email from storage.
+
                 window.localStorage.removeItem('emailForSignIn');
+
+                cred = {
+                    additionalUserInfo: cred.additionalUserInfo,
+                    credential: {
+                        signInMethod: "email",
+                        providerId: "email",
+                    },
+                    user: {
+                        uid: cred.user.uid,
+                        displayName: cred.user.email,
+                        email: cred.user.email,
+                        photoURL: cred.user.photoURL ?? ""
+                    }
+                } as firebase.auth.UserCredential;
 
                 // You can access the new user via result.user
                 // Additional user info profile not available via:
@@ -331,20 +339,6 @@ export class AuthService {
                 // You can check if the user is new or existing:
                 // result.additionalUserInfo.isNewUser
                 if (cred && cred.additionalUserInfo.isNewUser) {
-
-                    cred = {
-                        credential: {
-                            signInMethod: "email",
-                            providerId: "email",
-                        },
-                        user: {
-                            uid: cred.user.uid,
-                            displayName: cred.user.email,
-                            email: cred.user.email,
-                            photoURL: cred.user.photoURL ?? ""
-                        }
-                    } as firebase.auth.UserCredential;
-
                     await this.addNewUser(cred);
                 }
             })
@@ -353,24 +347,24 @@ export class AuthService {
 
     getNewUser(cred: firebase.auth.UserCredential) {
 
-        const profile = cred.additionalUserInfo.profile as any; 
+        const profile = cred.additionalUserInfo.profile as any;
         let email = "";
         let avatar = "";
         let displayName = "";
 
-        if(cred.additionalUserInfo.providerId == "google.com") {
-           email = profile.email;
-           avatar = profile.picture;
-           displayName = profile.name; 
+        if (cred.additionalUserInfo.providerId == "google.com") {
+            email = profile.email;
+            avatar = profile.picture;
+            displayName = profile.name;
         }
-        if(cred.additionalUserInfo.providerId == "facebook.com") {
+        if (cred.additionalUserInfo.providerId == "facebook.com") {
             email = profile.email;
             avatar = profile.picture?.data?.url;
-            displayName = profile.name; 
+            displayName = profile.name;
         }
 
-        if(email?.trim() == "") {
-            this.handleErrors({code: "no-email"});
+        if (email?.trim() == "") {
+            this.handleErrors({ code: "no-email" });
         }
 
         return {
@@ -389,9 +383,16 @@ export class AuthService {
 
     /** Saves new user to the users collection */
     addNewUser(cred: firebase.auth.UserCredential) {
-        let user = this.getNewUser(cred);
-        console.log("Saving")
-        return this.store.collection(`users`).doc(user.id).set(user, { merge: true}).catch(err => console.log(err));
+        // save only when user is authenticated. Because of firestore rules
+        from(this.isAuthenticated$)
+            .pipe(
+                filter(x => !!x),
+                take(1)
+            ).subscribe(() => {
+                const user = this.getNewUser(cred);
+                console.log("Saving")
+                return this.store.collection(`users`).doc(user.id).set(user, { merge: true }).catch(err => console.log(err));
+            })
     }
 
 
