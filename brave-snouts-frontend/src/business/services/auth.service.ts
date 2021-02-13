@@ -320,30 +320,31 @@ export class AuthService {
                 console.log(cred);
 
                 window.localStorage.removeItem('emailForSignIn');
-
-                cred = {
-                    additionalUserInfo: {
-                        providerId: "email"
-                    },
-                    credential: {
-                        signInMethod: "email",
-                        providerId: "email",
-                    },
-                    user: {
-                        uid: cred.user.uid,
-                        displayName: cred.user.email,
-                        email: cred.user.email,
-                        photoURL: cred.user.photoURL ?? ""
-                    }
-                } as firebase.auth.UserCredential;
-
+                
                 // You can access the new user via result.user
                 // Additional user info profile not available via:
                 // result.additionalUserInfo.profile == null
                 // You can check if the user is new or existing:
                 // result.additionalUserInfo.isNewUser
                 if (cred && cred.additionalUserInfo.isNewUser) {
-                    await this.addNewUser(cred);
+                    const newCred = {
+                        additionalUserInfo: {
+                            providerId: "email"
+                        },
+                        credential: {
+                            signInMethod: "email",
+                            providerId: "email",
+                        },
+                        user: {
+                            uid: cred.user.uid,
+                            displayName: cred.user.email,
+                            email: cred.user.email,
+                            photoURL: cred.user.photoURL ?? ""
+                        }
+                    } as firebase.auth.UserCredential;
+
+                    console.log(newCred);
+                    await this.addNewUser(newCred);
                 }
             })
             .catch((err) => (console.log(err), window.alert("Neispravan email ili iskorišten link")));
