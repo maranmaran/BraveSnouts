@@ -10,7 +10,7 @@ There will possibly be future plans or turning this into their official public w
 
 If you wish to contribute please contact me by mail
 
-Visit current version in development [here](https://bravesnoutsdev.firebaseapp.com)
+[Production](https://hrabrenjuske.hr)
 
 # Application
 
