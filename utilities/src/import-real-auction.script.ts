@@ -18,8 +18,8 @@ import { importFullAuction } from "./import-full-auction.script";
                       Aukcija kreće u ponedjeljak 15.02., a traje do subote 20.02. u 20h. 
                       Najmanja ponuda za svaki od predmeta je navedena u opisu fotografije, a svaka sljedeća mora biti za barem 5kn veća. Predmet osvaja osoba s najvećom ponudom u navedenom vremenu.
                       Informacije o primopredaji i slanju osvojenih predmeta poslat ćemo svim dobitnicima nakon završetka aukcije.`,
-        startDate: admin.firestore.Timestamp.fromDate(moment(new Date()).toDate()),
-        endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(28, 'days').toDate()),
+        startDate: admin.firestore.Timestamp.fromDate(moment("15.02.2021 20:00", "DD.MM.yyyy HH:mm").toDate()),
+        endDate: admin.firestore.Timestamp.fromDate(moment("20.02.2021 20:00", "DD.MM.yyyy HH:mm").toDate()),
         archived: false,
         processed: false,
     });
