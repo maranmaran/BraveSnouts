@@ -9,6 +9,8 @@ export class Bid {
   userInfo: UserInfo;
   bid: number;
   bidBefore: number;
+  userBefore: string;
+  bidIdBefore: string;
   date: any;
 }
 
