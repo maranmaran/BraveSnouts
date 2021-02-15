@@ -193,8 +193,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     // construct bid
     let bid = new Bid({
       itemId: item.id,
-      userId: user.uid,
-      userInfo: { name: user.name, avatar: user.avatar, email: user.email, id: user.uid },
+      userId: this.userData.uid,
+      userInfo: { name: user.name, avatar: user.avatar, email: user.email, id: this.userData.uid },
       date: this.bidsRepo.timestamp,
       bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
       bidBefore: item.bid,
