@@ -21,7 +21,7 @@
      -->
 
      <ng-container *ngIf="items.length > 0">
-         <virtual-scroller class="full-items-grid user-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="items" [parentScroll]="scrollingBlock">
+         <virtual-scroller class="full-items-grid" *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="items" [parentScroll]="scrollingBlock">
              <div #container class="items-grid">
                  <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item"></app-item-details>
              </div>

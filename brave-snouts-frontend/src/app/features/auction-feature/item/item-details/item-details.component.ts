@@ -3,8 +3,7 @@ import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { HotToastService } from '@ngneat/hot-toast';
-import { from } from 'rxjs';
-import { concatMap, filter, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { itemAnimations } from 'src/business/animations/item.animations';
@@ -37,11 +36,11 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() item: AuctionItem;
   @Input('trackedItems') userTrackedItems: Set<string>;
 
-  // For animations 
+  // For animations
   // not observables because - animations are broken
   // https://github.com/angular/angular/issues/21331
   userId: string;
-  userData: firebase.default.User;
+  userData: any;
   isAuthenticated: boolean;
 
   // elements
@@ -89,7 +88,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     if(!previousItem || !currentItem) {
       return;
     }
-    
+
     if(previousItem.id != currentItem.id) {
       return;
     }
@@ -168,11 +167,18 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     if(!this.isAuthenticated) {
       return await this.authSvc.login().pipe(take(1)).toPromise();
     }
-    
+
     // continue only if user is logged in and we have data
-    let user = this.userData
-    if (!user) {
+    if(!this.userData || this.userData.providerData?.length == 0) {
       return;
+    }
+
+    const providerData = this.userData.providerData[0];
+    let user = {
+      uid: providerData.uid,
+      name: providerData.displayName ?? null,
+      email: providerData.email ?? null,
+      avatar: providerData.photoURL ?? null
     }
 
     // check if someone placed bid in the middle of bidding of this user
@@ -188,7 +194,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     let bid = new Bid({
       itemId: item.id,
       userId: user.uid,
-      userInfo: { name: user.displayName, avatar: user.photoURL, email: user.email },
+      userInfo: { name: user.name, avatar: user.avatar, email: user.email, id: user.uid },
       date: this.bidsRepo.timestamp,
       bid: this.getBidPrice(item.bid) ?? item.bid + environment.itemCardConfig.minBidOffset,
       bidBefore: item.bid,
@@ -229,7 +235,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     let sliderBid = this.sliderBid;
 
     let inputChanged = this.currentBidControl.touched
-    
+
     if(!inputChanged) {
       // slider value (between min and max)
       if (inputBid <= currentBid + environment.itemCardConfig.maxBidOffset) {

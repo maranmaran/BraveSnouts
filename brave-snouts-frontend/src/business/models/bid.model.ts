@@ -15,6 +15,7 @@ export class Bid {
 }
 
 export class UserInfo {
+  id: string;
   name: string;
   email: string;
   avatar: string;
