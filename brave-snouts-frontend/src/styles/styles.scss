@@ -161,7 +161,7 @@ label {
 .toolbar-btn {
   position: relative;
   right: 5px;
-  font-size: 10px !important; 
+  font-size: 10px !important;
   line-height: 2 !important;
   padding: 0 5px !important;
   cursor: pointer;
@@ -212,4 +212,11 @@ label {
   .mat-dialog-container {
       max-height: 60vh !important;
   }
+}
+
+.truncated {
+  display: block;
+    white-space: nowrap; /* forces text to single line */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

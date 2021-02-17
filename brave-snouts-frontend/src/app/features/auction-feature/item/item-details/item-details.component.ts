@@ -74,6 +74,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.bootstrapped = true;
   }
 
+
+
   ngOnChanges(changes: SimpleChanges): void {
 
     const previousItem = changes.item?.previousValue;
@@ -296,6 +298,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   //#endregion
 
+  //#region Item description
   onShowDescription(description: string) {
     this.dialog.open(MessageDialogComponent, {
       height: 'auto',
@@ -306,7 +309,12 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       panelClass: ['item-dialog', 'mat-elevation-z8'],
       data: description
     });
-
   }
+
+  isTruncated(element) {
+    return element?.offsetWidth < element?.scrollWidth;
+  }
+  //#endregion
+
 
 }
