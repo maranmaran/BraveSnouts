@@ -8,10 +8,14 @@ export class Bid {
   userId: string;
   userInfo: UserInfo;
   bid: number;
+  bidBefore: number;
+  userBefore: string;
+  bidIdBefore: string;
   date: any;
 }
 
 export class UserInfo {
+  id: string;
   name: string;
   email: string;
   avatar: string;

@@ -5,6 +5,7 @@
     "ng": "ng",
     "config": "ts-node ./src/environments/set-env.script.ts",
     "start": "npm run config -- --environment=dev && ng serve -c development",
+    "start-ssl": "npm run config -- --environment=dev && ng serve -c development --ssl --ssl-key ./src/environments/https/localhost.key --ssl-cert ./src/environments/https/localhost.crt",
     "build-dev": "npm run config -- --environment=dev && ng build -c development",
     "build-prod": "npm run config -- --environment=prod && ng build -c production",
     "test": "ng test",

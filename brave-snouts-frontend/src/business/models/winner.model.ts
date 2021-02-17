@@ -6,11 +6,13 @@ export class Winner {
     userId: string;
 
     userInfo: {
+        id: string,
         name: string;
         email: string;
     };
     
     deliveryChoice?: 'postal' | 'handover';
+    handoverOption: string;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
     postalInformation?: PostalInformation;
 }

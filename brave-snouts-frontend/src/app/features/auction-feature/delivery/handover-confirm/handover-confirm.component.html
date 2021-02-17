@@ -1,19 +1,31 @@
-<div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
-    <div class="animation-ctn">
-        <div class="icon icon--order-success svg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">  
-              <g fill="none" stroke="#22AE73" stroke-width="2"> 
-                <circle cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
-                <circle id="colored" fill="#22AE73" cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
-                <polyline class="st0" stroke="#fff" stroke-width="10" points="43.5,77.8 63.7,97.9 112.2,49.4 " style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;"/>   
-              </g> 
-            </svg>
-          </div>
-    </div>
-    
-    <h1>Hvala ti na potvrdi</h1>
-</div>
+<div fxLayout="column" fxLayoutAlign="start center" style="margin-top: 3rem">
 
-<div *ngIf="bootstrap && !success">
-  <h1>Nešto je pošlo po zlu i nismo mogli potvrditi tvoj dolazak osobno po predmete. Molim vas kontaktirajte nas kroz korisničku službu !</h1>
+  <div *ngIf="handoverDetails && handoverDetails.length > 0 && !bootstrap" fxLayout="column" fxLayoutGap="1rem">
+    <h3 class="mb-2 p-3 bold">Odaberite lokaciju: </h3>
+    <div class="section center ml-1 mr-1 pointer" *ngFor="let option of handoverDetails" (click)="onSubmit(option)">
+      {{ option }}  
+    </div>
+    <h3 class="mb-2 p-3 bold w-100 text-center">Molimo, na primopredaju donesite točan iznos donacije.</h3>
+  </div>
+
+  <div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
+      <div class="animation-ctn">
+          <div class="icon icon--order-success svg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">  
+                <g fill="none" stroke="#22AE73" stroke-width="2"> 
+                  <circle cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+                  <circle id="colored" fill="#22AE73" cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+                  <polyline class="st0" stroke="#fff" stroke-width="10" points="43.5,77.8 63.7,97.9 112.2,49.4 " style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;"/>   
+                </g> 
+              </svg>
+            </div>
+      </div>
+      
+      <h1>Hvala na potvrdi</h1>
+  </div>
+  
+  <div *ngIf="bootstrap && !success" class="text-center p-3" style="max-width: 23rem">
+    <h3>Nešto je pošlo po zlu i nismo mogli potvrditi tvoj dolazak osobno po predmete. Molim Vas kontaktirajte nas kroz korisničku službu !</h3>
+  </div>
+
 </div>

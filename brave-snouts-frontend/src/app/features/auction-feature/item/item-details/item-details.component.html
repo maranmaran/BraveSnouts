@@ -14,7 +14,7 @@
                 {{item.bid + ' kn'}}
             </label>
         </div>
-        <!-- 
+        <!--
         <mat-icon class="best-bid-icon"
             [@starOnBidChanged]="userId === item.user && isAuthenticated"
             *ngIf="userId == item.user && isAuthenticated"
@@ -25,15 +25,36 @@
     </mat-card-title>
 
     <div class="best-bid-label background warn lighter mat-small" [@fadeIn]="userId === item.user && isAuthenticated"
-        *ngIf="userId == item.user && isAuthenticated" matTooltip="Tvoja ponuda je najbolja"
-        [matTooltipPosition]="'above'">
+        *ngIf="userId == item.user && isAuthenticated">
         Vaša ponuda je trenutno najbolja
+    </div>
+    <div class="best-bid-label background primary lighter mat-small"
+        *ngIf="item.bid == item.startBid && !item.bidId">
+        Još nije dana niti jedna ponuda
     </div>
     <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
 
-    <mat-card-content class="m-0">
-        <button class="w-100" mat-stroked-button color="primary" (click)="onShowDescription(item.description)">Prikaži
-            opis predmeta</button>
+    <mat-card-content class="m-0" style="height: 44px">
+        <div *ngIf="item.description; else noDescription" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
+          <span #description class="truncated" [innerHtml]="item.description"></span>
+          <a *ngIf="isTruncated(description)" mat-stroked-button color="accent" fxFlexAlign="end" class="mt-2 pointer" (click)="onShowDescription(item.description)">
+            Više
+          </a>
+        </div>
+
+        <ng-template #noDescription>
+          <div class="center w-100">
+            <i>Nema opisa predmeta</i>
+          </div>
+        </ng-template>
+
+        <!-- <button class="w-100"
+        mat-stroked-button color="primary"
+        [ngStyle]="{'visibility': (!item.description || item.description == '') ? 'hidden' : 'visible' }"
+        (click)="onShowDescription(item.description)">
+            Prikaži opis predmeta
+        </button> -->
+
         <!-- <app-truncated-text class="text" [text]="item.description" [fallbackText]="'Nema opisa predmeta'"></app-truncated-text> -->
     </mat-card-content>
 

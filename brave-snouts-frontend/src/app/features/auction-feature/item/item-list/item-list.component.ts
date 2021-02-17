@@ -1,14 +1,14 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 import { concatMap, map, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
+import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { SubSink } from 'subsink';
-import { mergeArrays } from 'src/business/services/items.service';
-import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-item-list',
@@ -21,7 +21,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input() useGallery = true;
   // overrides some functions like pagination since it's coming from different source
   // we will instead send event outside
-  @Input() fromDialog = false; 
+  @Input() fromDialog = false;
   @Input('initItem') initItemFromDialog: AuctionItem;
   @Output() onFetchMore = new EventEmitter<IPageInfo>();
 
@@ -37,7 +37,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input() parentScroll: ElementRef;
 
   private _subsink = new SubSink();
-  
+
   async ngOnInit() {
 
     if(this.fromDialog) {
@@ -80,7 +80,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       )
   }
 
-  //#region  Pagination 
+  //#region  Pagination
 
   @Input() items: AuctionItem[] = [];
   last: AuctionItem;
@@ -117,12 +117,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
       .pipe(
 
       ).subscribe(items => {
-        
+
           // disable next if no more items
           if (items.length < this.itemsRepo.pageSize) {
             this.noMoreData = true;
           }
-          
+
           // join items
           this.items = mergeArrays(this.items, items);
           // console.log(`Currently having ${this.items.length} items.`, this.items)

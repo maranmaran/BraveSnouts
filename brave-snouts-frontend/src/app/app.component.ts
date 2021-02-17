@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { from } from 'rxjs';
 import { AuthService } from 'src/business/services/auth.service';
 
 @Component({
@@ -22,6 +23,11 @@ export class AppComponent implements OnInit {
    * */
   ngOnInit(): void {
     this.authSvc.completeSocialLogin();
+    // from(this.authSvc.auth.getRedirectResult()).subscribe(
+      // cred => {
+        // console.log(cred);  
+      // }
+    // );
   }
 
 

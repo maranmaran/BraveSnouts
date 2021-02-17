@@ -161,7 +161,7 @@ label {
 .toolbar-btn {
   position: relative;
   right: 5px;
-  font-size: 10px !important; 
+  font-size: 10px !important;
   line-height: 2 !important;
   padding: 0 5px !important;
   cursor: pointer;
@@ -175,4 +175,48 @@ label {
 .back-btn {
   position: relative;
   bottom: 10px;
+}
+
+
+.logo-base {
+  cursor: pointer;
+  z-index: 100;
+  position: relative;
+  top: 35px;
+  max-height: 200px;
+  border-radius: 50%;
+  border: 5px solid white;
+  height: 200px;
+  width: 200px;
+
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -o-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  -webkit-tap-highlight-color: none !important;
+}
+.logo {
+  @extend .logo-base;
+  background-image: url("/assets/snouts-logo/njuske-original-krug-compressed.jpg");
+  background-size: contain;
+
+  &:hover {
+    background-image: url("/assets/snouts-logo/njuske-original-animated-compressed.gif");
+    background-size: contain;
+  }
+}
+
+.restrict-height-handover {
+  .mat-dialog-container {
+      max-height: 60vh !important;
+  }
+}
+
+.truncated {
+  display: block;
+    white-space: nowrap; /* forces text to single line */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

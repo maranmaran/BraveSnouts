@@ -23,7 +23,7 @@ export const endAuctionFn = europeFunctions.https.onCall(
  * Checks for today auction and whether or not it's finished
  * If it's done it retrieves all best bids 
  */
-const auctionEnd = async (auctionId: string, handoverDetails: string) => {
+const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
 
     // get auction data
     console.info("Retrieving auction")
@@ -60,7 +60,7 @@ const auctionEnd = async (auctionId: string, handoverDetails: string) => {
 
     // Mark processed auctions
     console.info("Update auction as processed")
-    await markAuctionProcessed(auction);
+    await updateAuction(auction, handoverDetails);
 
     return null;
 }
@@ -86,7 +86,7 @@ const getAuctionItems = async (auctionId: string) => {
 
   if(items.length === 0) {
     const message = 'No items found';
-    logger.log(message);
+    logger.warn(message);
     throw new Error(message);
   }
 
@@ -101,7 +101,7 @@ const getBids = (items: AuctionItem[]) => {
 
   if(bids.length === 0) {
     const message = 'No bids found';
-    logger.log(message);
+    logger.warn(message);
     throw new Error(message);
   }
 
@@ -113,15 +113,21 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
   
   for (const bid of bids) {
 
+    if(!userInfo.has(bid.user)) {
+      // skip
+      console.warn(`Skipping ${bid.user}`)
+      continue;
+    }
     const user = userInfo.get(bid.user) as UserInfo;
 
-    const winnerInstance = new Winner({
+    const winnerInstance = {
       userId: user.id,
       auctionId: auctionId,
       itemId: bid.item.id,
       bidId: bid.item.bidId,
       
       userInfo: {
+        id: user.id,
         name: user.name,
         email: user.email,
       },
@@ -130,13 +136,13 @@ const saveWinners = async (auctionId: string, bids: Bid[], userInfo: Map<string,
       deliveryChoice: null,
       postalInformation: null,
 
-    })
+    }
     
     // const id = `${winner.auctionId}-${winner.userId}-${winner.itemId}`
 
     const winnerObj = Object.assign({}, winnerInstance);
 
-    await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update({winner: winnerObj});
+    await store.collection(`auctions/${auctionId}/items`).doc(winnerObj.itemId).update(Object.assign({}, { winner: winnerObj } ));
   }
 }
 
@@ -166,7 +172,7 @@ const getUserInformation = async (userIds: string[]) => {
 
       } catch (error) {
           logger.error(`${error}`);
-          throw new Error('User not found');
+          console.warn(`User not found ${userId}`);
       }
   }
 
@@ -188,16 +194,17 @@ const getUserBids = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserI
 }
 
 /** Sends mails to relevant users with their won items */
-const sendMails = async (auction: Auction, userBids: Map<UserInfo, Bid[]>, handoverDetails: string) => {
+const sendMails = async (auction: Auction, userBids: Map<UserInfo, Bid[]>, handoverDetails: string[]) => {
   for (const [userInfo, bids] of userBids) {
       await sendEndAuctionMail(auction, handoverDetails, userInfo, bids);
   }
 }
 
 /** Marks all auctions as processed */
-const markAuctionProcessed = async (auction: Auction) => {
+const updateAuction = async (auction: Auction, handoverDetails: string[]) => {
     auction.processed = true;
-    await store.collection('auctions').doc(auction.id).update(auction);
+    auction.handoverDetails = handoverDetails;
+    await store.collection('auctions').doc(auction.id).set(auction, { merge: true });
 }
 
 

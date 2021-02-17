@@ -23,8 +23,8 @@ import { AuthGuard } from 'src/business/guards/auth.guard';
 
 const routes: Routes = [
   // root
-  { path: '', component: MaintenanceComponent},
-  // { path: '', redirectTo: 'app', pathMatch: 'full' },
+  // { path: '', component: MaintenanceComponent},
+  { path: '', redirectTo: 'app', pathMatch: 'full' },
 
   { path: 'app', component: AppContainerComponent, children: [
 

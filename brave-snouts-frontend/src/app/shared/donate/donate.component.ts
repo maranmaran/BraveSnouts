@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 
@@ -11,6 +11,8 @@ import { fadeIn } from 'src/business/animations/fade-in.animation';
 })
 export class DonateComponent implements OnInit {
 
+  @Input() text = true;
+  
   constructor(
     public readonly mediaObs: MediaObserver,
     protected readonly breakpointObs: BreakpointObserver

@@ -1,9 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IPageInfo } from 'ngx-virtual-scroller';
+import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { AuthService } from 'src/business/services/auth.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 import { SubSink } from 'subsink';
 
@@ -21,17 +23,24 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
   private readonly _subsink = new SubSink();
 
+  userId: string;
+  isAuthenticated$: Observable<boolean>;
+
   constructor(
     private readonly dialog: MatDialog,
-    private readonly itemDialogSvc: ItemDialogService
+    private readonly itemDialogSvc: ItemDialogService,
+    private readonly authSvc: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.isAuthenticated$ = this.authSvc.isAuthenticated$;
+
     this._subsink.add(
+      this.authSvc.userId$.subscribe(id => this.userId = id),
       this.itemDialogSvc.fetchMore.subscribe(
         event => this.loadMore.emit(event)
       )
-    )
+    );
   }
 
   ngOnChanges(changes) {

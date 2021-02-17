@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, mergeMap, take } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { Winner } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 
 @Component({
   selector: 'app-post-confirm',
@@ -22,6 +22,10 @@ export class PostConfirmComponent implements OnInit {
   private _auctionId: string;
   private _userId: string;
 
+  public originalDonation: number;
+  public totalDonation: number;
+  public paymentDetail: string;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
@@ -32,11 +36,19 @@ export class PostConfirmComponent implements OnInit {
   ngOnInit(): void {
     this._auctionId = this.route.snapshot.paramMap.get('auctionId');
     this._userId = this.route.snapshot.paramMap.get('userId');
+    this.originalDonation = parseFloat(this.route.snapshot.paramMap.get('donation'));
+    this.paymentDetail = this.route.snapshot.paramMap.get('paymentDetail');
+    
+    if(!this._auctionId || !this._userId || !this.originalDonation) {
+      this.success = false;
+      this.bootstrap = true;
 
-    if(!this._auctionId || !this._userId) {
-      this.router.navigate(['/app']);
-      return null;
+      setTimeout(() => this.router.navigate(["/app"]), 10000);
+      return;
     }
+
+
+    this.totalDonation = this.originalDonation + 20;
 
     this.postDeliveryInfoForm = this.fb.group({
       fullName: this.fb.control('', Validators.required),
@@ -63,7 +75,8 @@ export class PostConfirmComponent implements OnInit {
       mergeMap(items => [...items]),
       map(item => item.winner),
       map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
-      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ))
+      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } )),
+      catchError(err => (console.log(err), throwError(err) ) ),
     ).subscribe(
       () => this.success = true, 
       err => (console.log(err), this.success = false),
