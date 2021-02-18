@@ -1,16 +1,15 @@
-import { getLocaleDateFormat } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
-import { noop, Observable, of } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
-import { AuctionItem } from 'src/business/models/auction-item.model';
-import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { AuthService } from 'src/business/services/auth.service';
-import { ProgressBarService } from 'src/business/services/progress-bar.service';
-import { SubSink } from 'subsink';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable, of } from 'rxjs';
+import { mergeMap, take, tap } from 'rxjs/operators';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
+import { AuctionItem } from 'src/business/models/auction-item.model';
+import { AuthService } from 'src/business/services/auth.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
+import { ProgressBarService } from 'src/business/services/progress-bar.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-user-items',
@@ -62,7 +61,7 @@ export class UserItemsComponent implements OnInit, OnDestroy {
   }
 
   getTrackedItems() {
-    
+
     this.loadingSvc.active$.next(true);
     return this.itemsRepo.getUserItems(this.userId).pipe(
       tap(items => this.total = items?.length),
@@ -77,23 +76,23 @@ export class UserItemsComponent implements OnInit, OnDestroy {
         return idx != -1 ? of(this.items[idx]) : this.itemsRepo.getOne(item.auctionId, item.id);
       }),
       ).subscribe(item => {
-      
+
       if(item == "empty") {
         this.total = 0;
         this.items = [];
         setTimeout(() => this.loadingSvc.active$.next(false));
         return;
       }
-      
+
       const idx = this.items.findIndex(it => it.id == item.id);
-      
+
       if(idx != -1) {
         this.items[idx] = item;
         this.items = [...this.items];
       } else {
         this.items = [...this.items, item];
       }
-      
+
       this.winningItems = [...this.items.filter(item => item.user == this.userId)]
       this.outbiddedItems = [...this.items.filter(item => item.user != this.userId)]
 
@@ -114,7 +113,7 @@ export class UserItemsComponent implements OnInit, OnDestroy {
 
     let dialogRef = this.dialog.open(SingleItemDialogComponent, {
       height: 'auto',
-      width: '98%',
+      width: '100%',
       maxWidth: '20rem',
       autoFocus: false,
       closeOnNavigation: true,

@@ -2,7 +2,7 @@
 
 @mixin grids-theme($theme) {
 
-  // breakpoints
+  // Items grid breakpoints (Full components)
 
   virtual-scroller.full-items-grid {
     .items-grid {
@@ -15,38 +15,39 @@
   }
 
   // lt-sm
-  @media(max-width: 599px) {
+  @media (max-width: 599px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: minmax(0, 1fr);
       }
     }
   }
-  @media(min-width: 560px) {
+  // gt-xs
+  @media (min-width: 560px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   }
-  // lt-md
-  @media(min-width: 960px) {
+  // gt-md
+  @media (min-width: 960px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   }
-  // lt-lg
-  @media(min-width: 1270px) {
+  // gt-lg
+  @media (min-width: 1270px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
   }
-  // lt-xl
-  @media(min-width: 1920px) {
+  // gt-xl
+  @media (min-width: 1920px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -54,7 +55,7 @@
     }
   }
   // gt-lg
-  @media(min-width: 1920px) {
+  @media (min-width: 1920px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -72,6 +73,7 @@
     }
   }
 
+  // Item media gallery SCSS (Mobile view grid with pics only)
   virtual-scroller.items-gallery-grid-scroller {
     width: 100%;
     height: 100%;
@@ -80,7 +82,6 @@
     $maxHeight: 100%;
     $maxWidth: 100%;
     .media-container {
-
       position: relative !important;
       padding-top: 100%; /* added */
 
@@ -114,14 +115,17 @@
     }
   }
 
-    #won-items, #outbidded-items {
-        .auction-item {
-            width: 430px !important;
-        }
+  #won-items,
+  #outbidded-items {
+    .auction-item {
+      width: 430px !important;
     }
-    #won-items-gallery, #outbidded-items-gallery {
-        app-item-media {
-            margin-right: 10px;
-        }
+  }
+
+  #won-items-gallery,
+  #outbidded-items-gallery {
+    app-item-media {
+      margin-right: 10px;
     }
+  }
 }

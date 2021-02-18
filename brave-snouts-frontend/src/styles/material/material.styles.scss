@@ -46,4 +46,9 @@
   left: 1rem;
 }
 
-
+// disable slider animation from 100 to 0
+.mat-slider {
+  .mat-slider-thumb-container {
+      transition: none;
+  }
+}

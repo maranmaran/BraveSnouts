@@ -10,7 +10,22 @@
 
 .container {
     position: relative;
-    
+
+    width: 100%;
+
+    app-single-item {
+      width: 100%;
+      .container {
+        width: 100%;
+        app-item-details {
+          width: 100%;
+          .auction-item {
+            width: 100%;
+          }
+        }
+      }
+    }
+
     .close-btn {
         position: absolute;
         left: 17.5rem;
@@ -18,3 +33,4 @@
         top: -0.5rem;
     }
 }
+

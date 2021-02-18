@@ -15,7 +15,14 @@ virtual-scroller {
     }
 
     .custom-height {
-        height: 170px !important;
-        padding-bottom: 10px;
+        height: 145px !important;
+        padding-bottom: 20px;
     }
+}
+
+.best-bid-label {
+  position: relative;
+  bottom: 1rem;
+  top: unset;
+  font-size: 9px;
 }
