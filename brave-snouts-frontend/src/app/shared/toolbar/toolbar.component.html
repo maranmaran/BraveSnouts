@@ -37,27 +37,27 @@
                 <button mat-raised-button color="warn" class="ml-2 btn-small" routerLink="/app/rules" matTooltip="Pravila aukcije">Pravila aukcije</button>
             </ng-template> -->
             <!-- <button mat-icon-button routerLink="/app/privacy-policy" matTooltip="Polica privatnosti"><mat-icon>security</mat-icon></button> -->
-            
+
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
 
 
-        <div #logo 
-            class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" 
-            (click)="onLogoClick()" 
+        <div #logo
+            class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}"
+            (click)="onLogoClick()"
             [hidden]="clickFlag"
         >
             <mat-progress-spinner *ngIf="(active$ | async)" class="spinner" mode="indeterminate" color="accent"> </mat-progress-spinner>
         </div>
-        
+
         <div class="logo-animated"  [hidden]="!clickFlag"></div>
         <!-- <div class="logo-animated" ></div> -->
     </div>
-    
+
     <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
 
-        
+
         <button mat-icon-button class="elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">
             <mat-icon>help</mat-icon>
         </button>
@@ -67,9 +67,9 @@
         <button *ngIf="!(user$ | async)" mat-stroked-button class="p-0" (click)="onLogin()">Prijava</button>
 
         <ng-container *ngIf="(user$ | async) as user">
-            
+
             <img *ngIf="user?.photoURL; else noPhoto" class="avatar pointer elevate hover default" src="{{ user.photoURL}}" matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
-            
+
             <ng-template #noPhoto>
                 <img id="anonymous" matTooltip="{{ (userInfo$ | async)?.displayName }}" class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg" [matMenuTriggerFor]="profileMenu" />
             </ng-template>
@@ -83,6 +83,9 @@
                 </button>
                 <button mat-menu-item  (click)="onShowContactHelp()"><mat-icon>help</mat-icon>
                     Pomoć
+                </button>
+                <button mat-menu-item (click)="onChangeEmail()"><mat-icon>mail</mat-icon>
+                  Promijeni e-mail
                 </button>
                 <!-- <button mat-menu-item routerLink="/app/privacy-policy">
                     <mat-icon matPrefix>
@@ -103,7 +106,7 @@
                     Odjava
                 </button>
             </mat-menu>
-        
+
         </ng-container>
 
     </div>

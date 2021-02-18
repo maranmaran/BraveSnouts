@@ -1,16 +1,14 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { noop, Observable } from 'rxjs';
-import { AuthService } from 'src/business/services/auth.service';
-import firebase from 'firebase/app';
+import { Component, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { SupportComponent } from 'src/app/shared/support/support.component';
-import { ProgressBarService } from 'src/business/services/progress-bar.service';
-import { Auction } from 'src/business/models/auction.model';
+import { Router } from '@angular/router';
+import firebase from 'firebase/app';
 import * as moment from 'moment';
+import { noop, Observable } from 'rxjs';
+import { SupportComponent } from 'src/app/shared/support/support.component';
 import { User } from 'src/business/models/user.model';
+import { AuthService } from 'src/business/services/auth.service';
+import { ProgressBarService } from 'src/business/services/progress-bar.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -32,14 +30,14 @@ export class ToolbarComponent implements OnInit {
   userInfo$: Observable<User | null>;
   admin$: Observable<boolean>;
   active$: Observable<boolean>; // whether or not progress bar is active
-  
+
   ngOnInit(): void {
     this.user$ = this.authSvc.user$
     this.admin$ = this.authSvc.isAdmin$;
     this.active$ = this.loadingSvc.active$;
     this.userInfo$ = this.authSvc.getUserInformation();
   }
-  
+
   clickFlag = false;
   onLogoHover(mouseEnter) {
     if(this.rootRoute)
@@ -53,16 +51,16 @@ export class ToolbarComponent implements OnInit {
       return;
 
     this.clickFlag = true;
-    
+
     this.router.navigate(['/app']).then(
-      _ => setTimeout(_ => this.clickFlag = false, 1000) 
+      _ => setTimeout(_ => this.clickFlag = false, 1000)
     );
   }
-  
+
   public get rootRoute()  {
     return this.router.url === '/';
   }
-  
+
   onCreateAuction() {
     let auction = {
       name: 'Aukcija',
@@ -82,10 +80,12 @@ export class ToolbarComponent implements OnInit {
       closeOnNavigation: true,
       panelClass: "dialog-no-padding"
     });
-
   }
-  
-  
+
+  onChangeEmail() {
+    this.authSvc.openChangeEmailDialog(null);
+  }
+
   onLogin() {
     this.authSvc.login().subscribe(noop);
   }
@@ -93,5 +93,5 @@ export class ToolbarComponent implements OnInit {
   onLogout() {
     this.authSvc.logout();
   }
-    
+
 }

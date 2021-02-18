@@ -4,10 +4,10 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import { HotToastService } from "@ngneat/hot-toast";
 import firebase from 'firebase/app';
-import { from, noop, of } from "rxjs";
-import { concatMap, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
+import { from, noop, of, throwError } from "rxjs";
+import { catchError, concatMap, filter, map, switchMap, take, tap } from "rxjs/operators";
+import { ChangeEmailDialogComponent } from "src/app/features/auth-feature/change-email-dialog/change-email-dialog.component";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
-import { AuctionItem } from "src/business/models/auction-item.model";
 import { User } from "src/business/models/user.model";
 import { environment } from "src/environments/environment";
 
@@ -23,7 +23,6 @@ export class AuthService {
         private readonly dialog: MatDialog,
         private toastSvc: HotToastService,
     ) {
-
     }
 
     public get user$() {
@@ -32,6 +31,12 @@ export class AuthService {
 
     public get userId$() {
         return this.auth.user.pipe(map(user => user?.uid));
+    }
+
+    public get userDbInfo$() {
+      return this.userId$.pipe(
+        switchMap(id => this.getUser(id).pipe(take(1)))
+      );
     }
 
     public get isAuthenticated$() {
@@ -85,7 +90,7 @@ export class AuthService {
     }
 
     logout() {
-        this.auth.signOut();
+      return this.auth.signOut();
     }
 
     /** Handles authentication flow
@@ -164,7 +169,7 @@ export class AuthService {
         //     console.log(cred);
 
         //     if(!cred?.user?.email || cred?.user?.email?.trim() == "") {
-        //         throw { code: "no-email"}; 
+        //         throw { code: "no-email"};
         //     }
 
         //     return cred;
@@ -173,7 +178,7 @@ export class AuthService {
         await this.auth.signInWithRedirect(facebook);
         const cred = await this.auth.getRedirectResult()
             .then(cred => {
-                console.log(cred);
+                // console.log(cred);
 
                 if (!cred?.user?.email || cred?.user?.email?.trim() == "") {
                     throw { code: "no-email" };
@@ -218,39 +223,6 @@ export class AuthService {
         });
     }
 
-    /** Handles different login errors */
-    handleErrors(err) {
-        console.error(err);
-
-        if (err?.code == "auth/account-exists-with-different-credential") {
-            // this.store.collection("users").doc()
-            this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
-                position: "top-center",
-                dismissible: true,
-                autoClose: true,
-                duration: 20000
-            });
-        }
-
-        if (err?.code == "no-email") {
-            this.toastSvc.error("Nije se moguće prijaviti nismo dobili email od pružatelja usluge.", {
-                position: "top-center",
-                dismissible: true,
-                autoClose: true
-            });
-        }
-
-        if (err?.code == "auth/web-storage-unsupported") {
-            this.toastSvc.error("Keksići moraju biti uključeni, ako ste u incognito modu molim vas promjenite browser.", {
-                position: "top-center",
-                dismissible: true,
-                autoClose: true
-            });
-        }
-
-        setTimeout(() => this.logout());
-    }
-
     async completeSocialLogin() {
 
         if (!this._usingRedirectFlag) {
@@ -259,7 +231,7 @@ export class AuthService {
 
         await this.auth.getRedirectResult()
             .then(cred => {
-                console.log(cred);
+                // console.log(cred);
 
                 if ((cred as any).code) {
                     this.handleErrors(cred);
@@ -271,7 +243,7 @@ export class AuthService {
                 }
 
                 const profile = cred.additionalUserInfo.profile as any;
-                console.log(profile);
+                // console.log(profile);
 
                 if (!profile.email || profile.email?.trim() == "") {
                     this.handleErrors({ code: "no-email" });
@@ -317,10 +289,10 @@ export class AuthService {
             .then(async (cred) => {
                 // Clear email from storage.
 
-                console.log(cred);
+                // console.log(cred);
 
                 window.localStorage.removeItem('emailForSignIn');
-                
+
                 // You can access the new user via result.user
                 // Additional user info profile not available via:
                 // result.additionalUserInfo.profile == null
@@ -343,11 +315,44 @@ export class AuthService {
                         }
                     } as firebase.auth.UserCredential;
 
-                    console.log(newCred);
+                    // console.log(newCred);
                     await this.addNewUser(newCred);
                 }
             })
             .catch((err) => (console.log(err), window.alert("Neispravan email ili iskorišten link")));
+    }
+
+    /** Handles different login errors */
+    handleErrors(err) {
+      console.error(err);
+
+      if (err?.code == "auth/account-exists-with-different-credential") {
+          // this.store.collection("users").doc()
+          this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
+              position: "top-center",
+              dismissible: true,
+              autoClose: true,
+              duration: 20000
+          });
+      }
+
+      if (err?.code == "no-email") {
+          this.toastSvc.error("Nije se moguće prijaviti nismo dobili email od pružatelja usluge.", {
+              position: "top-center",
+              dismissible: true,
+              autoClose: true
+          });
+      }
+
+      if (err?.code == "auth/web-storage-unsupported") {
+          this.toastSvc.error("Keksići moraju biti uključeni, ako ste u incognito modu molim vas promjenite browser.", {
+              position: "top-center",
+              dismissible: true,
+              autoClose: true
+          });
+      }
+
+      setTimeout(() => this.logout());
     }
 
     getNewUser(cred: firebase.auth.UserCredential) {
@@ -405,6 +410,53 @@ export class AuthService {
             })
     }
 
+    getUser(id: string) {
+      return this.store.doc(`users/${id}`).valueChanges({idField: 'id'});
+    }
 
+    openChangeEmailDialog(message?: string, forcefulOverride = false) {
+      const ref = this.dialog.open(ChangeEmailDialogComponent, {
+        height: 'auto',
+        width: '98%',
+        maxWidth: '23rem',
+        autoFocus: false,
+        closeOnNavigation: true,
+        panelClass: "dialog-no-padding",
+        data: message
+      });
+
+      ref.afterClosed().pipe(take(1))
+      .subscribe(email => {
+        if(!email) return;
+
+        this.changeEmail(email, forcefulOverride).pipe(take(1)).subscribe(noop, err => console.log(err));
+      })
+    }
+
+    changeEmail(email: string, forcefulOverride = false) {
+      return this.user$
+      .pipe(
+        take(1),
+        concatMap(user => user.updateEmail(email)),
+        catchError(err => {
+
+          if(err.code == "auth/requires-recent-login") {
+            this.logout().then(
+              () => window.prompt("Molimo vas prijavite se ponovno i ponovite promjenu emaila.")
+            );
+
+            return throwError(err);
+          }
+
+          this.toastSvc.error("Došlo je do greške molimo vas obratite nam se na mail za pomoć");
+          return throwError(err);
+        }),
+        concatMap(() => this.userId$),
+        concatMap(id => this.store.doc(`users/${id}`).update({email, overrideEmail: null})),
+        tap(() => {
+          this.toastSvc.success("Uspješno izmjenjen e-mail");
+        })
+      )
+    }
 
 }
