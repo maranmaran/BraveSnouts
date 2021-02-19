@@ -8,7 +8,7 @@ export class Auction {
     }
 
     id: string;
-    
+
     // auction name
     name: string;
     // basic auction description (TODO)
@@ -24,5 +24,8 @@ export class Auction {
     // Describes handover details sent to winners
     handoverDetails: string[];
 
+    // total raised money
+    raisedMoney: number = 0;
+
     items: AuctionItem[];
-}   
+}

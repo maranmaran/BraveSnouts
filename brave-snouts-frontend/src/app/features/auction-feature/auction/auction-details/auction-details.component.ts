@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { itemAnimations } from 'src/business/animations/item.animations';
 import { Auction } from 'src/business/models/auction.model';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
@@ -14,7 +15,8 @@ import { SubSink } from 'subsink';
   selector: 'app-auction-details',
   templateUrl: './auction-details.component.html',
   styleUrls: ['./auction-details.component.scss'],
-  providers: [AuctionRepository]
+  providers: [AuctionRepository],
+  animations: [itemAnimations]
 })
 export class AuctionDetailsComponent implements OnInit, OnDestroy {
 
@@ -23,6 +25,9 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     private readonly auctionsRepo: AuctionRepository,
     public readonly mediaObs: MediaObserver,
   ) { }
+
+  _previousMoneyRaised: number = 0;
+  moneyRaised: boolean = false;
 
   auction$: Observable<Auction>;
 
@@ -33,17 +38,30 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Retrieve auction data
     let auctionId = this.route.snapshot.paramMap.get('id');
-    
+
     this.auction$ = this.auctionsRepo.getOne(auctionId)
     .pipe(
       tap(auction => this.setupCountdown(auction))
     );
+
+    this._subsink.add(
+
+      this.auction$.pipe(map(auction => auction.raisedMoney)).subscribe(money => {
+        if(money != this._previousMoneyRaised) {
+          this.moneyRaised = true;
+          setTimeout(() => this.moneyRaised = false, 1000);
+        }
+
+        this._previousMoneyRaised = money;
+      })
+
+    )
   }
 
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown(auction: Auction) {
     const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
-    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss"); 
+    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss");
     const dateDiff = auctionEnd.diff(today);
     const duration = moment.duration(dateDiff);
     const leftTime = duration.asSeconds();

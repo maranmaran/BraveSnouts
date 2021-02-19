@@ -1,7 +1,7 @@
 require('dotenv').config();
 import * as admin from 'firebase-admin';
-import { Auction, AuctionItem } from './models';
 import moment from 'moment';
+import { Auction, AuctionItem } from './models';
 
 
 var firebaseConfig = {
@@ -30,6 +30,7 @@ const store = admin.firestore();
     endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
     archived: false,
     processed: false,
+    raisedMoney: 0
   });
 
   // write auction and scaffold id

@@ -1,8 +1,8 @@
-import { Auction } from "./models"
 import * as admin from 'firebase-admin';
-import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
+import { v4 as uuidv4 } from 'uuid';
 import { importFullAuction } from "./import-full-auction.script";
+import { Auction } from "./models";
 
 (async () => {
     console.log("\nDoing import")
@@ -22,6 +22,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment("20.02.2021 20:00", "DD.MM.yyyy HH:mm").toDate()),
         archived: false,
         processed: false,
+        raisedMoney: 0
     });
     let importFilePath = process.cwd() + "\\utilities\\data\\Aukcija.xlsx"
 

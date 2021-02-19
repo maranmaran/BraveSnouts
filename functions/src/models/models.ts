@@ -19,6 +19,7 @@ export class Auction {
     endDate: firebase.firestore.Timestamp;
     items: AuctionItem[];
 
+    raisedMoney: number;
     // Describes if auction was processed for winners upon ending
     processed: boolean;
     // Describes if auction was archived

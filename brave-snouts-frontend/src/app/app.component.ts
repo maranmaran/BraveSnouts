@@ -35,7 +35,9 @@ export class AppComponent implements OnInit, OnDestroy {
           if(info.overrideEmail) {
             this.authSvc.openChangeEmailDialog(info.overrideEmail.reason, true);
           }
-
+          if(!info.email || info.email?.trim() == "") {
+            this.authSvc.openChangeEmailDialog("Nažalost nemate konfiguriran ispravan e-mail. Molimo vas da promjenite e-mail.", true);
+          }
         }
       )
     )

@@ -140,9 +140,8 @@ export class AuthService {
             return cred;
         }
         catch (err) {
-            this.logout();
-            this.handleErrors(err);
-            return null;
+          this.handleErrors(err);
+          return null;
         }
     }
 
@@ -323,18 +322,18 @@ export class AuthService {
     }
 
     /** Handles different login errors */
-    handleErrors(err) {
+    handleErrors(err, provider = null) {
       console.error(err);
 
-      if (err?.code == "auth/account-exists-with-different-credential") {
-          // this.store.collection("users").doc()
-          this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
-              position: "top-center",
-              dismissible: true,
-              autoClose: true,
-              duration: 20000
-          });
-      }
+      // if (err?.code == "auth/account-exists-with-different-credential") {
+      //     // this.store.collection("users").doc()
+      //     this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
+      //         position: "top-center",
+      //         dismissible: true,
+      //         autoClose: true,
+      //         duration: 20000
+      //     });
+      // }
 
       if (err?.code == "no-email") {
           this.toastSvc.error("Nije se moguće prijaviti nismo dobili email od pružatelja usluge.", {
@@ -342,6 +341,8 @@ export class AuthService {
               dismissible: true,
               autoClose: true
           });
+
+          this.openChangeEmailDialog("Nažalost nismo dobili e-mail od pružatelja usluge, molimo vas unesite e-mail.", false);
       }
 
       if (err?.code == "auth/web-storage-unsupported") {
@@ -351,8 +352,6 @@ export class AuthService {
               autoClose: true
           });
       }
-
-      setTimeout(() => this.logout());
     }
 
     getNewUser(cred: firebase.auth.UserCredential) {
@@ -442,7 +441,10 @@ export class AuthService {
 
           if(err.code == "auth/requires-recent-login") {
             this.logout().then(
-              () => window.prompt("Molimo vas prijavite se ponovno i ponovite promjenu emaila.")
+              () => this.toastSvc.warning("Molimo vas prijavite se ponovno i ponovite promjenu e-maila.", {
+                duration: 20000,
+                dismissible: true,
+              })
             );
 
             return throwError(err);

@@ -1,8 +1,7 @@
-import { Auction } from "./models"
 import * as admin from 'firebase-admin';
-import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import { importFullAuction } from "./import-full-auction.script";
+import { Auction } from "./models";
 
 (async () => {
     let imagesDir = process.cwd() + "\\utilities\\data\\images";
@@ -27,6 +26,7 @@ import { importFullAuction } from "./import-full-auction.script";
             endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
             archived: false,
             processed: false,
+            raisedMoney: 0
     });
     let importFilePathActive400 = process.cwd() + "\\utilities\\data\\items_400.xlsx"
     
@@ -38,6 +38,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
         archived: false,
         processed: false,
+        raisedMoney: 0
     });
     let importFilePathActive100 = process.cwd() + "\\utilities\\data\\items_100.xlsx"
     
@@ -49,6 +50,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
         archived: false,
         processed: false,
+        raisedMoney: 0
     });
     let importFilePathActive20 = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
@@ -60,6 +62,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(30, 'days').toDate()),
         archived: false,
         processed: false,
+        raisedMoney: 0
     });
     let importFilePathFutureShort = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
@@ -71,6 +74,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).add(60, 'days').toDate()),
         archived: false,
         processed: false,
+        raisedMoney: 0
     });
     let importFilePathFutureFar = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
@@ -82,6 +86,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(5, 'days').toDate()),
         archived: false,
         processed: false,
+        raisedMoney: 0
     });
     let importFilePathPastNonProcessed = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
@@ -93,6 +98,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(28, 'days').toDate()),
         archived: false,
         processed: true,
+        raisedMoney: 0
     });
     let importFilePathPastProcessedSoonToBeArchived = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     
@@ -104,6 +110,7 @@ import { importFullAuction } from "./import-full-auction.script";
         endDate: admin.firestore.Timestamp.fromDate(moment(new Date()).subtract(28, 'days').toDate()),
         archived: false,
         processed: true,
+        raisedMoney: 0
     });
     let importFilePathPastNonProcessedSoonToBeArchived = process.cwd() + "\\utilities\\data\\items_20.xlsx"
     

@@ -255,7 +255,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       // console.log(errors);
     }
 
-    console.log("Validating slider", errors);
+    // console.log("Validating slider", errors);
 
     return errorsCount == 0; // VALID if no errors
   }
@@ -288,7 +288,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       this.bidControl.setErrors(errors);
     }
 
-    console.log("Validating control", errors);
+    // console.log("Validating control", errors);
 
     return errorsCount == 0; // VALID if no errors
 
