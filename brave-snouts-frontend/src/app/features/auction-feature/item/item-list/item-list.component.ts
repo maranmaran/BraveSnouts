@@ -23,6 +23,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   // we will instead send event outside
   @Input() fromDialog = false;
   @Input('initItem') initItemFromDialog: AuctionItem;
+  @Input('initItemIdx') initItemFromDialogIdx: number;
+  @Input() enableUnequalChildrenSizes = false;
   @Output() onFetchMore = new EventEmitter<IPageInfo>();
 
   @ViewChild('itemsScroller', { static: false }) scroller: VirtualScrollerComponent
@@ -42,7 +44,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
     if(this.fromDialog) {
       setTimeout(() => {
-        this.scrollInto(this.initItemFromDialog);
+        this.scrollInto(this.initItemFromDialog, this.initItemFromDialogIdx);
       })
     }
 
@@ -142,9 +144,9 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this._subsink.add(subscription);
   }
 
-  scrollInto(item: AuctionItem) {
+  scrollInto(item: AuctionItem, idx: number) {
 
-    this.scroller.scrollInto(item, true, 20, 0);
+    this.scroller.scrollToIndex(idx, true, 45);
 
   }
 

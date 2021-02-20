@@ -35,7 +35,7 @@ export class AuthService {
 
     public get userDbInfo$() {
       return this.userId$.pipe(
-        switchMap(id => this.getUser(id).pipe(take(1)))
+        switchMap(id => id ? this.getUser(id).pipe(take(1)) : of(null) )
       );
     }
 
@@ -140,7 +140,7 @@ export class AuthService {
             return cred;
         }
         catch (err) {
-          this.handleErrors(err);
+          if(err.code) this.handleErrors(err);
           return null;
         }
     }
@@ -254,8 +254,6 @@ export class AuthService {
                 }
             })
             .catch(err => {
-
-                console.log(err);
 
                 if (err.code == "auth/account-exists-with-different-credential") {
                     this.handleErrors({ code: err.code })

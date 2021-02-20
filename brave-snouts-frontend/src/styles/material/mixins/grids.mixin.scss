@@ -106,7 +106,7 @@
     @media (max-width: 700px) {
       .items-gallery-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(105px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.25rem;
 
         padding: 0.25rem;

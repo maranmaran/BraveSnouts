@@ -1,15 +1,15 @@
 <mat-card *ngIf="bootstrapped" @skipInitAnimation class="auction-item m-2 mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">
 
-    <mat-card-title fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+    <mat-card-title style="height: 64px" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
 
-        <label class="mb-0 mat-title bold">
+        <label class="mb-0 mat-title bold" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}">
             {{item.name}}
         </label>
 
         <div fxLayout="column" class="mr-0">
             <div class="mat-small text-center no-wrap" style="background: whitesmoke">Trenutna ponuda</div>
 
-            <label class="mat-title" [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'"
+            <label class="mat-title" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}" [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'"
                 class="no-wrap mb-0 mat-title bold center">
                 {{item.bid + ' kn'}}
             </label>

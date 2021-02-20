@@ -82,13 +82,13 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
   openItemWithScroll(item: AuctionItem) {
 
     let dialogRef = this.dialog.open(ItemsListDialogComponent, {
-      height: 'auto',
-      width: '95vw',
-      maxWidth: '95vw',
+      height: '100%',
+      width: '100vw',
+      maxWidth: '100vw',
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['items-dialog', 'mat-elevation-z8'],
-      data: { items: this.items, initItem: item, svc: this.itemDialogSvc }
+      data: { items: this.items, initItem: item, initItemIdx: this.items.findIndex(it => it.id == item.id), svc: this.itemDialogSvc }
     });
 
     // dialogRef.afterClosed()

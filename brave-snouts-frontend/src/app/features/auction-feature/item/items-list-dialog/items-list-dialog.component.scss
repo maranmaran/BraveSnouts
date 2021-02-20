@@ -7,13 +7,9 @@
 .container {
     position: relative;
 
-    height: calc(93vh + 33px) !important;
+    height: 93vh !important;
+    // height: calc(93vh + 33px) !important;
     overflow: hidden;
-    
-    .close-btn {
-        position: absolute;
-        left: 302px;
-        z-index: 100;
-        top: -0.5rem;
-    }
+
+
 }

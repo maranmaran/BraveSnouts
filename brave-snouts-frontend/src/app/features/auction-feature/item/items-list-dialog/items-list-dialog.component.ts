@@ -1,11 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { IPageInfo } from 'ngx-virtual-scroller';
 import { BehaviorSubject } from 'rxjs';
-import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 import { SubSink } from 'subsink';
-import { IPageInfo } from 'ngx-virtual-scroller';
 
 @Component({
   selector: 'app-items-list-dialog',
@@ -20,7 +19,7 @@ export class ItemsListDialogComponent implements OnInit {
 
   constructor(
     private readonly dialog: MatDialogRef<ItemsListDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { items: AuctionItem[], initItem: AuctionItem, svc: ItemDialogService } = null
+    @Inject(MAT_DIALOG_DATA) public data: { items: AuctionItem[], initItem: AuctionItem, initItemIdx: number, svc: ItemDialogService } = null
   ) { }
 
   ngOnInit(): void {

@@ -32,6 +32,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authSvc.userDbInfo$.subscribe(
         (info: any) => {
 
+          if(info == null) return;
+
           if(info.overrideEmail) {
             this.authSvc.openChangeEmailDialog(info.overrideEmail.reason, true);
           }

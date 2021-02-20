@@ -1,3 +1,4 @@
+import { MediaObserver } from '@angular/flex-layout';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,7 +30,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
     private readonly dialog: MatDialog,
-    private readonly toastSvc: HotToastService
+    private readonly toastSvc: HotToastService,
+    private readonly mediaObs: MediaObserver
   ) { }
 
   // Data

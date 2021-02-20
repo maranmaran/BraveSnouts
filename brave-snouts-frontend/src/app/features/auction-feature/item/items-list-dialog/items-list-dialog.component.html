@@ -1,16 +1,22 @@
-<div id="items-list-dialog" class="container center">
-    <app-item-list class="items" *ngIf="(items$ | async) as items" 
+<div class="w-100" fxLayout="column">
+  <button fxFlexAlign="end" mat-icon-button fxFlexAlign="end" (click)="onClose()">
+    <mat-icon>
+        close
+    </mat-icon>
+  </button>
+</div>
+
+<div id="items-list-dialog" class="container" #parentScroll>
+
+    <app-item-list class="items" *ngIf="(items$ | async) as items"
         [useGallery]="false"
-        [items]="items" 
+        [items]="items"
         [fromDialog]="true"
         [initItem]="data.initItem"
+        [initItemIdx]="data.initItemIdx"
+        [parentScroll]="parentScroll"
+        [enableUnequalChildrenSizes]="true"
         (onFetchMore)="onFetchMore($event)"
     ></app-item-list>
-    
-    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
-        <mat-icon>
-            close
-        </mat-icon>
-    </button>
-    
+
 </div>
