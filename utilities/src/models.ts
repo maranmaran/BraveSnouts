@@ -39,6 +39,34 @@ export class AuctionItem {
     bidId: string;
     bid: number = 0;
     user: string;
+
+    
+    winner: Winner;
+}
+
+export class Winner {
+    id: string;
+    auctionId: string;
+    itemId: string;
+    bidId: string;
+    userId: string;
+
+    userInfo: {
+        id: string,
+        name: string;
+        email: string;
+    };
+    
+    deliveryChoice?: 'postal' | 'handover';
+    handoverOption: string;
+    paymentStatus: 'paid' | 'pending' | 'notpaid';
+    postalInformation?: PostalInformation;
+}
+
+export class PostalInformation {
+    fullName: string;
+    address: string;
+    phoneNumber: string;
 }
 
 export interface FirebaseFile {
@@ -46,4 +74,19 @@ export interface FirebaseFile {
     type: string,
     name: string,
     url: string,
+}
+
+export class User {
+    id: string;
+    displayName: string;
+    email: string;
+    avatar: string;
+    signInMethod: string;
+    providerId: string;
+    emailSettings: EmailSettings
+}
+
+export interface EmailSettings {
+    auctionAnnouncements: boolean;
+    bidUpdates: boolean;
 }
