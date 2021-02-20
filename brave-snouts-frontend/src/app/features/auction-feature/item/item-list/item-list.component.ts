@@ -146,7 +146,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   scrollInto(item: AuctionItem, idx: number) {
 
-    this.scroller.scrollToIndex(idx, true, 45);
+    this.scroller.scrollToIndex(idx, true, 45, 0);
 
   }
 
