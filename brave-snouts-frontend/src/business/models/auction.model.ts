@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import { AuctionItem } from 'src/business/models/auction-item.model';
-import { WinnerOnAuction } from './../../../../functions/src/models/models';
+import { WinnerOnAuction } from './winner.model';
 
 export class Auction {
 

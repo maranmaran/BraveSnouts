@@ -15,7 +15,7 @@ import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-di
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
-import { Winner } from 'src/business/models/winner.model';
+import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
@@ -24,7 +24,6 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
 import { BidsRepository } from 'src/business/services/repositories/bids.repository';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
-import { WinnerOnAuction } from './../../../../../../../functions/src/models/models';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
 import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
 
