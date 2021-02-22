@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { WinnerOnAuction } from './../../../../functions/src/models/models';
 
 export class Auction {
 
@@ -26,6 +27,7 @@ export class Auction {
 
     // total raised money
     raisedMoney: number = 0;
+    winners: WinnerOnAuction[];
 
     items: AuctionItem[];
 }

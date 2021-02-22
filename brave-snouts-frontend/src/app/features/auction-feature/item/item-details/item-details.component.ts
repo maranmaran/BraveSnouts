@@ -181,7 +181,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     const providerData = this.userData.providerData[0];
     let user = {
-      uid: providerData.uid,
+      uid: this.userId,
       name: providerData.displayName ?? null,
       email: providerData.email ?? null,
       avatar: providerData.photoURL ?? null

@@ -41,6 +41,7 @@ export class Winner {
     userId: string;
     
     userInfo: {
+        id: string;
         name: string;
         email: string;
     };
@@ -49,6 +50,30 @@ export class Winner {
     postalInformation: PostalInformation | null;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
 }
+
+export class WinnerOnAuction {
+
+    constructor(data: Partial<WinnerOnAuction>) {
+        Object.assign(this, data);
+    }
+
+    id: string;
+    auctionId: string;
+
+    items: AuctionItem[];
+    bids: Bid[];
+    
+    userInfo: {
+        id: string;
+        name: string;
+        email: string;
+    };
+
+    deliveryChoice: 'postal' | 'handover' | null;
+    postalInformation: PostalInformation | null;
+    paymentStatus: 'paid' | 'pending' | 'notpaid';
+}
+
 
 
 export class PostalInformation {

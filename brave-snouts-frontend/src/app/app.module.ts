@@ -55,9 +55,10 @@ import { ItemMediaComponent } from './features/auction-feature/item/item-media/i
 import { SingleItemDialogComponent } from './features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
 import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
+import { WinnerDetailsDialogComponent } from './features/auction-feature/user/winner-details-dialog/winner-details-dialog.component';
+import { ChangeEmailDialogComponent } from './features/auth-feature/change-email-dialog/change-email-dialog.component';
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
-import { ChangeEmailDialogComponent } from './features/auth-feature/change-email-dialog/change-email-dialog.component';
 
 registerLocaleData(hrLocale);
 
@@ -142,7 +143,8 @@ registerLocaleData(hrLocale);
     AuctionRulesComponent,
     FooterComponent,
     ItemsListDialogComponent,
-    ChangeEmailDialogComponent
+    ChangeEmailDialogComponent,
+    WinnerDetailsDialogComponent
   ],
   providers: [
     { provide: LOCALE_ID, useValue: "hr" },
