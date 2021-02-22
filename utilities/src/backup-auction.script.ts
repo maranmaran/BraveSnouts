@@ -1,10 +1,12 @@
 import * as admin from 'firebase-admin';
 import * as XLSX from 'xlsx';
 import { User } from './../../functions/src/models/models';
-import { AuctionItem } from './models';
+import { AuctionItem, Winner } from './models';
 
 const path = require('path')
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config({ path: process.cwd() + '\\utilities\\.env' });
+
+console.log(process.cwd() + '\\utilities\\.env');
 
 var firebaseConfig = {
     credential: admin.credential.applicationDefault(),
@@ -21,8 +23,6 @@ var firebaseConfig = {
 const app = admin.initializeApp(firebaseConfig);
 const store = app.firestore();
 
-require('dotenv').config();
-
 // WInners only
 const backupAuction = async (id: string) => {
     
@@ -30,59 +30,88 @@ const backupAuction = async (id: string) => {
         const items = (await store.collection(`auctions/${id}/items`).get()).docs;
     
         const usersMap:Map<string, User> = new Map<string, User>();
-    
-        const data: any[][] = [];
-    
-        data.push([
+        const winnersMap: Map<string, Winner> = new Map<string, Winner>();
+
+        const perItemData: any[][] = [];
+        perItemData.push([
             "ID Predmeta",
             "Naziv Predmeta",
-            "Zadnji bid",
-            "Zadnji korisnik ID",
-            "Zadnji korisnik ime",
-            "Zadnji korisnik email",
+            "Bid (formatted)",
+            "Bid (raw)",
             "Pobjednik ID",
             "Pobjednik ime",
             "Pobjednik email"
+        ]);
+
+        const perWinnerData: any[][] = [];
+        perWinnerData.push([
+            "ID",
+            "Ime",
+            "Email",
+            "Izabrana opcija preuzimanja",
+            "Informacije za preuzimanje",
+            "Predmeti"
         ]);
     
         for (const item of items) {
             const itemData = item.data() as AuctionItem;
     
+            // per item data
             if(!usersMap.has(itemData.user)) {
                 const user = await (await store.doc(`users/${itemData.user}`).get()).data() as User;
     
                 usersMap.set(itemData.user, user);
             }
-    
+
             const user = usersMap.get(itemData.user);
-    
-            data.push([
+            perItemData.push([
                 item.id,
                 itemData.name,
-                itemData.bid + " kn",
-                itemData.user,
-                user?.displayName,
-                user?.email,
-                itemData.winner?.userId ?? "no winner id",
-                itemData.winner?.userInfo?.name ?? "no winner",
-                itemData.winner?.userInfo?.email ?? "no winner email",
+                itemData.user ? itemData.bid + " kn" : '',
+                itemData.user ? itemData.bid : 0,
+                itemData.winner?.userId,
+                itemData.winner?.userInfo?.name,
+                itemData.winner?.userInfo?.email,
             ])
+
+            // per winner data
+            let winner = itemData.winner;
+            if(!winner) continue;
+    
+            if(!winnersMap.has(winner.userId)) {
+                perWinnerData.push([
+                    winner.userId,
+                    winner.userInfo.name,
+                    winner.userInfo.email,
+                    winner.deliveryChoice ?? 'Not chosen',
+                    winner.deliveryChoice == 'postal' ? `${winner.postalInformation?.address}, ${winner.postalInformation?.address}, ${winner.postalInformation?.address}` :
+                    winner.deliveryChoice == 'handover' ? winner.handoverOption : '',
+                    itemData.name
+                ])
+
+                winnersMap.set(winner.userId, winner);
+            } else {
+                const idx = perWinnerData.findIndex(x => x[0] == winner.userId);
+                perWinnerData[idx][5] = perWinnerData[idx][5] + ', ' + itemData.name
+            }
         }
-        if(data.length == 0) {
+        
+        if(perItemData.length == 0) {
             console.log("No data");
             return;
         } 
     
-        const options: XLSX.ParsingOptions = {};
-    
         const wb = XLSX.utils.book_new();
-        wb.SheetNames.push("Winners");
+        wb.SheetNames.push("PerItemData"); // all items and some other data
+        wb.SheetNames.push("PerWinnerData"); // only winners
         wb.Props = {
             Title: "Winners",
         };
         
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        wb.Sheets["Winners"] = ws;
+        const ws1 = XLSX.utils.aoa_to_sheet(perItemData);
+        wb.Sheets["PerItemData"] = ws1;
+        const ws2 = XLSX.utils.aoa_to_sheet(perWinnerData);
+        wb.Sheets["PerWinnerData"] = ws2;
     
         XLSX.writeFile(wb, "Winners.xlsx", { bookType: 'xlsx'} );
         console.log("Done");
