@@ -97,7 +97,7 @@
 
         <div id="btns-row" class="w-100" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
 
-            <button class="w-100" mat-flat-button [disabled]="bidDisabled" type="button" (click)="onBid(item)" color="primary">
+            <button class="w-100" mat-flat-button [disabled]="bidDisabled || !controlsValid" type="button" (click)="onBid(item)" color="primary">
               <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.5rem">
                 <mat-icon>
                   pets
