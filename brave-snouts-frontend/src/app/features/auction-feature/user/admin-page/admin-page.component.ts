@@ -1,35 +1,38 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
+import { IPageInfo } from 'ngx-virtual-scroller';
 import { noop, Observable } from 'rxjs';
-import { finalize, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
+import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
+import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
 import { Winner } from 'src/business/models/winner.model';
+import { FunctionsService } from 'src/business/services/functions.service';
+import { mergeArrays } from 'src/business/services/items.service';
+import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { BidsRepository } from 'src/business/services/repositories/bids.repository';
-import { FunctionsService } from 'src/business/services/functions.service';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
-import { IPageInfo } from 'ngx-virtual-scroller';
-import { mergeArrays } from 'src/business/services/items.service';
-import { ProgressBarService } from 'src/business/services/progress-bar.service';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
-import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { WinnerOnAuction } from './../../../../../../../functions/src/models/models';
+import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
+import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
 
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.scss'],
-  providers: [AuctionRepository, BidsRepository, AuctionItemRepository, FunctionsService]
+  providers: [AuctionRepository, BidsRepository, AuctionItemRepository, WinnersRepository, FunctionsService]
 })
 export class AdminPageComponent implements OnInit, OnDestroy {
 
@@ -38,6 +41,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private readonly auctionRepo: AuctionRepository,
     private readonly bidRepo: BidsRepository,
     private readonly itemsRepo: AuctionItemRepository,
+    private readonly winnersRepo: WinnersRepository,
     private readonly route: ActivatedRoute,
     public readonly mediaObs: MediaObserver,
     private readonly functionsSvc: FunctionsService,
@@ -51,6 +55,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   auction$: Observable<Auction>;
   items$: Observable<AuctionItem[]>;
   winners: Map<string, Winner>;
+  auctionWinners: WinnerOnAuction[];
 
   activeItemId: string;
 
@@ -68,8 +73,12 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
     this.auction$ = this.auctionRepo.getOne(this._auctionId)
       .pipe(
-        tap(auction => this.setupCountdown(auction))
+        tap(auction => this.setupCountdown(auction)),
       );
+
+    this.winnersRepo.getAuctionWinners(this._auctionId)
+    .pipe(take(1))
+    .subscribe(winners => this.auctionWinners = winners);
 
     this.onLoadMore({ endIndex: -1 } as IPageInfo);
   }
@@ -78,8 +87,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this._subsink.unsubscribe();
   }
 
-
-  //#region  Pagination 
+  //#region  Pagination
 
   items: AuctionItem[] = [];
   last: AuctionItem;
@@ -157,6 +165,20 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
   }
 
+  openAuctionWinnersDetails() {
+
+    this.dialog.open(WinnerDetailsDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: 'p-0',
+      data: { winners: this.auctionWinners, auctionId: this._auctionId }
+    });
+
+  }
+
   endAuction(auctionId) {
     const dialogRef = this.dialog.open(HandoverDialogComponent, {
       height: 'auto',
@@ -207,14 +229,14 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
       this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
       .pipe(
-        take(1), 
+        take(1),
         this.toastSvc.observe(
           {
             loading: 'Mijenjam..',
             success: "Uspješna izmjena",
             error: "Nešto je pošlo po zlu",
           }
-        ), 
+        ),
       )
       .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
 
@@ -252,13 +274,13 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   }
 
-
   async markPaymentStatus(change: MatButtonToggleChange, winner: Winner) {
     const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
-    
+
     const winnerUpdate = Object.assign({}, winner, { paymentStatus });
     const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate } ;
 
     await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
   }
+
 }

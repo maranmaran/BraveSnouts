@@ -1,3 +1,7 @@
+import { AuctionItem } from "./auction-item.model";
+import { Bid } from "./bid.model";
+
+// attached on **auction item document**
 export class Winner {
     id: string;
     auctionId: string;
@@ -10,12 +14,37 @@ export class Winner {
         name: string;
         email: string;
     };
-    
+
     deliveryChoice?: 'postal' | 'handover';
     handoverOption: string;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
     postalInformation?: PostalInformation;
 }
+
+// Attached on **auction document**
+export class WinnerOnAuction {
+
+  constructor(data: Partial<WinnerOnAuction>) {
+      Object.assign(this, data);
+  }
+
+  id: string;
+  auctionId: string;
+
+  items: AuctionItem[];
+  bids: Bid[];
+
+  userInfo: {
+      id: string;
+      name: string;
+      email: string;
+  };
+
+  deliveryChoice: 'postal' | 'handover' | null;
+  postalInformation: PostalInformation | null;
+  paymentStatus: 'paid' | 'pending' | 'notpaid';
+}
+
 
 export class PostalInformation {
     fullName: string;

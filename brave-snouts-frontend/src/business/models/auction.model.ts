@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { WinnerOnAuction } from './../../../../functions/src/models/models';
 
 export class Auction {
 
@@ -8,7 +9,7 @@ export class Auction {
     }
 
     id: string;
-    
+
     // auction name
     name: string;
     // basic auction description (TODO)
@@ -24,5 +25,7 @@ export class Auction {
     // Describes handover details sent to winners
     handoverDetails: string[];
 
+    winners: WinnerOnAuction[];
+
     items: AuctionItem[];
-}   
+}
