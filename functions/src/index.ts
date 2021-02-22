@@ -11,10 +11,10 @@ export const config = functions.config();
 // function exports
 const bidChangeFn = require('./functions/bid-change.function');
 const endAuctionFn = require('./functions/end-auction.function');
-// const archiveAuctionFn = require('./functions/archive-auction.function');
 const changeHandoverFn = require('./functions/change-handover.function');
-const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
+// const archiveAuctionFn = require('./functions/archive-auction.function');
+// const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
 //#region 
 
