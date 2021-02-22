@@ -1,7 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as XLSX from 'xlsx';
-import { User } from './../../functions/src/models/models';
-import { AuctionItem, Winner } from './models';
+import { AuctionItem, User, Winner } from './models';
 
 const path = require('path')
 require('dotenv').config({ path: process.cwd() + '\\utilities\\.env' });
