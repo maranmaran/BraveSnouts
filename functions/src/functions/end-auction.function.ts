@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
-import { Auction, AuctionItem, Bid, TrackedItem, UserInfo, Winner } from "../models/models";
+import { Auction, AuctionItem, Bid, TrackedItem, UserInfo } from "../models/models";
 import { sendEndAuctionMail } from "../services/mail.service";
 
 /** Processes auctions end
@@ -164,10 +164,13 @@ const getUserInformation = async (userIds: string[]) => {
       try {
 
           const user = await admin.auth().getUser(userId);
+
+          const userDb = await (await store.doc(`users/${user.uid}`).get()).data();
+
           userInfoMap.set(userId, {
-              id: userId, 
-              name: user.displayName as string, 
-              email: user.email as string,
+              id: user.uid, 
+              name: userDb.displayName, 
+              email: userDb.email,
           });
 
       } catch (error) {
