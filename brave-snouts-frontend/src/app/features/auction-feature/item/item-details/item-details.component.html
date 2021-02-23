@@ -65,12 +65,16 @@
                 <mat-small>{{item.bid + ' kn'}}</mat-small>
             </div>
 
-            <mat-slider fxFlex="60" class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid"
+            <mat-slider fxFlex class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid"
                 [step]="bidStepSize" [min]="item.bid" [max]="item.bid + 30" [value]="bidSlider.min"
                 (input)="bidSliderChange($event)" [thumbLabel]="true">
             </mat-slider>
 
-            <div fxFlex="23" class="center ml-1" style="position: relative">
+            <div fxFlex="17" class="center mr-1">
+              <mat-small>{{bidSlider.value + ' kn'}}</mat-small>
+            </div>
+
+            <!-- <div fxFlex="23" class="center ml-1" style="position: relative">
                 <mat-form-field id="item-max-price-control">
                     <input matInput type="number" [formControl]="bidControl">
                     <span matSuffix class="ml-1">kn</span>
@@ -91,8 +95,8 @@
                         </div>
                     </div>
                 </mat-form-field>
+            </div> -->
 
-            </div>
         </div>
 
         <div id="btns-row" class="w-100" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { concatMap, map, take } from 'rxjs/operators';
 import { AuthService } from 'src/business/services/auth.service';
 import { SubSink } from 'subsink';
 
@@ -26,19 +27,32 @@ export class AppComponent implements OnInit, OnDestroy {
    * Cure is probably signInWithRedirect but it needs special handling
    * */
   ngOnInit(): void {
-    this.authSvc.completeSocialLogin();
+    // this.authSvc.completeSocialLogin();
 
     this._subsink.add(
-      this.authSvc.userDbInfo$.subscribe(
-        (info: any) => {
+      this.authSvc.userDbInfo$
+      .pipe(
+        concatMap(userDbInfo => this.authSvc.user$.pipe(take(1), map(userAuthInfo => [userAuthInfo, userDbInfo])))
+      )
+      .subscribe(
+        async ([userAuthInfo, userDbInfo]) => {
 
-          if(info == null) return;
+          console.log(userAuthInfo, userDbInfo, this.authSvc.emailLoginInProgress);
 
-          if(info.overrideEmail) {
-            this.authSvc.openChangeEmailDialog(info.overrideEmail.reason, true);
+          if(!userDbInfo) return;
+
+          if(this.authSvc.emailLoginInProgress) return;
+
+          if(userDbInfo.code == "registration-not-complete") {
+            return await this.authSvc.registerUserComplete(userAuthInfo.uid, userAuthInfo.email).toPromise();
           }
-          if(!info.email || info.email?.trim() == "") {
-            this.authSvc.openChangeEmailDialog("Nažalost nemate konfiguriran ispravan e-mail. Molimo vas da promjenite e-mail.", true);
+
+          if(userDbInfo.overrideEmail) {
+            return this.authSvc.openChangeEmailDialog(userDbInfo.overrideEmail.reason, true);
+          }
+
+          if(!userDbInfo.email || userDbInfo.email?.trim() == "") {
+            return this.authSvc.openChangeEmailDialog("Nažalost nemate konfiguriran ispravan e-mail. Molimo vas da promjenite e-mail.", true);
           }
         }
       )
