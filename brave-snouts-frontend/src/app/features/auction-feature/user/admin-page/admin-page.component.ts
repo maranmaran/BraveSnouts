@@ -169,7 +169,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.dialog.open(WinnerDetailsDialogComponent, {
       height: 'auto',
       width: '98%',
-      maxWidth: '20rem',
+      maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: 'p-0',
@@ -271,6 +271,18 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
 
+  }
+
+  onItemDescription(item: AuctionItem) {
+    this.dialog.open(MessageDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '30rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: ['item-dialog', 'mat-elevation-z8'],
+      data: item.description
+    });
   }
 
   async markPaymentStatus(change: MatButtonToggleChange, winner: Winner) {

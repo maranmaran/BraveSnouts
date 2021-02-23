@@ -1,5 +1,5 @@
-<div class="w-100" fxLayout="row">
-  <button fxAlign="end" class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
+<div class="w-100" fxLayout="column">
+  <button fxFlex fxFlexAlign="end" mat-icon-button (click)="onClose()">
     <mat-icon>
         close
     </mat-icon>
@@ -19,8 +19,15 @@
     <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
 
       <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
+        <label class="pb-0 bold center">Ukupna donacija</label>
+        <label class="foreground primary lighter"> {{ getTotalDonations(winner) }} kn</label>
+      </div>
+
+      <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
+
         <label class="pb-0 bold center">Odabir dostave:</label>
         <ng-container [ngSwitch]="winner.deliveryChoice">
+
           <label *ngSwitchCase="'handover'" class="foreground warn default">
             Osobno
             <button mat-icon-button color="warn" *ngIf="winner.handoverOption"

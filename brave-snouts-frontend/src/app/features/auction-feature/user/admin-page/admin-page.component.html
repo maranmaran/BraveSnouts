@@ -29,6 +29,16 @@
 
     </div>
 
+    <div id="auction-details" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" fxLayout="column" fxLayoutGap="1rem">
+
+      <div fxLayout="row">
+          <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" fxFlex="100%" fxFlex.lt-md="100%">
+              <div class="mat-title mb-0 bold">Ukupno donirano {{auction.raisedMoney}} kn</div>
+          </div>
+      </div>
+
+  </div>
+
     <div id="admin-actions" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1rem" class="section">
         <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="endAuction(auction.id)">Zatvori aukciju</button>
         <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn" (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
@@ -42,10 +52,11 @@
                 <mat-card id="item" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
                     <mat-card-header>
                         <mat-card-title>{{ item.name }}</mat-card-title>
+                        <mat-card-subtitle>Donacija: {{ item.user ? item.bid : 0 }} kn</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-actions>
-                        <button mat-stroked-button color="primary" (click)="getBids(item.id)">Pokaži najbolje
-                            ponude</button>
+                        <button mat-stroked-button color="primary" (click)="onItemDescription(item)">Opis predmeta</button>
+                        <button mat-raised-button color="primary" (click)="getBids(item.id)">Pokaži ponude</button>
                     </mat-card-actions>
                 </mat-card>
 
@@ -62,6 +73,7 @@
                         <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
                             <label class="pb-0 bold center">Odabir dostave:</label>
                             <ng-container [ngSwitch]="winner.deliveryChoice">
+
                                 <label *ngSwitchCase="'handover'" class="foreground warn default">
                                     Osobno
                                     <button mat-icon-button

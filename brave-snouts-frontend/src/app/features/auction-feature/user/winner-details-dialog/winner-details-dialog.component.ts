@@ -68,6 +68,10 @@ export class WinnerDetailsDialogComponent implements OnInit {
 
   }
 
+  getTotalDonations(winner: WinnerOnAuction) {
+    return winner.items.map(item => item.bid).reduce((prev, cur) => prev += cur, 0);
+  }
+
   async markPaymentStatus(change: MatButtonToggleChange, winner: Winner) {
     alert("Implement")
     return;
