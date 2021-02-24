@@ -131,7 +131,6 @@ const backupAuction = async (id: string) => {
                     winner.deliveryChoice == 'postal' ? 
                         'pošta' :
                         'nije izabrano',
-                winner.postalInformation?.fullName,
                 winner.postalInformation?.address,
                 winner.postalInformation?.phoneNumber,
                 winner.userInfo.email
