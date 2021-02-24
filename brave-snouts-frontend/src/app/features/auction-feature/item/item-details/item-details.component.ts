@@ -1,5 +1,5 @@
-import { MediaObserver } from '@angular/flex-layout';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
@@ -12,6 +12,7 @@ import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+// import { ManualChangeDetection } from 'src/business/utils/manual-change-detection.util';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
 import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
@@ -21,9 +22,12 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
   providers: [AuctionItemRepository, BidsRepository],
-  animations: [itemAnimations, fadeIn]
+  animations: [itemAnimations, fadeIn],
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
+
+  // private manualChangeDetection: ManualChangeDetection;
 
   constructor(
     private readonly itemsRepo: AuctionItemRepository,
@@ -31,8 +35,11 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly bidsRepo: BidsRepository,
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
-    private readonly mediaObs: MediaObserver
-  ) { }
+    private readonly mediaObs: MediaObserver,
+    // private readonly changeDetectorRef: ChangeDetectorRef
+  ) {
+    // this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
+  }
 
   // Data
   @Input() item: AuctionItem;
@@ -131,12 +138,15 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.setupControls(this.item);
     this.disableBidding(750);
     this.topBidChange(750);
+    // this.manualChangeDetection.queueChangeDetection();
   }
 
   /* Sets up slider and custom bid control */
   setupControls(item: AuctionItem) {
     this.bidControl = this.getBidControl(item.bid);
     this.bidSlider = item.bid + environment.itemCardConfig.minBidOffset;
+    this.controlsValid = false;
+
     this.currentBid = item.bid;
 
     this._subsink.add(this.bidControl.valueChanges.subscribe(change => this.bidControlChange(change)));

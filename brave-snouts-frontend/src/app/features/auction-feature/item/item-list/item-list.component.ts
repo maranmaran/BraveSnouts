@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
@@ -24,7 +24,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input() fromDialog = false;
   @Input('initItem') initItemFromDialog: AuctionItem;
   @Input('initItemIdx') initItemFromDialogIdx: number;
-  @Input() enableUnequalChildrenSizes = false;
+  // @Input() enableUnequalChildrenSizes = false;
+  @Input() enableUnequalChildrenSizes = true;
   @Output() onFetchMore = new EventEmitter<IPageInfo>();
 
   @ViewChild('itemsScroller', { static: false }) scroller: VirtualScrollerComponent
@@ -33,7 +34,9 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
     public readonly mediaObs: MediaObserver,
-  ) { }
+    private readonly changeDetectorRef: ChangeDetectorRef
+  ) {
+  }
 
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
   @Input() parentScroll: ElementRef;
@@ -97,6 +100,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       this.onFetchMore.emit(event);
       return;
     }
+
     // only if no other fetch is in progress
     if (this.fetchInProgress) {
       return;
@@ -116,9 +120,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.loadingSvc.active$.next(true);
 
     const subscription = this.itemsRepo.getScrollPage(this.auctionId, this.last)
-      .pipe(
-
-      ).subscribe(items => {
+      .subscribe(items => {
 
           // disable next if no more items
           if (items.length < this.itemsRepo.pageSize) {
@@ -138,6 +140,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
           // update flags
           this.fetchInProgress = false;
           this.loadingSvc.active$.next(false);
+          this.changeDetectorRef.detectChanges();
 
       }, err => console.log(err));
 

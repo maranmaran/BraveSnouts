@@ -6,3 +6,7 @@ img, video {
     width: 100% !important;
     height: auto !important;
 }
+
+.single-gallery-image {
+  object-fit: cover;
+}

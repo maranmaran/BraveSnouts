@@ -14,7 +14,9 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authSvc: AuthService,
     private readonly dialog: MatDialog,
+    // private readonly applicationRef: ApplicationRef,
   ) {
+    // ManualChangeDetection.STATIC_APPLICATION_REF = applicationRef;
   }
 
   private readonly _subsink = new SubSink();
