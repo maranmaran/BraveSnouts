@@ -128,6 +128,7 @@ const getUserInformation = async (userIds: string[]) => {
         id: userId,
         name: userDb.displayName,
         email: userDb.email,
+        phoneNumber: userDb.phoneNumber
       });
 
     } catch (error) {
@@ -171,6 +172,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
           id: user.id,
           name: user.name,
           email: user.email,
+          phoneNumber: user.phoneNumber
         },
 
         paymentStatus: 'pending',
@@ -194,6 +196,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
           id: user.id,
           name: user.name,
           email: user.email,
+          phoneNumber: user.phoneNumber
         },
   
         paymentStatus: 'pending',

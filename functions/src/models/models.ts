@@ -44,9 +44,11 @@ export class Winner {
         id: string;
         name: string;
         email: string;
+        phoneNumber: string;
     };
 
     deliveryChoice: 'postal' | 'handover' | null;
+    handoverOption: string;
     postalInformation: PostalInformation | null;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
 }
@@ -67,6 +69,7 @@ export class WinnerOnAuction {
         id: string;
         name: string;
         email: string;
+        phoneNumber: string;
     };
 
     deliveryChoice: 'postal' | 'handover' | null;
@@ -114,6 +117,7 @@ export interface UserInfo {
     id: string;
     name: string;
     email: string;
+    phoneNumber: string;
 }
 
 export interface TrackedItem {
@@ -127,6 +131,7 @@ export class User {
     displayName: string;
     email: string;
     avatar: string;
+    phoneNumber: string;
     signInMethod: string;
     providerId: string;
     emailSettings: EmailSettings

@@ -13,6 +13,7 @@ const bidChangeFn = require('./functions/bid-change.function');
 const endAuctionFn = require('./functions/end-auction.function');
 const changeHandoverFn = require('./functions/change-handover.function');
 const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
+const exportAuctionFn = require('./functions/export-auction.function');
 // const archiveAuctionFn = require('./functions/archive-auction.function');
 // const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
@@ -38,6 +39,9 @@ export const changeHandover = changeHandoverFn;
 
 // increments raised money on auction whenever bid passes
 export const increaseRaisedMoney = increaseRaisedMoneyFn;
+
+// exports auction details, winners and donations 
+export const exportAuction = exportAuctionFn;
 
 // export const archiveAuction = archiveAuctionFn;
 // export const bidChangeEmailOptOut = bidChangeEmailOptOutFn;

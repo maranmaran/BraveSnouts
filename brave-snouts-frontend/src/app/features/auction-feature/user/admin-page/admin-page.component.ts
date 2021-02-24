@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { noop, Observable } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
@@ -22,6 +22,7 @@ import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { BidsRepository } from 'src/business/services/repositories/bids.repository';
+import { StorageService } from 'src/business/services/storage.service';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
@@ -46,7 +47,8 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
     private readonly loadingSvc: ProgressBarService,
-    private readonly toastSvc: HotToastService
+    private readonly toastSvc: HotToastService,
+    private readonly storage: StorageService
   ) { }
 
   private _auctionId: string;
@@ -294,4 +296,21 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
   }
 
+  onDownloadExcel(auction: Auction) {
+    this.functionsSvc.exportAuction(this._auctionId)
+    .pipe(
+      take(1),
+      this.toastSvc.observe(
+        {
+          loading: 'Priprema podataka..',
+          success: "Uspješno exportano",
+          error: "Nešto je pošlo po zlu",
+        }
+      ),
+      switchMap(res => this.storage.getDownloadUrl(`exports/${auction.name}.xlsx`))
+    )
+    .subscribe(url => {
+      window.location.href = url;
+    }, console.log);
+  }
 }

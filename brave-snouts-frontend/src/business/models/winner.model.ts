@@ -13,6 +13,7 @@ export class Winner {
         id: string,
         name: string;
         email: string;
+        phoneNumber: string;
     };
 
     deliveryChoice?: 'postal' | 'handover';
@@ -38,6 +39,7 @@ export class WinnerOnAuction {
       id: string;
       name: string;
       email: string;
+      phoneNumber: string;
   };
 
   deliveryChoice: 'postal' | 'handover' | null;

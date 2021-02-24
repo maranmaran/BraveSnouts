@@ -1,4 +1,3 @@
-import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { europeFunctions, store } from "../index";
 import { AuctionItem, EmailSettings, User, UserInfo } from "../models/models";
@@ -42,6 +41,7 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
       id: before.user,
       name: outbiddedUserData.displayName as string,
       email: outbiddedUserData.email as string,
+      phoneNumber: outbiddedUserData.phoneNumber
     };
     
     // send mail template

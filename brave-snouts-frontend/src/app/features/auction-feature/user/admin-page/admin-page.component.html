@@ -43,6 +43,7 @@
         <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn" (click)="endAuction(auction.id)">Zatvori aukciju</button>
         <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn" (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
         <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="primary" (click)="openAuctionWinnersDetails()">Pokaži sve pobjednike</button>
+        <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="primary" (click)="onDownloadExcel(auction)">Skini tablicu</button>
     </div>
 
     <virtual-scroller id="items-and-winners" class="mb-3" #scroll [items]="items" [horizontal]="true" (vsEnd)="onLoadMore($event)">
@@ -66,6 +67,7 @@
                             <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon> {{ winner.userInfo.name }}
                         </mat-card-title>
                         <mat-card-subtitle>{{ winner.userInfo.email }}</mat-card-subtitle>
+                        <mat-card-subtitle>{{ winner.userInfo.phoneNumber }}</mat-card-subtitle>
                     </mat-card-header>
 
                     <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
