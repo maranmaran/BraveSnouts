@@ -39,10 +39,10 @@ export class AuthService {
       switchMap(id => this.getUserDbExists(id).pipe(map(r => [r, id]))),
       switchMap(([exists, id]) => {
 
-        if(exists && id)
+        if (exists && id)
           return this.getUser(id as string).pipe(take(1));
 
-        if(!exists && id)
+        if (!exists && id)
           return of({ code: 'registration-not-complete' });
 
         return of(null)
@@ -132,8 +132,8 @@ export class AuthService {
 
       switch (method) {
         case 'gmail':
-          throw new Error("Not implemented");
-          // cred = await this.handleGmailLogin();
+          // throw new Error("Not implemented");
+          cred = await this.handleGmailLogin();
           break;
         case 'facebook':
           throw new Error("Not implemented");
@@ -158,6 +158,63 @@ export class AuthService {
     }
   }
 
+  async handleGmailLogin() {
+    const google = new firebase.auth.GoogleAuthProvider();
+    google.addScope('profile');
+    google.addScope('email');
+
+    google.setCustomParameters({ prompt: 'select_account' })
+
+    // return await this.auth.signInWithPopup(google);
+
+    await this.auth.signInWithRedirect(google);
+    return null;
+  }
+  async completeSocialLogin() {
+
+    if (!this._usingRedirectFlag) {
+        return;
+    }
+
+    await this.auth.getRedirectResult()
+        .then(async cred => {
+            // console.log(cred);
+
+            if ((cred as any).code) {
+                this.handleErrors(cred);
+                return;
+            }
+
+            if (cred == null || cred.user == null || cred.additionalUserInfo?.profile == null) {
+                return;
+            }
+
+            const profile = cred.additionalUserInfo.profile as any;
+            // console.log(profile);
+
+            if (!profile.email || profile.email?.trim() == "") {
+                this.handleErrors({ code: "no-email" });
+                return;
+            }
+
+            const userRegistered = (await this.store.doc(`users/${cred.user.uid}`).get().toPromise()).exists;
+            if (!cred.additionalUserInfo.isNewUser && userRegistered) return;
+
+            return await this.registerUserComplete(cred.user.uid, cred.user.email).toPromise();
+        })
+        .catch(err => {
+
+            console.log(err);
+
+            if (err.code == "auth/account-exists-with-different-credential") {
+                this.handleErrors({ code: err.code })
+            }
+
+            if (err.code) {
+                this.handleErrors(err);
+            }
+        })
+}
 
   handleEmailLogin(email: string): Promise<firebase.auth.UserCredential | void> {
 
@@ -247,7 +304,8 @@ export class AuthService {
       width: '98%',
       maxWidth: '20rem',
       autoFocus: false,
-      closeOnNavigation: true,
+      closeOnNavigation: false,
+      disableClose: true,
       data: email
     });
 

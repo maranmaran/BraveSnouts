@@ -7,7 +7,7 @@
     </button>
 
 
-    <div class="mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
+    <!-- <div class="mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
         <mat-form-field>
             <mat-label>Email</mat-label>
             <input matInput type="email" [formControl]="email">
@@ -18,15 +18,15 @@
           <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">Prijava</button>
         </div>
 
-    </div>
+    </div> -->
 
-    <!-- <div class="mb-4" fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="space-between center">
+    <div class="mb-4" fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="space-between center">
 
         <img id="google" class="login-btn elevate hover-big" src="assets/social-logo/google.svg"
             (click)="selectMethod('gmail')" matTooltip="Gmail prijava" />
 
-        <img id="facebook" class="login-btn elevate hover-big " src="assets/social-logo/facebook.svg"
-            (click)="selectMethod('facebook')" matTooltip="Facebook prijava" />
+        <!-- <img id="facebook" class="login-btn elevate hover-big " src="assets/social-logo/facebook.svg"
+            (click)="selectMethod('facebook')" matTooltip="Facebook prijava" /> -->
 
         <img id="mail" class="login-btn elevate hover-big" src="assets/social-logo/message.svg"
             (click)="selectMethod('email')" matTooltip="Prijava putem maila" />
@@ -41,7 +41,7 @@
         </mat-form-field>
 
         <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">Prijava</button>
-    </div> -->
+    </div>
 
 
 </div>

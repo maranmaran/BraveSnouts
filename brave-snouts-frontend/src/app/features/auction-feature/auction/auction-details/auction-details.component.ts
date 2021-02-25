@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
@@ -24,6 +24,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly auctionsRepo: AuctionRepository,
     public readonly mediaObs: MediaObserver,
+    private readonly changeDetectionRef: ChangeDetectorRef
   ) { }
 
   _previousMoneyRaised: number = 0;
@@ -49,7 +50,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
       this.auction$.pipe(map(auction => auction.raisedMoney)).subscribe(money => {
         if(money != this._previousMoneyRaised) {
           this.moneyRaised = true;
-          setTimeout(() => this.moneyRaised = false, 1000);
+          setTimeout(() => (this.moneyRaised = false, this.changeDetectionRef.detectChanges()), 1000);
         }
 
         this._previousMoneyRaised = money;
