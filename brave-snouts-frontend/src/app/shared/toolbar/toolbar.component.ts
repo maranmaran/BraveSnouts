@@ -71,6 +71,10 @@ export class ToolbarComponent implements OnInit {
     this.router.navigate(['/app/create-auction'], { state: { auction, items: [], action: 'create' } })
   }
 
+  onCreateAuctionThroughImages() {
+    this.router.navigate(['/app/create-auction-bulk-image-upload'])
+  }
+
   onShowContactHelp(){
     this.dialog.open(SupportComponent, {
       height: 'auto',

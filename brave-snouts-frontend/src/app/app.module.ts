@@ -60,6 +60,7 @@ import { ChangeEmailDialogComponent } from './features/auth-feature/change-email
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { RegisterComponent } from './features/auth-feature/register/register.component';
+import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
 
 registerLocaleData(hrLocale);
 
@@ -146,7 +147,8 @@ registerLocaleData(hrLocale);
     ItemsListDialogComponent,
     ChangeEmailDialogComponent,
     WinnerDetailsDialogComponent,
-    RegisterComponent
+    RegisterComponent,
+    AuctionBulkImageFormComponent
   ],
   providers: [
     { provide: LOCALE_ID, useValue: "hr" },

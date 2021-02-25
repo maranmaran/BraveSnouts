@@ -18,6 +18,7 @@ import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
 import { AuctionFormGuard } from 'src/business/guards/auction-form.guard';
 import { AuctionIdGuard } from 'src/business/guards/auction-id.guard';
 import { AuthGuard } from 'src/business/guards/auth.guard';
+import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
 
 const routes: Routes = [
   // root
@@ -34,6 +35,7 @@ const routes: Routes = [
     { path: 'handover-confirm', component: HandoverConfirmComponent },
 
     { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
+    { path: 'create-auction-bulk-image-upload', component: AuctionBulkImageFormComponent },
     { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
 
     { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },

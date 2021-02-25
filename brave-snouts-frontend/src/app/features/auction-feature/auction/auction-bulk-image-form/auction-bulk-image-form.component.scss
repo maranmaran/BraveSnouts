@@ -1,0 +1,47 @@
+.header {
+  font-size: 14px !important;
+}
+
+virtual-scroller {
+  width: 100%;
+  height: 100%;
+}
+
+ngx-dropzone {
+  overflow: hidden;
+
+  drag-scroll {
+      overflow-y: hidden;
+  }
+}
+
+.form-drag-scroll {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+
+  .drag-scroll-content {
+    width: 100% !important;
+  }
+
+  .item {
+    height: 100% !important;
+    width: auto !important;
+    position: relative;
+
+    img, video {
+        height: 100% !important;
+    }
+
+    #remove-file-btn {
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        top: -3px;
+    }
+  }
+}
+
+.container {
+  height: calc(100% - 56px) !important;
+}

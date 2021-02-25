@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(
         async ([userAuthInfo, userDbInfo]) => {
 
-          console.log(userAuthInfo, userDbInfo, this.authSvc.emailLoginInProgress);
+          // console.log(userAuthInfo, userDbInfo, this.authSvc.emailLoginInProgress);
 
           if(!userDbInfo) return;
 

@@ -137,4 +137,31 @@
         font-size: $size !important;
     }
   }
+
+  #bulk-image-form {
+
+    ngx-dropzone {
+      min-height: 250px;
+    }
+
+    .item-image {
+      height: 150px;
+      width: 150px;
+      margin: 5px;
+      padding: 5px;
+
+      position: relative;
+
+      #remove-file-btn {
+        position: absolute;
+        right: 0px;
+      }
+
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+
 }

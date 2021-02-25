@@ -35,7 +35,7 @@ export class AuctionRepository {
     }
 
     set(id: string, data: Auction) {
-        this.getDocument(id).set(Object.assign({}, data));
+        return this.getDocument(id).set(Object.assign({}, data));
     }
 
     delete(id: string) {

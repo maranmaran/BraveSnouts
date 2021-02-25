@@ -11,6 +11,12 @@
                 </mat-icon>
                 Napravi aukciju
             </button>
+            <button mat-menu-item (click)="onCreateAuctionThroughImages()">
+              <mat-icon matPrefix>
+                  image
+              </mat-icon>
+              <span class="mat-small">Napravi aukciju (preko slika)</span>
+          </button>
         </mat-menu>
 
         <ng-container *ngIf="!(admin$ | async)">
