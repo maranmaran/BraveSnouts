@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ApplicationRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { concatMap, map, take } from 'rxjs/operators';
 import { AuthService } from 'src/business/services/auth.service';
+import { ManualChangeDetection } from 'src/business/utils/manual-change-detection.util';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -14,9 +15,9 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authSvc: AuthService,
     private readonly dialog: MatDialog,
-    // private readonly applicationRef: ApplicationRef,
+    private readonly applicationRef: ApplicationRef,
   ) {
-    // ManualChangeDetection.STATIC_APPLICATION_REF = applicationRef;
+    ManualChangeDetection.STATIC_APPLICATION_REF = applicationRef;
   }
 
   private readonly _subsink = new SubSink();

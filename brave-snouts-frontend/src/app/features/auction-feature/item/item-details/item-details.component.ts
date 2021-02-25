@@ -4,6 +4,7 @@ import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { HotToastService } from '@ngneat/hot-toast';
+import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
@@ -12,7 +13,6 @@ import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Bid } from 'src/business/models/bid.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-// import { ManualChangeDetection } from 'src/business/utils/manual-change-detection.util';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
 import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
@@ -23,11 +23,8 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   styleUrls: ['./item-details.component.scss'],
   providers: [AuctionItemRepository, BidsRepository],
   animations: [itemAnimations, fadeIn],
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
-
-  // private manualChangeDetection: ManualChangeDetection;
 
   constructor(
     private readonly itemsRepo: AuctionItemRepository,
@@ -35,10 +32,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly bidsRepo: BidsRepository,
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
-    private readonly mediaObs: MediaObserver,
-    // private readonly changeDetectorRef: ChangeDetectorRef
+    public readonly mediaObs: MediaObserver,
   ) {
-    // this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
   }
 
   // Data
@@ -60,10 +55,11 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   bidDisabled: boolean;
   // used to trigger bid (price tag) change once it's definitive
   topBidChanged: boolean;
+  topBidChanged$ = new Subject<boolean>();
 
   // bid controls
   currentBid: number;
-  bidControl: FormControl;
+  // bidControl: FormControl;
   bidSlider: number;
 
   // component specific
@@ -143,21 +139,23 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Sets up slider and custom bid control */
   setupControls(item: AuctionItem) {
-    this.bidControl = this.getBidControl(item.bid);
+    // this.bidControl = this.getBidControl(item.bid);
+    // this._subsink.add(this.bidControl.valueChanges.subscribe(change => this.bidControlChange(change)));
+
     this.bidSlider = item.bid + environment.itemCardConfig.minBidOffset;
-    this.controlsValid = false;
 
     this.currentBid = item.bid;
-
-    this._subsink.add(this.bidControl.valueChanges.subscribe(change => this.bidControlChange(change)));
+    this.controlsValid = false;
   }
   //#endregion
 
   //#region Bidding
 
   topBidChange(timeout = 750) {
-    this.topBidChanged = true;
-    setTimeout(() => this.topBidChanged = false, timeout);
+      this.topBidChanged = true;
+      this.topBidChanged$.next(this.topBidChanged)
+      setTimeout(() => (this.topBidChanged = false, this.topBidChanged$.next(this.topBidChanged)), timeout);
+      // setTimeout(() => (this.topBidChanged = false, this.ChangeDetectorRef.detectChanges()), timeout);
   }
 
   /* Disables bid button for XY milliseconds */
@@ -234,13 +232,17 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   /** Checks if bid is valid */
   public get isBidValid(): boolean {
+
+    //TODO: Temp because of plus minus
+    return this.currentBid > this.item.bid;
+
     if (this.lastTouchedControl == null)
       return false;
 
     if (this.lastTouchedControl == 'slider')
       return this.validateBidSlider();
 
-    return this.validateBidControl();
+    // return this.validateBidControl();
   }
 
   /** Validates slider bid */
@@ -273,48 +275,52 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /** Validates custom input for bid */
-  validateBidControl() {
-    const controlBid = this.bidControl.value;
-    const controlBidValid = this.bidControl.valid;
+  // validateBidControl() {
+  //   const controlBid = this.bidControl.value;
+  //   const controlBidValid = this.bidControl.valid;
 
-    const currentBid = this.currentBid;
+  //   const currentBid = this.currentBid;
 
-    let errors: ValidationErrors = this.bidControl.errors ?? {};
+  //   let errors: ValidationErrors = this.bidControl.errors ?? {};
 
-    if (!controlBid || !controlBidValid)
-      errors['controlNull'] = 'Vrijednost ponude je neispravna';
+  //   if (!controlBid || !controlBidValid)
+  //     errors['controlNull'] = 'Vrijednost ponude je neispravna';
 
-    if (!currentBid)
-      errors['currentNull'] = 'Trenutna vrijednost predmeta je neispravna';
+  //   if (!currentBid)
+  //     errors['currentNull'] = 'Trenutna vrijednost predmeta je neispravna';
 
-    if (controlBid % 1 != 0 || /^\d+$/.test(controlBid) == false) {
-      errors['decimal'] = "Cijena mora biti prirodan broj"
-    }
+  //   if (controlBid % 1 != 0 || /^\d+$/.test(controlBid) == false) {
+  //     errors['decimal'] = "Cijena mora biti prirodan broj"
+  //   }
 
-    if (controlBid % 5 != 0) {
-      errors['incrementOfFive'] = 'Ponuda mora biti višekratnik broja 5';
-    }
+  //   if (controlBid % 5 != 0) {
+  //     errors['incrementOfFive'] = 'Ponuda mora biti višekratnik broja 5';
+  //   }
 
-    const errorsCount = Object.keys(errors)?.length;
-    if (Object.keys(errors)?.length > 0) {
-      this.bidControl.setErrors(errors);
-    }
+  //   const errorsCount = Object.keys(errors)?.length;
+  //   if (Object.keys(errors)?.length > 0) {
+  //     this.bidControl.setErrors(errors);
+  //   }
 
-    // console.log("Validating control", errors);
+  //   // console.log("Validating control", errors);
 
-    return errorsCount == 0; // VALID if no errors
+  //   return errorsCount == 0; // VALID if no errors
 
-  }
+  // }
 
   /* Gets current bid price from custom input and slider  */
   getBidPrice() {
+
+    // TODO Temp because of minus plus
+    return this.currentBid;
+
     if (this.lastTouchedControl == null)
       throw new Error("Can not put offer if no control was touched");
 
     if (this.lastTouchedControl == 'slider')
       return this.slider.value;
 
-    return this.bidControl.value;
+    // return this.bidControl.value;
   }
 
   lastTouchedControl?: 'control' | 'slider' = null;
@@ -325,7 +331,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.bidSlider = event.value;
 
     // update price control
-    this.bidControl.setValue(event.value, { onlySelf: true, emitEvent: false });
+    // this.bidControl.setValue(event.value, { onlySelf: true, emitEvent: false });
     // this.bidControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
 
     this.lastTouchedControl = 'slider';
@@ -333,10 +339,10 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /** Custom input bid change */
-  bidControlChange(event: any) {
-    this.lastTouchedControl = 'control';
-    this.controlsValid = this.validateBidControl();
-  }
+  // bidControlChange(event: any) {
+  //   this.lastTouchedControl = 'control';
+  //   this.controlsValid = this.validateBidControl();
+  // }
 
   /* Formats selected price on slider */
   formatBid(value: number) {

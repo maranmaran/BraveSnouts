@@ -1,22 +1,26 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { concatMap, map, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { ManualChangeDetection } from 'src/business/utils/manual-change-detection.util';
 import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss'],
-  providers: [AuctionItemRepository]
+  providers: [AuctionItemRepository],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemListComponent implements OnInit, OnDestroy {
+
+  private manualChangeDetection: ManualChangeDetection;
 
   @Input() useGallery = true;
   // overrides some functions like pagination since it's coming from different source
@@ -25,7 +29,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input('initItem') initItemFromDialog: AuctionItem;
   @Input('initItemIdx') initItemFromDialogIdx: number;
   // @Input() enableUnequalChildrenSizes = false;
-  @Input() enableUnequalChildrenSizes = true;
+  @Input() enableUnequalChildrenSizes = false;
   @Output() onFetchMore = new EventEmitter<IPageInfo>();
 
   @ViewChild('itemsScroller', { static: false }) scroller: VirtualScrollerComponent
@@ -36,6 +40,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     public readonly mediaObs: MediaObserver,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {
+    this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
   }
 
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
@@ -64,11 +69,11 @@ export class ItemListComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
-  userTrackedItems$: Observable<Set<string>>;
+  userTrackedItems: Set<string>;
 
   /** Retrieves user relevant items */
   getUserTrackedItems() {
-    this.userTrackedItems$ = this.authSvc.userId$
+    const userTrackedItems$ = this.authSvc.userId$
       .pipe(
         concatMap(userId => {
 
@@ -83,6 +88,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
           return new Set<string>(items.map(item => item.id))
         }),
       )
+
+    this._subsink.add(
+      userTrackedItems$.subscribe(items => this.userTrackedItems = items)
+    )
   }
 
   //#region  Pagination
@@ -140,8 +149,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
           // update flags
           this.fetchInProgress = false;
           this.loadingSvc.active$.next(false);
-          this.changeDetectorRef.detectChanges();
-
+          // this.changeDetectorRef.detectChanges();
+          this.manualChangeDetection.queueChangeDetection();
       }, err => console.log(err));
 
     this._subsink.add(subscription);
@@ -149,7 +158,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   scrollInto(item: AuctionItem, idx: number) {
 
-    this.scroller.scrollToIndex(idx, true, 45, 0);
+    this.scroller.scrollToIndex(idx, true, 50, 0);
 
   }
 

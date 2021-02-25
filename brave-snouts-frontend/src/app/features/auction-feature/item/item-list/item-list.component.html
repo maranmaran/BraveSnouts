@@ -1,11 +1,13 @@
 <virtual-scroller #itemsScroller class="full-items-grid"
 *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="items" [parentScroll]="parentScroll"
-  [executeRefreshOutsideAngularZone]="true"
   [enableUnequalChildrenSizes]="enableUnequalChildrenSizes"
   (vsEnd)="onLoadMore($event)">
 
     <div #container class="items-grid">
-        <app-item-details class="item" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)"></app-item-details>
+        <!-- <div class="item text-center" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)">
+          {{ item.name }}
+        </div> -->
+        <app-item-details class="item" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="userTrackedItems"></app-item-details>
     </div>
 
 </virtual-scroller>

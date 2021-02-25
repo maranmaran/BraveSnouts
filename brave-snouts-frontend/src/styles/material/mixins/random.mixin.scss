@@ -80,6 +80,7 @@
     mat-dialog-container {
       margin: 0 !important;
       padding: 0px !important;
+      overflow-y: hidden;
     }
 
     .container {
@@ -119,6 +120,21 @@
   .dialog-no-padding {
     .mat-dialog-container {
       padding: 0 !important;
+    }
+  }
+
+  .offer-button {
+    $size: 50px;
+
+    width: $size !important;
+    height: $size !important;
+    line-height: $size !important;
+
+    mat-icon {
+        width: $size !important;
+        height: $size !important;
+        line-height: $size !important;
+        font-size: $size !important;
     }
   }
 }

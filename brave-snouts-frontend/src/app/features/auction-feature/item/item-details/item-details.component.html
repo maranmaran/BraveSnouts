@@ -1,118 +1,85 @@
 <mat-card *ngIf="bootstrapped" @skipInitAnimation class="auction-item m-2 mat-elevation-z5" fxLayout="column" fxLayoutGap="1rem">
 
-    <mat-card-title style="height: 64px" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+  <mat-card-title style="height: 64px" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
 
-        <label class="mb-0 mat-title bold" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}">
-            {{item.name}}
-        </label>
+    <label class="mb-0 mat-title bold" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}">
+      {{item.name}}
+    </label>
 
-        <div fxLayout="column" class="mr-0">
-            <div class="mat-small text-center no-wrap" style="background: whitesmoke">Trenutna ponuda</div>
+    <div fxLayout="column" class="mr-0">
+      <div class="mat-small text-center no-wrap" style="background: whitesmoke">Trenutna ponuda</div>
 
-            <label class="mat-title" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}" [@priceOnBidChanged]="topBidChanged ? 'change' : 'no-change'"
-                class="no-wrap mb-0 mat-title bold center">
-                {{item.bid + ' kn'}}
-            </label>
-        </div>
-        <!--
-        <mat-icon class="best-bid-icon"
-            [@starOnBidChanged]="userId === item.user && isAuthenticated"
-            *ngIf="userId == item.user && isAuthenticated"
-            matTooltip="Tvoja ponuda je najbolja" [matTooltipPosition]="'before'">
-            star
-        </mat-icon> -->
-
-    </mat-card-title>
-
-    <div class="best-bid-label background warn lighter mat-small" [@fadeIn]="userId === item.user && isAuthenticated"
-        *ngIf="userId == item.user && isAuthenticated">
-        Vaša ponuda je trenutno najbolja
+      <label class="mat-title" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}"
+        [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'" class="no-wrap mb-0 mat-title bold center">
+        {{item.bid + ' kn'}}
+      </label>
     </div>
-    <div class="best-bid-label background primary lighter mat-small"
-        *ngIf="item.bid == item.startBid && !item.bidId">
-        Još nije dana niti jedna ponuda
+
+  </mat-card-title>
+
+  <ng-container id="tags">
+    <div class="best-bid-label background warn lighter mat-small" *ngIf="userId == item.user && isAuthenticated"
+      [@fadeIn]="userId === item.user && isAuthenticated">
+      Vaša ponuda je trenutno najbolja
     </div>
-    <app-item-media class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
+    <div class="best-bid-label background primary lighter mat-small" *ngIf="item.bid == item.startBid && !item.bidId">
+      Još nije dana niti jedna ponuda
+    </div>
+  </ng-container>
 
-    <mat-card-content class="m-0" style="height: 44px">
-        <div *ngIf="item.description; else noDescription" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
-          <span #description class="truncated" [innerHtml]="item.description"></span>
-          <a *ngIf="isTruncated(description)" mat-stroked-button color="accent" fxFlexAlign="end" class="mt-2 pointer" (click)="onShowDescription(item.description)">
-            Više
-          </a>
-        </div>
+  <app-item-media id="picture" class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
 
-        <ng-template #noDescription>
-          <div class="center w-100">
-            <i>Nema opisa predmeta</i>
-          </div>
-        </ng-template>
-
-        <!-- <button class="w-100"
-        mat-stroked-button color="primary"
-        [ngStyle]="{'visibility': (!item.description || item.description == '') ? 'hidden' : 'visible' }"
+  <mat-card-content id="description" class="m-0" style="height: 44px">
+    <div *ngIf="item.description; else noDescription" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
+      <span #description class="truncated" [innerHtml]="item.description | truncate: 120"></span>
+      <a *ngIf="isTruncated(description)" mat-stroked-button color="accent" fxFlexAlign="end" class="mt-2 pointer"
         (click)="onShowDescription(item.description)">
-            Prikaži opis predmeta
-        </button> -->
+        Više
+      </a>
+    </div>
 
-        <!-- <app-truncated-text class="text" [text]="item.description" [fallbackText]="'Nema opisa predmeta'"></app-truncated-text> -->
-    </mat-card-content>
+    <ng-template #noDescription>
+      <div class="center w-100">
+        <i>Nema opisa predmeta</i>
+      </div>
+    </ng-template>
 
-    <mat-card-actions fxLayout="column" fxLayoutAlign="center center">
+  </mat-card-content>
 
-        <div id="slider-row" class="w-100 mb-3" fxLayout="row" fxLayoutAlign="space-between center">
-            <div fxFlex="17" class="center mr-1">
-                <mat-small>{{item.bid + ' kn'}}</mat-small>
-            </div>
+  <mat-card-actions id="actions" fxLayout="column" fxLayoutAlign="center center">
 
-            <mat-slider fxFlex class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid"
-                [step]="bidStepSize" [min]="item.bid" [max]="item.bid + 30" [value]="bidSlider.min"
-                (input)="bidSliderChange($event)" [thumbLabel]="true">
-            </mat-slider>
+    <div id="slider-row" class="w-100 mb-3" fxLayout="row" fxLayoutAlign="center center">
 
-            <div fxFlex="17" class="center mr-1">
-              <mat-small>{{bidSlider.value + ' kn'}}</mat-small>
-            </div>
+      <!-- <div fxFlex="17" class="center mr-1">
+        <div class="mat-small">{{item.bid + ' kn'}}</div>
+      </div>
 
-            <!-- <div fxFlex="23" class="center ml-1" style="position: relative">
-                <mat-form-field id="item-max-price-control">
-                    <input matInput type="number" [formControl]="bidControl">
-                    <span matSuffix class="ml-1">kn</span>
+      <mat-slider fxFlex class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid" [step]="bidStepSize"
+        [min]="item.bid" [max]="item.bid + 30" [value]="bidSlider.min" (input)="bidSliderChange($event)"
+        [thumbLabel]="true">
+      </mat-slider>
 
-                    <div class="bid-errors"
-                        *ngIf="bidControl.invalid && (bidControl.dirty || bidControl.touched)" fxLayout="column" fxLayoutGap="0.5rem">
-                        <div *ngIf="bidControl.errors.required">
-                            Nedostaje cijena.
-                        </div>
-                        <div *ngIf="bidControl.errors.decimal">
-                            {{bidControl.errors.decimal}}.
-                        </div>
-                        <div *ngIf="bidControl.errors.incrementOfFive">
-                          {{bidControl.errors.incrementOfFive}}.
-                      </div>
-                        <div *ngIf="bidControl.errors.min">
-                            Nova ponuda mora biti barem 5kn viša od trenutne.
-                        </div>
-                    </div>
-                </mat-form-field>
-            </div> -->
+      <div fxFlex="17" class="center mr-1">
+        <div class="mat-small">{{bidSlider.value + ' kn'}}</div>
+      </div> -->
 
-        </div>
+      <button class="mr-5 offer-button" mat-icon-button color="warn" (click)="currentBid = currentBid - 5" [disabled]="currentBid == item.bid">
+        <mat-icon>remove</mat-icon>
+      </button>
 
-        <div id="btns-row" class="w-100" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
+      <div class="mat-title m-0 bold" [ngClass]="{ 'foreground accent default': currentBid != item.bid }">{{currentBid + ' kn'}}</div>
 
-            <button class="w-100" mat-flat-button [disabled]="bidDisabled || !controlsValid" type="button" (click)="onBid(item)" color="primary">
-              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.5rem">
-                <mat-icon>
-                  pets
-                </mat-icon>
-                <span>Ponudi</span>
-                <mat-icon>
-                  pets
-                </mat-icon>
-              </div>
+      <button class="ml-5 offer-button" mat-icon-button color="primary" (click)="currentBid = currentBid + 5">
+        <mat-icon>add</mat-icon>
+      </button>
 
-            </button>
-        </div>
-    </mat-card-actions>
+    </div>
+
+    <button class="w-100" mat-flat-button [disabled]="bidDisabled || currentBid <= item.bid" type="button" (click)="onBid(item)" color="primary">
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.5rem">
+        <mat-icon>  pets </mat-icon> <span>Ponudi</span> <mat-icon>  pets </mat-icon>
+      </div>
+    </button>
+
+  </mat-card-actions>
 </mat-card>
