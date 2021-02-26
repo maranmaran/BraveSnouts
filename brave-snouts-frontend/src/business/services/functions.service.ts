@@ -39,4 +39,16 @@ export class FunctionsService {
 
       return callable({ auctionId, imageBucketPath });
     }
+
+    sendPostConfirm(userId, auctionId, formData, totalDonation, paymentDetail) {
+      const callable = this.functions.httpsCallable('handoverConfirm-handoverConfirmFn');
+
+      return callable({ userId, auctionId, chosenOption: 'post', chosenOptionData: formData, totalDonation, paymentDetail });
+    }
+
+    sendHandoverConfirm(userId, auctionId, chosenOptionData) {
+      const callable = this.functions.httpsCallable('handoverConfirm-handoverConfirmFn');
+
+      return callable({ userId, auctionId, chosenOption: 'handover', chosenOptionData });
+    }
 }

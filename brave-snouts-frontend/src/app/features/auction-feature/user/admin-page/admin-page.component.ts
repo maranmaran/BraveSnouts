@@ -77,9 +77,10 @@ export class AdminPageComponent implements OnInit, OnDestroy {
         tap(auction => this.setupCountdown(auction)),
       );
 
-    this.winnersRepo.getAuctionWinners(this._auctionId)
-    .pipe(take(1))
-    .subscribe(winners => this.auctionWinners = winners);
+      this._subsink.add(
+        this.winnersRepo.getAuctionWinners(this._auctionId)
+        .subscribe(winners => this.auctionWinners = winners)
+      )
 
     this.onLoadMore({ endIndex: -1 } as IPageInfo);
   }

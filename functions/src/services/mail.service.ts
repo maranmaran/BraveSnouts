@@ -4,7 +4,8 @@ import * as handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
 import * as path from 'path';
 import { config } from "..";
-import { AuctionItem, Bid, UserInfo, Auction } from "../models/models";
+import { Auction, AuctionItem, Bid, UserInfo } from "../models/models";
+import { User } from './../models/models';
 import Mail = require("nodemailer/lib/mailer");
 import mjml2html = require("mjml");
 
@@ -73,7 +74,7 @@ export const sendEndAuctionMail = async (auction: Auction, handoverDetails: stri
     total: totalDonation
   }
   // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.html'), 'utf8');
-  var endAuctionTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.mjml'), 'utf8'), { });
+  let endAuctionTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.mjml'), 'utf8'), { });
   let emailTemplatePrecompiled = handlebars.compile(endAuctionTemplate.html)
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
@@ -109,7 +110,7 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
   }
   
   // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.html'), 'utf8');
-  var outbiddedTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.mjml'), 'utf8'), { });
+  let outbiddedTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'outbidded.mail.mjml'), 'utf8'), { });
   let emailTemplatePrecompiled = handlebars.compile(outbiddedTemplate.html)
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
@@ -142,7 +143,7 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, auctionId: s
   }
   
   // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
-  var handoverDetailsTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.mjml'), 'utf8'), { });
+  let handoverDetailsTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.mjml'), 'utf8'), { });
   let emailTemplatePrecompiled = handlebars.compile(handoverDetailsTemplate.html)
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
@@ -151,6 +152,74 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, auctionId: s
     from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
     to: user.email,
     subject: 'Promjena informacija za osobno preuzimanje!',
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-original-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
+      cid: 'logo' 
+    }]
+  };
+
+  await mailSvc.sendMail(email);
+}
+
+/**Sends new handover details mail */
+export const sendHandoverConfirmationMail = async (user: User, auctionId: string, chosenHandoverOption: string) => {
+  
+  logger.info(`Sending mail to ${user.email} for chosen handover option update`);
+  
+  // load and customize html template
+  const emailVariables = {
+    handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auctionId};userId=${user.id}`,
+    user_name: user.displayName.trim().split(" ")[0],
+    chosen_handover_option: chosenHandoverOption
+  }
+  
+  // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
+  let handoverDetailsTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'handover-confirm.mail.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(handoverDetailsTemplate.html)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
+
+  const email = {
+    // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    to: user.email,
+    subject: '[Osobno preuzimanje] Potvrda',
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-original-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
+      cid: 'logo' 
+    }]
+  };
+
+  await mailSvc.sendMail(email);
+}
+
+/**Sends new handover details mail */
+export const sendPostConfirmationMail = async (user: User, auctionId: string, postFormData: any, totalDonation: string, paymentDetail: string) => {
+  
+  logger.info(`Sending mail to ${user.email} for chosen post option confirm`);
+
+  // load and customize html template
+  const emailVariables = {
+    post_confirm_url: `${config.base.url}/post-confirm;auctionId=${auctionId};userId=${user.id};donation=${totalDonation};paymentDetails=${paymentDetail}`,
+    user_name: user.displayName.trim().split(" ")[0],
+    full_name: postFormData.fullName,
+    address: postFormData.address,
+    phone: postFormData.phoneNumber
+  }
+  
+  // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'new-handover.mail.html'), 'utf8');
+  let handoverDetailsTemplate = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'post-confirm.mail.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(handoverDetailsTemplate.html)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
+
+  const email = {
+    // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    to: user.email,
+    subject: '[Preuzimanje poštom] Potvrda',
     html: emailTemplate,
     attachments: [{
       filename: 'njuske-original-compressed.jpg',

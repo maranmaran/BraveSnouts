@@ -53,7 +53,7 @@ export const processAuctionImagesFn = europeFunctions.https.onCall(
                 // image
                 await mkdirp(path.dirname(`${transformedFolder}/${fileName}.jpg`));
                 
-                console.log("Transforming to " + transformedFolder + "/" + fileName + ".jpg")
+                logger.log("Transforming to " + transformedFolder + "/" + fileName + ".jpg")
                 await magick(`${tempFolder}/${file}`)
                 .strip()
                 .autoOrient()
@@ -67,7 +67,7 @@ export const processAuctionImagesFn = europeFunctions.https.onCall(
                 // thumbnail
                 await mkdirp(path.dirname(`${transformedFolder}/${fileName}_thumb.jpg`));
                 
-                console.log("Transforming to " + transformedFolder + "/" + fileName + "_thumb.jpg")
+                logger.log("Transforming to " + transformedFolder + "/" + fileName + "_thumb.jpg")
                 await magick(`${tempFolder}/${file}`)
                 .strip()
                 .autoOrient()

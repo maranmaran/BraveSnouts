@@ -1,6 +1,7 @@
-import moment = require("moment");
+import { logger } from 'firebase-functions';
 import { europeFunctions, store } from "..";
 import { Auction } from "../models/models";
+import moment = require("moment");
 
 /** Function executed every morning picks up 30+ days old 
  * auctions and marks them as **archived**  
@@ -39,15 +40,15 @@ export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
         const duration = moment.duration(moment(auction.startDate.toDate()).diff(today()));
         const hours = duration.asHours();
         
-        console.log(`Auction ${auction.id} with start ${auction.startDate} duration in hours ${hours}`);
+        logger.log(`Auction ${auction.id} with start ${auction.startDate} duration in hours ${hours}`);
         
         // if auction starts in 24 hours
         if(hours === 24) {
-            console.log(`starting in 24 hours`);
+            logger.log(`starting in 24 hours`);
         }
         // if auction starts in 1 hour
         if(hours === 1) {
-            console.log(`starting in 1 hour`);
+            logger.log(`starting in 1 hour`);
         }
     }
     
@@ -55,15 +56,15 @@ export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
         const duration = moment.duration(moment(auction.endDate.toDate()).diff(today()));
         const hours = duration.asHours();
         
-        console.log(`Auction ${auction.id} with end ${auction.endDate} duration in hours ${hours}`);
+        logger.log(`Auction ${auction.id} with end ${auction.endDate} duration in hours ${hours}`);
         
         // if auction ends in 1 hour
         if(hours === 24) {
-            console.log(`ending in 24 hours`);
+            logger.log(`ending in 24 hours`);
         }
         // if auction ends in 24 hours
         if(hours === 1) {
-            console.log(`ending in 1 hour`);
+            logger.log(`ending in 1 hour`);
         }
     }
 })

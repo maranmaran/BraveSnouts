@@ -15,6 +15,7 @@ const changeHandoverFn = require('./functions/change-handover.function');
 const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
 const exportAuctionFn = require('./functions/export-auction.function');
 const processAuctionImagesFn = require('./functions/process-auction-images.function');
+const handoverConfirmFn = require('./functions/handover-confirm.function');
 // const archiveAuctionFn = require('./functions/archive-auction.function');
 // const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
@@ -46,6 +47,9 @@ export const exportAuction = exportAuctionFn;
 
 // processes auction images from temp storage and creates auction items
 export const processAuctionImages = processAuctionImagesFn;
+
+// send handover confirmation mail (for post and in person)
+export const handoverConfirm = handoverConfirmFn;
 
 // export const archiveAuction = archiveAuctionFn;
 // export const bidChangeEmailOptOut = bidChangeEmailOptOutFn;

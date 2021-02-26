@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -53,7 +53,6 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly router: Router,
     private readonly toastSvc: HotToastService,
     private readonly functionSvc: FunctionsService,
-    private readonly changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -133,7 +132,6 @@ export class AuctionBulkImageFormComponent implements OnInit {
           finalize(async () => {
             let url = await ref.getDownloadURL().toPromise();
             this.files.push({ name, type, path, url } as FirebaseFile)
-            this.changeDetectorRef.detectChanges();
           }));
       }),
 

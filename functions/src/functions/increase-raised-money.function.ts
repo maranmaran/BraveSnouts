@@ -11,6 +11,7 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore.document("auction
 
     if(after.bid === before.bid) {
       functions.logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
+      return;
     }
 
     const addedMoney = after.bid - (before.bid ?? 0);

@@ -1,0 +1,73 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Mali" href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500" />
+    <mj-style inline="inline">
+      .h1,
+      .h2,
+      .h3,
+      .h4,
+      .h5,
+      .h6 {
+        margin: 0;
+        padding: 0;
+      }
+    </mj-style>
+    <mj-attributes>
+      <mj-text padding-bottom="0" />
+      <mj-section background-color="whitesmoke" padding-left="10px" padding-right="10px" />
+      <mj-all font-family="Mali" />
+      <mj-image border-radius="50%" />
+      <mj-divider padding-top="20px" padding-bottom="10px" border-color="#bbb" border-width="0.5px" />
+      <mj-body background-color="teal" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+
+        <!--Logo + greetings-->
+
+        <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
+        <!-- <mj-image width="100px" src="./../assets/njuske-original-compressed.jpg" alt="Hrabre njuske logo"></mj-image> -->
+
+        <mj-text align="center" font-weight="bold" font-size="23px">
+          Pozdrav {{user_name}},
+        </mj-text>
+        <mj-text align="center" font-size="14px" color="#bbb">
+          Hvala na odabiru opcije preuzimanja!
+        </mj-text>
+
+        <mj-divider></mj-divider>
+
+        <!--Outbidded message body-->
+        <mj-text font-weight="bold">
+          Šaljemo potvrdu sa podacima koje ste ispunili za preuzimanje poštom
+        </mj-text>
+        
+        <mj-text padding-top="10px">
+            <ul>
+                <li>Ime i prezime: {{full_name}}</li>
+                <li>Adresa: {{address}}</li>
+                <li>Telefon: {{phone}}</li>
+            </ul>
+        </mj-text>
+
+        <mj-text padding-top="50px" align="center">
+          Promijeniti informacije možete ponovnim posjetom na link 
+          <a href="{{post_confirm_url}}">ovdje</a>.
+        </mj-text>
+        <mj-text  align="center">
+          Također moguće je i promjeniti odabir u <b>osobno preuzimanje</b> tako da posjetite link iz maila sa osvojenim predmetima i odaberete lokaciju.
+        </mj-text>
+        
+        <!--Footer-->
+        <mj-text padding-top="50px" align="center" color="#bbb" font-size="10px" padding="0">
+          Ukoliko trebate pomoć, možete nam se obratiti na mail <a>app.hrabrenjuske@gmail.com</a>
+        </mj-text>
+        <mj-text align="center"  color="#bbb" font-size="10px"  padding-top="8px" >
+          Hrabre njuške je neprofitna udruga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

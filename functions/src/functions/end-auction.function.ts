@@ -26,20 +26,20 @@ export const endAuctionFn = europeFunctions.https.onCall(
 const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
 
   // get auction data
-  console.info("Retrieving auction")
+  logger.info("Retrieving auction")
   const auction = await getAuction(auctionId);
 
   // Get auction items data
   // Filter out only items that were bid on
-  console.info("Retrieving items")
+  logger.info("Retrieving items")
   const items: AuctionItem[] = await getAuctionItems(auctionId);
 
   // Retrieve bids
-  console.info("Retrieving bids")
+  logger.info("Retrieving bids")
   const bids = getBids(items);
 
   // Retrieve user information
-  console.info("Retrieving user information")
+  logger.info("Retrieving user information")
   const userIds = [...(new Set(bids.map(bid => bid.user)))];
   const userInfo = await getUserInformation(userIds);
 
@@ -47,20 +47,20 @@ const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
   const userBids = getUserBidsMap(bids, userInfo);
 
   // Save all winning users
-  console.info("Saving winners")
+  logger.info("Saving winners")
   await saveWinners(auctionId, userBids);
 
   // clear tracked items
-  console.info("Deleting tracked items")
+  logger.info("Deleting tracked items")
   await clearTrackedItems(auctionId);
 
   // Inform users
-  console.info("Sending emails")
-  console.error("Uncomment send mails to actually send mails");
-  //await sendMails(auction, userBids, handoverDetails);
+  logger.info("Sending emails")
+  // logger.error("Uncomment send mails to actually send mails");
+  await sendMails(auction, userBids, handoverDetails);
 
   // Mark processed auctions
-  console.info("Update auction as processed")
+  logger.info("Update auction as processed")
   await updateAuction(auction, handoverDetails);
 
   return null;
@@ -133,7 +133,7 @@ const getUserInformation = async (userIds: string[]) => {
 
     } catch (error) {
       logger.error(`${error}`);
-      console.warn(`User not found ${userId}`);
+      logger.warn(`User not found ${userId}`);
     }
   }
 
@@ -161,7 +161,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
   
   for await (const [user, bids] of userBids) {
 
-    let winner = Object.assign({}, new WinnerOnAuction({
+    const winner = Object.assign({}, new WinnerOnAuction({
         id: user.id,
 
         auctionId: auctionId,
@@ -181,7 +181,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
       })
     );
 
-    await store.doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner).catch(err => console.error(err));
+    await store.doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner).catch(err => logger.error(err));
 
     // update each item for winner details
     for await (const bid of bids) {
@@ -215,7 +215,7 @@ const clearTrackedItems = async (auctionId: string) => {
   const trackedItems = await store.collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
   for (const item of trackedItems.docs) {
     const trackedItem = item.data() as TrackedItem;
-    console.info(`users/${trackedItem.userId}/tracked-items/${item.id}`);
+    logger.info(`users/${trackedItem.userId}/tracked-items/${item.id}`);
     await store.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
   }
 }

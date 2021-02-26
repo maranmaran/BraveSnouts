@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { from, Subscription } from 'rxjs';
-import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { noop, Subscription, throwError } from 'rxjs';
+import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
-import { Winner } from 'src/business/models/winner.model';
+import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 
@@ -11,14 +11,14 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
   selector: 'app-handover-confirm',
   templateUrl: './handover-confirm.component.html',
   styleUrls: ['./handover-confirm.component.scss'],
-  providers: [AuctionRepository, AuctionItemRepository]
+  providers: [AuctionRepository, AuctionItemRepository, FunctionsService],
 })
 export class HandoverConfirmComponent implements OnInit, OnDestroy {
-  
+
   success: boolean;
   bootstrap: boolean = false;
 
-  
+
   private _auctionId: string;
   private _userId: string;
 
@@ -26,7 +26,8 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
-    private readonly auctionRepo: AuctionRepository
+    private readonly auctionRepo: AuctionRepository,
+    private readonly functionSvc: FunctionsService,
   ) { }
 
   _sub: Subscription;
@@ -42,7 +43,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
       this.router.navigate(['/app']);
       return null;
     }
-    
+
     console.log("Submitting")
     setTimeout(() => {
       this.getHnadoverOptions();
@@ -50,7 +51,14 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
   }
 
   getHnadoverOptions() {
-    this.auctionRepo.getOne(this._auctionId).pipe(take(1), map(a => a.handoverDetails)).subscribe(details => this.handoverDetails = details); 
+    this.auctionRepo.getOne(this._auctionId)
+    .pipe(
+      take(1),
+      map(a => a.handoverDetails)
+    )
+    .subscribe(details => {
+      this.handoverDetails = details;
+    });
   }
 
   ngOnDestroy() {
@@ -69,17 +77,23 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
       map(item => item.winner),
       map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
       mergeMap(([id, data]) => {
-     
+
         var partialData = { winner: data } as AuctionItem;
-  
+
         return this.itemsRepo.getDocument(this._auctionId, id as string).set(partialData, {merge: true})
       }),
+      catchError(err => (console.log(err), throwError(err) ) ),
     ).subscribe(
-      () => this.success = true, 
+      () => this.success = true,
       err => (console.log(err), this.success = false),
-      () => this.bootstrap = true
+      () => (this.sendConfirmation(option), this.bootstrap = true)
     );;
 
   }
+
+  sendConfirmation(option) {
+    this.functionSvc.sendHandoverConfirm(this._userId, this._auctionId, option).pipe(take(1)).subscribe(noop)
+  }
+
 
 }

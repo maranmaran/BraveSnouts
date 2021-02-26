@@ -1,4 +1,4 @@
-import * as functions from 'firebase-functions';
+import { logger } from 'firebase-functions';
 import { europeFunctions, store } from "../index";
 import { AuctionItem, EmailSettings, User, UserInfo } from "../models/models";
 import { sendOutbiddedMail } from "../services/mail.service";
@@ -12,29 +12,29 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
     const after = change.after.data() as AuctionItem;
 
     if(after.bid === before.bid) {
-      functions.logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
+      logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
     }
     
     if(!after.user || !before.user) {
-      functions.logger.info(`User id is not present. Before:${before.user} After:${after.user}`);
+      logger.info(`User id is not present. Before:${before.user} After:${after.user}`);
       return null;
     }
 
     if (after.user === before.user) {
-      functions.logger.warn(`Same bidder`);
+      logger.warn(`Same bidder`);
       return null;
     }
 
     // check permission
     const userEmailSettings = ((await store.collection("users").doc(before.user).get()).data()?.emailSettings as EmailSettings)?.bidUpdates;
     if(!userEmailSettings) {
-      console.warn(`Didn't send bid update to user because he either opted out or was not found. ${before.user}`);
+      logger.warn(`Didn't send bid update to user because he either opted out or was not found. ${before.user}`);
     }
 
     // get outbidded user information
     const outbiddedUserData = await (await store.collection("users").doc(before.user).get()).data() as User;
     if(!outbiddedUserData) {
-      console.error("Can not find user");
+      logger.error("Can not find user");
     }
     
     const oubiddedUser: UserInfo = {
@@ -52,7 +52,7 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
       // TODO - send only if user is not present currently on browser (online) 
       await sendOutbiddedMail(oubiddedUser, before, after);
     } else {
-      console.warn("User chose to opt out")
+      logger.warn("User chose to opt out")
     }
 
     return null;

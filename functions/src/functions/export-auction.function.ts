@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
 import { europeFunctions, store } from "..";
@@ -64,7 +65,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             if (!winnerItemsMap.has(winner.userId)) {
                 winnerItemsMap.set(winner.userId, [itemData]);
             } else {
-                let currentItems = winnerItemsMap.get(winner.userId) as AuctionItem[];
+                const currentItems = winnerItemsMap.get(winner.userId) as AuctionItem[];
                 winnerItemsMap.set(winner.userId, [...currentItems, itemData]);
             }
 
@@ -110,9 +111,9 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             sendSheetData.push([
                 winner.userInfo.name,
                 winner.postalInformation?.fullName,
-                winner.deliveryChoice == 'handover' ?
+                winner.deliveryChoice === 'handover' ?
                     winner.handoverOption :
-                    winner.deliveryChoice == 'postal' ?
+                    winner.deliveryChoice === 'postal' ?
                         'pošta' :
                         'nije izabrano',
                 winner.postalInformation?.address,
@@ -139,7 +140,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
         const exportFilePath = path.join(os.tmpdir(), `${auction.name}.xlsx`);
         XLSX.writeFile(wb, exportFilePath, { bookType: 'xlsx' });
 
-        console.log(process.env.FIREBASE_STORAGE_BUCKET);
+        logger.log(process.env.FIREBASE_STORAGE_BUCKET);
         
         const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
 
@@ -158,7 +159,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             }
         );
 
-        console.log("Done exporting");
+        logger.log("Done exporting");
         return response;
     }
 );

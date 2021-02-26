@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
@@ -16,7 +16,8 @@ import { SubSink } from 'subsink';
   templateUrl: './auction-details.component.html',
   styleUrls: ['./auction-details.component.scss'],
   providers: [AuctionRepository],
-  animations: [itemAnimations]
+  animations: [itemAnimations],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuctionDetailsComponent implements OnInit, OnDestroy {
 
