@@ -37,6 +37,6 @@ export class FunctionsService {
     processAuctionImages(auctionId: string, imageBucketPath: string) {
       const callable = this.functions.httpsCallable('processAuctionImages-processAuctionImagesFn');
 
-      return callable({ auctionId });
+      return callable({ auctionId, imageBucketPath });
     }
 }

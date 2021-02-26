@@ -14,6 +14,7 @@ const endAuctionFn = require('./functions/end-auction.function');
 const changeHandoverFn = require('./functions/change-handover.function');
 const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
 const exportAuctionFn = require('./functions/export-auction.function');
+const processAuctionImagesFn = require('./functions/process-auction-images.function');
 // const archiveAuctionFn = require('./functions/archive-auction.function');
 // const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
@@ -42,6 +43,9 @@ export const increaseRaisedMoney = increaseRaisedMoneyFn;
 
 // exports auction details, winners and donations 
 export const exportAuction = exportAuctionFn;
+
+// processes auction images from temp storage and creates auction items
+export const processAuctionImages = processAuctionImagesFn;
 
 // export const archiveAuction = archiveAuctionFn;
 // export const bidChangeEmailOptOut = bidChangeEmailOptOutFn;

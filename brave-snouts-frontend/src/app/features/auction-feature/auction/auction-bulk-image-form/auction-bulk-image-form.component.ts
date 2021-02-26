@@ -7,11 +7,12 @@ import * as firebase from 'firebase';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
-import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
+import { concatMap, finalize, map, mergeMap, take } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { FunctionsService } from 'src/business/services/functions.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { StorageService } from 'src/business/services/storage.service';
 import { SubSink } from 'subsink';
@@ -21,7 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
   selector: 'app-auction-bulk-image-form',
   templateUrl: './auction-bulk-image-form.component.html',
   styleUrls: ['./auction-bulk-image-form.component.scss'],
-  providers: [AuctionRepository, FunctionsService]
+  providers: [AuctionRepository, AuctionItemRepository, FunctionsService]
 })
 export class AuctionBulkImageFormComponent implements OnInit {
 
@@ -44,6 +45,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
   constructor(
     private readonly auctionRepo: AuctionRepository,
+    private readonly itemsRepo: AuctionItemRepository,
     private readonly storage: StorageService,
     private readonly authSvc: AuthService,
     public readonly mediaObserver: MediaObserver,
@@ -194,6 +196,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     from(this.auctionRepo.set(this.auctionId, auction))
       .pipe(
         take(1),
+        concatMap(() => this.functionSvc.processAuctionImages(this.auctionId, `temp/${this.auctionId}`)),
         this.toastSvc.observe(
           {
             loading: 'Stvaranje aukcije..',
@@ -201,15 +204,22 @@ export class AuctionBulkImageFormComponent implements OnInit {
             error: "Nešto je pošlo po zlu",
           }
         ),
-        concatMap(() => this.functionSvc.processAuctionImages(this.auctionId, `temp/${this.auctionId}`))
-      ).subscribe(this.postCreate, err => console.log(err));
+      ).subscribe(() => this.postCreate(), err => console.log(err));
   }
 
   /* Post create actions
    * Navigate back to root for list of auctions once done
    */
   postCreate() {
-    this.router.navigate(['/app']);
+    this.auctionRepo.getOne(this.auctionId)
+    .pipe(
+      take(1),
+      concatMap(auction => this.itemsRepo.getAll(this.auctionId).pipe(take(1), map(items => [auction, items]))),
+      concatMap(([auction, items]) => this.router.navigate(
+        ['/app/edit-auction'],
+        { state: { auction, items, action: 'edit' } }
+      ))
+    ).subscribe(noop, err => console.log(err));
   }
 
   //#endregion

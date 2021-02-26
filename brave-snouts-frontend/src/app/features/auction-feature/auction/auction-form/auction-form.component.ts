@@ -13,6 +13,7 @@ import { AuthService } from 'src/business/services/auth.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { SubSink } from 'subsink';
+import { v4 as uuidv4 } from 'uuid';
 import { FirebaseFile } from '../../../../../business/models/firebase-file.model';
 import { StorageService } from './../../../../../business/services/storage.service';
 
@@ -87,7 +88,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     const endTime = moment(auction.endDate).format('HH:mm');
 
     this.auction = this.formBuilder.group({
-      id: [auction.id], // hidden
+      id: [auction.id ?? uuidv4()], // hidden
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       startDate: [auction.startDate, [Validators.required]],
       endDate: [auction.endDate, [Validators.required]],
@@ -185,7 +186,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
           mergeMap(async (file: File) => {
 
             const name = `${Guid.create()}`;
-            const path = `auction-items/${name}`;
+            const path = `auction-items/${this.auction.value.id}/${name}`;
             const type = this.getFirebaseFileType(file.type);
 
             let {ref, task} = this.storage.uploadFile(file, path);
