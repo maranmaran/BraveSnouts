@@ -4,3 +4,21 @@
     top: unset;
     font-size: 9px;
 }
+
+.backdrop {
+  position: absolute;
+  top: 112px; // because of toolbar and tabs
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 10000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .grid-spinner {
+    position: relative;
+    bottom: 112px;
+  }
+}

@@ -1,19 +1,23 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IPageInfo } from 'ngx-virtual-scroller';
-import { Observable } from 'rxjs';
+import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
+import { Observable, of } from 'rxjs';
+import { concatMap, map, take } from 'rxjs/operators';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { SubSink } from 'subsink';
+import { ItemScrollViewService } from './item-scroll-view.service';
 
 @Component({
   selector: 'app-item-gallery',
   templateUrl: './item-gallery.component.html',
   styleUrls: ['./item-gallery.component.scss'],
-  providers: [ItemDialogService]
+  providers: [ItemDialogService, AuctionItemRepository],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -28,12 +32,18 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private readonly dialog: MatDialog,
+    private readonly itemsRepo: AuctionItemRepository,
     private readonly itemDialogSvc: ItemDialogService,
-    private readonly authSvc: AuthService
+    private readonly authSvc: AuthService,
+    public readonly itemScrollViewSvc: ItemScrollViewService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
+    this.itemScrollViewSvc.initialize();
+
     this.isAuthenticated$ = this.authSvc.isAuthenticated$;
+    this.getUserTrackedItems();
 
     this._subsink.add(
       this.authSvc.userId$.subscribe(id => this.userId = id),
@@ -41,6 +51,15 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
         event => this.loadMore.emit(event)
       )
     );
+
+    this._subsink.add(
+      this.itemScrollViewSvc.view$.subscribe(
+        view => {
+            this.changeDetectorRef.detectChanges()
+            this.scroller.refresh()
+        }
+      )
+    )
   }
 
   ngOnChanges(changes) {
@@ -49,6 +68,32 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this._subsink.unsubscribe();
+    this.itemScrollViewSvc.remove();
+  }
+
+  userTrackedItems: Set<string>;
+
+  /** Retrieves user relevant items */
+  getUserTrackedItems() {
+    const userTrackedItems$ = this.authSvc.userId$
+      .pipe(
+        concatMap(userId => {
+
+          if (!userId) return of(null);
+
+          return this.itemsRepo.getUserItems(userId).pipe(take(1))
+        }),
+        map(items => {
+
+          if (!items) return null;
+
+          return new Set<string>(items.map(item => item.id))
+        }),
+      )
+
+    this._subsink.add(
+      userTrackedItems$.subscribe(items => this.userTrackedItems = items)
+    )
   }
 
   onLoadMore(event) {
@@ -62,7 +107,8 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
   openItem(item: AuctionItem) {
 
     // override for scroll
-    this.openItemWithScroll(item);
+    this.openItemsScrollTabOnIndex(this.items.findIndex(it => it.id == item.id))
+    // this.openItemWithScroll(item);
     return;
 
     let dialogRef = this.dialog.open(SingleItemDialogComponent, {
@@ -77,6 +123,14 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
     // dialogRef.afterClosed()
 
+  }
+
+  @ViewChild('itemsScroller', { static: false }) scroller: VirtualScrollerComponent
+  openItemsScrollTabOnIndex(idx: number) {
+
+    this.itemScrollViewSvc.switchTab('items');
+
+    this.scroller.scrollToIndex(idx, true, 50, 0);
   }
 
   openItemWithScroll(item: AuctionItem) {
