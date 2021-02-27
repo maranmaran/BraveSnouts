@@ -3,10 +3,12 @@ import { MediaObserver } from '@angular/flex-layout';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { concatMap, map, take, tap } from 'rxjs/operators';
 import { itemAnimations } from 'src/business/animations/item.animations';
 import { Auction } from 'src/business/models/auction.model';
+import { AuthService } from 'src/business/services/auth.service';
+import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { formatDateToHoursOnlyNgxCountdown } from 'src/business/utils/date.utils';
 import { SubSink } from 'subsink';
@@ -15,7 +17,7 @@ import { SubSink } from 'subsink';
   selector: 'app-auction-details',
   templateUrl: './auction-details.component.html',
   styleUrls: ['./auction-details.component.scss'],
-  providers: [AuctionRepository],
+  providers: [AuctionRepository, AuctionItemRepository],
   animations: [itemAnimations],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -25,7 +27,9 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly auctionsRepo: AuctionRepository,
     public readonly mediaObs: MediaObserver,
-    private readonly changeDetectionRef: ChangeDetectorRef
+    private readonly changeDetectionRef: ChangeDetectorRef,
+    private readonly authSvc: AuthService,
+    private itemsRepo: AuctionItemRepository
   ) { }
 
   _previousMoneyRaised: number = 0;
@@ -40,6 +44,8 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Retrieve auction data
     let auctionId = this.route.snapshot.paramMap.get('id');
+
+    this.getUserTrackedItems();
 
     this.auction$ = this.auctionsRepo.getOne(auctionId)
     .pipe(
@@ -60,6 +66,11 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     )
   }
 
+  ngOnDestroy() {
+    this._subsink.unsubscribe();
+  }
+
+
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown(auction: Auction) {
     const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
@@ -71,8 +82,30 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
   }
 
-  ngOnDestroy() {
-    this._subsink.unsubscribe();
+  userTrackedItems: Set<string>;
+
+  /** Retrieves user relevant items */
+  getUserTrackedItems() {
+    const userTrackedItems$ = this.authSvc.userId$
+      .pipe(
+        concatMap(userId => {
+
+          if (!userId) return of(null);
+
+          return this.itemsRepo.getUserItems(userId).pipe(take(1))
+        }),
+        map(items => {
+
+          if (!items) return null;
+
+          return new Set<string>(items.map(item => item.id))
+        }),
+      )
+
+    this._subsink.add(
+      userTrackedItems$.subscribe(items => this.userTrackedItems = items)
+    )
   }
+
 
 }

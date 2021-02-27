@@ -7,7 +7,7 @@
         </button>
 
 
-        <button routerLink="/app/my-items" class="btn-small" mat-raised-button color="primary" >
+        <button *ngIf="userTrackedItems?.size > 0" routerLink="/app/my-items" class="btn-small" mat-raised-button color="primary" >
             Moji predmeti
         </button>
     </div>
@@ -40,5 +40,5 @@
     </div>
 
 
-    <app-item-list [auctionId]="auction.id" [parentScroll]="scrollingBlock"></app-item-list>
+    <app-item-list [auctionId]="auction.id" [trackedItems]="userTrackedItems" [parentScroll]="scrollingBlock"></app-item-list>
 </div>

@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
-import { Observable, of } from 'rxjs';
-import { concatMap, map, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -43,7 +42,6 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     this.itemScrollViewSvc.initialize();
 
     this.isAuthenticated$ = this.authSvc.isAuthenticated$;
-    this.getUserTrackedItems();
 
     this._subsink.add(
       this.authSvc.userId$.subscribe(id => this.userId = id),
@@ -71,30 +69,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     this.itemScrollViewSvc.remove();
   }
 
-  userTrackedItems: Set<string>;
-
-  /** Retrieves user relevant items */
-  getUserTrackedItems() {
-    const userTrackedItems$ = this.authSvc.userId$
-      .pipe(
-        concatMap(userId => {
-
-          if (!userId) return of(null);
-
-          return this.itemsRepo.getUserItems(userId).pipe(take(1))
-        }),
-        map(items => {
-
-          if (!items) return null;
-
-          return new Set<string>(items.map(item => item.id))
-        }),
-      )
-
-    this._subsink.add(
-      userTrackedItems$.subscribe(items => this.userTrackedItems = items)
-    )
-  }
+  @Input('trackedItems') userTrackedItems: Set<string>;
 
   onLoadMore(event) {
     this.loadMore.emit(event);

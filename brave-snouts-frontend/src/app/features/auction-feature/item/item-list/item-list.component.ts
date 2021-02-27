@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
-import { of } from 'rxjs';
-import { concatMap, map, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { mergeArrays } from 'src/business/services/items.service';
@@ -28,6 +26,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input() fromDialog = false;
   @Input('initItem') initItemFromDialog: AuctionItem;
   @Input('initItemIdx') initItemFromDialogIdx: number;
+  @Input()userTrackedItems: Set<string>;
+
   // @Input() enableUnequalChildrenSizes = false;
   @Input() enableUnequalChildrenSizes = false;
   @Output() onFetchMore = new EventEmitter<IPageInfo>();
@@ -58,7 +58,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
 
     this.onLoadMore({endIndex: -1} as IPageInfo);
-    this.getUserTrackedItems();
   }
 
   ngOnDestroy(): void {
@@ -69,30 +68,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
-  userTrackedItems: Set<string>;
-
-  /** Retrieves user relevant items */
-  getUserTrackedItems() {
-    const userTrackedItems$ = this.authSvc.userId$
-      .pipe(
-        concatMap(userId => {
-
-          if (!userId) return of(null);
-
-          return this.itemsRepo.getUserItems(userId).pipe(take(1))
-        }),
-        map(items => {
-
-          if (!items) return null;
-
-          return new Set<string>(items.map(item => item.id))
-        }),
-      )
-
-    this._subsink.add(
-      userTrackedItems$.subscribe(items => this.userTrackedItems = items)
-    )
-  }
 
   //#region  Pagination
 
