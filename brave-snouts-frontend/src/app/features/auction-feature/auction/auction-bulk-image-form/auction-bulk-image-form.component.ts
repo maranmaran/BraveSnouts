@@ -195,14 +195,19 @@ export class AuctionBulkImageFormComponent implements OnInit {
     from(this.auctionRepo.set(this.auctionId, auction))
       .pipe(
         take(1),
-        concatMap(() => this.functionSvc.processAuctionImages(this.auctionId, `temp/${this.auctionId}`)),
-        this.toastSvc.observe(
-          {
-            loading: 'Stvaranje aukcije..',
-            success: "Aukcija uspješno stvorena",
-            error: "Nešto je pošlo po zlu",
-          }
-        ),
+        concatMap(() =>
+          this.functionSvc
+          .processAuctionImages(this.auctionId, `temp/${this.auctionId}`)
+          .pipe(
+            take(1),
+            this.toastSvc.observe(
+              {
+                loading: 'Stvaranje aukcije..',
+                success: "Aukcija uspješno stvorena",
+                error: "Nešto je pošlo po zlu",
+              }
+            ))
+          ),
       ).subscribe(() => this.postCreate(), err => console.log(err));
   }
 

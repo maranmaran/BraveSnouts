@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import { logger } from 'firebase-functions';
+import { logger, RuntimeOptions } from 'firebase-functions';
 import * as fs from 'fs';
 import * as GM from 'gm';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,11 +13,21 @@ const magick = GM.subClass({ imageMagick: true });
 var Promise = require('bluebird');
 Promise.promisifyAll(GM.prototype);
 
+
+const runtimeOpts: RuntimeOptions = {
+    timeoutSeconds: 300,
+    memory: '512MB',
+    maxInstances: 1,
+}
+
 /** Processes auctions end
  * Picks up item winners and sends email notification templates for won items
  * Marks auction as processed
  */
-export const processAuctionImagesFn = europeFunctions.https.onCall(
+export const processAuctionImagesFn = europeFunctions
+.runWith(runtimeOpts)
+.https
+.onCall(
     async (data, context) => {
 
         try {
