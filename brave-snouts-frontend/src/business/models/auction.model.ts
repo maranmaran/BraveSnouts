@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import 'firebase/firestore';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { WinnerOnAuction } from './winner.model';
 

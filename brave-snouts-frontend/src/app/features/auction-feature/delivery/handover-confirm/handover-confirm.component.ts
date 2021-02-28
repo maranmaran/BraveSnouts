@@ -39,12 +39,10 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     this._userId = this.route.snapshot.paramMap.get('userId');
 
     if(!this._auctionId || !this._userId) {
-      console.log("Redirecting")
       this.router.navigate(['/app']);
       return null;
     }
 
-    console.log("Submitting")
     setTimeout(() => {
       this.getHnadoverOptions();
     }, 1500)

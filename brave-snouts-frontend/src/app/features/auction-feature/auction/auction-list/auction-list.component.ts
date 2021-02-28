@@ -4,6 +4,7 @@ import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
+import 'firebase/firestore';
 import { from, noop, Observable, of, Subscription } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -60,7 +61,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   //#region Component bootstrapping and list retrieval
 
   /** Initializes auctions list component with correct data
-     * @param admin Whether or not user is admin 
+     * @param admin Whether or not user is admin
      */
   initList(admin: boolean) {
 
@@ -195,7 +196,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
             concatMap(deletePromises => from(Promise.all(deletePromises))),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
             concatMap(() => this.itemsRepo.deleteTrackedItems(auctionObj.id)),
-            finalize(() => this.loadingSvc.active$.next(false)) 
+            finalize(() => this.loadingSvc.active$.next(false))
           ).subscribe(noop, err => console.log(err))
       })
 
@@ -212,7 +213,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
     event.stopPropagation();
-    
+
     this.dialog.open(MessageDialogComponent, {
       height: 'auto',
       width: '98%',
@@ -222,7 +223,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       panelClass: ['item-dialog', 'mat-elevation-z8'],
       data: auction.description
     });
-  } 
+  }
 
   //#endregion
 

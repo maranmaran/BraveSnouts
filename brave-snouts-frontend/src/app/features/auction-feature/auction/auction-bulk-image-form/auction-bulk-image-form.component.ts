@@ -3,7 +3,8 @@ import { MediaObserver } from '@angular/flex-layout';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import * as firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
@@ -185,8 +186,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
     const auction = new Auction({
       id: this.auctionId,
       name: this.auction.value.name,
-      startDate: firebase.default.firestore.Timestamp.fromDate(startDate),
-      endDate: firebase.default.firestore.Timestamp.fromDate(endDate),
+      startDate: firebase.firestore.Timestamp.fromDate(startDate),
+      endDate: firebase.firestore.Timestamp.fromDate(endDate),
       raisedMoney: 0,
       description: this.auction.value.description,
     });

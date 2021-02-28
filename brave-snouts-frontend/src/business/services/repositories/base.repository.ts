@@ -1,10 +1,11 @@
 
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
 export abstract class RepositoryBase {
 
   get timestamp() {
-    return firebase.default.firestore.FieldValue.serverTimestamp();
+    return firebase.firestore.FieldValue.serverTimestamp();
   }
 
 }

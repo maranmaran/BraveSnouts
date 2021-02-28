@@ -207,7 +207,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           }
         )
       )
-      .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
+      .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
 
     }, err => console.log(err))
 
@@ -240,7 +240,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           }
         ),
       )
-      .subscribe(res => console.log(res), err => console.log(err)); // TODO: Something with res
+      .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
 
     }, err => console.log(err))
 

@@ -96,7 +96,8 @@ export class UserItemsComponent implements OnInit, OnDestroy {
       this.winningItems = [...this.items.filter(item => item.user == this.userId)]
       this.outbiddedItems = [...this.items.filter(item => item.user != this.userId)]
 
-      console.log(this.winningItems, this.outbiddedItems);
+      this.itemDialogSvc.items.next(this.items);
+      // console.log(this.winningItems, this.outbiddedItems);
 
       if(this.items?.length == this.total) {
         setTimeout(() => this.loadingSvc.active$.next(false));

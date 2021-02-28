@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
+import 'firebase/auth';
 import * as moment from 'moment';
 import { noop, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -50,7 +51,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
       .pipe(filter(() => !!this.viewTabs))
       .subscribe(
         view => {
-          console.log(view);
+          // console.log(view);
           this.viewTabs.selectedIndex = view == 'grid' ? 0 : 1;
           this.viewTabs?.realignInkBar();
         }

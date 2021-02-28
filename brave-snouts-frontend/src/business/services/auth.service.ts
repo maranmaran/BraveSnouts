@@ -4,6 +4,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { MatDialog } from "@angular/material/dialog";
 import { HotToastService } from "@ngneat/hot-toast";
 import firebase from 'firebase/app';
+import 'firebase/auth';
 import { from, noop, of, throwError } from "rxjs";
 import { catchError, concatMap, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { ChangeEmailDialogComponent } from "src/app/features/auth-feature/change-email-dialog/change-email-dialog.component";
@@ -422,7 +423,7 @@ export class AuthService {
         take(1),
         switchMap(() => {
           const user = this.getNewUser(cred);
-          console.log("Saving", user)
+          // console.log("Saving", user)
           return this.store.collection(`users`).doc(user.id).set(user, { merge: true }).catch(err => console.log(err));
         })
       )

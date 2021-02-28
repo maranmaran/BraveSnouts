@@ -3,6 +3,7 @@ import { MediaObserver } from '@angular/flex-layout';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import firebase from 'firebase/app';
+import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
