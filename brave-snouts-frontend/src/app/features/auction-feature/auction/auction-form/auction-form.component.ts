@@ -6,15 +6,15 @@ import firebase from 'firebase/app';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
+import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
+import { AuthService } from 'src/business/services/auth.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
-import { AuthService } from 'src/business/services/auth.service';
 import { SubSink } from 'subsink';
-import { StorageService } from './../../../../../business/services/storage.service';
 import { FirebaseFile } from '../../../../../business/models/firebase-file.model';
+import { StorageService } from './../../../../../business/services/storage.service';
 
 @Component({
   selector: 'app-auction-form',
@@ -29,7 +29,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   items: FormGroup;
   files: FirebaseFile[][] = [];
 
-  // flags 
+  // flags
   uploadStates$: BehaviorSubject<boolean>[] = [];
   dragActive = false;
   createMode = false;
@@ -125,7 +125,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   /**Gets new item control group */
   getItemFormGroup(item?: AuctionItem) {
     return this.formBuilder.group({
-      
+
       // changeable stuff
       id: [item?.id ?? this.auctionItemRepo.getId()],
       name: [item?.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
@@ -167,7 +167,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
   //#endregion
 
-  //#region Media 
+  //#region Media
 
   /**Delay drag active flag once drag is over to avoid click event from dropzone*/
   dragEnd() {
@@ -242,7 +242,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
     const startDate = moment(moment(this.auction.value.startDate).format('L') + ' ' + this.auction.value.startTime, 'L HH:mm').toDate();
     const endDate = moment(moment(this.auction.value.endDate).format('L') + ' ' + this.auction.value.endTime, 'L HH:mm').toDate();
-    
+
     const auction = new Auction({
       name: this.auction.value.name,
       startDate: firebase.firestore.Timestamp.fromDate(startDate),

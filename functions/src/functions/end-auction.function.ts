@@ -56,7 +56,8 @@ const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
 
     // Inform users
     console.info("Sending emails")
-    await sendMails(auction, userBids, handoverDetails);
+    console.error("Uncomment to actually send emails")
+    // await sendMails(auction, userBids, handoverDetails);
 
     // Mark processed auctions
     console.info("Update auction as processed")
