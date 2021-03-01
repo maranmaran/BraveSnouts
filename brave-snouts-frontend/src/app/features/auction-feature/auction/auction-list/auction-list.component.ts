@@ -43,6 +43,8 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   adminSub: Subscription;
   auctionsBootstrapped = false;
 
+  totalDonated: number = 0;
+
   ngOnInit(): void {
     this.admin$ = this.authSvc.isAdmin$;
     this.userTracksItems$ = this.getIfUserTrackesItems();
@@ -85,6 +87,10 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     // progress bar - loading
     this.loadingSvc.active$.next(true);
     this.auctions$ = auctions$.pipe(
+      tap(auctions => {
+        this.totalDonated = auctions.filter(a => this.getAuctionState(a) == 'active')
+                                    .reduce((prev, cur) => prev += cur.raisedMoney, 0);
+      }),
       tap(() => this.loadingSvc.active$.next(false)),
       tap(() => this.auctionsBootstrapped = true),
     );

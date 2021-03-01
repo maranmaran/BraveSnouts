@@ -5,28 +5,29 @@
         <ng-container *ngIf="(auctions$ | async) as auctions; else noAuctions">
             <ng-container *ngIf="auctions.length > 0; else noAuctions">
                 <div @fadeIn id="auctions" fxLayout="column" fxLayoutGap="0.5rem">
-    
+
+                    <div class="mat-title bold text-center">Ukupno donirano {{ totalDonated }} kn</div>
                     <div fxLayout="row" fxLayoutGap="0.5rem">
                         <button id="tracked-items-btn" mat-raised-button color="primary" *ngIf="(userTracksItems$ | async)"
                             routerLink="/app/my-items" class="w-100 mb-3 elevate hover-big" [ngClass]="{
                             }">
                             Moji predmeti
                         </button>
-    
+
                         <button mat-raised-button color="warn" class="w-100 mb-3 elevate hover-big" routerLink="/app/rules" matTooltip="Pravila aukcije">
                             Pravila aukcije
                         </button>
                     </div>
-    
+
                     <mat-card *ngFor="let auction of auctions" class=" background lighter elevate hover"
                         (click)="onClick(auction)"
                         [ngClass]="{'warn': getAuctionState(auction) == 'expired','primary': getAuctionState(auction) == 'future', 'pointer': getAuctionState(auction) == 'active'}">
-    
+
                         <mat-card-header fxLayout="row" fxLayoutAlign="space-between">
-    
+
                             <mat-card-title>
                                 {{auction.name}}
-    
+
                                 <ng-container [ngSwitch]="getAuctionState(auction)">
                                     <mat-card-subtitle *ngSwitchCase="'future'">
                                         {{ auction.startDate.toDate() | auctionDate: 'Počinje u' }}
@@ -38,9 +39,9 @@
                                         {{ auction.endDate.toDate() | auctionDate: 'Traje do' }}
                                     </mat-card-subtitle>
                                 </ng-container>
-    
+
                             </mat-card-title>
-    
+
                             <div fxLayout="row">
                                 <button mat-raised-button *ngIf="!(admin$ | async)" color="primary" class="h-min" (click)="onViewDescription(auction, $event)">
                                     Opis aukcije
@@ -56,15 +57,15 @@
                                         <mat-icon>delete</mat-icon>
                                     </button>
                                 </ng-container>
-                                
+
                             </div>
                         </mat-card-header>
-    
+
                     </mat-card>
                 </div>
             </ng-container>
         </ng-container>
-        
+
 
         <ng-template #noAuctions>
             <i *ngIf="auctionsBootstrapped" class="custom-font center mat-title">Trenutno nema aktivnih aukcija</i>
