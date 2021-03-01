@@ -43,7 +43,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   adminSub: Subscription;
   auctionsBootstrapped = false;
 
-  totalDonated: number = 0;
+  totalDonated?: number = null;
 
   ngOnInit(): void {
     this.admin$ = this.authSvc.isAdmin$;
