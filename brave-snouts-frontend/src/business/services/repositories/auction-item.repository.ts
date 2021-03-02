@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
-import { of } from 'rxjs';
-import { take, mergeMap } from 'rxjs/operators';
+import { mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { environment } from 'src/environments/environment';
 
@@ -64,7 +63,7 @@ export class AuctionItemRepository {
         items.forEach(item => {
             item.auctionId = auctionId;
             const docRef = this.getDocument(item.auctionId, item.id ?? this.getId());
-            batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id} )); // destructive because we can "delete" media 
+            batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id} ), { merge: true }); // destructive because we can "delete" media
         });
 
         return batch.commit();
