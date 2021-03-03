@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { noop, Subscription, throwError } from 'rxjs';
-import { catchError, map, mergeMap, take } from 'rxjs/operators';
+import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
+import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 
 @Component({
   selector: 'app-handover-confirm',
@@ -27,6 +29,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
     private readonly auctionRepo: AuctionRepository,
+    private readonly winnerRepo: WinnersRepository,
     private readonly functionSvc: FunctionsService,
   ) { }
 
@@ -73,7 +76,18 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
       take(1),
       mergeMap(items => [...items]),
       map(item => item.winner),
-      map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
+      tap(async winner => {
+
+        let winnerOnAuction = new WinnerOnAuction({
+          id: winner.id,
+          auctionId: winner.auctionId,
+          deliveryChoice: 'handover',
+          handoverOption: option
+        });
+
+        await this.winnerRepo.updateWinner(winner.auctionId, winnerOnAuction);
+      }),
+      map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
       mergeMap(([id, data]) => {
 
         var partialData = { winner: data } as AuctionItem;

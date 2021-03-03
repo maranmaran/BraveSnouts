@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { noop, throwError } from 'rxjs';
-import { catchError, map, mergeMap, take } from 'rxjs/operators';
-import { Winner } from 'src/business/models/winner.model';
+import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
 
 @Component({
   selector: 'app-post-confirm',
@@ -32,6 +33,7 @@ export class PostConfirmComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly itemsRepo: AuctionItemRepository,
+    private readonly winnerRepo: WinnersRepository,
     private readonly functionSvc: FunctionsService,
     private readonly router: Router,
   ) { }
@@ -79,7 +81,18 @@ export class PostConfirmComponent implements OnInit {
       take(1),
       mergeMap(items => [...items]),
       map(item => item.winner),
-      map(winner => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
+      tap(async winner => {
+
+        let winnerOnAuction = new WinnerOnAuction({
+          id: winner.id,
+          auctionId: winner.auctionId,
+          deliveryChoice: 'postal',
+          postalInformation: data
+        });
+
+        await this.winnerRepo.updateWinner(winner.auctionId, winnerOnAuction);
+      }),
+      map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
       mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ) ),
       catchError(err => (console.log(err), throwError(err) ) ),
     ).subscribe(

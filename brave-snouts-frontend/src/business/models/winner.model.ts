@@ -44,6 +44,7 @@ export class WinnerOnAuction {
 
   deliveryChoice: 'postal' | 'handover' | null;
   postalInformation: PostalInformation | null;
+  handoverOption: string;
   paymentStatus: 'paid' | 'pending' | 'notpaid';
 }
 
