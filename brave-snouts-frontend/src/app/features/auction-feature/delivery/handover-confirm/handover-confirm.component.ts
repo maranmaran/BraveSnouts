@@ -13,7 +13,7 @@ import { WinnersRepository } from 'src/business/services/repositories/winners.re
   selector: 'app-handover-confirm',
   templateUrl: './handover-confirm.component.html',
   styleUrls: ['./handover-confirm.component.scss'],
-  providers: [AuctionRepository, AuctionItemRepository, FunctionsService],
+  providers: [AuctionRepository, AuctionItemRepository, FunctionsService, WinnersRepository],
 })
 export class HandoverConfirmComponent implements OnInit, OnDestroy {
 
@@ -79,7 +79,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
       tap(async winner => {
 
         let winnerOnAuction = new WinnerOnAuction({
-          id: winner.id,
+          id: winner.userId,
           auctionId: winner.auctionId,
           deliveryChoice: 'handover',
           handoverOption: option

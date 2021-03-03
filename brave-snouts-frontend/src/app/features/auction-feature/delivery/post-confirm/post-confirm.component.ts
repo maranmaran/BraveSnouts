@@ -12,7 +12,7 @@ import { WinnersRepository } from './../../../../../business/services/repositori
   selector: 'app-post-confirm',
   templateUrl: './post-confirm.component.html',
   styleUrls: ['./post-confirm.component.scss'],
-  providers: [AuctionItemRepository, FunctionsService],
+  providers: [AuctionItemRepository, FunctionsService, WinnersRepository],
 })
 export class PostConfirmComponent implements OnInit {
 
@@ -84,7 +84,7 @@ export class PostConfirmComponent implements OnInit {
       tap(async winner => {
 
         let winnerOnAuction = new WinnerOnAuction({
-          id: winner.id,
+          id: winner.userId,
           auctionId: winner.auctionId,
           deliveryChoice: 'postal',
           postalInformation: data
