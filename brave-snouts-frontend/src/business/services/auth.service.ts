@@ -9,10 +9,9 @@ import { from, noop, of, throwError } from "rxjs";
 import { catchError, concatMap, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { ChangeEmailDialogComponent } from "src/app/features/auth-feature/change-email-dialog/change-email-dialog.component";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
-import { User } from "src/business/models/user.model";
+import { User } from 'src/business/models/user.model';
 import { environment } from "src/environments/environment";
 import { RegisterComponent } from './../../app/features/auth-feature/register/register.component';
-
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -171,12 +170,15 @@ export class AuthService {
     await this.auth.signInWithRedirect(google);
     return null;
   }
+
+  socialLoginInProgress = false;
   async completeSocialLogin() {
 
     if (!this._usingRedirectFlag) {
         return;
     }
 
+    this.socialLoginInProgress = true;
     await this.auth.getRedirectResult()
         .then(async cred => {
             // console.log(cred);
@@ -201,7 +203,7 @@ export class AuthService {
             const userRegistered = (await this.store.doc(`users/${cred.user.uid}`).get().toPromise()).exists;
             if (!cred.additionalUserInfo.isNewUser && userRegistered) return;
 
-            return await this.registerUserComplete(cred.user.uid, cred.user.email).toPromise();
+            return await this.registerUserComplete(cred.user.uid, cred.user.email, profile.picture, cred.additionalUserInfo.providerId, cred.credential.signInMethod).toPromise();
         })
         .catch(err => {
 
@@ -215,6 +217,7 @@ export class AuthService {
                 this.handleErrors(err);
             }
         })
+        .finally(() => this.socialLoginInProgress = false);
 }
 
   handleEmailLogin(email: string): Promise<firebase.auth.UserCredential | void> {
@@ -292,13 +295,13 @@ export class AuthService {
 
         if (!cred.additionalUserInfo.isNewUser && userRegistered) return;
 
-        return await this.registerUserComplete(cred.user.uid, cred.user.email).toPromise();
+        return await this.registerUserComplete(cred.user.uid, cred.user.email, "", "email", "email").toPromise();
       })
       .catch((err) => (console.log(err), this.toastSvc.error("Neispravan email ili iskorišten link za prijavu")))
       .finally(() => this.emailLoginInProgress = false);
   }
 
-  registerUserComplete(id: any, email: any) {
+  registerUserComplete(id: string, email: string, photoURL: string, providerId: string, signInMethod: string) {
     // GET USER DATA
     let dialogRef = this.dialog.open(RegisterComponent, {
       height: 'auto',
@@ -315,24 +318,18 @@ export class AuthService {
       .pipe(
         take(1),
         switchMap(data => {
-          const newCred = {
-            additionalUserInfo: {
-              providerId: "email"
-            },
-            credential: {
-              signInMethod: "email",
-              providerId: "email",
-            },
-            user: {
-              uid: id,
-              displayName: data.name,
-              email: data.email,
-              photoURL: "",
-              phoneNumber: data.phone
-            }
-          }
 
-          return this.addNewUser(newCred);
+          const user = new User({
+            id,
+            displayName: data.name,
+            email: data.email,
+            avatar: photoURL,
+            phoneNumber: data.phone,
+            signInMethod,
+            providerId
+          });
+
+          return this.addNewUser(user);
         })
       )
   }
@@ -370,61 +367,16 @@ export class AuthService {
     }
   }
 
-  getNewUser(cred: any) {
-
-    const profile = cred.additionalUserInfo.profile as any;
-    let email = "";
-    let avatar = "";
-    let displayName = "";
-    let phoneNumber = "";
-
-    if (cred.additionalUserInfo.providerId == "google.com") {
-      email = profile.email;
-      avatar = profile.picture;
-      displayName = profile.name;
-    }
-    if (cred.additionalUserInfo.providerId == "facebook.com") {
-      email = profile.email;
-      avatar = profile.picture?.data?.url;
-      displayName = profile.name;
-    }
-    if (cred.additionalUserInfo.providerId == "email") {
-      email = cred.user.email;
-      avatar = cred.user.photoURL;
-      displayName = cred.user.displayName;
-      phoneNumber = cred.user.phoneNumber;
-    }
-
-    if (email?.trim() == "") {
-      this.handleErrors({ code: "no-email" });
-    }
-
-    return {
-      id: cred.user.uid,
-      displayName,
-      email,
-      avatar,
-      phoneNumber,
-      signInMethod: cred.credential.signInMethod,
-      providerId: cred.additionalUserInfo.providerId,
-      emailSettings: {
-        auctionAnnouncements: true,
-        bidUpdates: true,
-      }
-    }
-  }
-
   /** Saves new user to the users collection */
-  addNewUser(cred: any) {
+  addNewUser(user: User) {
     // save only when user is authenticated. Because of firestore rules
     return from(this.isAuthenticated$)
       .pipe(
         filter(x => !!x),
         take(1),
         switchMap(() => {
-          const user = this.getNewUser(cred);
           // console.log("Saving", user)
-          return this.store.collection(`users`).doc(user.id).set(user, { merge: true }).catch(err => console.log(err));
+          return this.store.collection(`users`).doc(user.id).set(Object.assign({}, user), { merge: true }).catch(err => console.log(err));
         })
       )
   }

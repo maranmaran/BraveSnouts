@@ -29,8 +29,8 @@ export class AppComponent implements OnInit, OnDestroy {
    *
    * Cure is probably signInWithRedirect but it needs special handling
    * */
-  ngOnInit(): void {
-    // this.authSvc.completeSocialLogin();
+  ngOnInit() {
+    this.authSvc.completeSocialLogin();
 
     this._subsink.add(
       this.authSvc.userDbInfo$
@@ -45,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
           if(!userDbInfo) return;
 
           if(this.authSvc.emailLoginInProgress) return;
+          if(this.authSvc.socialLoginInProgress) return;
 
           if(userDbInfo.code == "registration-not-complete") {
             return await this.authSvc.registerUserComplete(userAuthInfo.uid, userAuthInfo.email).toPromise();
