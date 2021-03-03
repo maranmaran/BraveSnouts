@@ -85,7 +85,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
           handoverOption: option
         });
 
-        await this.winnerRepo.updateWinner(winner.auctionId, winnerOnAuction);
+        await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
       }),
       map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
       mergeMap(([id, data]) => {

@@ -1,11 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { noop } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
-import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
+import { WinnerOnAuction } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 import { PostDetailsComponent } from '../../delivery/post-details/post-details.component';
 import { AuctionRepository } from './../../../../../business/services/repositories/auction.repository';
 
@@ -13,7 +15,7 @@ import { AuctionRepository } from './../../../../../business/services/repositori
   selector: 'app-winner-details-dialog',
   templateUrl: './winner-details-dialog.component.html',
   styleUrls: ['./winner-details-dialog.component.scss'],
-  providers: [AuctionRepository, AuctionItemRepository]
+  providers: [AuctionRepository, AuctionItemRepository, WinnersRepository]
 })
 export class WinnerDetailsDialogComponent implements OnInit {
 
@@ -22,9 +24,10 @@ export class WinnerDetailsDialogComponent implements OnInit {
 
   constructor(
     private readonly dialog: MatDialog,
-    private readonly auctionRepo: AuctionRepository,
     private readonly itemsRepo: AuctionItemRepository,
+    private readonly winnersRepo: WinnersRepository,
     private readonly dialogRef: MatDialogRef<WinnerDetailsDialogComponent>,
+    private readonly firestore: AngularFirestore, // argh cutting corners cuz i'm too lazy
     @Inject(MAT_DIALOG_DATA) public data: { winners, auctionId }
   ) { }
 
@@ -72,16 +75,14 @@ export class WinnerDetailsDialogComponent implements OnInit {
     return winner.items.map(item => item.bid).reduce((prev, cur) => prev += cur, 0);
   }
 
-  async markPaymentStatus(change: MatButtonToggleChange, winner: Winner) {
-    alert("Implement")
-    return;
-    // const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
+  async markPaymentStatus(change: MatButtonToggleChange, winner: WinnerOnAuction) {
+    const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
 
-    // const winnerUpdate = Object.assign({}, winner, { paymentStatus });
-    // const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate } ;
+    this.winnersRepo.updateAuctionWinner(winner.auctionId, winner.id, { paymentStatus });
 
-    // await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
-    // await this.
+    for(const item of winner.items) {
+      this.firestore.doc(`auctions/${winner.auctionId}/items/${item.id}`).set({ winner: { paymentStatus } }, { merge: true });
+    }
   }
 
 }

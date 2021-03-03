@@ -90,7 +90,7 @@ export class PostConfirmComponent implements OnInit {
           postalInformation: data
         });
 
-        await this.winnerRepo.updateWinner(winner.auctionId, winnerOnAuction);
+        await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
       }),
       map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
       mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ) ),
