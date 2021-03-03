@@ -5,11 +5,11 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { noop } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { AuctionItem } from 'src/business/models/auction-item.model';
 import { WinnerOnAuction } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 import { PostDetailsComponent } from '../../delivery/post-details/post-details.component';
-import { AuctionItem } from './../../../../../../../utilities/src/models';
 import { AuctionRepository } from './../../../../../business/services/repositories/auction.repository';
 
 @Component({
