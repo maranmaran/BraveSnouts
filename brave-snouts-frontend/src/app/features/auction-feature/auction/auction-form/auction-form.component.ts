@@ -251,10 +251,12 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       endDate: firebase.firestore.Timestamp.fromDate(endDate),
       // description: this.auction.value.description,
     });
-    // to keep before state
-    delete auction.processed;
-    delete auction.raisedMoney;
-    delete auction.archived;
+    if(!this.createMode) {
+      // to keep before state
+      delete auction.processed;
+      delete auction.raisedMoney;
+      delete auction.archived;
+    }
 
     const items = this.itemsArr.value.map(
       (item, index) => new AuctionItem({
