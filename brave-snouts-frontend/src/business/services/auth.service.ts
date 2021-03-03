@@ -116,9 +116,9 @@ export class AuthService {
       return;
     }
 
-    if (cred && cred.additionalUserInfo.isNewUser) {
-      await this.addNewUser(cred);
-    }
+    // if (cred && cred.additionalUserInfo.isNewUser) {
+    //   await this.addNewUser(cred);
+    // }
 
     return cred;
   }

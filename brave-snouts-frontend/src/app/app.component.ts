@@ -48,7 +48,11 @@ export class AppComponent implements OnInit, OnDestroy {
           if(this.authSvc.socialLoginInProgress) return;
 
           if(userDbInfo.code == "registration-not-complete") {
-            return await this.authSvc.registerUserComplete(userAuthInfo.uid, userAuthInfo.email).toPromise();
+            const providerId = userAuthInfo?.providerData[0]?.providerId ?? "email";
+            const signInMethod = userAuthInfo?.providerData[0]?.providerId ?? "email";
+
+            return await this.authSvc.registerUserComplete(userAuthInfo.uid, userAuthInfo.email,
+                                                          userAuthInfo.photoURL, providerId, signInMethod).toPromise();
           }
 
           if(userDbInfo.overrideEmail) {
