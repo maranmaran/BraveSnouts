@@ -48,6 +48,14 @@
         </ng-container>
       </div>
 
+      <div id="items" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
+        <label class="pb-0 bold center">Osvojeni predmeti:</label>
+        <button mat-icon-button color="warn"
+          (click)="openWonItems(winner.items)" matTooltip="Osvojeni predmeti">
+          <mat-icon>shopping_basket</mat-icon>
+        </button>
+      </div>
+
       <div id="payment" class="mat-small pb-0" fxLayout="row" fxLayoutGap="0.5rem">
 
         <label class="pb-0 bold center">Status plaćanja:</label>

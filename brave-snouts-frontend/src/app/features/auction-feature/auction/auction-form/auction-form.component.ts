@@ -249,9 +249,12 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       name: this.auction.value.name,
       startDate: firebase.firestore.Timestamp.fromDate(startDate),
       endDate: firebase.firestore.Timestamp.fromDate(endDate),
-      raisedMoney: 0
       // description: this.auction.value.description,
     });
+    // to keep before state
+    delete auction.processed;
+    delete auction.raisedMoney;
+    delete auction.archived;
 
     const items = this.itemsArr.value.map(
       (item, index) => new AuctionItem({
@@ -295,7 +298,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
     // do update
     this._subsink.add(
-      from(this.auctionRepo.update(auctionRefId, Object.assign({}, auction)))
+      from(this.auctionRepo.set(auctionRefId, Object.assign({}, auction)))
         .pipe(
           concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items)))
         ).subscribe(

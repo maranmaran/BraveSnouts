@@ -9,6 +9,7 @@ import { WinnerOnAuction } from 'src/business/models/winner.model';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
 import { PostDetailsComponent } from '../../delivery/post-details/post-details.component';
+import { AuctionItem } from './../../../../../../../utilities/src/models';
 import { AuctionRepository } from './../../../../../business/services/repositories/auction.repository';
 
 @Component({
@@ -83,6 +84,25 @@ export class WinnerDetailsDialogComponent implements OnInit {
     for(const item of winner.items) {
       this.firestore.doc(`auctions/${winner.auctionId}/items/${item.id}`).set({ winner: { paymentStatus } }, { merge: true });
     }
+  }
+
+  openWonItems(items: AuctionItem[]) {
+
+    let message = "<ul>";
+    for(const item of items) {
+      message += `<li>${item.name} - ${item.description.replace(/<[^>]*>?/gm, '')}</li>`;
+    }
+    message += "</ul>"
+
+    this.dialog.open(MessageDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: ['item-dialog', 'mat-elevation-z8', 'full-width'],
+      data: message
+    });
   }
 
 }
