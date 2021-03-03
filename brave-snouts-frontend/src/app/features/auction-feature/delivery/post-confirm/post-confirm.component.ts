@@ -25,7 +25,7 @@ export class PostConfirmComponent implements OnInit {
   private _userId: string;
 
   public originalDonation: number;
-  public totalDonation: number;
+  public totalDonation: number; // with addition postal send price (20HRK)
   public paymentDetail: string;
 
   constructor(
@@ -91,7 +91,7 @@ export class PostConfirmComponent implements OnInit {
   }
 
   sendConfirmation() {
-    this.functionSvc.sendPostConfirm(this._userId, this._auctionId, this.postDeliveryInfoForm.value, this.totalDonation, this.paymentDetail).pipe(take(1)).subscribe(noop)
+    this.functionSvc.sendPostConfirm(this._userId, this._auctionId, this.postDeliveryInfoForm.value, this.originalDonation, this.paymentDetail).pipe(take(1)).subscribe(noop)
   }
 
 }
