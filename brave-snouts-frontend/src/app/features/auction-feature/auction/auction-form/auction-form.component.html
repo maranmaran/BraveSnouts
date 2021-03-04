@@ -85,7 +85,7 @@
                                 </mat-progress-bar>
 
                                 <ngx-dropzone id="images-{{scroll.viewPortInfo.startIndex + i}}" class="auction-item-media-dropzone pb-0"
-                                    (change)="uploadFiles($event, i)" [disableClick]="dragActive">
+                                    (change)="uploadFiles($event, scroll.viewPortInfo.startIndex + i)" [disableClick]="dragActive">
 
                                     <ngx-dropzone-label *ngIf="files[scroll.viewPortInfo.startIndex + i]?.length == 0">
                                         <button mat-stroked-button type='button'>Učitaj</button>
