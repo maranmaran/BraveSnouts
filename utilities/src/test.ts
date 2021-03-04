@@ -1,5 +1,7 @@
 import * as admin from 'firebase-admin';
 import path from 'path';
+const { htmlToText } = require('html-to-text');
+
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 var firebaseConfig = {
@@ -16,11 +18,17 @@ var firebaseConfig = {
 
 admin.initializeApp(firebaseConfig);
 const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+const store = admin.firestore();
 
 (async () => {
-    const files = await bucket.getFiles({prefix: "temp/f14db85a-669b-4ae1-b761-dbae23b5a84c"});
+
+    const files = (await (await store.collection("/auctions/ce2b63ff-dd67-4ab2-965f-43bc63e2e2e6/items").where('description', "!=", null)).get()).docs;
     
-    for(const file of files[0]) {
-        console.log(file.name);
+    for(const file of files) {
+        let data = file.data();
+        if(data.description?.trim() != '') {
+            let rawText = htmlToText(data.description).replace(/\s\s+/g, ' ');
+            await store.doc(`/auctions/ce2b63ff-dd67-4ab2-965f-43bc63e2e2e6/items/${file.id}`).update({ description: rawText})
+        }
     }
 })()
