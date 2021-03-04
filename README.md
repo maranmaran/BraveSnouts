@@ -11,6 +11,12 @@ There will possibly be future plans or turning this into their official public w
 If you wish to contribute please contact me by mail
 
 [Production](https://hrabrenjuske.hr)
+[Development](https://bravesnoutsdev.firebaseapp.com/)
+
+# Preview
+[More images here](https://github.com/maranmaran/BraveSnouts/tree/main/images)
+![](images/merge_from_ofoct.jpg)
+
 
 # Application
 
