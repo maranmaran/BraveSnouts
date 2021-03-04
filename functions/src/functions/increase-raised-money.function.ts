@@ -14,7 +14,7 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore.document("auction
       return;
     }
 
-    const addedMoney = after.bid - (before.bid ?? 0);
+    const addedMoney = after.bid - (!before.user ? 0 : before.bid);
     
     if(addedMoney <= 0) {
         functions.logger.error("Bid is the same or lower");
