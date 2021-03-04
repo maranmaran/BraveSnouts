@@ -206,6 +206,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     // construct bid
     let bid = new Bid({
+      auctionId: item.auctionId,
       itemId: item.id,
       userId: this.userData.uid,
       userInfo: { name: user.name, avatar: user.avatar, email: user.email, id: this.userData.uid },

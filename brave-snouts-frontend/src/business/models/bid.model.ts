@@ -4,6 +4,7 @@ export class Bid {
   }
 
   id: string;
+  auctionId: string;
   itemId: string;
   userId: string;
   userInfo: UserInfo;
