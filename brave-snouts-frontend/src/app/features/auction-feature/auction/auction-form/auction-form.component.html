@@ -101,7 +101,7 @@
                                                 <img *ngIf="file.type == 'image'" [src]="url" />
                                                 <video *ngIf="file.type == 'video'" [src]="url"></video>
                                                 <button id="remove-file-btn" type="button" mat-icon-button
-                                                    color="accent" (click)="removeFile(i, file, url, $event)">
+                                                    color="accent" (click)="removeFile(scroll.viewPortInfo.startIndex + i, file, url, $event)">
                                                     <mat-icon>close</mat-icon>
                                                 </button>
                                             </ng-container>
