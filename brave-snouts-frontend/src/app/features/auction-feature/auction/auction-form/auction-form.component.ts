@@ -111,6 +111,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     // group all item controls
     this.items = this.formBuilder.group({ items: this.formBuilder.array(itemControls, [Validators.required]) });
 
+    console.log(this.items);
     // create all file arrays and loading state for each item
     this.itemsArr.controls.forEach((_, index) => {
       let media = items[index]?.media ?? [];
