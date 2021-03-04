@@ -10,7 +10,20 @@ There will possibly be future plans or turning this into their official public w
 
 If you wish to contribute please contact me by mail
 
+<b>So far raised over 10 000 HRK through the app which can handle large amount of auction items and over 1000 users active at a time</b>
+
+While costing next to nothing to host, maintain and be active
+
+Resuce organization has 10 000+ organic followers
+
 [Production](https://hrabrenjuske.hr)
+
+[Development](https://bravesnoutsdev.firebaseapp.com/)
+
+# Preview
+[More images here](https://github.com/maranmaran/BraveSnouts/tree/main/images)
+![](images/merge_from_ofoct.jpg)
+
 
 # Application
 
