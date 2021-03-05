@@ -8,7 +8,7 @@ import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, take } from 'rxjs/operators';
+import { concatMap, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -218,6 +218,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     this.auctionRepo.getOne(this.auctionId)
     .pipe(
       take(1),
+      tap(console.log),
       concatMap(auction => this.itemsRepo.getAll(this.auctionId).pipe(take(1), map(items => [auction, items]))),
       concatMap(([auction, items]) => this.router.navigate(
         ['/app/edit-auction'],

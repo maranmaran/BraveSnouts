@@ -94,7 +94,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       startDate: [auction.startDate, [Validators.required]],
       endDate: [auction.endDate, [Validators.required]],
       startTime: [startTime, [Validators.required]],
-      endTime: [endTime, [Validators.required]]
+      endTime: [endTime, [Validators.required]],
+      raisedMoney: [auction.raisedMoney]
     });
   }
 
@@ -110,8 +111,6 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
     // group all item controls
     this.items = this.formBuilder.group({ items: this.formBuilder.array(itemControls, [Validators.required]) });
-
-    console.log(this.items);
 
     // create all file arrays and loading state for each item
     this.itemsArr.controls.forEach((_, index) => {
@@ -152,12 +151,18 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     this.uploadStates$.push(new BehaviorSubject(false))
   }
 
+  itemsToDeleteQueue: { itemId: string, auctionId: string, user: string, bid: number }[] = [];
   /**Removes item group from array*/
   removeItem(index) {
     let items = (this.itemsArr as FormArray);
+    const item = this.itemsArr.controls[index];
     items.removeAt(index);
     this.files.splice(index, 1);
     this.uploadStates$.splice(index, 1);
+
+    if(!this.createMode) {
+      this.itemsToDeleteQueue.push({ itemId: item.value.id, user: item.value.user, auctionId: this.auction.value.id, bid: item.value.bid });
+    }
   }
 
   /**Check if whole form is valid */
@@ -223,7 +228,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     // delete on server
     this.uploadStates$.push(new BehaviorSubject(true));
     this.storage.deleteFile(url)
-      .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
+      // .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
       .catch(err => console.log(err))
       .finally(() => {
         // delete locally
@@ -271,7 +276,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
         // not editable in form and might be from already existing item
         // ?? null because .set in writeBatch can't set "undefined" values
         auctionId: item.auctionId ?? null,
-        bid: item.bid ?? item.startPrice, // default to start price if none defined
+        bid: !item.user ? item.startPrice : item.bid, // default to start price if none defined
         user: item.user ?? null,
         bidId: item.bidId ?? null,
       }));
@@ -304,12 +309,27 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     this._subsink.add(
       from(this.auctionRepo.set(auctionRefId, Object.assign({}, auction)))
         .pipe(
-          concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items)))
+          concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items))),
         ).subscribe(
           _ => this.postUpdate(),
           err => console.log(err)
         )
     )
+
+    let raisedMoneyToSubtract = 0;
+    for(const item of this.itemsToDeleteQueue) {
+      from(this.auctionItemRepo.delete(item.auctionId, item.itemId))
+      .pipe(take(1)).subscribe(noop);
+
+      if(item.user) {
+        raisedMoneyToSubtract += item.bid;
+      }
+    }
+
+    if(raisedMoneyToSubtract > 0) {
+      from(this.auctionRepo.update(this.auction.value.id, { raisedMoney: this.auction.value.raisedMoney - raisedMoneyToSubtract }))
+      .pipe(take(1)).subscribe(noop);
+    }
 
   }
 

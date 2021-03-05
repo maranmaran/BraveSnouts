@@ -11,7 +11,7 @@
 
       <label class="mat-title" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}"
         [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'" class="no-wrap mb-0 mat-title bold center">
-        {{item.bid + ' kn'}}
+        {{ item.user ? item.bid + ' kn' : item.startBid + ' kn'}}
       </label>
     </div>
 
