@@ -149,7 +149,7 @@ export const processAuctionImagesFn = europeFunctions
                     media: [images],
 
                     startBid: 0,
-                    bid: null,
+                    bid: 0,
                 };
 
                 await itemDoc.set(item, { merge: true });

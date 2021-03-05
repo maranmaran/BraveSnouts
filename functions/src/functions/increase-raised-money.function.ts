@@ -14,6 +14,11 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore.document("auction
       return;
     }
 
+    if(!after.user) {
+      functions.logger.warn("No user bidded this");
+      return;
+    }
+
     const addedMoney = after.bid - (!before.user ? 0 : before.bid);
     
     if(addedMoney <= 0) {

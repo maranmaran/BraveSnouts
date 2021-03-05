@@ -65,7 +65,7 @@
                                     <input id="name-{{scroll.viewPortInfo.startIndex + i}}" matInput formControlName="name">
                                 </mat-form-field>
 
-                                <button id="deleteBtn-{{scroll.viewPortInfo.startIndex + i}}" mat-icon-button class="relative" type="button" color="warn" style="bottom: 0.75rem" (click)="removeItem(i)">
+                                <button id="deleteBtn-{{scroll.viewPortInfo.startIndex + i}}" mat-icon-button class="relative" type="button" color="warn" style="bottom: 0.75rem" (click)="removeItem(scroll.viewPortInfo.startIndex + i)">
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </div>

@@ -162,7 +162,8 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       id: auctionObj.id,
       name: auctionObj.name,
       startDate: auctionObj.startDate.toDate(),
-      endDate: auctionObj.endDate.toDate()
+      endDate: auctionObj.endDate.toDate(),
+      raisedMoney: auctionObj.raisedMoney,
     }
 
     this.itemsRepo.getAll(auctionObj.id).pipe(take(1))

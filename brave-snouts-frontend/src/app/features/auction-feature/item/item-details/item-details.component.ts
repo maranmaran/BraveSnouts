@@ -144,7 +144,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     this.bidSlider = item.bid + environment.itemCardConfig.minBidOffset;
 
-    this.currentBid = item.bid;
+    this.currentBid = item.user ? item.bid : item.startBid;
+
     this.controlsValid = false;
   }
   //#endregion
