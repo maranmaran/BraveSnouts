@@ -19,7 +19,7 @@
                         </button>
                     </div>
 
-                    <mat-card *ngFor="let auction of auctions" class=" background lighter elevate hover"
+                    <mat-card *ngFor="let auction of auctions" class="pointer background lighter elevate hover"
                         (click)="onClick(auction)"
                         [ngClass]="{'warn': getAuctionState(auction) == 'expired','primary': getAuctionState(auction) == 'future', 'pointer': getAuctionState(auction) == 'active'}">
 
