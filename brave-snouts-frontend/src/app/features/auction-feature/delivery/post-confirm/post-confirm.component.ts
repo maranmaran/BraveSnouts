@@ -58,6 +58,9 @@ export class PostConfirmComponent implements OnInit {
     this.postDeliveryInfoForm = this.fb.group({
       fullName: this.fb.control('', Validators.required),
       address: this.fb.control('', Validators.required),
+      houseNumber: this.fb.control('', Validators.required),
+      city: this.fb.control('', Validators.required),
+      zipNumber: this.fb.control('', Validators.required),
       phoneNumber: this.fb.control('', Validators.required),
     });
   }
@@ -71,7 +74,13 @@ export class PostConfirmComponent implements OnInit {
     }
 
     // update winner post delivery option data
-    let data = this.postDeliveryInfoForm.value;
+    let form = this.postDeliveryInfoForm.value;
+    let data = {
+      fullName: this.postDeliveryInfoForm.value.fullName,
+      address: `${form.address} ${form.houseNumber}, ${form.city}, ${form.zipNumber}`,
+      phoneNumber: this.postDeliveryInfoForm.value.phoneNumber,
+    }
+
 
     let query = ref => ref.where('winner.userId', '==', this._userId);
 

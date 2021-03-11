@@ -10,11 +10,14 @@
 
     <app-item-list class="items" *ngIf="(items$ | async) as items"
         [useGallery]="false"
+        [auction]="data.auction"
+        [auctionId]="data.auction.id"
         [items]="items"
         [fromDialog]="true"
         [initItem]="data.initItem"
         [initItemIdx]="data.initItemIdx"
         [parentScroll]="parentScroll"
+        [userTrackedItems]="userTrackedItems"
         [enableUnequalChildrenSizes]="true"
         (onFetchMore)="onFetchMore($event)"
     ></app-item-list>

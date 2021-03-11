@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Even
 import { MediaObserver } from '@angular/flex-layout';
 import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { Auction } from 'src/business/models/auction.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
@@ -26,7 +27,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input() fromDialog = false;
   @Input('initItem') initItemFromDialog: AuctionItem;
   @Input('initItemIdx') initItemFromDialogIdx: number;
-  @Input()userTrackedItems: Set<string>;
+  @Input() userTrackedItems: Set<string>;
 
   // @Input() enableUnequalChildrenSizes = false;
   @Input() enableUnequalChildrenSizes = false;
@@ -43,6 +44,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
   }
 
+  @Input() auction: Auction;
   @Input('auctionId') auctionId: string = "k83JqY20Bjnv58hmYcHb";
   @Input() parentScroll: ElementRef;
 

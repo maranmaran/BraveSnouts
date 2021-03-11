@@ -26,6 +26,7 @@ export class ItemScrollViewService {
 
   remove() {
     this._show = false;
+    this._view.next('grid');
   }
 
   switchTab(tab: string) {

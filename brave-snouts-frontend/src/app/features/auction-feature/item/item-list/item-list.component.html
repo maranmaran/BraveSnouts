@@ -7,11 +7,11 @@
         <!-- <div class="item text-center" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="(userTrackedItems$ | async)">
           {{ item.name }}
         </div> -->
-        <app-item-details class="item" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="userTrackedItems"></app-item-details>
+        <app-item-details class="item" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [auction]="auction" [item]="item" [trackedItems]="userTrackedItems"></app-item-details>
     </div>
 
 </virtual-scroller>
 
 <ng-template #gallery>
-    <app-item-gallery [items]="items" [parentScroll]="parentScroll" (loadMore)="onLoadMore($event)" ></app-item-gallery>
+    <app-item-gallery [auction]="auction" [items]="items" [parentScroll]="parentScroll" (loadMore)="onLoadMore($event)" ></app-item-gallery>
 </ng-template>

@@ -1,13 +1,13 @@
 
 import { Injectable } from "@angular/core";
+import { AngularFirestore } from "@angular/fire/firestore";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
 import { Auction } from "src/business/models/auction.model";
-import { AuctionRepository } from "src/business/services/repositories/auction.repository";
 import { getAuctionState } from "src/business/services/auction.service";
 import { AuthService } from "src/business/services/auth.service";
-import { AngularFirestore } from "@angular/fire/firestore";
+import { AuctionRepository } from "src/business/services/repositories/auction.repository";
 
 @Injectable({ providedIn: 'root' })
 export class AuctionActiveGuard implements CanActivate {
@@ -25,8 +25,8 @@ export class AuctionActiveGuard implements CanActivate {
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
-    let auction = this.router.getCurrentNavigation().extras.state?.auction as Auction; 
-    let auctionId = next.paramMap.get('id');
+    let auction = this.router.getCurrentNavigation().extras.state?.auction as Auction;
+    let auctionId = next.paramMap.get('id') || next.paramMap.get('auctionId');
 
     if(!auction && !auctionId) {
       return this.router.navigate(['/app'])
@@ -42,10 +42,10 @@ export class AuctionActiveGuard implements CanActivate {
 
         if(!auction) {
           let auction$ = this.getAuction(auctionId);
-    
+
           return auction$.pipe(map(auction => getAuctionState(auction) == 'active'));
         }
-    
+
         return of(getAuctionState(auction) == 'active');
       }),
       switchMap(canNavigate => {

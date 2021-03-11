@@ -40,8 +40,8 @@ export class AuctionItemRepository {
     getScrollPage(auctionId: string, last: AuctionItem) {
 
         const query = ref => {
-            ref = ref.orderBy('id', 'asc');
-            if(last) ref = ref.startAfter(last.id);
+            ref = ref.orderBy('name', 'asc').orderBy('id', 'asc');
+            if(last) ref = ref.startAfter(last.name, last.id);
             return ref.limit(this.pageSize);
         }
 

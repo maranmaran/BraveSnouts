@@ -3,6 +3,7 @@ import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -10,6 +11,7 @@ import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-di
 import { fadeIn } from 'src/business/animations/fade-in.animation';
 import { itemAnimations } from 'src/business/animations/item.animations';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -33,11 +35,13 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
     public readonly mediaObs: MediaObserver,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly router: Router,
   ) {
   }
 
   // Data
+  @Input() auction: Auction;
   @Input() item: AuctionItem;
   @Input('trackedItems') userTrackedItems: Set<string>;
 
@@ -71,6 +75,9 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   bidStepSize = environment.itemCardConfig.bidStepSize;
 
   ngOnInit(): void {
+
+    if(!this.auction)
+      this.toastSvc.error("Nema informacija o aukciji!!!");
 
     this.setupControls(this.item);
 
@@ -183,6 +190,11 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
    * @param item item that the user is bidding on
    */
   async onBid(item: AuctionItem) {
+
+    if(this.auction.endDate.toDate() < new Date()) {
+      this.toastSvc.warning("Nažalost aukcija je završila");
+      return this.router.navigate(["/"]);
+    }
 
     item = Object.assign({}, item);
 

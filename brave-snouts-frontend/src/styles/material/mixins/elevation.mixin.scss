@@ -32,8 +32,13 @@
             }
             &.hover-large {
                 &:hover {
+                    &.primary {
+                      @include mat-elevation(12, mat-color(map-get($theme, primary), 800), 1);
+                    }
+
                     @include mat-elevation(12);
                 }
+
             }
         }
     }

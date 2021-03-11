@@ -78,7 +78,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       );
 
       this._subsink.add(
-        this.winnersRepo.getAuctionWinners(this._auctionId)
+        this.winnersRepo.getAuctionWinners(this._auctionId, ref => ref.orderBy('userInfo.name', 'asc'))
         .subscribe(winners => this.auctionWinners = winners)
       )
 

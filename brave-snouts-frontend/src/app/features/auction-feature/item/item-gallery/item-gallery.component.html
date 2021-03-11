@@ -21,7 +21,7 @@
 
     <ng-container *ngIf="(itemScrollViewSvc.view$ | async) == 'items'">
       <app-item-details class="item"
-        *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item" [trackedItems]="userTrackedItems">
+        *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [auction]="auction" [item]="item" [trackedItems]="userTrackedItems">
       </app-item-details>
     </ng-container>
 

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
+import { Auction } from 'src/business/models/auction.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -20,6 +21,7 @@ import { ItemScrollViewService } from './item-scroll-view.service';
 })
 export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
+  @Input() auction: Auction;
   @Input() items: AuctionItem[];
   @Input() parentScroll: ElementRef;
   @Output() loadMore = new EventEmitter<IPageInfo>();
@@ -117,7 +119,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['items-dialog', 'mat-elevation-z8'],
-      data: { items: this.items, initItem: item, initItemIdx: this.items.findIndex(it => it.id == item.id), svc: this.itemDialogSvc }
+      data: { auction: this.auction, items: this.items, initItem: item, initItemIdx: this.items.findIndex(it => it.id == item.id), svc: this.itemDialogSvc }
     });
 
     // dialogRef.afterClosed()

@@ -90,7 +90,7 @@ export class WinnerDetailsDialogComponent implements OnInit {
 
     let message = "<ul>";
     for(const item of items) {
-      message += `<li>${item.name} - ${item.description.replace(/<[^>]*>?/gm, '')}</li>`;
+      message += `<li>${item.name} - ${item.description?.replace(/<[^>]*>?/gm, '') ?? 'Nema opisa' }</li>`;
     }
     message += "</ul>"
 

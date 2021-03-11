@@ -39,7 +39,7 @@ const routes: Routes = [
     { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
 
     { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
-    { path: 'item', component: SingleItemComponent },
+    { path: 'item', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
 
     { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
     { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
