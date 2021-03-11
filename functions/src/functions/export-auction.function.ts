@@ -117,7 +117,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
                         'pošta' :
                         'nije izabrano',
                 winner.postalInformation?.address,
-                winner.postalInformation?.phoneNumber,
+                winner.postalInformation?.phoneNumber ?? usersMap.get(winner.userId).phoneNumber,
                 winner.userInfo.email
             ]);
         }
