@@ -150,24 +150,15 @@ export class AuctionBulkImageFormComponent implements OnInit {
     return 'video';
   }
 
+  filesToDeleteQueue: FirebaseFile[] = [];
   /**Remove file from array of files */
   removeFile(file: FirebaseFile, url: string, event: Event) {
     event.preventDefault();
     event.stopPropagation();
 
-    // this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
-
     // delete on server
-    this.uploadState$.next(true);
-    this.storage.deleteFile(url)
-      .then(() => this.files.splice(this.files.indexOf(file), 1))
-      .catch(err => console.log(err))
-      .finally(() => {
-        // delete locally
-        this.files.splice(this.files.indexOf(file), 1);
-        this.uploadState$.next(false);
-      });
-
+    this.filesToDeleteQueue.push(file);
+    this.files.splice(this.files.indexOf(file), 1);
   }
 
   //#endregion
@@ -215,6 +206,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
    * Navigate back to root for list of auctions once done
    */
   postCreate() {
+    this.clearFiles();
+
     this.auctionRepo.getOne(this.auctionId)
     .pipe(
       take(1),
@@ -225,6 +218,14 @@ export class AuctionBulkImageFormComponent implements OnInit {
         { state: { auction, items, action: 'edit' } }
       ))
     ).subscribe(noop, err => console.log(err));
+  }
+
+  clearFiles() {
+    if(!this.filesToDeleteQueue) return;
+
+    for(const file of this.filesToDeleteQueue) {
+      this.storage.deleteFile(file.url).catch(err => console.log(err))
+    }
   }
 
   //#endregion

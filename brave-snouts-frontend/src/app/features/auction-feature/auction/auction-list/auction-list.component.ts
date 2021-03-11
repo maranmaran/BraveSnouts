@@ -161,8 +161,8 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     let auction = {
       id: auctionObj.id,
       name: auctionObj.name,
-      startDate: auctionObj.startDate.toDate(),
-      endDate: auctionObj.endDate.toDate(),
+      startDate: auctionObj.startDate,
+      endDate: auctionObj.endDate,
       raisedMoney: auctionObj.raisedMoney,
     }
 

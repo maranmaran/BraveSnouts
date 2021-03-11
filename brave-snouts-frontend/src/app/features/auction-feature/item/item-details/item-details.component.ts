@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -33,6 +33,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
     public readonly mediaObs: MediaObserver,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) {
   }
 
@@ -124,8 +125,20 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   */
   onAuthDataChange() {
     return [
-      this.authSvc.user$.subscribe(user => (this.userId = user?.uid, this.userData = user), err => console.log(err)),
-      this.authSvc.isAuthenticated$.subscribe(isAuth => this.isAuthenticated = isAuth, err => console.log(err))
+      this.authSvc.user$
+      .subscribe(user => (
+                    this.userId = user?.uid,
+                    this.userData = user,
+                    this.changeDetectorRef.detectChanges()
+                  ),
+                  err => console.log(err)),
+
+      this.authSvc.isAuthenticated$
+      .subscribe(isAuth => (
+                    this.isAuthenticated = isAuth,
+                    this.changeDetectorRef.detectChanges()
+                  ),
+                  err => console.log(err))
     ]
   }
 

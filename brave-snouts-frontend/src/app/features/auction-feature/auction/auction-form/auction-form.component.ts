@@ -85,14 +85,23 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
-    const startTime = moment(auction.startDate).format('HH:mm');
-    const endTime = moment(auction.endDate).format('HH:mm');
+
+    let startDate = auction.startDate as unknown  as Date;
+    let endDate = auction.endDate as unknown as Date;
+    if(!this.createMode) {
+      // received timestamp convert to date
+      startDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
+      endDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
+    }
+
+    const startTime = moment(startDate).format('HH:mm');
+    const endTime = moment(endDate).format('HH:mm');
 
     this.auction = this.formBuilder.group({
       id: [auction.id ?? uuidv4()], // hidden
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      startDate: [auction.startDate, [Validators.required]],
-      endDate: [auction.endDate, [Validators.required]],
+      startDate: [startDate, [Validators.required]],
+      endDate: [endDate, [Validators.required]],
       startTime: [startTime, [Validators.required]],
       endTime: [endTime, [Validators.required]],
       raisedMoney: [auction.raisedMoney]
@@ -146,9 +155,10 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   /**Adds item control group to array */
   addItem() {
     let itemForm = this.getItemFormGroup();
-    (this.itemsArr as FormArray).push(itemForm);
-    this.files.push([]);
-    this.uploadStates$.push(new BehaviorSubject(false))
+
+    this.itemsArr.insert(0, itemForm);
+    this.files = [[], ...this.files];
+    this.uploadStates$ = [new BehaviorSubject(false), ...this.uploadStates$];
   }
 
   itemsToDeleteQueue: { itemId: string, auctionId: string, user: string, bid: number }[] = [];
@@ -218,6 +228,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     return 'video';
   }
 
+  filesToDeleteQueue: FirebaseFile[] = [];
   /**Remove file from array of files */
   removeFile(itemIdx: number, file: FirebaseFile, url: string, event: Event) {
     event.preventDefault();
@@ -225,16 +236,18 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
     // this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
 
-    // delete on server
-    this.uploadStates$.push(new BehaviorSubject(true));
-    this.storage.deleteFile(url)
-      // .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
-      .catch(err => console.log(err))
-      .finally(() => {
-        // delete locally
-        this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
-        this.uploadStates$.push(new BehaviorSubject(false));
-      });
+    this.filesToDeleteQueue.push(file);
+    this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
+    // // delete on server
+    // this.uploadStates$.push(new BehaviorSubject(true));
+    // this.storage.deleteFile(url)
+    //   // .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
+    //   .catch(err => console.log(err))
+    //   .finally(() => {
+    //     // delete locally
+    //     this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
+    //     this.uploadStates$.push(new BehaviorSubject(false));
+    //   });
 
   }
 
@@ -337,6 +350,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
    * Navigate back to root for list of auctions once done
    */
   postCreate() {
+    this.clearFiles();
     this.router.navigate(['/app']);
   }
 
@@ -344,7 +358,16 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
    * ...
    */
   postUpdate() {
+    this.clearFiles();
     this.router.navigate(['/app']);
+  }
+
+  clearFiles() {
+    if(!this.filesToDeleteQueue) return;
+
+    for(const file of this.filesToDeleteQueue) {
+      this.storage.deleteFile(file.url).catch(err => console.log(err))
+    }
   }
 
 

@@ -170,7 +170,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   openAuctionWinnersDetails() {
 
     this.dialog.open(WinnerDetailsDialogComponent, {
-      height: 'auto',
+      height: '80vh',
       width: '98%',
       maxWidth: '30rem',
       autoFocus: false,
