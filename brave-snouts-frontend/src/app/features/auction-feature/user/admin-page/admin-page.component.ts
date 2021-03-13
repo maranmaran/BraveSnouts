@@ -11,6 +11,7 @@ import { noop, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -77,10 +78,10 @@ export class AdminPageComponent implements OnInit, OnDestroy {
         tap(auction => this.setupCountdown(auction)),
       );
 
-      this._subsink.add(
-        this.winnersRepo.getAuctionWinners(this._auctionId, ref => ref.orderBy('userInfo.name', 'asc'))
+    this._subsink.add(
+      this.winnersRepo.getAuctionWinners(this._auctionId, ref => ref.orderBy('userInfo.name', 'asc'))
         .subscribe(winners => this.auctionWinners = winners)
-      )
+    )
 
     this.onLoadMore({ endIndex: -1 } as IPageInfo);
   }
@@ -192,30 +193,30 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed()
-    .pipe(take(1))
-    .subscribe(handoverDetails => {
-      if(!handoverDetails) return;
+      .pipe(take(1))
+      .subscribe(handoverDetails => {
+        if (!handoverDetails) return;
 
-      this.functionsSvc.endAuction(auctionId, handoverDetails)
-      .pipe(
-        take(1),
-        this.toastSvc.observe(
-          {
-            loading: 'Aukcija se zatvara..',
-            success: "Uspješno završena aukcija",
-            error: "Nešto je pošlo po zlu",
-          }
-        )
-      )
-      .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
+        this.functionsSvc.endAuction(auctionId, handoverDetails)
+          .pipe(
+            take(1),
+            this.toastSvc.observe(
+              {
+                loading: 'Aukcija se zatvara..',
+                success: "Uspješno završena aukcija",
+                error: "Nešto je pošlo po zlu",
+              }
+            )
+          )
+          .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
 
-    }, err => console.log(err))
+      }, err => console.log(err))
 
   }
 
   changeHandoverDetails(auctionId) {
 
-    const dialogRef = this.dialog.open(HandoverDialogComponent,  {
+    const dialogRef = this.dialog.open(HandoverDialogComponent, {
       height: 'auto',
       width: '98%',
       maxWidth: '30rem',
@@ -225,24 +226,24 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed()
-    .pipe(take(1))
-    .subscribe(handoverDetails => {
-      if(!handoverDetails || handoverDetails.length == 0) return;
+      .pipe(take(1))
+      .subscribe(handoverDetails => {
+        if (!handoverDetails || handoverDetails.length == 0) return;
 
-      this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
-      .pipe(
-        take(1),
-        this.toastSvc.observe(
-          {
-            loading: 'Mijenjam..',
-            success: "Uspješna izmjena",
-            error: "Nešto je pošlo po zlu",
-          }
-        ),
-      )
-      .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
+        this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
+          .pipe(
+            take(1),
+            this.toastSvc.observe(
+              {
+                loading: 'Mijenjam..',
+                success: "Uspješna izmjena",
+                error: "Nešto je pošlo po zlu",
+              }
+            ),
+          )
+          .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
 
-    }, err => console.log(err))
+      }, err => console.log(err))
 
   }
 
@@ -292,26 +293,46 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
 
     const winnerUpdate = Object.assign({}, winner, { paymentStatus });
-    const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate } ;
+    const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate };
 
     await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
   }
 
   onDownloadExcel(auction: Auction) {
     this.functionsSvc.exportAuction(this._auctionId)
-    .pipe(
-      take(1),
-      this.toastSvc.observe(
-        {
-          loading: 'Priprema podataka..',
-          success: "Uspješno exportano",
-          error: "Nešto je pošlo po zlu",
-        }
-      ),
-      switchMap(res => this.storage.getDownloadUrl(`exports/${auction.name}.xlsx`))
-    )
-    .subscribe(url => {
-      window.location.href = url;
-    }, console.log);
+      .pipe(
+        take(1),
+        this.toastSvc.observe(
+          {
+            loading: 'Priprema podataka..',
+            success: "Uspješno exportano",
+            error: "Nešto je pošlo po zlu",
+          }
+        ),
+        switchMap(res => this.storage.getDownloadUrl(`exports/${auction.name}.xlsx`))
+      )
+      .subscribe(url => {
+        window.location.href = url;
+      }, console.log);
+  }
+
+  newItemsMail(auctionId: string) {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      data: { text: `Sigurno želiš informirati korisnike da su dodane novi predmeti u ovu aukciju?`, yes: 'Želim', no: 'Ne želim' }
+    });
+
+    return dialogRef.afterClosed().pipe(take(1))
+      .subscribe(method => {
+
+        if (!method)
+          return;
+
+        this.functionsSvc.sendNewItemsAddedMail(auctionId);
+      })
   }
 }

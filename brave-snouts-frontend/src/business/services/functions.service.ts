@@ -51,4 +51,10 @@ export class FunctionsService {
 
       return callable({ userId, auctionId, chosenOption: 'handover', chosenOptionData });
     }
+
+    sendNewItemsAddedMail(auctionId) {
+      const callable = this.functions.httpsCallable('newItemsAdded-newItemsAddedFn');
+
+      return callable({ auctionId });
+    }
 }

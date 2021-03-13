@@ -230,3 +230,101 @@ export const sendPostConfirmationMail = async (user: User, auctionId: string, po
 
   await mailSvc.sendMail(email);
 }
+
+/** Sends mail informing that new auction items were added to the auction */
+export const sendNewItemsAddedMail = async (user: User, auction: Auction) => {
+  logger.info(`Sending mail to ${user.email} to inform new items have been added to auction`);
+
+  // load and customize html template
+  const emailVariables = {
+    user_name: user.displayName,
+    auction_name: auction.name,
+    auction_url: `${config.base.url}/auction;id=${auction.id}`,
+    optout_url: getEmailOptoutLink(user.id, "auctionannouncements"),
+  }
+  
+  let template = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'items-added-announcement.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(template.html)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
+
+  const email = {
+    // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    to: user.email,
+    subject: 'Novi predmeti u aukciji!',
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-original-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
+      cid: 'logo' 
+    }]
+  };
+
+  await mailSvc.sendMail(email);
+}
+
+/** Sends mail informing that auction is ending soon */
+export const sendAuctionEndingAnnouncementMail = async (user: User, auction: Auction, endingIn: string) => {
+  logger.info(`Sending mail to ${user.email} to inform that auction is ending soon`);
+
+  // load and customize html template
+  const emailVariables = {
+    user_name: user.displayName,
+    auction_name: auction.name,
+    ends_in: endingIn,
+    auction_url: `${config.base.url}/auction;id=${auction.id}`,
+    optout_url: getEmailOptoutLink(user.id, "auctionannouncements"),
+  }
+  
+  let template = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'auction-end-announcement.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(template.html)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
+
+  const email = {
+    // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    to: user.email,
+    subject: 'Aukcija uskoro završava!',
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-original-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
+      cid: 'logo' 
+    }]
+  };
+
+  await mailSvc.sendMail(email);
+}
+
+/** Sends mail informing that auction is starting soon */
+export const sendAuctionStartingAnnouncementMail = async (user: User, auction: Auction, startsIn: string) => {
+  logger.info(`Sending mail to ${user.email} to inform that auction is starting soon`);
+
+  // load and customize html template
+  const emailVariables = {
+    user_name: user.displayName,
+    auction_name: auction.name,
+    starts_in: startsIn,
+    auction_url: `${config.base.url}/auction;id=${auction.id}`,
+    optout_url: getEmailOptoutLink(user.id, "auctionannouncements"),
+  }
+  
+  let template = mjml2html(fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'auction-start-announcement.mjml'), 'utf8'), { });
+  let emailTemplatePrecompiled = handlebars.compile(template.html)
+  const emailTemplate = emailTemplatePrecompiled(emailVariables);
+
+  const email = {
+    // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
+    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    to: user.email,
+    subject: 'Aukcija uskoro počinje!',
+    html: emailTemplate,
+    attachments: [{
+      filename: 'njuske-original-compressed.jpg',
+      path: path.join(process.cwd(), 'assets', 'njuske-original-compressed.jpg'),
+      cid: 'logo' 
+    }]
+  };
+
+  await mailSvc.sendMail(email);
+}

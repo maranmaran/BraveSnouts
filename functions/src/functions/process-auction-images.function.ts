@@ -70,7 +70,7 @@ export const processAuctionImagesFn = europeFunctions
                 .interlace('Plane')
                 .gaussian(0.05)
                 .resize(500, 500)
-                .quality(50)
+                .quality(100)
                 .compress('JPEG')
                 .writeAsync(`${transformedFolder}/${fileName}.jpg`);
                 
@@ -84,7 +84,7 @@ export const processAuctionImagesFn = europeFunctions
                 .interlace('Plane')
                 .gaussian(0.05)
                 .resize(150, 150)
-                .quality(50)
+                .quality(100)
                 .compress('JPEG')
                 .writeAsync(`${transformedFolder}/${fileName}_thumb.jpg`);
 

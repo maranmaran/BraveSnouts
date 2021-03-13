@@ -1,13 +1,12 @@
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 import * as GM from 'gm';
-import moment from 'moment';
 import * as pathLib from 'path';
 import { Picsum } from 'picsum-photos';
-import request, { head } from 'request';
+import request from 'request';
+import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
 import { Auction } from './models';
-import { v4 as uuidv4 } from 'uuid';
 
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
@@ -78,7 +77,7 @@ const transformImagesFn = async (imagesDir: string, transformDir: string) => {
         .interlace('Plane')
         .gaussian(0.05)
         .resize(500, 500)
-        .quality(50)
+        .quality(100)
         .compress('JPEG')
         .write(`${transformedPath}\\${fileName}.jpg`, (res, err) => console.log(res, err));
 
@@ -89,7 +88,7 @@ const transformImagesFn = async (imagesDir: string, transformDir: string) => {
         .interlace('Plane')
         .gaussian(0.05)
         .resize(150, 150)
-        .quality(50)
+        .quality(100)
         .compress('JPEG')
         .write(`${transformedPath}\\${fileName}_thumb.jpg`, (res, err) => console.log(res, err));
     }
