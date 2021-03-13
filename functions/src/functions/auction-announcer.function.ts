@@ -36,7 +36,7 @@ export const auctionAnnouncerFN = europeFunctions.pubsub.schedule('5 10-22 * * *
             if (hours === 1) {
                 logger.log(`starting in 1 hour`);
                 for (const user of users) {
-                    sendAuctionStartingAnnouncementMail(user, auction, "1 sat")
+                    await sendAuctionStartingAnnouncementMail(user, auction, "1 sat")
                 }
             }
         }
@@ -55,7 +55,7 @@ export const auctionAnnouncerFN = europeFunctions.pubsub.schedule('5 10-22 * * *
             if (hours === 1) {
                 logger.log(`ending in 1 hour`);
                 for (const user of users) {
-                    sendAuctionEndingAnnouncementMail(user, auction, "1 sat")
+                    await sendAuctionEndingAnnouncementMail(user, auction, "1 sat")
                 }
             }
         }

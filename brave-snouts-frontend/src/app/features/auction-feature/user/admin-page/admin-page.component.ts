@@ -332,7 +332,15 @@ export class AdminPageComponent implements OnInit, OnDestroy {
         if (!method)
           return;
 
-        this.functionsSvc.sendNewItemsAddedMail(auctionId);
+        this.functionsSvc.sendNewItemsAddedMail(auctionId)
+        .pipe(
+          this.toastSvc.observe({
+            loading: 'Slanje...',
+            success: 'Uspješno',
+            error: 'Nešto je pošlo po zlu'
+          })
+        )
+        .subscribe(noop);
       })
   }
 }
