@@ -1,8 +1,6 @@
-import { Route } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { noop, Subject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -63,17 +61,17 @@ export class EmailOptoutComponent implements OnInit {
     this.store.collection("users").doc(userId).valueChanges()
     .pipe(take(1))
     .subscribe((user: User) => {
-      
+
       let emailSettings = user.emailSettings;
 
       switch (this.optout) {
-        case "acountannouncements":
+        case "auctionannouncements":
           emailSettings.auctionAnnouncements = false
           break;
         case "bidchange":
           emailSettings.bidUpdates = false
           break;
-      
+
         default:
           break;
       }
@@ -86,6 +84,6 @@ export class EmailOptoutComponent implements OnInit {
     }, err => (console.log(err), this.bootstrap = true, this.success = false));
 
   }
-        
+
 
 }
