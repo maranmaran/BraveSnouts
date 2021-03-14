@@ -17,6 +17,7 @@ const exportAuctionFn = require('./functions/export-auction.function');
 const processAuctionImagesFn = require('./functions/process-auction-images.function');
 const handoverConfirmFn = require('./functions/handover-confirm.function');
 const newItemsAddedFn = require('./functions/new-items-added.function');
+const announcerFn = require('./functions/auction-announcer.function');
 // const archiveAuctionFn = require('./functions/archive-auction.function');
 // const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
@@ -54,6 +55,9 @@ export const handoverConfirm = handoverConfirmFn;
 
 // send new items have been added to auction mail 
 export const newItemsAdded = newItemsAddedFn;
+
+// announces auction starting or ending soon
+export const announcer = announcerFn;
 
 // export const archiveAuction = archiveAuctionFn;
 // export const bidChangeEmailOptOut = bidChangeEmailOptOutFn;

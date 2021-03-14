@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 
 @Component({
@@ -63,7 +62,7 @@ export class ItemMediaComponent implements OnInit {
   /* Opens fullscreen view of image aka lightbox */
   openLightbox(imageIdx: number = 0) {
 
-    this.gallery.ref(this.galleryId).setConfig({imageSize: 'contain'});
+    // this.gallery.ref(this.galleryId).setConfig({imageSize: 'contain'});
 
     let lightboxData = [];
     for (const { url, type } of this.dbMedia) {
@@ -78,10 +77,10 @@ export class ItemMediaComponent implements OnInit {
       'panelClass': 'fullscreen',
     });
 
-    this.lightbox.closed.pipe(take(1)).subscribe(
-      _ => this.gallery.ref(this.galleryId).setConfig({imageSize: 'cover'}),
-      err => console.log(err)
-    );
+    // this.lightbox.closed.pipe(take(1)).subscribe(
+    //   _ => this.gallery.ref(this.galleryId).setConfig({imageSize: 'cover'}),
+    //   err => console.log(err)
+    // );
   }
 
 }

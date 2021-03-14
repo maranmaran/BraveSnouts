@@ -48,6 +48,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppContainerComponent } from './core/app-container/app-container.component';
+import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
 import { HandoverDialogComponent } from './features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
 import { ItemGalleryComponent } from './features/auction-feature/item/item-gallery/item-gallery.component';
@@ -60,7 +61,6 @@ import { ChangeEmailDialogComponent } from './features/auth-feature/change-email
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { RegisterComponent } from './features/auth-feature/register/register.component';
-import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
 
 registerLocaleData(hrLocale);
 
@@ -161,7 +161,8 @@ registerLocaleData(hrLocale);
       useValue: {
         dots: false,
         counter: false,
-        imageSize: 'cover',
+        // imageSize: 'cover',
+        imageSize: 'contain',
         thumb: false,
         loop: false,
       }

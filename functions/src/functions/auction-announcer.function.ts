@@ -91,7 +91,7 @@ async function getActiveAuctions() {
 
     const auctionEndQuery = store.collection('auctions')
         .where('endDate', '>=', today())
-        .where('endtDate', '<=', tomorrow)
+        .where('endDate', '<=', tomorrow)
         .orderBy('endDate');
 
     const endingAuctionsSnap = await auctionEndQuery.get();

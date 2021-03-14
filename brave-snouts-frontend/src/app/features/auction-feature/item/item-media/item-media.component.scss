@@ -8,5 +8,6 @@ img, video {
 }
 
 .single-gallery-image {
-  object-fit: cover;
+  // object-fit: cover;
+  object-fit: contain;
 }

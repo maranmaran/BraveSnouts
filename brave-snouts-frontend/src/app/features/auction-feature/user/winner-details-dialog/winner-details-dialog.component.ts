@@ -34,7 +34,7 @@ export class WinnerDetailsDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this._auctionId = this.data.auctionId;
-    this.winners = this.data.winners;
+    this.winners = this.data.winners
   }
 
   onClose() {
@@ -83,6 +83,16 @@ export class WinnerDetailsDialogComponent implements OnInit {
 
     for(const item of winner.items) {
       this.firestore.doc(`auctions/${winner.auctionId}/items/${item.id}`).set({ winner: { paymentStatus } }, { merge: true });
+    }
+  }
+
+  async markPackedState(change: MatButtonToggleChange, winner: WinnerOnAuction) {
+    const packed = change.value as 'yes' | 'no' | null | undefined;
+
+    this.winnersRepo.updateAuctionWinner(winner.auctionId, winner.id, { packed });
+
+    for(const item of winner.items) {
+      this.firestore.doc(`auctions/${winner.auctionId}/items/${item.id}`).set({ winner: { packed } }, { merge: true });
     }
   }
 

@@ -171,12 +171,12 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   openAuctionWinnersDetails() {
 
     this.dialog.open(WinnerDetailsDialogComponent, {
-      height: '80vh',
+      maxHeight: '80vh',
       width: '98%',
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
-      panelClass: 'p-0',
+      panelClass: ['dialog', 'no-padding'],
       data: { winners: this.auctionWinners, auctionId: this._auctionId }
     });
 
@@ -293,6 +293,15 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
 
     const winnerUpdate = Object.assign({}, winner, { paymentStatus });
+    const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate };
+
+    await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
+  }
+
+  async markPackedState(change: MatButtonToggleChange, winner: Winner) {
+    const packed = change.value as 'yes' | 'no';
+
+    const winnerUpdate = Object.assign({}, winner, { packed });
     const partialUpdate: Partial<AuctionItem> = { winner: winnerUpdate };
 
     await this.itemsRepo.update(this._auctionId, winner.itemId, partialUpdate);
