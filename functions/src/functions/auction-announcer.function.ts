@@ -1,63 +1,39 @@
 import { logger } from 'firebase-functions';
 import { europeFunctions, store } from "..";
 import { Auction, User } from "../models/models";
-import { sendAuctionEndingAnnouncementMail, sendAuctionStartingAnnouncementMail } from './../services/mail.service';
-import moment = require("moment");
+import { sendAuctionAnnouncementMail } from '../services/mail.service';
+import moment = require("moment-timezone");
 
-export const auctionAnnouncerFN = europeFunctions.pubsub.schedule('5 10-22 * * *')
+export const announcerFn = europeFunctions.pubsub.schedule('0 10-22 * * *')
     .timeZone('Europe/Zagreb')
     .onRun(async ctx => {
 
-        const futureAuctions = await getFutureAuctions();
-        const activeAuctions = await getActiveAuctions();
-        const users = await getUsers(futureAuctions?.length + activeAuctions?.length);
-        if (users?.length == 0) {
-            logger.warn('No users to send data to');
-            return;
-        }
+        let startingSoon1Hour = await getStartingSoonAuctions(1, 10);
+        let startingSoon24Hours = await getStartingSoonAuctions(24, 10);
 
-        // inform users with emails enabled if 
-        for (const auction of futureAuctions) {
+        let started = await getStartedAuctions();
 
-            const duration = moment.duration(moment(auction.startDate.toDate()).diff(today()));
-            const hours = duration.asHours();
+        let endingSoon1Hour = await getEndingSoonAuctions(1, 10);
+        let endingSoon24Hours = await getEndingSoonAuctions(24, 10);
 
-            logger.log(`Auction ${auction.id} with start ${auction.startDate} duration in hours ${hours}`);
+        if(
+            startingSoon1Hour.auctions?.length > 0 || 
+            startingSoon24Hours.auctions?.length > 0 || 
+            started.auctions?.length > 0 || 
+            endingSoon1Hour.auctions?.length > 0 || 
+            endingSoon24Hours.auctions?.length > 0 
+        ) {
+            logger.log("Sending announcements");
+            
+            // get users to send updates to..
+            let users = await getUsers();
 
-            // if auction starts in 24 hours
-            // if (hours === 24) {
-            //     logger.log(`starting in 24 hours`);
-            //     for (const user of users) {
-            //         sendAuctionEndingAnnouncementMail(user, auction, "1 dan")
-            //     }
-            // }
-
-            // if auction starts in 1 hour
-            if (hours === 1) {
-                logger.log(`starting in 1 hour`);
-                for (const user of users) {
-                    await sendAuctionStartingAnnouncementMail(user, auction, "1 sat")
-                }
-            }
-        }
-
-        for (const auction of activeAuctions) {
-            const duration = moment.duration(moment(auction.endDate.toDate()).diff(today()));
-            const hours = duration.asHours();
-
-            logger.log(`Auction ${auction.id} with end ${auction.endDate} duration in hours ${hours}`);
-
-            // if auction ends in 1 hour
-            // if (hours === 24) {
-            //     logger.log(`ending in 24 hours`);
-            // }
-            // if auction ends in 24 hours
-            if (hours === 1) {
-                logger.log(`ending in 1 hour`);
-                for (const user of users) {
-                    await sendAuctionEndingAnnouncementMail(user, auction, "1 sat")
-                }
-            }
+            // execute callbacks
+            await startingSoon1Hour.callback(users)
+            await startingSoon24Hours.callback(users)
+            await started.callback(users)
+            await endingSoon1Hour.callback(users)
+            await endingSoon24Hours.callback(users)
         }
     })
 
@@ -66,45 +42,77 @@ const getDocument = (doc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirest
 
 const today = () => moment(new Date()).utc();
 
-async function getFutureAuctions() {
-    // get auctions 
-    // <---1day----NOW----1day---> 
-    // timeframe
+async function getStartingSoonAuctions(hours = 1, minutesWindow = 10) {
 
-    // Get auctions for today
-    const tomorrow = today().add(1, 'days').endOf('day');
+    const auctionsQuery = store.collection('auctions')
+        .where('startDate', '<=', today().add(hours, 'hours').add(minutesWindow, 'minutes'))
+        .where('startDate', '>=', today().add(hours, 'hours').subtract(minutesWindow, 'minutes'))
 
-    const auctionStartQuery = store.collection('auctions')
-        .where('startDate', '>=', today())
-        .where('startDate', '<=', tomorrow)
-        .orderBy('startDate');
+    const auctionsSnap = await auctionsQuery.get();
+    const auctions = auctionsSnap.docs.map(getDocument) as Auction[];
 
-    const startingAuctionsSnap = await auctionStartQuery.get();
-    const startingAuctions = startingAuctionsSnap.docs.map(getDocument) as Auction[];
-
-    return startingAuctions.filter(a => getAuctionState(a) == 'future');
+    return {
+        auctions, callback: async (users) => {
+            for (const auction of auctions) {
+                logger.log(`Auction ${auction.name} starts in 1 hour`);
+                for (const user of users) {
+                    await sendAuctionAnnouncementMail(user, auction, "Aukcija uskoro počinje!", `počinje u ${moment(auction.startDate.toDate()).tz("Europe/Zagreb").format("HH:mm")}.`)
+                }
+            }
+        }
+    }
 }
 
-async function getActiveAuctions() {
-    // Get auctions for today
-    const tomorrow = today().add(1, 'days').endOf('day');
+async function getStartedAuctions() {
 
-    const auctionEndQuery = store.collection('auctions')
-        .where('endDate', '>=', today())
-        .where('endDate', '<=', tomorrow)
-        .orderBy('endDate');
+    const auctionsQuery = store.collection('auctions')
+        .where('startDate', '<=', today().add(10, 'minutes'))
+        .where('startDate', '>=', today().subtract(10, 'minutes'))
 
-    const endingAuctionsSnap = await auctionEndQuery.get();
-    const endingAuctions = endingAuctionsSnap.docs.map(getDocument) as Auction[];
+    const auctionsSnap = await auctionsQuery.get();
+    const auctions = auctionsSnap.docs.map(getDocument) as Auction[];
 
-    return endingAuctions.filter(a => getAuctionState(a) == 'active');
+    return {
+        auctions, callback: async (users) => {
+            for (const auction of auctions) {
+                logger.log(`Auction ${auction.name} started`);
+                let startTime = moment(auction.startDate.toDate()).tz("Europe/Zagreb").format("HH:mm");
+                let endTime = moment(auction.endDate.toDate()).tz("Europe/Zagreb").format("HH:mm");
+                let endDate = moment(auction.endDate.toDate()).tz("Europe/Zagreb").format("DD.MM")
+                for (const user of users) {
+                    await sendAuctionAnnouncementMail(user, auction, "Aukcija je počela!", `je počela u ${startTime} sati i završava ${endDate} u ${endTime} sati.`)
+                }
+            }
+        }
+    }
 }
 
-async function getUsers(auctionsLength: number) {
-    if (auctionsLength == 0) {
-        return [];
+async function getEndingSoonAuctions(hours = 1, minutesWindow = 10) {
+
+    logger.log(hours, minutesWindow);
+    logger.log(today().add(hours, 'hours').add(minutesWindow, 'minutes').toISOString())
+    
+    const auctionsQuery = store.collection('auctions')
+        .where('endDate', '<=', today().add(hours, 'hours').add(minutesWindow, 'minutes'))
+        .where('endDate', '>=', today().add(hours, 'hours').subtract(minutesWindow, 'minutes'))
+
+    const auctionsSnap = await auctionsQuery.get();
+    const auctions = auctionsSnap.docs.map(getDocument) as Auction[];
+
+    return {
+        auctions, callback: async (users) => {
+            for (const auction of auctions) {
+                logger.log(`Auction ${auction.name} ends in ${hours} hours`);
+                for (const user of users) {
+                    await sendAuctionAnnouncementMail(user, auction, "Aukcija uskoro završava!", `završava u ${moment(auction.endDate.toDate()).tz("Europe/Zagreb").format("HH:mm")}.`)
+                }
+            }
+        }
     }
 
+}
+
+async function getUsers() {
     const usersQuery = store.collection('users')
         .where('emailSettings.auctionAnnouncements', '==', true);
 
@@ -112,30 +120,5 @@ async function getUsers(auctionsLength: number) {
     const users = usersSnap.docs.map(getDocument) as User[];
 
     return users;
-}
-
-export function getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
-
-    let state: 'future' | 'active' | 'expired' = 'active';
-
-    if (isFutureAuction(auction)) {
-        state = 'future'
-    }
-
-    if (isExpiredAuction(auction)) {
-        state = 'expired'
-    }
-
-    return state;
-}
-
-/**Auction that is set in future and is yet to come */
-function isFutureAuction(auction: Auction) {
-    return moment(auction.startDate.toDate()).isAfter(new Date());
-}
-
-/**Auction that has ended and/or is processed by firebase function*/
-function isExpiredAuction(auction: Auction) {
-    return (moment(auction.endDate.toDate()).isBefore(new Date()) || auction.processed) && !isFutureAuction(auction);
 }
 

@@ -33,7 +33,7 @@
         <mj-divider></mj-divider>
               
         <mj-text align="center">
-          Aukcija "{{auction_name}}" počinje za {{ starts_in }}.
+          Aukcija "{{auction_name}}" {{ announce_message }}
         </mj-text>
         <mj-text align="center">
           Aukciji možete pristupiti 
