@@ -1,7 +1,6 @@
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
 import { Auction, AuctionItem, Bid, TrackedItem } from "../models/models";
-import { sendEndAuctionMail } from "../services/mail.service";
 import { UserInfo, WinnerOnAuction } from './../models/models';
 
 /** Processes auctions end
@@ -54,10 +53,11 @@ const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
   logger.info("Deleting tracked items")
   await clearTrackedItems(auctionId);
 
-  // Inform users
-  logger.info("Sending emails")
-  // logger.error("Uncomment send mails to actually send mails");
-  await sendMails(auction, userBids, handoverDetails);
+  // Separated sending mails and ending auction
+  // // Inform users
+  // logger.info("Sending emails")
+  // // logger.error("Uncomment send mails to actually send mails");
+  // await sendMails(auction, userBids, handoverDetails);
 
   // Mark processed auctions
   logger.info("Update auction as processed")
@@ -67,7 +67,7 @@ const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
 }
 
 /** Retrieves specific auction data */
-const getAuction = async (auctionId: string) => {
+export const getAuction = async (auctionId: string) => {
 
   const auction = await store.doc(`auctions/${auctionId}`).get();
 
@@ -79,7 +79,7 @@ const getAuction = async (auctionId: string) => {
 }
 
 /** Retrieves auction items */
-const getAuctionItems = async (auctionId: string) => {
+export const getAuctionItems = async (auctionId: string) => {
 
   const itemsQuery = store.doc(`auctions/${auctionId}`).collection('items');
   const itemsSnapshot = await itemsQuery.get();
@@ -95,7 +95,7 @@ const getAuctionItems = async (auctionId: string) => {
 }
 
 /** Reduces auction items and retrieves array of relevant bids */
-const getBids = (items: AuctionItem[]) => {
+export const getBids = (items: AuctionItem[]) => {
   const bids = items
     .filter(item => item.bid > 0 && item.user)
     .map(item => ({ value: item.bid, user: item.user, item }) as Bid);
@@ -110,7 +110,7 @@ const getBids = (items: AuctionItem[]) => {
 };
 
 /** Retrieves authenticated users information (Email, Name ..etc) */
-const getUserInformation = async (userIds: string[]) => {
+export const getUserInformation = async (userIds: string[]) => {
   const userInfoMap = new Map<string, UserInfo>();
 
   for await (const userId of userIds) {
@@ -142,7 +142,7 @@ const getUserInformation = async (userIds: string[]) => {
 }
 
 /** Retrieves users bid grouped and returns a Map for O(1) access */
-const getUserBidsMap = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserInfo, Bid[]> => {
+export const getUserBidsMap = (bids: Bid[], userInfoMap: Map<string, UserInfo>): Map<UserInfo, Bid[]> => {
   const userBidsMap = new Map<UserInfo, Bid[]>();
 
   userInfoMap.forEach(info => {
@@ -217,13 +217,6 @@ const clearTrackedItems = async (auctionId: string) => {
     const trackedItem = item.data() as TrackedItem;
     logger.info(`users/${trackedItem.userId}/tracked-items/${item.id}`);
     await store.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
-  }
-}
-
-/** Sends mails to relevant users with their won items */
-const sendMails = async (auction: Auction, userBids: Map<UserInfo, Bid[]>, handoverDetails: string[]) => {
-  for (const [userInfo, bids] of userBids) {
-    await sendEndAuctionMail(auction, handoverDetails, userInfo, bids);
   }
 }
 

@@ -19,6 +19,7 @@ import { AuctionFormGuard } from 'src/business/guards/auction-form.guard';
 import { AuctionIdGuard } from 'src/business/guards/auction-id.guard';
 import { AuthGuard } from 'src/business/guards/auth.guard';
 import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
+import { AdminAuctionsPageComponent } from './features/auction-feature/user/admin-auctions-page/admin-auctions-page.component';
 
 const routes: Routes = [
   // root
@@ -43,6 +44,7 @@ const routes: Routes = [
 
     { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
     { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
+    { path: 'admin-auctions-page', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
 
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'email-optout', component: EmailOptoutComponent },

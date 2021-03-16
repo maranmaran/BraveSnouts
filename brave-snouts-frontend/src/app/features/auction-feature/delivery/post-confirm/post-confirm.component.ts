@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { noop, throwError } from 'rxjs';
-import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { noop, Observable, throwError } from 'rxjs';
+import { catchError, concatMap, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -22,7 +22,7 @@ export class PostConfirmComponent implements OnInit {
   success: boolean;
   bootstrap: boolean = false;
 
-  private _auctionId: string;
+  private _auctionIds: string[];
   private _userId: string;
 
   public originalDonation: number;
@@ -39,12 +39,12 @@ export class PostConfirmComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._auctionId = this.route.snapshot.paramMap.get('auctionId');
+    this._auctionIds = this.route.snapshot.paramMap.get('auctionIds').split(',');
     this._userId = this.route.snapshot.paramMap.get('userId');
     this.originalDonation = parseFloat(this.route.snapshot.paramMap.get('donation'));
     this.paymentDetail = this.route.snapshot.paramMap.get('paymentDetails');
 
-    if(!this._auctionId || !this._userId || !this.originalDonation) {
+    if(!this._auctionIds || !this._userId || !this.originalDonation) {
       this.success = false;
       this.bootstrap = true;
 
@@ -81,30 +81,36 @@ export class PostConfirmComponent implements OnInit {
       phoneNumber: this.postDeliveryInfoForm.value.phoneNumber,
     }
 
-
     let query = ref => ref.where('winner.userId', '==', this._userId);
 
-    let items$ = this.itemsRepo.getAll(this._auctionId, query);
+    let updateJobs = new Observable();
+    for(const auctionId of this._auctionIds) {
+      let items$ = this.itemsRepo.getAll(auctionId, query);
 
-    items$.pipe(
-      take(1),
-      mergeMap(items => [...items]),
-      map(item => item.winner),
-      tap(async winner => {
+      let updateJob = items$.pipe(
+        take(1),
+        mergeMap(items => [...items]),
+        map(item => item.winner),
+        tap(async winner => {
 
-        let winnerOnAuction = new WinnerOnAuction({
-          id: winner.userId,
-          auctionId: winner.auctionId,
-          deliveryChoice: 'postal',
-          postalInformation: data
-        });
+          let winnerOnAuction = new WinnerOnAuction({
+            id: winner.userId,
+            auctionId: winner.auctionId,
+            deliveryChoice: 'postal',
+            postalInformation: data
+          });
 
-        await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
-      }),
-      map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
-      mergeMap(([id, data]) => this.itemsRepo.getDocument(this._auctionId, id as string).update({ winner: data as Winner } ) ),
-      catchError(err => (console.log(err), throwError(err) ) ),
-    ).subscribe(
+          await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
+        }),
+        map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' }) ]),
+        mergeMap(([id, data]) => this.itemsRepo.getDocument(auctionId, id as string).update({ winner: data as Winner } ) ),
+        catchError(err => (console.log(err), throwError(err) ) ),
+      );
+
+      updateJobs = updateJobs.pipe(concatMap(() => updateJob))
+    }
+
+    updateJobs.subscribe(
       () => this.success = true,
       err => (console.log(err), this.success = false),
       () => (this.sendConfirmation(), this.bootstrap = true)
@@ -113,7 +119,7 @@ export class PostConfirmComponent implements OnInit {
   }
 
   sendConfirmation() {
-    this.functionSvc.sendPostConfirm(this._userId, this._auctionId, this.postDeliveryInfoForm.value, this.originalDonation, this.paymentDetail).pipe(take(1)).subscribe(noop)
+    this.functionSvc.sendPostConfirm(this._userId, this._auctionIds, this.postDeliveryInfoForm.value, this.originalDonation, this.paymentDetail).pipe(take(1)).subscribe(noop)
   }
 
 }

@@ -15,14 +15,21 @@ export class FunctionsService {
     }
 
     /** Calls cloud function to process auction end */
-    endAuction(auctionId: string, handoverDetails: string) {
+    endAuction(auctionId: string, handoverDetails: string[]) {
         const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
 
         return callable({ auctionId, handoverDetails });
     }
 
+    /** Calls cloud function to send winner emails */
+    sendWinnerMails(auctionIds: string[], handoverDetails: string[]) {
+        const callable = this.functions.httpsCallable('sendWinnerMail-sendWinnerMailFn');
+
+        return callable({ auctionIds, handoverDetails });
+    }
+
     /** Sends email update for handover via cloud function */
-    changeHandoverDetails(auctionId: string, handoverDetails: string) {
+    changeHandoverDetails(auctionId: string, handoverDetails: string[]) {
         const callable = this.functions.httpsCallable('changeHandover-changeHandoverFn');
 
         return callable({ auctionId, handoverDetails });
@@ -40,16 +47,16 @@ export class FunctionsService {
       return callable({ auctionId, imageBucketPath });
     }
 
-    sendPostConfirm(userId, auctionId, formData, totalDonation, paymentDetail) {
+    sendPostConfirm(userId, auctionIds, formData, totalDonation, paymentDetail) {
       const callable = this.functions.httpsCallable('handoverConfirm-handoverConfirmFn');
 
-      return callable({ userId, auctionId, chosenOption: 'post', chosenOptionData: formData, totalDonation, paymentDetail });
+      return callable({ userId, auctionIds, chosenOption: 'post', chosenOptionData: formData, totalDonation, paymentDetail });
     }
 
-    sendHandoverConfirm(userId, auctionId, chosenOptionData) {
+    sendHandoverConfirm(userId, auctionIds, chosenOptionData) {
       const callable = this.functions.httpsCallable('handoverConfirm-handoverConfirmFn');
 
-      return callable({ userId, auctionId, chosenOption: 'handover', chosenOptionData });
+      return callable({ userId, auctionIds, chosenOption: 'handover', chosenOptionData });
     }
 
     sendNewItemsAddedMail(auctionId) {
