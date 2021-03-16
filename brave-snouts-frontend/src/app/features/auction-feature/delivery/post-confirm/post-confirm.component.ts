@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { noop, Observable, throwError } from 'rxjs';
-import { catchError, concatMap, map, mergeMap, take, tap } from 'rxjs/operators';
+import { noop, throwError } from 'rxjs';
+import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -82,7 +82,7 @@ export class PostConfirmComponent implements OnInit {
 
     let query = ref => ref.where('winner.userId', '==', this._userId);
 
-    let updateJobs = new Observable();
+    let updateJobs = [];
     for(const auctionId of this._auctionIds) {
       let items$ = this.itemsRepo.getAll(auctionId, query);
 
@@ -106,15 +106,13 @@ export class PostConfirmComponent implements OnInit {
         catchError(err => (console.log(err), throwError(err) ) ),
       );
 
-      updateJobs = updateJobs.pipe(concatMap(() => updateJob))
+      updateJobs.push(updateJob.toPromise());
     }
 
-    updateJobs.subscribe(
-      () => this.success = true,
-      err => (console.log(err), this.success = false),
-      () => (this.sendConfirmation(), this.bootstrap = true)
-    );
-
+    Promise.all(updateJobs)
+    .then(() => (this.sendConfirmation(), this.success = true))
+    .catch(err => (console.log(err), this.success = false))
+    .finally(() => this.bootstrap = true);
   }
 
   sendConfirmation() {

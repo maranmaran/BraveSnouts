@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
+  <div *ngIf="bootstrap && success == true" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
     <!-- <div class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center"> -->
     <div class="animation-ctn">
       <div class="icon icon--order-success svg">
@@ -71,7 +71,7 @@
     <h1>Hvala na potvrdi</h1>
   </div>
 
-  <div *ngIf="bootstrap && !success" class="text-center p-5">
+  <div *ngIf="bootstrap && success == false" class="text-center p-5">
     <!-- <div  class="text-center p-5"> -->
     <h3>Nešto je pošlo po zlu i nismo mogli potvrditi preuzimanje poštom. Molim Vas kontaktirajte nas kroz korisničku
       službu !</h3>

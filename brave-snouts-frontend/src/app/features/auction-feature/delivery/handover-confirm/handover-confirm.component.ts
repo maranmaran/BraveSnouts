@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { noop, Observable, Subscription, throwError } from 'rxjs';
-import { catchError, concatMap, map, mergeMap, take, tap } from 'rxjs/operators';
+import { noop, Subscription, throwError } from 'rxjs';
+import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
@@ -38,7 +38,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
   handoverDetails: string[];
 
   ngOnInit(): void {
-    this._auctionIds = this.route.snapshot.paramMap.get('auctionId').split(',');
+    this._auctionIds = this.route.snapshot.paramMap.get('auctionIds').split(',');
     this._userId = this.route.snapshot.paramMap.get('userId');
 
     if(!this._auctionIds || !this._userId) {
@@ -70,12 +70,13 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     // update winner post delivery option data
     let query = ref => ref.where('winner.userId', '==', this._userId);
 
-    let updateJobs = new Observable();
+    let updateJobs = [];
     for(const auctionId of this._auctionIds) {
 
       let items$ = this.itemsRepo.getAll(auctionId, query);
 
       let updateJob = items$.pipe(
+        tap(console.log),
         take(1),
         mergeMap(items => [...items]),
         map(item => item.winner),
@@ -100,15 +101,13 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
         catchError(err => (console.log(err), throwError(err) ) ),
       );
 
-      updateJobs = updateJobs.pipe(concatMap(() => updateJob))
+      updateJobs.push(updateJob.toPromise());
     }
 
-    updateJobs.subscribe(
-      () => this.success = true,
-      err => (console.log(err), this.success = false),
-      () => (this.sendConfirmation(option), this.bootstrap = true)
-    );
-
+    Promise.all(updateJobs)
+    .then(() => (this.sendConfirmation(option), this.success = true))
+    .catch(err => (console.log(err), this.success = false))
+    .finally(() => this.bootstrap = true);
   }
 
   sendConfirmation(option) {
