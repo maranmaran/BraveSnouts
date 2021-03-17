@@ -308,7 +308,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   onDownloadExcel(auction: Auction) {
-    this.functionsSvc.exportAuction(this._auctionId)
+    this.functionsSvc.exportAuction([this._auctionId])
       .pipe(
         take(1),
         this.toastSvc.observe(

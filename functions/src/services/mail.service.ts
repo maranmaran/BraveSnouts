@@ -139,7 +139,7 @@ export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem,
 }
 
 /**Sends new handover details mail */
-export const sendHandoverDetailsUpdateMail = async (user: UserInfo, auctionId: string, handoverDetails: string[]) => {
+export const sendHandoverDetailsUpdateMail = async (user: UserInfo, auctionIds: string[], handoverDetails: string[]) => {
   logger.info(`Sending mail to ${user.email} for handover details update`);
 
 
@@ -147,7 +147,7 @@ export const sendHandoverDetailsUpdateMail = async (user: UserInfo, auctionId: s
   const emailVariables = {
     handover_details: `<ul>${handoverDetails.map(detail => `<li>${detail}</li>`).join("\n")}</ul>`,
     // handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auctionId};userId=${user.id}`,
-    handover_confirm_url: getHandoverConfirmUrl(user.id, [auctionId]),
+    handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
     user_name: user.name.trim().split(" ")[0]
   }
 

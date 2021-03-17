@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
 import { noop } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { Auction } from 'src/business/models/auction.model';
@@ -13,6 +13,7 @@ import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { SubSink } from 'subsink';
+import { StorageService } from './../../../../../business/services/storage.service';
 
 @Component({
   selector: 'app-admin-auctions-page',
@@ -34,7 +35,8 @@ export class AdminAuctionsPageComponent implements OnInit {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
-    private readonly toastSvc: HotToastService
+    private readonly toastSvc: HotToastService,
+    private readonly storage: StorageService
   ) { }
 
   private _subsink = new SubSink();
@@ -83,32 +85,6 @@ export class AdminAuctionsPageComponent implements OnInit {
     }
   }
 
-  getHandoverDetails() {
-    const dialogRef = this.dialog.open(HandoverDialogComponent, {
-      height: 'auto',
-      width: '98%',
-      maxWidth: '30rem',
-      autoFocus: false,
-      closeOnNavigation: true,
-      panelClass: 'restrict-height-handover'
-    });
-
-    return dialogRef.afterClosed().pipe(take(1)).toPromise();
-  }
-
-  confirmAction(text: string, yes = 'Želim', no = 'Ne želim') {
-    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      height: 'auto',
-      width: '98%',
-      maxWidth: '20rem',
-      autoFocus: false,
-      closeOnNavigation: true,
-      data: { text, yes, no }
-    });
-
-    return dialogRef.afterClosed().pipe(take(1)).toPromise() as Promise<boolean>
-  }
-
   async onSendWinnerMails() {
     const auctionIds = this.selection.selected.map(x => x.id);
     const handoverDetails = this.selection.selected.map(x => x.handoverDetails);
@@ -126,7 +102,7 @@ export class AdminAuctionsPageComponent implements OnInit {
       this.toastSvc.warning("Zatvori trenutno označene aukcije ponovno i ponovi ovu akciju", { dismissible: true, duration: 20000 })
     }
 
-    let confirmAnswer = await this.confirmAction('Sigurno želiš poslati pobjedničke mailove trenutno označenim aukcijama?');
+    let confirmAnswer = await this.confirmDialog('Sigurno želiš poslati pobjedničke mailove trenutno označenim aukcijama?');
     if(!confirmAnswer) return;
 
     this.functionsSvc.sendWinnerMails(auctionIds, handoverDetails[0])
@@ -140,12 +116,32 @@ export class AdminAuctionsPageComponent implements OnInit {
     ).subscribe(noop, err => console.log(err))
   }
 
-  onChangeHandoverDetails() {
+  async onChangeHandoverDetails() {
+    const handoverDetails = await this.getHandoverDetails();
+    if (!handoverDetails) return;
 
+    this.functionsSvc.changeHandoverDetails(this.selection.selected.map(a => a.id), handoverDetails)
+    .pipe(
+      take(1),
+      this.toastSvc.observe({
+        loading: `Šaljem mailove`,
+        success: `Uspješna izmjena`,
+        error: `Nešto je pošlo po zlu`,
+      })
+    ).subscribe(noop, err => console.log(err));
   }
 
   onDownloadExcelTable() {
-
+    this.functionsSvc.exportAuction(this.selection.selected.map(a => a.id))
+    .pipe(
+      take(1),
+      this.toastSvc.observe({
+        loading: `Pripremam excel`,
+        success: `Uspješno`,
+        error: `Nešto je pošlo po zlu`,
+      }),
+      switchMap(res => this.storage.getDownloadUrl(`exports/${this.selection.selected.map(a => a.name).join('_')}.xlsx`))
+    ).subscribe(url => window.location.href = url, err => console.log(err));
   }
 
   onShowWinners() {
@@ -153,6 +149,38 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   //#endregion
+
+  //#region Dialog helpers
+
+  getHandoverDetails() {
+    const dialogRef = this.dialog.open(HandoverDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '30rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: 'restrict-height-handover'
+    });
+
+    return dialogRef.afterClosed().pipe(take(1)).toPromise();
+  }
+
+  confirmDialog(text: string, yes = 'Želim', no = 'Ne želim') {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      data: { text, yes, no }
+    });
+
+    return dialogRef.afterClosed().pipe(take(1)).toPromise() as Promise<boolean>
+  }
+
+  //#endregion
+
+  //#region Selection helpers
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -180,4 +208,5 @@ export class AdminAuctionsPageComponent implements OnInit {
     this.selection = newModel;
   }
 
+  //#endregion
 }

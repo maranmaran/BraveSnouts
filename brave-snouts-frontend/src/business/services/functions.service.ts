@@ -29,16 +29,16 @@ export class FunctionsService {
     }
 
     /** Sends email update for handover via cloud function */
-    changeHandoverDetails(auctionId: string, handoverDetails: string[]) {
+    changeHandoverDetails(auctionIds: string[], handoverDetails: string[]) {
         const callable = this.functions.httpsCallable('changeHandover-changeHandoverFn');
 
-        return callable({ auctionId, handoverDetails });
+        return callable({ auctionIds, handoverDetails });
     }
 
-    exportAuction(auctionId: string) {
+    exportAuction(auctionIds: string[]) {
       const callable = this.functions.httpsCallable('exportAuction-exportAuctionFn');
 
-      return callable({ auctionId });
+      return callable({ auctionIds });
     }
 
     processAuctionImages(auctionId: string, imageBucketPath: string) {
