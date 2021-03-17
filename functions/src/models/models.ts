@@ -73,6 +73,7 @@ export class WinnerOnAuction {
     };
 
     deliveryChoice: 'postal' | 'handover' | null;
+    handoverOption: string;
     postalInformation: PostalInformation | null;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
 }

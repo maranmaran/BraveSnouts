@@ -3,7 +3,7 @@ import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
 import { europeFunctions, store } from "..";
-import { Auction, AuctionItem, User, Winner } from "../models/models";
+import { Auction, AuctionItem, User } from "../models/models";
 import { WinnerOnAuction } from './../models/models';
 const os = require('os');
 const path = require('path');
@@ -41,56 +41,54 @@ export const exportAuctionFn = europeFunctions.https.onCall(
         let sheetTitle = '';
         
         const usersMap: Map<string, User> = new Map<string, User>();
-        const winnersMap: Map<string, Winner> = new Map<string, Winner>();
+        const winnersMap: Map<string, WinnerOnAuction> = new Map<string, WinnerOnAuction>();
         const winnerItemsMap: Map<string, AuctionItem[]> = new Map<string, AuctionItem[]>();
         
+        // fill above MAPS and add all items data to PREDMETI sheet
         for(const id of ids) {
             const auction = (await (await store.doc(`auctions/${id}`).get()).data()) as Auction;
             const winners = (await store.collection(`auctions/${id}/winners`).get()).docs.map(d => d.data()) as WinnerOnAuction[];
-            const items = [].concat(...winners.map(x => x.items));
+            const items = [].concat(...winners.map(x => x.items)) as AuctionItem[];
             
             sheetTitle += auction.name + '_';
     
-            for (const item of items) {
-                const itemData = item as AuctionItem;
-                const winner = itemData.winner;
-    
-                if (!winner) continue;
-    
-                // save user
-                if (!usersMap.has(itemData.user)) {
-                    const user = await (await store.doc(`users/${itemData.user}`).get()).data() as User;
-                    usersMap.set(itemData.user, user);
+            for(const winner of winners) {
+                let userId = winner.id;
+                const user = await (await store.doc(`users/${userId}`).get()).data() as User;
+
+                if (!usersMap.has(userId)) {
+                    usersMap.set(userId, user);
                 }
-    
-                // save winner
-                if (!winnersMap.has(winner.userId)) {
-                    winnersMap.set(winner.userId, winner);
+
+                if (!winnersMap.has(userId)) {
+                    winnersMap.set(userId, winner);
                 }
-    
+
                 // save items for each winner
-                if (!winnerItemsMap.has(winner.userId)) {
-                    winnerItemsMap.set(winner.userId, [itemData]);
+                if (!winnerItemsMap.has(userId)) {
+                    winnerItemsMap.set(userId, items);
                 } else {
-                    const currentItems = winnerItemsMap.get(winner.userId) as AuctionItem[];
-                    winnerItemsMap.set(winner.userId, [...currentItems, itemData]);
+                    const currentItems = winnerItemsMap.get(userId) as AuctionItem[];
+                    winnerItemsMap.set(userId, [...currentItems, ...items]);
                 }
-    
-                itemsSheetData.push([
-                    `${itemData.name.toUpperCase()}, ${itemData.description}`,
-                    itemData.winner.userInfo?.name,
-                    itemData.bid
-                ])
+
+                for(const item of winner.items) {
+                    itemsSheetData.push([
+                        `${item.name.toUpperCase()}, ${item.description}`,
+                        winner.userInfo?.name,
+                        item.bid
+                    ])
+                }
             }
-            
         }
 
+        // prepare DONATORI sheet
         let totalSum = 0;
         for (const [winnerId, winnerItems] of Array.from(winnerItemsMap.entries())) {
 
             let nameWritten = false;
             let userSum = 0;
-            const winner = winnersMap.get(winnerId) as Winner;
+            const winner = winnersMap.get(winnerId);
 
             for (const item of winnerItems as AuctionItem[]) {
                 donatorsSheetData.push([
@@ -116,6 +114,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             totalSum
         ])
 
+        // prepare SLANJE sheet
         for (const [winnerId, winner] of Array.from(winnersMap.entries())) {
             sendSheetData.push([
                 winner.userInfo.name,
@@ -126,7 +125,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
                         'pošta' :
                         'nije izabrano',
                 winner.postalInformation?.address,
-                winner.postalInformation?.phoneNumber ?? usersMap.get(winner.userId)?.phoneNumber,
+                winner.postalInformation?.phoneNumber ?? usersMap.get(winnerId)?.phoneNumber,
                 winner.userInfo.email
             ]);
         }
@@ -151,8 +150,6 @@ export const exportAuctionFn = europeFunctions.https.onCall(
         const exportFilePath = path.join(os.tmpdir(), `${sheetTitle}.xlsx`);
         XLSX.writeFile(wb, exportFilePath, { bookType: 'xlsx' });
 
-        logger.log(process.env.FIREBASE_STORAGE_BUCKET);
-        
         const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
 
         const response = await bucket.upload(exportFilePath,  

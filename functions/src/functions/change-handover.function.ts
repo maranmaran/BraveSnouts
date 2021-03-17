@@ -19,7 +19,6 @@ export const changeHandoverFn = europeFunctions.https.onCall(
                 const winners = winnerDocs.docs.map(winner => (winner.data() as WinnerOnAuction));
                 
                 for(const winner of winners) {
-                    if(!usersMap.has(winner.userInfo.id))
                     usersMap.set(winner.userInfo.id, winner.userInfo);
                 }
 

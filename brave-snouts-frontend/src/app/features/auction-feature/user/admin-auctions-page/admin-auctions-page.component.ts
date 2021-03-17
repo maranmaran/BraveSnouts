@@ -9,17 +9,20 @@ import { switchMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { Auction } from 'src/business/models/auction.model';
+import { WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { SubSink } from 'subsink';
+import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
 import { StorageService } from './../../../../../business/services/storage.service';
+import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
 
 @Component({
   selector: 'app-admin-auctions-page',
   templateUrl: './admin-auctions-page.component.html',
   styleUrls: ['./admin-auctions-page.component.scss'],
-  providers: [AuctionItemRepository, AuctionRepository, FunctionsService]
+  providers: [AuctionItemRepository, AuctionRepository, WinnersRepository, FunctionsService]
 })
 export class AdminAuctionsPageComponent implements OnInit {
 
@@ -33,6 +36,7 @@ export class AdminAuctionsPageComponent implements OnInit {
     public readonly mediaObs: MediaObserver,
     private readonly auctionRepo: AuctionRepository,
     private readonly itemsRepo: AuctionItemRepository,
+    private readonly winnersRepo: WinnersRepository,
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
@@ -144,8 +148,33 @@ export class AdminAuctionsPageComponent implements OnInit {
     ).subscribe(url => window.location.href = url, err => console.log(err));
   }
 
-  onShowWinners() {
+  async onShowWinners() {
 
+    let winners = new Map<string, {winner: WinnerOnAuction, auctionIds: Set<string>}>();
+    for(const auction of this.selection.selected) {
+      const winnerDocs = await this.winnersRepo.getAuctionWinners(auction.id).pipe(take(1)).toPromise();
+      for(const winner of winnerDocs) {
+        if(winners.has(winner.id)) {
+          let current = winners.get(winner.id);
+          !current.auctionIds.has(auction.id) && current.auctionIds.add(auction.id);
+          current.winner.bids.push(...winner.bids);
+          current.winner.items.push(...winner.items);
+          winners.set(winner.id, current)
+        } else {
+          winners.set(winner.id, { winner: winner, auctionIds: new Set<string>([auction.id])})
+        }
+      }
+    }
+
+    this.dialog.open(WinnerDetailsDialogComponent, {
+      maxHeight: '80vh',
+      width: '98%',
+      maxWidth: '30rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      panelClass: ['dialog', 'no-padding'],
+      data: { winners }
+    });
   }
 
   //#endregion
