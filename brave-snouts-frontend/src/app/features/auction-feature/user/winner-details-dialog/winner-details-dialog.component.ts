@@ -20,8 +20,8 @@ import { AuctionRepository } from './../../../../../business/services/repositori
 })
 export class WinnerDetailsDialogComponent implements OnInit {
 
-  private _auctionId: string;
-  public winners: WinnerOnAuction[];
+  public winnersMap: Map<WinnerOnAuction, Set<string>>;
+  public winners: WinnerOnAuction[] = [];
 
   constructor(
     private readonly dialog: MatDialog,
@@ -29,18 +29,22 @@ export class WinnerDetailsDialogComponent implements OnInit {
     private readonly winnersRepo: WinnersRepository,
     private readonly dialogRef: MatDialogRef<WinnerDetailsDialogComponent>,
     private readonly firestore: AngularFirestore, // argh cutting corners cuz i'm too lazy
-    @Inject(MAT_DIALOG_DATA) public data: { winners, auctionId }
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public data: { winners: Map<string, { winner: WinnerOnAuction, auctionIds: Set<string> }> }
+  ) {
+  }
 
   ngOnInit(): void {
-    this._auctionId = this.data.auctionId;
-    this.winners = this.data.winners
+    this.winnersMap = new Map<WinnerOnAuction, Set<string>>();
+    for (const val of this.data.winners.values()) {
+      this.winnersMap.set(val.winner, val.auctionIds);
+    }
+
+    this.winners.push(...this.winnersMap.keys());
   }
 
   onClose() {
     this.dialogRef.close();
   }
-
 
   openPostalInformation(data) {
 
@@ -78,29 +82,37 @@ export class WinnerDetailsDialogComponent implements OnInit {
 
   async markPaymentStatus(change: MatButtonToggleChange, winner: WinnerOnAuction) {
     const paymentStatus = change.value as 'paid' | 'pending' | 'notpaid';
+    let auctionIds = this.winnersMap.get(winner);
 
-    this.winnersRepo.updateAuctionWinner(winner.auctionId, winner.id, { paymentStatus });
+    for (const auctionId of auctionIds) {
+      this.winnersRepo.updateAuctionWinner(auctionId, winner.id, { paymentStatus });
 
-    for(const item of winner.items) {
-      this.firestore.doc(`auctions/${winner.auctionId}/items/${item.id}`).set({ winner: { paymentStatus } }, { merge: true });
+      let items = winner.items.filter(x => x.auctionId == auctionId);
+      for (const item of items) {
+        this.firestore.doc(`auctions/${auctionId}/items/${item.id}`).set({ winner: { paymentStatus } }, { merge: true });
+      }
     }
   }
 
   async markPackedState(change: MatButtonToggleChange, winner: WinnerOnAuction) {
     const packed = change.value as 'yes' | 'no' | null | undefined;
+    let auctionIds = this.winnersMap.get(winner);
 
-    this.winnersRepo.updateAuctionWinner(winner.auctionId, winner.id, { packed });
+    for (const auctionId of auctionIds) {
+      this.winnersRepo.updateAuctionWinner(auctionId, winner.id, { packed });
 
-    for(const item of winner.items) {
-      this.firestore.doc(`auctions/${winner.auctionId}/items/${item.id}`).set({ winner: { packed } }, { merge: true });
+      let items = winner.items.filter(x => x.auctionId == auctionId);
+      for (const item of items) {
+        this.firestore.doc(`auctions/${auctionId}/items/${item.id}`).set({ winner: { packed } }, { merge: true });
+      }
     }
   }
 
   openWonItems(items: AuctionItem[]) {
 
     let message = "<ul>";
-    for(const item of items) {
-      message += `<li>${item.name} - ${item.description?.replace(/<[^>]*>?/gm, '') ?? 'Nema opisa' }</li>`;
+    for (const item of items) {
+      message += `<li>${item.name} - ${item.description?.replace(/<[^>]*>?/gm, '') ?? 'Nema opisa'}</li>`;
     }
     message += "</ul>"
 

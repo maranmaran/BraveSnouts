@@ -5,7 +5,6 @@
       <img *ngIf="dbMedia.length == 1" class="w-100 h-100 single-gallery-image pointer" [src]="dbMedia[0].url" (click)="openLightbox()"/>
     </ng-container>
 
-
     <ng-template #singleMedia>
         <div>
             <img id="single-image" class="img-fluid" [src]="mobileImageUrl" />
@@ -15,7 +14,10 @@
 </ng-container>
 
 <ng-template #noMedia>
+  <div>
     <img id="placeholder" *ngIf="!dbMedia || dbMedia?.length == 0" src="assets/placeholders/PlaceholderProductImage.svg" />
+    <ng-content></ng-content>
+  </div>
 </ng-template>
 
 

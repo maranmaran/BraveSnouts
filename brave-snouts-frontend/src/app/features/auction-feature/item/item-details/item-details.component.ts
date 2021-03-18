@@ -15,6 +15,7 @@ import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { environment } from 'src/environments/environment';
 import { SubSink } from 'subsink';
 import { BidsRepository } from '../../../../../business/services/repositories/bids.repository';
@@ -23,12 +24,13 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.scss'],
-  providers: [AuctionItemRepository, BidsRepository],
+  providers: [AuctionRepository, AuctionItemRepository, BidsRepository],
   animations: [itemAnimations, fadeIn],
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
+    private readonly auctionRepo: AuctionRepository,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly bidsRepo: BidsRepository,
@@ -76,8 +78,11 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
 
-    if(!this.auction)
-      this.toastSvc.error("Nema informacija o aukciji!!!");
+    if(!this.auction) {
+      this.auctionRepo.getOne(this.item.auctionId)
+      .pipe(take(1)).subscribe(a => this.auction = a);
+      // this.toastSvc.error("Nema informacija o aukciji!!!");
+    }
 
     this.setupControls(this.item);
 

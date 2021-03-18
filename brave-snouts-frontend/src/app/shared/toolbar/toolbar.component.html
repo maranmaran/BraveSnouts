@@ -9,13 +9,19 @@
         <mat-icon matPrefix>
           add
         </mat-icon>
-        Napravi aukciju
+        <span class="mat-small">Napravi aukciju</span>
       </button>
       <button mat-menu-item (click)="onCreateAuctionThroughImages()">
         <mat-icon matPrefix>
           image
         </mat-icon>
         <span class="mat-small">Napravi aukciju (preko slika)</span>
+      </button>
+      <button mat-menu-item routerLink="/app/admin-auctions-page">
+        <mat-icon matPrefix>
+          admin_panel_settings
+        </mat-icon>
+        <span class="mat-small">Admin sučelje</span>
       </button>
     </mat-menu>
 

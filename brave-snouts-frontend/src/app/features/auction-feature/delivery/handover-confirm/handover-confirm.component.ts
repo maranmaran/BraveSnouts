@@ -21,7 +21,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
   bootstrap: boolean = false;
 
 
-  private _auctionId: string;
+  private _auctionIds: string[];
   private _userId: string;
 
   constructor(
@@ -38,10 +38,10 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
   handoverDetails: string[];
 
   ngOnInit(): void {
-    this._auctionId = this.route.snapshot.paramMap.get('auctionId');
+    this._auctionIds = this.route.snapshot.paramMap.get('auctionIds').split(',');
     this._userId = this.route.snapshot.paramMap.get('userId');
 
-    if(!this._auctionId || !this._userId) {
+    if(!this._auctionIds || !this._userId) {
       this.router.navigate(['/app']);
       return null;
     }
@@ -52,7 +52,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
   }
 
   getHnadoverOptions() {
-    this.auctionRepo.getOne(this._auctionId)
+    this.auctionRepo.getOne(this._auctionIds[0])
     .pipe(
       take(1),
       map(a => a.handoverDetails)
@@ -70,41 +70,48 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     // update winner post delivery option data
     let query = ref => ref.where('winner.userId', '==', this._userId);
 
-    let items$ = this.itemsRepo.getAll(this._auctionId, query);
+    let updateJobs = [];
+    for(const auctionId of this._auctionIds) {
 
-    return items$.pipe(
-      take(1),
-      mergeMap(items => [...items]),
-      map(item => item.winner),
-      tap(async winner => {
+      let items$ = this.itemsRepo.getAll(auctionId, query);
 
-        let winnerOnAuction = new WinnerOnAuction({
-          id: winner.userId,
-          auctionId: winner.auctionId,
-          deliveryChoice: 'handover',
-          handoverOption: option
-        });
+      let updateJob = items$.pipe(
+        tap(console.log),
+        take(1),
+        mergeMap(items => [...items]),
+        map(item => item.winner),
+        tap(async winner => {
 
-        await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
-      }),
-      map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
-      mergeMap(([id, data]) => {
+          let winnerOnAuction = new WinnerOnAuction({
+            id: winner.userId,
+            auctionId: winner.auctionId,
+            deliveryChoice: 'handover',
+            handoverOption: option
+          });
 
-        var partialData = { winner: data } as AuctionItem;
+          await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
+        }),
+        map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
+        mergeMap(([id, data]) => {
 
-        return this.itemsRepo.getDocument(this._auctionId, id as string).set(partialData, {merge: true})
-      }),
-      catchError(err => (console.log(err), throwError(err) ) ),
-    ).subscribe(
-      () => this.success = true,
-      err => (console.log(err), this.success = false),
-      () => (this.sendConfirmation(option), this.bootstrap = true)
-    );;
+          var partialData = { winner: data } as AuctionItem;
 
+          return this.itemsRepo.getDocument(auctionId, id as string).set(partialData, {merge: true})
+        }),
+        catchError(err => (console.log(err), throwError(err) ) ),
+      );
+
+      updateJobs.push(updateJob.toPromise());
+    }
+
+    Promise.all(updateJobs)
+    .then(() => (this.sendConfirmation(option), this.success = true))
+    .catch(err => (console.log(err), this.success = false))
+    .finally(() => this.bootstrap = true);
   }
 
   sendConfirmation(option) {
-    this.functionSvc.sendHandoverConfirm(this._userId, this._auctionId, option).pipe(take(1)).subscribe(noop)
+    this.functionSvc.sendHandoverConfirm(this._userId, this._auctionIds, option).pipe(take(1)).subscribe(noop)
   }
 
 

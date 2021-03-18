@@ -170,6 +170,11 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   openAuctionWinnersDetails() {
 
+    let winnersMap = new Map<string, {winner: WinnerOnAuction, auctionIds: Set<string>}>();
+    for(const winner of this.auctionWinners) {
+      winnersMap.set(winner.id, { winner, auctionIds: new Set<string>([this._auctionId])});
+    }
+
     this.dialog.open(WinnerDetailsDialogComponent, {
       maxHeight: '80vh',
       width: '98%',
@@ -177,7 +182,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['dialog', 'no-padding'],
-      data: { winners: this.auctionWinners, auctionId: this._auctionId }
+      data: { winners: winnersMap }
     });
 
   }
@@ -214,6 +219,38 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   }
 
+  async onSendWinnerMails() {
+
+    const auction = await this.auction$.pipe(take(1)).toPromise();
+    const handoverDetails = auction.handoverDetails;
+
+    let confirmAnswer = await this.confirmDialog('Sigurno želiš poslati pobjedničke mailove?');
+    if(!confirmAnswer) return;
+
+    this.functionsSvc.sendWinnerMails([this._auctionId], handoverDetails)
+    .pipe(
+      take(1),
+      this.toastSvc.observe({
+        loading: 'Šaljem mailove..',
+        success: 'Uspješno poslani mailovi',
+        error: 'Nešto je pošlo po zlu'
+      })
+    ).subscribe(noop, err => console.log(err))
+  }
+
+  confirmDialog(text: string, yes = 'Želim', no = 'Ne želim') {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      height: 'auto',
+      width: '98%',
+      maxWidth: '20rem',
+      autoFocus: false,
+      closeOnNavigation: true,
+      data: { text, yes, no }
+    });
+
+    return dialogRef.afterClosed().pipe(take(1)).toPromise() as Promise<boolean>
+  }
+
   changeHandoverDetails(auctionId) {
 
     const dialogRef = this.dialog.open(HandoverDialogComponent, {
@@ -230,7 +267,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       .subscribe(handoverDetails => {
         if (!handoverDetails || handoverDetails.length == 0) return;
 
-        this.functionsSvc.changeHandoverDetails(auctionId, handoverDetails)
+        this.functionsSvc.changeHandoverDetails([auctionId], handoverDetails)
           .pipe(
             take(1),
             this.toastSvc.observe(
@@ -308,7 +345,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   onDownloadExcel(auction: Auction) {
-    this.functionsSvc.exportAuction(this._auctionId)
+    this.functionsSvc.exportAuction([this._auctionId])
       .pipe(
         take(1),
         this.toastSvc.observe(

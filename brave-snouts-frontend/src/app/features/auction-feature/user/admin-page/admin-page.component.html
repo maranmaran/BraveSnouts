@@ -41,14 +41,21 @@
   </div>
 
   <div id="admin-actions" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1rem" class="section">
-    <button *ngIf="!(state == 'expired' && auction.processed)" mat-flat-button color="primary"
-      (click)="newItemsMail(auction.id)">Pošalji mail za dodane stvari</button>
-    <button [disabled]="!(state == 'expired' && !auction.processed)" mat-flat-button color="warn"
+    <button [disabled]="!(state == 'expired')" mat-flat-button color="warn"
       (click)="endAuction(auction.id)">Zatvori aukciju</button>
+
+    <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn"
+      (click)="onSendWinnerMails()">Pošalji pobjedničke mailove</button>
+
     <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn"
       (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
+
+    <button *ngIf="!(state == 'expired' && auction.processed)" mat-flat-button color="primary"
+      (click)="newItemsMail(auction.id)">Pošalji mail za dodane stvari</button>
+
     <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="primary"
       (click)="openAuctionWinnersDetails()">Pokaži sve pobjednike</button>
+
     <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="primary"
       (click)="onDownloadExcel(auction)">Skini tablicu</button>
   </div>

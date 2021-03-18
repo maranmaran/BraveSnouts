@@ -3,7 +3,8 @@ import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
 import { europeFunctions, store } from "..";
-import { Auction, AuctionItem, User, Winner } from "../models/models";
+import { Auction, AuctionItem, User } from "../models/models";
+import { WinnerOnAuction } from './../models/models';
 const os = require('os');
 const path = require('path');
 
@@ -11,14 +12,7 @@ const path = require('path');
 export const exportAuctionFn = europeFunctions.https.onCall(
     async (data, context) => {
 
-        const id = data.auctionId;
-        
-        const items = (await store.collection(`auctions/${id}/items`).get()).docs;
-        const auction = (await (await store.doc(`auctions/${id}`).get()).data()) as Auction;
-
-        const usersMap: Map<string, User> = new Map<string, User>();
-        const winnersMap: Map<string, Winner> = new Map<string, Winner>();
-        const winnerItemsMap: Map<string, AuctionItem[]> = new Map<string, AuctionItem[]>();
+        const ids = data.auctionIds;
 
         const itemsSheetData: any[][] = [];
         itemsSheetData.push([
@@ -44,44 +38,57 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             "EMAIL"
         ]);
 
-        for (const item of items) {
-            const itemData = item.data() as AuctionItem;
-            const winner = itemData.winner;
+        let sheetTitle = '';
+        
+        const usersMap: Map<string, User> = new Map<string, User>();
+        const winnersMap: Map<string, WinnerOnAuction> = new Map<string, WinnerOnAuction>();
+        const winnerItemsMap: Map<string, AuctionItem[]> = new Map<string, AuctionItem[]>();
+        
+        // fill above MAPS and add all items data to PREDMETI sheet
+        for(const id of ids) {
+            const auction = (await (await store.doc(`auctions/${id}`).get()).data()) as Auction;
+            const winners = (await store.collection(`auctions/${id}/winners`).get()).docs.map(d => d.data()) as WinnerOnAuction[];
+            const items = [].concat(...winners.map(x => x.items)) as AuctionItem[];
+            
+            sheetTitle += auction.name + '_';
+    
+            for(const winner of winners) {
+                let userId = winner.id;
+                const user = await (await store.doc(`users/${userId}`).get()).data() as User;
 
-            if (!winner) continue;
+                if (!usersMap.has(userId)) {
+                    usersMap.set(userId, user);
+                }
 
-            // save user
-            if (!usersMap.has(itemData.user)) {
-                const user = await (await store.doc(`users/${itemData.user}`).get()).data() as User;
-                usersMap.set(itemData.user, user);
+                if (!winnersMap.has(userId)) {
+                    winnersMap.set(userId, winner);
+                }
+
+                // save items for each winner
+                if (!winnerItemsMap.has(userId)) {
+                    winnerItemsMap.set(userId, items);
+                } else {
+                    const currentItems = winnerItemsMap.get(userId) as AuctionItem[];
+                    winnerItemsMap.set(userId, [...currentItems, ...items]);
+                }
+
+                for(const item of winner.items) {
+                    itemsSheetData.push([
+                        `${item.name.toUpperCase()}, ${item.description}`,
+                        winner.userInfo?.name,
+                        item.bid
+                    ])
+                }
             }
-
-            // save winner
-            if (!winnersMap.has(winner.userId)) {
-                winnersMap.set(winner.userId, winner);
-            }
-
-            // save items for each winner
-            if (!winnerItemsMap.has(winner.userId)) {
-                winnerItemsMap.set(winner.userId, [itemData]);
-            } else {
-                const currentItems = winnerItemsMap.get(winner.userId) as AuctionItem[];
-                winnerItemsMap.set(winner.userId, [...currentItems, itemData]);
-            }
-
-            itemsSheetData.push([
-                `${itemData.name.toUpperCase()}, ${itemData.description}`,
-                itemData.winner.userInfo?.name,
-                itemData.bid
-            ])
         }
 
+        // prepare DONATORI sheet
         let totalSum = 0;
         for (const [winnerId, winnerItems] of Array.from(winnerItemsMap.entries())) {
 
             let nameWritten = false;
             let userSum = 0;
-            const winner = winnersMap.get(winnerId) as Winner;
+            const winner = winnersMap.get(winnerId);
 
             for (const item of winnerItems as AuctionItem[]) {
                 donatorsSheetData.push([
@@ -107,6 +114,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             totalSum
         ])
 
+        // prepare SLANJE sheet
         for (const [winnerId, winner] of Array.from(winnersMap.entries())) {
             sendSheetData.push([
                 winner.userInfo.name,
@@ -117,17 +125,19 @@ export const exportAuctionFn = europeFunctions.https.onCall(
                         'pošta' :
                         'nije izabrano',
                 winner.postalInformation?.address,
-                winner.postalInformation?.phoneNumber ?? usersMap.get(winner.userId).phoneNumber,
+                winner.postalInformation?.phoneNumber ?? usersMap.get(winnerId)?.phoneNumber,
                 winner.userInfo.email
             ]);
         }
+        
+        sheetTitle = sheetTitle.substr(0, sheetTitle.length - 1)
 
         const wb = XLSX.utils.book_new();
         wb.SheetNames.push("PREDMETI");
         wb.SheetNames.push("DONATORI");
         wb.SheetNames.push("SLANJE");
         wb.Props = {
-            Title: auction.name,
+            Title: sheetTitle,
         };
 
         const ws1 = XLSX.utils.aoa_to_sheet(itemsSheetData);
@@ -137,16 +147,14 @@ export const exportAuctionFn = europeFunctions.https.onCall(
         const ws3 = XLSX.utils.aoa_to_sheet(sendSheetData);
         wb.Sheets["SLANJE"] = ws3;
 
-        const exportFilePath = path.join(os.tmpdir(), `${auction.name}.xlsx`);
+        const exportFilePath = path.join(os.tmpdir(), `${sheetTitle}.xlsx`);
         XLSX.writeFile(wb, exportFilePath, { bookType: 'xlsx' });
 
-        logger.log(process.env.FIREBASE_STORAGE_BUCKET);
-        
         const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
 
         const response = await bucket.upload(exportFilePath,  
             { 
-                destination: `exports/${auction.name}.xlsx`, 
+                destination: `exports/${sheetTitle}.xlsx`, 
                 contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sh', 
                 gzip: false,
                 public: true, 

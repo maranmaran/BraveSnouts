@@ -10,7 +10,7 @@ export const handoverConfirmFn = europeFunctions.https.onCall(
     async (data, context) => {
   
       const userId = data.userId;
-      const auctionId = data.auctionId;
+      const auctionIds = data.auctionIds as string[];
       
       const chosenOption = data.chosenOption;
       const chosenOptionData = data.chosenOptionData;
@@ -22,12 +22,12 @@ export const handoverConfirmFn = europeFunctions.https.onCall(
       const userDb = await (await store.doc(`users/${userId}`).get()).data() as User;
 
       if(chosenOption === 'handover') {
-        await sendHandoverConfirmationMail(userDb, auctionId, chosenOptionData);
+        await sendHandoverConfirmationMail(userDb, auctionIds, chosenOptionData);
         return { status: 200 };
       } 
 
       if(chosenOption === 'post') {
-        await sendPostConfirmationMail(userDb, auctionId, chosenOptionData, totalDonation, paymentDetail)
+        await sendPostConfirmationMail(userDb, auctionIds, chosenOptionData, totalDonation, paymentDetail)
         return { status: 200 };
       }
 
