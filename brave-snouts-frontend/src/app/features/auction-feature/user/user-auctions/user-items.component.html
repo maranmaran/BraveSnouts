@@ -16,26 +16,30 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <virtual-scroller id="won-items" class="custom-height" [horizontal]="true"
-        *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="winningItems">
-        <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
-        </app-item-details>
-      </virtual-scroller>
-
-      <ng-template #gallery>
-        <virtual-scroller id="won-items-gallery" class="custom-height" #scroll [horizontal]="true"
-          [items]="winningItems">
-          <div class="media-container center"
-            *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index">
-            <app-item-media class="media elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)">
-              <div class="best-bid-label background warn lighter mat-small"
-                *ngIf="userId == item.user">
-                Vaša ponuda je najbolja
-              </div>
-            </app-item-media>
-          </div>
+      <ng-container *ngIf="winningItems.length > 0">
+        <virtual-scroller id="won-items" class="custom-height" [horizontal]="true"
+          *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="winningItems">
+          <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
+          </app-item-details>
         </virtual-scroller>
-      </ng-template>
+
+        <ng-template #gallery>
+          <virtual-scroller id="won-items-gallery" class="custom-height" #scroll [horizontal]="true"
+            [items]="winningItems">
+            <div class="media-container center"
+              *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index">
+              <app-item-media class="media elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)">
+                <div class="best-bid-label background warn lighter mat-small"
+                  *ngIf="userId == item.user">
+                  Vaša ponuda je najbolja
+                </div>
+              </app-item-media>
+            </div>
+          </virtual-scroller>
+        </ng-template>
+      </ng-container>
+
+      <div class="text-center" *ngIf="winningItems.length == 0"><i>Nemate predmeta s najvišom ponudom</i></div>
 
     </mat-expansion-panel>
 
@@ -49,22 +53,24 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <virtual-scroller id="outbidded-items" class="custom-height" [horizontal]="true"
-        *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="outbiddedItems">
-        <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
-        </app-item-details>
-      </virtual-scroller>
-
-      <ng-template #gallery>
-        <virtual-scroller id="outbidded-items-gallery" class="custom-height" #scroll [horizontal]="true"
-          [items]="outbiddedItems">
-          <div class="media-container center"
-            *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index">
-            <app-item-media class="media elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)">
-            </app-item-media>
-          </div>
+      <ng-container *ngIf="outbiddedItems.length == 0">
+        <virtual-scroller id="outbidded-items" class="custom-height" [horizontal]="true"
+          *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="outbiddedItems">
+          <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
+          </app-item-details>
         </virtual-scroller>
-      </ng-template>
+
+        <ng-template #gallery>
+          <virtual-scroller id="outbidded-items-gallery" class="custom-height" #scroll [horizontal]="true"
+            [items]="outbiddedItems">
+            <div class="media-container center"
+              *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index">
+              <app-item-media class="media elevate hover" [first]="true" [media]="item.media" (click)="openItem(item)">
+              </app-item-media>
+            </div>
+          </virtual-scroller>
+        </ng-template>
+      </ng-container>
 
       <div class="text-center" *ngIf="outbiddedItems.length == 0"><i>Nema nadmašenih predmeta</i></div>
 
