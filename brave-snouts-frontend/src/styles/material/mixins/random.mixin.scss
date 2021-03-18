@@ -97,7 +97,6 @@
     }
   }
 
-
   .best-bid-icon {
     position: absolute;
     right: 0px;
@@ -131,15 +130,14 @@
     line-height: $size !important;
 
     mat-icon {
-        width: $size !important;
-        height: $size !important;
-        line-height: $size !important;
-        font-size: $size !important;
+      width: $size !important;
+      height: $size !important;
+      line-height: $size !important;
+      font-size: $size !important;
     }
   }
 
   #bulk-image-form {
-
     ngx-dropzone {
       min-height: 250px;
     }
@@ -172,9 +170,7 @@
     }
   }
 
-
   .dialog {
-
     &.no-padding {
       .mat-dialog-container {
         padding: 0 !important;
@@ -188,5 +184,11 @@
     }
   }
 
-
+  .ng-animating div mat-accordion mat-expansion-panel mat-expansion-panel-header {
+    height: 48px;
+  }
+  .ng-animating div mat-accordion mat-expansion-panel div.mat-expansion-panel-content {
+    height: 0px;
+    visibility: hidden;
+  }
 }

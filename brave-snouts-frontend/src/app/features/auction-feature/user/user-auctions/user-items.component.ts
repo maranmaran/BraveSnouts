@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
@@ -18,7 +18,7 @@ import { SubSink } from 'subsink';
   providers: [AuctionItemRepository, ItemDialogService]
 
 })
-export class UserItemsComponent implements OnInit, OnDestroy {
+export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   useGallery = true;
 
@@ -54,6 +54,13 @@ export class UserItemsComponent implements OnInit, OnDestroy {
         this.getTrackedItems()
         );
     });
+  }
+
+  // Workaround for angular component issue #13870
+  disableAnimation = true;
+  ngAfterViewInit(): void {
+    // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
+    setTimeout(() => this.disableAnimation = false);
   }
 
   ngOnDestroy(): void {

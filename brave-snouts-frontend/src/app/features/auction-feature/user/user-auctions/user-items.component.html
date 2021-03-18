@@ -1,12 +1,12 @@
-<div class="container" #scrollingBlock>
+<div class="container" #scrollingBlock  [@.disabled]="disableAnimation">
 
   <button routerLink="/app/auctions" class="back-btn w-min btn-small m-0 ml-1" mat-raised-button color="warn">
     <mat-icon>arrow_back</mat-icon>
     <!-- Natrag -->
   </button>
 
-  <mat-accordion>
-    <mat-expansion-panel [expanded]="winningItems.length > 0 && !(isLoading$ | async)">
+  <mat-accordion *ngIf="!(isLoading$ | async)">
+    <mat-expansion-panel [expanded]="winningItems.length > 0">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <div class="bold m-0" [ngClass]="{
@@ -39,7 +39,7 @@
 
     </mat-expansion-panel>
 
-    <mat-expansion-panel [expanded]="winningItems.length == 0 && !(isLoading$ | async)">
+    <mat-expansion-panel [expanded]="winningItems.length == 0">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <div class="bold m-0" [ngClass]="{
