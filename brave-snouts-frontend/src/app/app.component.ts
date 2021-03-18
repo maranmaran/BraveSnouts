@@ -59,6 +59,10 @@ export class AppComponent implements OnInit, OnDestroy {
             return this.authSvc.openChangeEmailDialog(userDbInfo.overrideEmail.reason, true);
           }
 
+          if(userDbInfo.informUser) {
+            return this.authSvc.informUser(userDbInfo.informUser.message)
+          }
+
           if(!userDbInfo.email || userDbInfo.email?.trim() == "") {
             return this.authSvc.openChangeEmailDialog("Nažalost nemate konfiguriran ispravan e-mail. Molimo vas da promjenite e-mail.", true);
           }
@@ -66,6 +70,8 @@ export class AppComponent implements OnInit, OnDestroy {
       )
     )
   }
+
+
 
   ngOnDestroy() {
     this._subsink.unsubscribe();

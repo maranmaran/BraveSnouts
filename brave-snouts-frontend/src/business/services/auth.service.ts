@@ -9,6 +9,7 @@ import { from, noop, of, throwError } from "rxjs";
 import { catchError, concatMap, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { ChangeEmailDialogComponent } from "src/app/features/auth-feature/change-email-dialog/change-email-dialog.component";
 import { LoginMethodComponent } from "src/app/features/auth-feature/login-method/login-method.component";
+import { MessageDialogComponent } from "src/app/shared/message-dialog/message-dialog.component";
 import { User } from 'src/business/models/user.model';
 import { environment } from "src/environments/environment";
 import { RegisterComponent } from './../../app/features/auth-feature/register/register.component';
@@ -436,5 +437,25 @@ export class AuthService {
         })
       )
   }
+
+  // forceful user inform
+  informUser(message: string) {
+      let dialogRef = this.dialog.open(MessageDialogComponent, {
+        height: 'auto',
+        width: '98%',
+        maxWidth: '30rem',
+        autoFocus: false,
+        closeOnNavigation: true,
+        panelClass: ['item-dialog', 'mat-elevation-z8'],
+        data: message
+      });
+
+      dialogRef.afterClosed()
+      .pipe(take(1),concatMap(() => this.userId$))
+      .subscribe(id => {
+        this.store.doc(`users/${id}`).update({ informUser: null })
+      })
+  }
+
 
 }
