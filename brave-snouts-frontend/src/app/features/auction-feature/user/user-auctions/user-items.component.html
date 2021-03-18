@@ -6,7 +6,7 @@
   </button>
 
   <mat-accordion>
-    <mat-expansion-panel *ngIf="winningItems.length > 0 && !(isLoading$ | async)" [expanded]="true">
+    <mat-expansion-panel [expanded]="winningItems.length > 0 && !(isLoading$ | async)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <div class="bold m-0" [ngClass]="{
@@ -39,7 +39,7 @@
 
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngIf="outbiddedItems.length > 0 && !(isLoading$ | async)">
+    <mat-expansion-panel [expanded]="winningItems.length == 0 && !(isLoading$ | async)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <div class="bold m-0" [ngClass]="{
@@ -65,6 +65,8 @@
           </div>
         </virtual-scroller>
       </ng-template>
+
+      <div class="text-center" *ngIf="outbiddedItems.length == 0"><i>Nema nadmašenih predmeta</i></div>
 
     </mat-expansion-panel>
   </mat-accordion>
