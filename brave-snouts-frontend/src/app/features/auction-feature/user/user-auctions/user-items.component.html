@@ -53,7 +53,7 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="outbiddedItems.length == 0">
+      <ng-container *ngIf="outbiddedItems.length > 0">
         <virtual-scroller id="outbidded-items" class="custom-height" [horizontal]="true"
           *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery" #scroll [items]="outbiddedItems">
           <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
