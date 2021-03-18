@@ -5,7 +5,7 @@
     <!-- Natrag -->
   </button>
 
-  <mat-accordion *ngIf="!(isLoading$ | async)">
+  <mat-accordion *ngIf="(items)?.length > 0 && !(isLoading$ | async)">
     <mat-expansion-panel [expanded]="winningItems.length > 0">
       <mat-expansion-panel-header>
         <mat-panel-title>
