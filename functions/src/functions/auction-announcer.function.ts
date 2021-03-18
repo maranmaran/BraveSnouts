@@ -55,8 +55,11 @@ async function getStartingSoonAuctions(hours = 1, minutesWindow = 10) {
         auctions, callback: async (users) => {
             for (const auction of auctions) {
                 logger.log(`Auction ${auction.name} starts in 1 hour`);
+                let startTime = moment(auction.startDate.toDate()).tz("Europe/Zagreb").format("HH:mm");
+                let startDate = moment(auction.startDate.toDate()).tz("Europe/Zagreb").format("DD.MM")
+
                 for (const user of users) {
-                    await sendAuctionAnnouncementMail(user, auction, "Aukcija uskoro počinje!", `počinje u ${moment(auction.startDate.toDate()).tz("Europe/Zagreb").format("HH:mm")}.`)
+                    await sendAuctionAnnouncementMail(user, auction, "Aukcija uskoro počinje!", `počinje ${startDate} u ${startTime} sati.`)
                 }
             }
         }
@@ -89,9 +92,6 @@ async function getStartedAuctions() {
 
 async function getEndingSoonAuctions(hours = 1, minutesWindow = 10) {
 
-    logger.log(hours, minutesWindow);
-    logger.log(today().add(hours, 'hours').add(minutesWindow, 'minutes').toISOString())
-    
     const auctionsQuery = store.collection('auctions')
         .where('endDate', '<=', today().add(hours, 'hours').add(minutesWindow, 'minutes'))
         .where('endDate', '>=', today().add(hours, 'hours').subtract(minutesWindow, 'minutes'))
@@ -103,8 +103,11 @@ async function getEndingSoonAuctions(hours = 1, minutesWindow = 10) {
         auctions, callback: async (users) => {
             for (const auction of auctions) {
                 logger.log(`Auction ${auction.name} ends in ${hours} hours`);
+
+                let endTime = moment(auction.endDate.toDate()).tz("Europe/Zagreb").format("HH:mm");
+                let endDate = moment(auction.endDate.toDate()).tz("Europe/Zagreb").format("DD.MM")
                 for (const user of users) {
-                    await sendAuctionAnnouncementMail(user, auction, "Aukcija uskoro završava!", `završava u ${moment(auction.endDate.toDate()).tz("Europe/Zagreb").format("HH:mm")}.`)
+                    await sendAuctionAnnouncementMail(user, auction, "Aukcija uskoro završava!", `završava ${endDate} u ${endTime} sati.`)
                 }
             }
         }
