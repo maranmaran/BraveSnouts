@@ -75,7 +75,7 @@ export class PostConfirmComponent implements OnInit {
     // update winner post delivery option data
     let form = this.postDeliveryInfoForm.value;
     let data = {
-      fullName: this.postDeliveryInfoForm.value.fullName,
+      fullName: form.fullName,
       address: `${form.address}, ${form.city}, ${form.zipNumber}`,
       phoneNumber: this.postDeliveryInfoForm.value.phoneNumber,
     }
@@ -116,6 +116,14 @@ export class PostConfirmComponent implements OnInit {
   }
 
   sendConfirmation() {
+    let form = this.postDeliveryInfoForm.value;
+
+    let data = {
+      fullName: form.fullName,
+      address: `${form.address}, ${form.city}, ${form.zipNumber}`,
+      phoneNumber: this.postDeliveryInfoForm.value.phoneNumber,
+    }
+
     this.functionSvc.sendPostConfirm(this._userId, this._auctionIds, this.postDeliveryInfoForm.value, this.originalDonation, this.paymentDetail).pipe(take(1)).subscribe(noop)
   }
 
