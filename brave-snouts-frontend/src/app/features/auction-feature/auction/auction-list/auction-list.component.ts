@@ -125,7 +125,10 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     if (auctions?.length == 0)
       return [];
 
-    return auctions.filter(a => a.archived == false);
+    return auctions
+    .filter(a => a.archived == false)
+    .filter(a => a.processed == false)
+    .filter(a => this.getAuctionState(a) != 'expired');
   }
 
   /**Sorts custom for admin view active in middle, future top, expired bottom */
