@@ -140,7 +140,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
       // changeable stuff
       id: [item?.id ?? this.auctionItemRepo.getId()],
-      name: [item?.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      // removed required and min validation so we can have partial updates on bigger auctions
+      name: [item?.name, [Validators.maxLength(100)]],
       startPrice: [item?.startBid ?? 0, [Validators.min(0)]],
       description: [item?.description],
 
