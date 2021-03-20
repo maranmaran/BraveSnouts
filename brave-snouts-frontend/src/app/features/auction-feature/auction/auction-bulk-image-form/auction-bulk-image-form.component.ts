@@ -56,6 +56,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly functionSvc: FunctionsService,
   ) { }
 
+  _useCompression = false;
+
   ngOnInit(): void {
 
     let auction = {
@@ -124,7 +126,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
       mergeMap((file: File) => {
 
         const name = `${Guid.create()}`;
-        const path = `temp/${this.auctionId}/${name}`;
+        const path = `${this._useCompression ? 'temp' : 'auction-items'}/${this.auctionId}/${name}`;
         const type = this.getFirebaseFileType(file.type);
 
         let { ref, task } = this.storage.uploadFile(file, path);
@@ -188,7 +190,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
         take(1),
         concatMap(() =>
           this.functionSvc
-          .processAuctionImages(this.auctionId, `temp/${this.auctionId}`)
+          .processAuctionImages(this.auctionId, `${this._useCompression ? 'temp' : 'auction-items'}/${this.auctionId}`)
           .pipe(
             take(1),
             this.toastSvc.observe(

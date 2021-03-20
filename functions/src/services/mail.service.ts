@@ -248,7 +248,7 @@ export const sendNewItemsAddedMail = async (user: User, auction: Auction) => {
 
   // load and customize html template
   const emailVariables = {
-    user_name: user.displayName,
+    user_name: user.displayName.trim().split(" ")[0],
     auction_name: auction.name,
     auction_url: `${config.base.url}/auction;id=${auction.id}`,
     optout_url: getEmailOptoutLink(user.id, "auctionannouncements"),

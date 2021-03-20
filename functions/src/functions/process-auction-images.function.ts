@@ -31,115 +31,146 @@ export const processAuctionImagesFn = europeFunctions
     .onCall(
         async (data, context) => {
 
+            let useCompression = false;
+
             try {
                 const auctionId = data.auctionId;
                 const imagesTempStoragePath = data.imageBucketPath;
 
                 const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
-                const tempFolder = path.join(os.tmpdir(), "images_to_transform");
-                await mkdirp(path.dirname(tempFolder));
-
-                const transformedFolder = path.join(os.tmpdir(), "transformed");
-                await mkdirp(path.dirname(transformedFolder));
-
-                // download all images in temp/images_to_transform
-                logger.log("Downloading images");
-                const downloadJobs: Promise<void>[] = [];
                 const files = await bucket.getFiles({ prefix: imagesTempStoragePath });
-                for (const file of files[0]) {
-                    downloadJobs.push(new Promise<void>(async (res, err) => {
-                        // const filePath = file.name;
-                        // const fileDir = path.dirname(file.name);
-                        const fileName = path.basename(file.name, path.extname(file.name));
-                        logger.info("Downloading " + fileName);
-                        await mkdirp(path.dirname(`${tempFolder}/${fileName}`));
-                        await bucket.file(file.name).download({ destination: `${tempFolder}/${fileName}` });
-                        res();
-                    }));
-                }
-                await Promise.all(downloadJobs);
-                logger.log("Finished downloading images");
+                const imagesArr = []; // image links to add to auction items
 
-                // process all images to temp/transformed
-                let transformJobs: Promise<void>[] = [];
-                let filesToTransform = fs.readdirSync(tempFolder + "/");
-                for (const file of filesToTransform) {
-                    
-                    // buffer
-                    if(transformJobs.length == 5) {
-                        await Promise.all(transformJobs);
-                        transformJobs = [];
+                if (useCompression) {
+                    const tempFolder = path.join(os.tmpdir(), "images_to_transform");
+                    await mkdirp(path.dirname(tempFolder));
+
+                    const transformedFolder = path.join(os.tmpdir(), "transformed");
+                    await mkdirp(path.dirname(transformedFolder));
+
+                    //#region Download from temp
+                    // download all images in temp/images_to_transform
+                    logger.log("Downloading images");
+                    const downloadJobs: Promise<void>[] = [];
+                    for (const file of files[0]) {
+                        downloadJobs.push(new Promise<void>(async (res, err) => {
+                            // const filePath = file.name;
+                            // const fileDir = path.dirname(file.name);
+                            const fileName = path.basename(file.name, path.extname(file.name));
+                            logger.info("Downloading " + fileName);
+                            await mkdirp(path.dirname(`${tempFolder}/${fileName}`));
+                            await bucket.file(file.name).download({ destination: `${tempFolder}/${fileName}` });
+                            res();
+                        }));
                     }
+                    await Promise.all(downloadJobs);
+                    logger.log("Finished downloading images");
+                    //#endregion
 
-                    transformJobs.push(new Promise<void>(async (res, err) => {
-                        const fileName = path.basename(file, path.extname(file));
+                    //#region Transform downloaded images 
+                    // process all images to temp/transformed
+                    let transformJobs: Promise<void>[] = [];
+                    let filesToTransform = fs.readdirSync(tempFolder + "/");
+                    for (const file of filesToTransform) {
 
-                        // image
-                        await mkdirp(path.dirname(`${transformedFolder}/${fileName}.jpg`));
+                        // buffer
+                        if (transformJobs.length == 5) {
+                            await Promise.all(transformJobs);
+                            transformJobs = [];
+                        }
 
-                        logger.log("Transforming to " + transformedFolder + "/" + fileName + ".jpg")
-                        await magick(`${tempFolder}/${file}`)
-                            .strip()
-                            .autoOrient()
-                            .interlace('Plane')
-                            .gaussian(0.05)
-                            .resize(500, 500)
-                            .quality(100)
-                            .compress('JPEG')
-                            .writeAsync(`${transformedFolder}/${fileName}.jpg`);
+                        transformJobs.push(new Promise<void>(async (res, err) => {
+                            const fileName = path.basename(file, path.extname(file));
 
-                        // thumbnail
-                        await mkdirp(path.dirname(`${transformedFolder}/${fileName}_thumb.jpg`));
+                            // image
+                            await mkdirp(path.dirname(`${transformedFolder}/${fileName}.jpg`));
 
-                        logger.log("Transforming to " + transformedFolder + "/" + fileName + "_thumb.jpg")
-                        await magick(`${tempFolder}/${file}`)
-                            .strip()
-                            .autoOrient()
-                            .interlace('Plane')
-                            .gaussian(0.05)
-                            .resize(150, 150)
-                            .quality(100)
-                            .compress('JPEG')
-                            .writeAsync(`${transformedFolder}/${fileName}_thumb.jpg`);
+                            logger.log("Transforming to " + transformedFolder + "/" + fileName + ".jpg")
+                            await magick(`${tempFolder}/${file}`)
+                                .strip()
+                                .autoOrient()
+                                .interlace('Plane')
+                                .gaussian(0.05)
+                                .resize(500, 500)
+                                .quality(100)
+                                .compress('JPEG')
+                                .writeAsync(`${transformedFolder}/${fileName}.jpg`);
 
-                        fs.unlinkSync(`${tempFolder}/${file}`);
-                        res();
-                    }))
-                }
-                await Promise.all(transformJobs);
+                            // thumbnail
+                            await mkdirp(path.dirname(`${transformedFolder}/${fileName}_thumb.jpg`));
 
-                // upload to bucket under auction-items/auctionId/...
-                const uploadJobs: Promise<void>[] = [];
-                const imagesArr = [];
-                for (const file of filesToTransform) {
-                    uploadJobs.push(new Promise<void>(async (res, err) => {
-                        let image = path.basename(file, path.extname(file));
+                            logger.log("Transforming to " + transformedFolder + "/" + fileName + "_thumb.jpg")
+                            await magick(`${tempFolder}/${file}`)
+                                .strip()
+                                .autoOrient()
+                                .interlace('Plane')
+                                .gaussian(0.05)
+                                .resize(150, 150)
+                                .quality(100)
+                                .compress('JPEG')
+                                .writeAsync(`${transformedFolder}/${fileName}_thumb.jpg`);
 
-                        logger.info("Uploading " + image);
+                            fs.unlinkSync(`${tempFolder}/${file}`);
+                            res();
+                        }))
+                    }
+                    await Promise.all(transformJobs);
+                    //#endregion
 
-                        await bucket.upload(`${transformedFolder}/${image}.jpg`, {
-                            destination: `auction-items/${auctionId}/${image}`, gzip: true, public: true, metadata: {
-                                cacheControl: 'public,max-age=604800',
-                                contentType: 'image/jpeg',
-                                metadata: {
-                                    firebaseStorageDownloadTokens: uuidv4(),
+                    //#region Upload processed images
+                    // upload to bucket under auction-items/auctionId/...
+                    const uploadJobs: Promise<void>[] = [];
+                    for (const file of filesToTransform) {
+                        uploadJobs.push(new Promise<void>(async (res, err) => {
+                            let image = path.basename(file, path.extname(file));
+
+                            logger.info("Uploading " + image);
+
+                            await bucket.upload(`${transformedFolder}/${image}.jpg`, {
+                                destination: `auction-items/${auctionId}/${image}`, gzip: true, public: true, metadata: {
+                                    cacheControl: 'public,max-age=604800',
+                                    contentType: 'image/jpeg',
+                                    metadata: {
+                                        firebaseStorageDownloadTokens: uuidv4(),
+                                    }
                                 }
-                            }
-                        });
-                        fs.unlinkSync(`${transformedFolder}/${image}.jpg`);
+                            });
+                            fs.unlinkSync(`${transformedFolder}/${image}.jpg`);
 
-                        await bucket.upload(`${transformedFolder}/${image}_thumb.jpg`, {
-                            destination: `auction-items/${auctionId}/${image}_thumb`, gzip: true, public: true,
-                            metadata: {
-                                cacheControl: 'public,max-age=604800',
-                                contentType: 'image/jpeg',
+                            await bucket.upload(`${transformedFolder}/${image}_thumb.jpg`, {
+                                destination: `auction-items/${auctionId}/${image}_thumb`, gzip: true, public: true,
                                 metadata: {
-                                    firebaseStorageDownloadTokens: uuidv4(),
+                                    cacheControl: 'public,max-age=604800',
+                                    contentType: 'image/jpeg',
+                                    metadata: {
+                                        firebaseStorageDownloadTokens: uuidv4(),
+                                    }
                                 }
-                            }
-                        });
-                        fs.unlinkSync(`${transformedFolder}/${image}_thumb.jpg`);
+                            });
+                            fs.unlinkSync(`${transformedFolder}/${image}_thumb.jpg`);
 
+                            const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
+                            const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}_thumb?alt=media`
+
+                            imagesArr.push({
+                                name: image,
+                                path: `auction-items/${image}`,
+                                type: 'image',
+                                url: imageUrl,
+                                thumb: thumbUrl
+                            });
+
+                            res();
+                        }))
+                    }
+                    await Promise.all(uploadJobs);
+                    //#endregion
+
+                } else {
+                    // just create links from already uploaded images
+                    for(const file of files[0]) {
+                        const image = path.basename(file.name, path.extname(file.name));
+                        
                         const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
                         const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}_thumb?alt=media`
 
@@ -150,11 +181,8 @@ export const processAuctionImagesFn = europeFunctions
                             url: imageUrl,
                             thumb: thumbUrl
                         });
-                        
-                        res();
-                    }))
+                    }
                 }
-                await Promise.all(uploadJobs);
 
                 // create auction items and add them to subcollection items in auction
                 const setJobs: Promise<void>[] = [];
