@@ -66,10 +66,10 @@ export const exportAuctionFn = europeFunctions.https.onCall(
 
                 // save items for each winner
                 if (!winnerItemsMap.has(userId)) {
-                    winnerItemsMap.set(userId, items);
+                    winnerItemsMap.set(userId, winner.items);
                 } else {
                     const currentItems = winnerItemsMap.get(userId) as AuctionItem[];
-                    winnerItemsMap.set(userId, [...currentItems, ...items]);
+                    winnerItemsMap.set(userId, [...currentItems, ...winner.items]);
                 }
 
                 for(const item of winner.items) {

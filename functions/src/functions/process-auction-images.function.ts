@@ -172,14 +172,13 @@ export const processAuctionImagesFn = europeFunctions
                         const image = path.basename(file.name, path.extname(file.name));
                         
                         const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
-                        const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}_thumb?alt=media`
 
                         imagesArr.push({
                             name: image,
                             path: `auction-items/${image}`,
                             type: 'image',
                             url: imageUrl,
-                            thumb: thumbUrl
+                            thumb: imageUrl
                         });
                     }
                 }
