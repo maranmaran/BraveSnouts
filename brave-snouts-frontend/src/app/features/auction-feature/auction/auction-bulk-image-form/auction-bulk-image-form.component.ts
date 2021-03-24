@@ -56,7 +56,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly functionSvc: FunctionsService,
   ) { }
 
-  _useCompression = false;
+  _useCompression = true;
 
   ngOnInit(): void {
 

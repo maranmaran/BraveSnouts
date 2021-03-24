@@ -31,7 +31,7 @@ export const processAuctionImagesFn = europeFunctions
     .onCall(
         async (data, context) => {
 
-            let useCompression = false;
+            let useCompression = true;
 
             try {
                 const auctionId = data.auctionId;
@@ -89,9 +89,9 @@ export const processAuctionImagesFn = europeFunctions
                             await magick(`${tempFolder}/${file}`)
                                 .strip()
                                 .autoOrient()
-                                .interlace('Plane')
-                                .gaussian(0.05)
-                                .resize(500, 500)
+                                // .interlace('Plane')
+                                // .gaussian(0.05)
+                                // .resize(500, 500)
                                 .quality(100)
                                 .compress('JPEG')
                                 .writeAsync(`${transformedFolder}/${fileName}.jpg`);
@@ -103,9 +103,9 @@ export const processAuctionImagesFn = europeFunctions
                             await magick(`${tempFolder}/${file}`)
                                 .strip()
                                 .autoOrient()
-                                .interlace('Plane')
-                                .gaussian(0.05)
-                                .resize(150, 150)
+                                // .interlace('Plane')
+                                // .gaussian(0.05)
+                                // .resize(150, 150)
                                 .quality(100)
                                 .compress('JPEG')
                                 .writeAsync(`${transformedFolder}/${fileName}_thumb.jpg`);
