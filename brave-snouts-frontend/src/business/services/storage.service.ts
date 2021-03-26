@@ -14,7 +14,7 @@ export class StorageService {
 
         const ref = this.storage.ref(filePath);
 
-        return { ref, task: this.storage.upload(filePath, file, { cacheControl: 'public,max-age=604800' }) };
+        return { ref, task: this.storage.upload(filePath, file, { cacheControl: 'public,max-age=1210000' }) };
     }
 
     uploadFileNoRef(file, filePath = null) {
@@ -22,7 +22,7 @@ export class StorageService {
             filePath = `images/${file.name}`;
         }
 
-        return this.storage.upload(filePath, file, { cacheControl: 'public,max-age=604800' });
+        return this.storage.upload(filePath, file, { cacheControl: 'public,max-age=1210000' });
     }
 
     deleteFile(url) {

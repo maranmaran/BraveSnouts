@@ -135,7 +135,7 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
                 const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.FIREBASE_PROJECT_ID}.appspot.com/o/auction-items%2F${auction.id}%2F${image}?alt=media`
                 await storage.bucket().upload(`${transformDir}\\${image}.jpg`, {
                     destination: `auction-items/${auction.id}/${image}`, gzip: true, public: true, metadata: {
-                        cacheControl: 'public,max-age=604800',
+                        cacheControl: 'public,max-age=1210000',
                         contentType: 'image/jpeg',
                         metadata: {
                             firebaseStorageDownloadTokens: uuidv4(),
@@ -148,7 +148,7 @@ const importDataFn = async (importFilePath: string, transformDir: string, auctio
                 await storage.bucket().upload(`${transformDir}\\${image}_thumb.jpg`, {
                     destination: `auction-items/${auction.id}/${image}_thumb`, gzip: true, public: true,
                     metadata: {
-                        cacheControl: 'public,max-age=604800',
+                        cacheControl: 'public,max-age=1210000',
                         contentType: 'image/jpeg',
                         metadata: {
                             firebaseStorageDownloadTokens: uuidv4(),
