@@ -15,8 +15,13 @@ virtual-scroller {
     }
 
     .custom-height {
-        height: 145px !important;
+        height: 170px !important;
         padding-bottom: 20px;
+
+        app-item-media {
+          max-height: 170px !important;
+          max-width: 170px !important;
+        }
     }
 }
 
