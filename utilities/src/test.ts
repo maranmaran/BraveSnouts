@@ -22,13 +22,16 @@ const store = admin.firestore();
 
 (async () => {
 
-    const files = (await (await store.collection("/auctions/ce2b63ff-dd67-4ab2-965f-43bc63e2e2e6/items").where('description', "!=", null)).get()).docs;
+    const users = (await (await store.collection("/users/")).get()).docs;
     
-    for(const file of files) {
-        let data = file.data();
-        if(data.description?.trim() != '') {
-            let rawText = htmlToText(data.description).replace(/\s\s+/g, ' ');
-            await store.doc(`/auctions/ce2b63ff-dd67-4ab2-965f-43bc63e2e2e6/items/${file.id}`).update({ description: rawText})
-        }
+    for(const user of users) {
+        let userData = user.data();
+        let id = userData.id;
+        let informUser = {
+            message: `Pozdrav ${userData.displayName.split(' ')[0]}, htjeli bi te 
+            informirati da smo popravili pregled predmeta u <b><a href="https://hrabrenjuske.hr/app/my-items">Moji predmeti</a></b>.` 
+        };
+        
+        await store.doc(`/users/${id}`).update({ informUser });
     }
 })()
