@@ -56,9 +56,10 @@
         <mj-divider></mj-divider>
 
         <mj-text font-weight="bold" font-size="14px">
-          Plaćanje
+          Informacije za preuzimanje poštom
         </mj-text>
         <mj-text>
+          <div>Plaćanje:</div>
           <ul>
             <!-- <li>PBZ - HR4223400091110951628</li> -->
             <li>Erste - HR9224020063209851271</li>
@@ -67,9 +68,15 @@
             <li>Keks - 0994513163</li>
           </ul>
         </mj-text>
+        <mj-text>U slučaju preuzimanja poštom potrebno je uplatiti dodatnih 20kn radi poštarine.</mj-text>
         <mj-text>
           <span style="text-decoration: underline;">Opis plaćanja:</span>
           <i style="text-decoration: none;">"{{payment_detail}}"</i>
+        </mj-text>
+        <mj-text>
+          <span style="font-weight: bold;">Napomena:</span>
+          <div style="margin-top: 10px">Kako bismo pakete mogli poslati prije blagdana 
+          molimo Vas da uplatu izvršite najkasnije do srijede, 31.03.</div>
         </mj-text>
         <mj-divider></mj-divider>
         <mj-text font-weight="bold" font-size="14px">
@@ -79,7 +86,7 @@
           {{{ handover_details }}}
         </mj-text>
         <mj-text>
-          Molimo, na primopredaju donesite točan iznos donacije.
+          Molimo Vas da na primopredaju ne kasnite te da donesete točan iznos donacije.
         </mj-text>
 
 
