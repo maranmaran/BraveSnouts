@@ -73,11 +73,11 @@
           <span style="text-decoration: underline;">Opis plaćanja:</span>
           <i style="text-decoration: none;">"{{payment_detail}}"</i>
         </mj-text>
-        <mj-text>
+        <!-- <mj-text>
           <span style="font-weight: bold;">Napomena:</span>
           <div style="margin-top: 10px">Kako bismo pakete mogli poslati prije blagdana 
           molimo Vas da uplatu izvršite najkasnije do srijede, 31.03.</div>
-        </mj-text>
+        </mj-text> -->
         <mj-divider></mj-divider>
         <mj-text font-weight="bold" font-size="14px">
           Informacije za osobno preuzimanje

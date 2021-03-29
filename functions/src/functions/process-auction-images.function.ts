@@ -128,7 +128,7 @@ export const processAuctionImagesFn = europeFunctions
 
                             await bucket.upload(`${transformedFolder}/${image}.jpg`, {
                                 destination: `auction-items/${auctionId}/${image}`, gzip: true, public: true, metadata: {
-                                    cacheControl: 'public,max-age=604800',
+                                    cacheControl: 'public,max-age=1210000',
                                     contentType: 'image/jpeg',
                                     metadata: {
                                         firebaseStorageDownloadTokens: uuidv4(),
@@ -140,7 +140,7 @@ export const processAuctionImagesFn = europeFunctions
                             await bucket.upload(`${transformedFolder}/${image}_thumb.jpg`, {
                                 destination: `auction-items/${auctionId}/${image}_thumb`, gzip: true, public: true,
                                 metadata: {
-                                    cacheControl: 'public,max-age=604800',
+                                    cacheControl: 'public,max-age=1210000',
                                     contentType: 'image/jpeg',
                                     metadata: {
                                         firebaseStorageDownloadTokens: uuidv4(),
