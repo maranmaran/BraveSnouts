@@ -119,6 +119,7 @@ export interface UserInfo {
     name: string;
     email: string;
     phoneNumber: string;
+    endAuctionMailSent?: boolean;
 }
 
 export interface TrackedItem {

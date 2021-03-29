@@ -191,4 +191,10 @@
     height: 0px;
     visibility: hidden;
   }
+
+  .winners-admin-auctions-dialog {
+    .mat-dialog-container {
+      overflow-y: hidden !important;
+    }
+  }
 }

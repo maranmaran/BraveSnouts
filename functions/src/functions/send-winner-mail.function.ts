@@ -1,5 +1,5 @@
 import { logger } from 'firebase-functions';
-import { europeFunctions } from '..';
+import { europeFunctions, store } from '..';
 import { Auction, AuctionItem, Bid } from '../models/models';
 import { sendEndAuctionMail } from '../services/mail.service';
 import { UserInfo } from './../models/models';
@@ -16,9 +16,9 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 
         const auctions = await getAuctions(auctionIds);
         const userBids = await getAllAuctionUserBidsMap(auctionIds);
-        
+
         const userBidsTransformed = new Map<UserInfo, Bid[]>();
-        for(const [_, val] of userBids) {
+        for (const [_, val] of userBids) {
             userBidsTransformed.set(val.user, val.bids);
         }
 
@@ -32,14 +32,14 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 
 const getAuctions = async (auctionIds: string[]) => {
     let auctions: Auction[] = [];
-    for(const auctionId of auctionIds) {
+    for (const auctionId of auctionIds) {
         auctions.push(await getAuction(auctionId));
     }
 
     return auctions;
 }
 const getAllAuctionUserBidsMap = async (auctionIds: string[]) => {
-    const allAuctionUserBidsMap = new Map<string, {user: UserInfo, bids: Bid[]}>();
+    const allAuctionUserBidsMap = new Map<string, { user: UserInfo, bids: Bid[] }>();
     for (const auctionId of auctionIds) {
         // Get auction items data
         // Filter out only items that were bid on
@@ -62,7 +62,7 @@ const getAllAuctionUserBidsMap = async (auctionIds: string[]) => {
             if (allAuctionUserBidsMap.has(key.id)) {
                 allAuctionUserBidsMap.set(
                     key.id,
-                    { user: key, bids: [...allAuctionUserBidsMap.get(key.id).bids, ...value]}
+                    { user: key, bids: [...allAuctionUserBidsMap.get(key.id).bids, ...value] }
                 )
             } else {
                 allAuctionUserBidsMap.set(key.id, { user: key, bids: value });
@@ -75,7 +75,43 @@ const getAllAuctionUserBidsMap = async (auctionIds: string[]) => {
 
 /** Sends mails to relevant users with their won items */
 const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, handoverDetails: string[]) => {
+
+    let sentMailsCounter = 0;
+    let skippedCounter = 0;
+
+    let sendMailJobs: Promise<void>[] = [];
     for (const [userInfo, bids] of userBids) {
-      await sendEndAuctionMail(auctions, handoverDetails, userInfo, bids);
+
+        if (userInfo.endAuctionMailSent == true) {
+            skippedCounter++;
+            continue;
+        }
+
+        // buffer
+        if (sendMailJobs.length == 10) {
+            await Promise.all(sendMailJobs);
+            sendMailJobs = [];
+        }
+
+        sendMailJobs.push(new Promise<void>(async (res, err) => {
+            await sendEndAuctionMail(auctions, handoverDetails, userInfo, bids);
+            await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
+            sentMailsCounter++;
+            res();
+        }))
     }
-  }
+    await Promise.all(sendMailJobs);
+
+    logger.info(`Sent ${sentMailsCounter} mails out of ${userBids.size}.`);
+
+    if (sentMailsCounter == userBids.size || 
+        sentMailsCounter == 0 || 
+        sentMailsCounter + skippedCounter == userBids.size) {
+            
+        for (const [userInfo, _] of userBids) {
+            await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
+        }
+    }
+
+    logger.info(`Reverted endAuctionMailSent flag`);
+}

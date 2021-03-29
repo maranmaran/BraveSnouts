@@ -14,6 +14,7 @@ import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { SubSink } from 'subsink';
+import { ProgressBarService } from './../../../../../business/services/progress-bar.service';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
 import { StorageService } from './../../../../../business/services/storage.service';
 import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
@@ -40,7 +41,8 @@ export class AdminAuctionsPageComponent implements OnInit {
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
-    private readonly storage: StorageService
+    private readonly storage: StorageService,
+    private readonly loadingSvc: ProgressBarService,
   ) { }
 
   private _subsink = new SubSink();
@@ -150,6 +152,7 @@ export class AdminAuctionsPageComponent implements OnInit {
 
   async onShowWinners() {
 
+    this.loadingSvc.active$.next(true);
     let winners = new Map<string, {winner: WinnerOnAuction, auctionIds: Set<string>}>();
     for(const auction of this.selection.selected) {
       const winnerDocs = await this.winnersRepo.getAuctionWinners(auction.id).pipe(take(1)).toPromise();
@@ -165,6 +168,7 @@ export class AdminAuctionsPageComponent implements OnInit {
         }
       }
     }
+    this.loadingSvc.active$.next(false);
 
     this.dialog.open(WinnerDetailsDialogComponent, {
       maxHeight: '80vh',
@@ -172,7 +176,7 @@ export class AdminAuctionsPageComponent implements OnInit {
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
-      panelClass: ['dialog', 'no-padding'],
+      panelClass: ['dialog', 'no-padding', 'winners-admin-auctions-dialog'],
       data: { winners }
     });
   }

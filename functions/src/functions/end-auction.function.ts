@@ -128,7 +128,8 @@ export const getUserInformation = async (userIds: string[]) => {
         id: userId,
         name: userDb.displayName,
         email: userDb.email,
-        phoneNumber: userDb.phoneNumber
+        phoneNumber: userDb.phoneNumber,
+        endAuctionMailSent: userDb.endAuctionMailSent
       });
 
     } catch (error) {

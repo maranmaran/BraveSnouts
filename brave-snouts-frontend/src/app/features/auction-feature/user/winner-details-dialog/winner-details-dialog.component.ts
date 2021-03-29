@@ -39,6 +39,9 @@ export class WinnerDetailsDialogComponent implements OnInit {
       this.winnersMap.set(val.winner, val.auctionIds);
     }
 
+    let sortedEntries = [...this.winnersMap.entries()].sort(([a, b], [c, d]) => a.userInfo.name > c.userInfo.name ? 1 : -1);
+    this.winnersMap = new Map<WinnerOnAuction, Set<string>>(sortedEntries);
+
     this.winners.push(...this.winnersMap.keys());
   }
 
@@ -125,6 +128,10 @@ export class WinnerDetailsDialogComponent implements OnInit {
       panelClass: ['item-dialog', 'mat-elevation-z8', 'full-width'],
       data: message
     });
+  }
+
+  trackByFn(winner: WinnerOnAuction) {
+    return winner.id;
   }
 
 }
