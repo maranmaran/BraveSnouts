@@ -366,6 +366,14 @@ export class AuthService {
         autoClose: true
       });
     }
+
+    if(err?.code == "auth/user-disabled") {
+      this.toastSvc.error("Račun vam je ukinut. Za više informacija možete se obratiti korisničkoj službi.", {
+        position: "top-center",
+        dismissible: true,
+        autoClose: true
+      });
+    }
   }
 
   /** Saves new user to the users collection */
