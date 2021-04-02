@@ -59,7 +59,7 @@ export const handoverConfirm = handoverConfirmFn;
 export const newItemsAdded = newItemsAddedFn;
 
 // announces auction starting or ending soon
-export const announcer = announcerFn;
+// export const announcer = announcerFn;
 
 
 // export const archiveAuction = archiveAuctionFn;
