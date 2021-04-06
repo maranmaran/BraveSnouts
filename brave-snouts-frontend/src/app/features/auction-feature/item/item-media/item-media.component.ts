@@ -3,6 +3,7 @@ import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { Observable } from 'rxjs';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-item-media',
@@ -14,6 +15,7 @@ import { FirebaseFile } from "src/business/models/firebase-file.model";
 export class ItemMediaComponent implements OnInit {
 
   // private manualChangeDetection: ManualChangeDetection;
+  protected imageCacheSeed = environment.imageCacheSeed;
 
   constructor(
     private readonly gallery: Gallery,
