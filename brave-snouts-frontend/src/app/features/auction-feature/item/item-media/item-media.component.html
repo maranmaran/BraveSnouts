@@ -2,12 +2,12 @@
 
     <ng-container *ngIf="!onlyFirst; else singleMedia">
       <gallery *ngIf="dbMedia.length > 1" class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
-      <img *ngIf="dbMedia.length == 1" class="w-100 h-100 single-gallery-image pointer" [src]="dbMedia[0].url" (click)="openLightbox()"/>
+      <img *ngIf="dbMedia.length == 1" class="w-100 h-100 single-gallery-image pointer" src="{{ dbMedia[0].url  + '&' + imageCacheSeed }}" (click)="openLightbox()"/>
     </ng-container>
 
     <ng-template #singleMedia>
         <div>
-            <img id="single-image" class="img-fluid" [src]="mobileImageUrl" />
+            <img id="single-image" class="img-fluid" src="{{ mobileImageUrl + '&' + imageCacheSeed }}" />
             <ng-content></ng-content>
         </div>
     </ng-template>

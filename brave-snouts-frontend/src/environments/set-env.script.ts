@@ -101,7 +101,8 @@ const buildEnvironmentFileContent = `
       minBidOffset: ${process.env.APP_MIN_BID_OFFSET ?? 5},
       maxBidOffset: ${process.env.APP_MAX_BID_OFFSET ?? 30},
       bidStepSize: ${process.env.APP_BID_STEP_SIZE ?? 5}
-    }
+    },
+    imageCacheSeed: 3
   };
 `;
 

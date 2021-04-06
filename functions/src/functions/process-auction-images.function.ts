@@ -6,6 +6,8 @@ import * as GM from 'gm';
 import { v4 as uuidv4 } from 'uuid';
 import { store } from '..';
 import { europeFunctions } from '../index';
+import { AuctionItem } from '../models/models';
+import { getAuctionItems } from './end-auction.function';
 const path = require('path');
 const os = require('os');
 const mkdirp = require('mkdirp');
@@ -90,27 +92,27 @@ export const processAuctionImagesFn = europeFunctions
                                 .strip()
                                 .autoOrient()
                                 // .interlace('Plane')
-                                // .gaussian(0.05)
+                                .gaussian(0.05)
                                 // .resize(500, 500)
-                                .quality(100)
+                                .quality(85)
                                 .compress('JPEG')
                                 .writeAsync(`${transformedFolder}/${fileName}.jpg`);
 
-                            // thumbnail
-                            await mkdirp(path.dirname(`${transformedFolder}/${fileName}_thumb.jpg`));
+                            // // thumbnail
+                            // await mkdirp(path.dirname(`${transformedFolder}/${fileName}_thumb.jpg`));
 
-                            logger.log("Transforming to " + transformedFolder + "/" + fileName + "_thumb.jpg")
-                            await magick(`${tempFolder}/${file}`)
-                                .strip()
-                                .autoOrient()
-                                // .interlace('Plane')
-                                // .gaussian(0.05)
-                                // .resize(150, 150)
-                                .quality(100)
-                                .compress('JPEG')
-                                .writeAsync(`${transformedFolder}/${fileName}_thumb.jpg`);
+                            // logger.log("Transforming to " + transformedFolder + "/" + fileName + "_thumb.jpg")
+                            // await magick(`${tempFolder}/${file}`)
+                            //     .strip()
+                            //     .autoOrient()
+                            //     // .interlace('Plane')
+                            //     .gaussian(0.05)
+                            //     // .resize(150, 150)
+                            //     .quality(85)
+                            //     .compress('JPEG')
+                            //     .writeAsync(`${transformedFolder}/${fileName}_thumb.jpg`);
 
-                            fs.unlinkSync(`${tempFolder}/${file}`);
+                            // fs.unlinkSync(`${tempFolder}/${file}`);
                             res();
                         }))
                     }
@@ -137,27 +139,28 @@ export const processAuctionImagesFn = europeFunctions
                             });
                             fs.unlinkSync(`${transformedFolder}/${image}.jpg`);
 
-                            await bucket.upload(`${transformedFolder}/${image}_thumb.jpg`, {
-                                destination: `auction-items/${auctionId}/${image}_thumb`, gzip: true, public: true,
-                                metadata: {
-                                    cacheControl: 'public,max-age=1210000',
-                                    contentType: 'image/jpeg',
-                                    metadata: {
-                                        firebaseStorageDownloadTokens: uuidv4(),
-                                    }
-                                }
-                            });
-                            fs.unlinkSync(`${transformedFolder}/${image}_thumb.jpg`);
+                            // await bucket.upload(`${transformedFolder}/${image}_thumb.jpg`, {
+                            //     destination: `auction-items/${auctionId}/${image}_thumb`, gzip: true, public: true,
+                            //     metadata: {
+                            //         cacheControl: 'public,max-age=1210000',
+                            //         contentType: 'image/jpeg',
+                            //         metadata: {
+                            //             firebaseStorageDownloadTokens: uuidv4(),
+                            //         }
+                            //     }
+                            // });
+                            // fs.unlinkSync(`${transformedFolder}/${image}_thumb.jpg`);
 
                             const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
-                            const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}_thumb?alt=media`
+                            // const thumbUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}_thumb?alt=media`
 
                             imagesArr.push({
                                 name: image,
                                 path: `auction-items/${image}`,
                                 type: 'image',
                                 url: imageUrl,
-                                thumb: thumbUrl
+                                // thumb: thumbUrl
+                                thumb: imageUrl
                             });
 
                             res();
@@ -168,9 +171,9 @@ export const processAuctionImagesFn = europeFunctions
 
                 } else {
                     // just create links from already uploaded images
-                    for(const file of files[0]) {
+                    for (const file of files[0]) {
                         const image = path.basename(file.name, path.extname(file.name));
-                        
+
                         const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
 
                         imagesArr.push({
@@ -183,30 +186,20 @@ export const processAuctionImagesFn = europeFunctions
                     }
                 }
 
-                // create auction items and add them to subcollection items in auction
-                const setJobs: Promise<void>[] = [];
-                for (const images of imagesArr) {
-                    let job = new Promise<void>(async (res, err) => {
-                        const itemId = uuidv4();
-                        const itemDoc = store.doc(`auctions/${auctionId}`).collection('items').doc(itemId)
-                        const item = {
-                            id: itemId,
-                            auctionId: auctionId,
+                let items = [];
+                try {
+                    items = await getAuctionItems(auctionId);
 
-                            name: '',
-                            description: '',
-                            media: [images],
-
-                            startBid: 0,
-                            bid: 0,
-                        };
-
-                        await itemDoc.set(item, { merge: true });
-                        res();
-                    });
-                    setJobs.push(job);
+                    if(items.length > 0) {
+                        await modifyExistingItemsWithImages(auctionId, items, imagesArr);
+                    }
+                } catch {
+                    logger.info("No items.. creating new ones");
                 }
-                await Promise.all(setJobs);
+
+                if(items.length == 0) {
+                    await createNewItemsWithImages(auctionId, imagesArr);
+                }
 
                 return auctionId;
             } catch (error) {
@@ -214,3 +207,68 @@ export const processAuctionImagesFn = europeFunctions
                 throw new Error(error);
             }
         });
+
+async function modifyExistingItemsWithImages(auctionId, items: AuctionItem[], imagesArr) {
+    if(items.length == 0) {
+        return;
+    }
+
+    logger.info("Detected existing items.. modifying");
+
+    // map images by name
+    let imagesMap = new Map();
+    for (const images of imagesArr) {
+        imagesMap.set(images.name, images);
+    }
+
+    // update each item where image has the name
+    for(const item of items) {
+        if(item.media.length == 0) {
+            continue;
+        }
+
+        let key = item.media[0].name;
+        let imageData = imagesMap.get(key);
+
+        if(imageData != null && imageData.length > 0) {
+            logger.info("Updating image on item " + item.id);
+            const itemDoc = store.doc(`auctions/${auctionId}`).collection('items').doc(item.id)
+            await itemDoc.update({ media: imageData });
+        }
+    }
+}
+
+async function createNewItemsWithImages(auctionId, imagesArr) {
+
+    logger.info("No preexisting items.. creating");
+
+    // create auction items and add them to subcollection items in auction
+    const setJobs: Promise<void>[] = [];
+    for (const images of imagesArr) {
+
+        let job = new Promise<void>(async (res, err) => {
+            const itemId = uuidv4();
+
+            logger.info("Creating new item " + itemId);
+            const itemDoc = store.doc(`auctions/${auctionId}`).collection('items').doc(itemId)
+            const item = {
+                id: itemId,
+                auctionId: auctionId,
+
+                name: '',
+                description: '',
+                media: [images],
+
+                startBid: 0,
+                bid: 0,
+            };
+
+            await itemDoc.set(item, { merge: true });
+            res();
+        });
+        setJobs.push(job);
+    }
+    await Promise.all(setJobs);
+}
+
+
