@@ -33,7 +33,7 @@
           },
           {
             "key": "Clear-Site-Data",
-            "value": "\"*\""
+            "value": "\"cache\",\"storage\""
           }
         ]
       },
@@ -46,7 +46,7 @@
           },
           {
             "key": "Clear-Site-Data",
-            "value": "\"*\""
+            "value": "\"cache\",\"storage\""
           }
         ]
       },
@@ -59,7 +59,7 @@
           },
           {
             "key": "Clear-Site-Data",
-            "value": "\"*\""
+            "value": "\"cache\",\"storage\""
           }
         ]
       }
