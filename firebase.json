@@ -37,32 +37,32 @@
           }
         ]
       },
-      { 
-        "source":"**", 
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache, no-store, must-revalidate"
-          },
-          {
-            "key": "Clear-Site-Data",
-            "value": "\"cache\",\"storage\""
-          }
-        ]
-      },
-      { 
-        "source":"/service-worker.js", 
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache, no-store, must-revalidate"
-          },
-          {
-            "key": "Clear-Site-Data",
-            "value": "\"cache\",\"storage\""
-          }
-        ]
-      }
+      // { 
+      //   "source":"**", 
+      //   "headers": [
+      //     {
+      //       "key": "Cache-Control",
+      //       "value": "no-cache, no-store, must-revalidate"
+      //     },
+      //     {
+      //       "key": "Clear-Site-Data",
+      //       "value": "\"cache\",\"storage\""
+      //     }
+      //   ]
+      // },
+      // { 
+      //   "source":"/service-worker.js", 
+      //   "headers": [
+      //     {
+      //       "key": "Cache-Control",
+      //       "value": "no-cache, no-store, must-revalidate"
+      //     },
+      //     {
+      //       "key": "Clear-Site-Data",
+      //       "value": "\"cache\",\"storage\""
+      //     }
+      //   ]
+      // }
     ]
   },
   "functions": {
