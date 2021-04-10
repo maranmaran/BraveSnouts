@@ -64,4 +64,10 @@ export class FunctionsService {
 
       return callable({ auctionId });
     }
+
+    downloadMails() {
+      const callable = this.functions.httpsCallable('downloadMails-downloadMailsFn');
+
+      return callable({});
+    }
 }

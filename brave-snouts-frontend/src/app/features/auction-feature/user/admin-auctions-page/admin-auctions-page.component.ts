@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
 import { noop } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { Auction } from 'src/business/models/auction.model';
@@ -146,8 +146,7 @@ export class AdminAuctionsPageComponent implements OnInit {
         success: `Uspješno`,
         error: `Nešto je pošlo po zlu`,
       }),
-      switchMap(res => this.storage.getDownloadUrl(`exports/${this.selection.selected.map(a => a.name).join('_')}.xlsx`))
-    ).subscribe(url => window.location.href = url, err => console.log(err));
+    ).subscribe(res => window.location.href = res[1].mediaLink, err => console.log(err));
   }
 
   async onShowWinners() {
@@ -179,6 +178,18 @@ export class AdminAuctionsPageComponent implements OnInit {
       panelClass: ['dialog', 'no-padding', 'winners-admin-auctions-dialog'],
       data: { winners }
     });
+  }
+
+  onDownloadMails() {
+    this.functionsSvc.downloadMails()
+    .pipe(
+      take(1),
+      this.toastSvc.observe({
+        loading: `Pripremam excel`,
+        success: `Uspješno`,
+        error: `Nešto je pošlo po zlu`,
+      }),
+    ).subscribe(res => window.location.href = res[1].mediaLink, err => console.log(err));
   }
 
   //#endregion

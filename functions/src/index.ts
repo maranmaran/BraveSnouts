@@ -19,6 +19,7 @@ const handoverConfirmFn = require('./functions/handover-confirm.function');
 const newItemsAddedFn = require('./functions/new-items-added.function');
 // const announcerFn = require('./functions/auction-announcer.function');
 const sendWinnerMailFn = require('./functions/send-winner-mail.function');
+const downloadMailsFn = require('./functions/download-mails.function');
 // const archiveAuctionFn = require('./functions/archive-auction.function');
 // const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
@@ -57,6 +58,9 @@ export const handoverConfirm = handoverConfirmFn;
 
 // send new items have been added to auction mail 
 export const newItemsAdded = newItemsAddedFn;
+
+// downloads all users emails whoa re subscribed to announcements 
+export const downloadMails = downloadMailsFn;
 
 // announces auction starting or ending soon
 // export const announcer = announcerFn;

@@ -23,7 +23,7 @@ const store = admin.firestore();
 
 (async () => {
 
-    const users = (await (await store.collection("/users/")).get()).docs;
+    const users = (await (await store.collection("/users/").where("emailSettings.auctionAnnouncements", "==", true)).get()).docs;
     
     let sheetData = [];
     for(const user of users) {
@@ -44,7 +44,7 @@ const store = admin.firestore();
     const ws1 = XLSX.utils.aoa_to_sheet(sheetData);
     wb.Sheets["Mailovi"] = ws1;
 
-    XLSX.writeFile(wb, `Mailovi - 28.03.21.xlsx`, { bookType: 'xlsx'} );
+    XLSX.writeFile(wb, `Mailovi - 07.04.21.xlsx`, { bookType: 'xlsx'} );
 
 
 })()

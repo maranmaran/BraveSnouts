@@ -12,6 +12,7 @@
 
       <div class="w-100" fxFlex id="right" fxLayout="row" fxLayoutAlign="end" fxLayout.lt-md="column"
         fxLayoutGap="1rem">
+        <button mat-flat-button color="primary" (click)="onDownloadMails()">Ispis mailova</button>
         <button mat-flat-button color="primary" [disabled]="!selection.hasValue() || !onlyProcessedAuctionsSelected" (click)="onDownloadExcelTable()">Skini tablicu</button>
         <button mat-flat-button color="primary" [disabled]="!selection.hasValue() || !onlyProcessedAuctionsSelected" (click)="onShowWinners()">Pregled pobjednika</button>
       </div>
