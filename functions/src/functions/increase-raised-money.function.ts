@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { europeFunctions, store } from "..";
 import { Auction, AuctionItem } from "../models/models";
@@ -20,6 +21,7 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore.document("auction
     }
 
     const addedMoney = after.bid - (!before.user ? 0 : before.bid);
+    functions.logger.info(`Added money is ${addedMoney}`);
     
     if(addedMoney <= 0) {
         functions.logger.error("Bid is the same or lower");
@@ -29,7 +31,13 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore.document("auction
     const auctionSnapshot = await store.doc(`auctions/${after.auctionId}`).get();
     const auctionDoc = (await auctionSnapshot.data()) as Auction;
 
+    if(auctionDoc.endDate.seconds + 1 > admin.firestore.Timestamp.fromDate(new Date()).seconds) {
+      functions.logger.error("Raised money function invoked out of auction END timeframe");
+      return null;
+    }
+    
     const raisedMoney = (auctionDoc.raisedMoney ?? 0) + addedMoney;
+    functions.logger.info(`New raised total is now ${raisedMoney}`);
 
     await store.doc(`auctions/${after.auctionId}`).update({ raisedMoney });
 
