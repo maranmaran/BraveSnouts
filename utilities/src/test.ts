@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin';
 import path from 'path';
-import * as XLSX from 'xlsx';
 const { htmlToText } = require('html-to-text');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
@@ -23,28 +22,15 @@ const store = admin.firestore();
 
 (async () => {
 
-    const users = (await (await store.collection("/users/").where("emailSettings.auctionAnnouncements", "==", true)).get()).docs;
+    const items = (await (await store.collection("/auctions/ee3b5623-efaa-406c-9660-7b8173f1e09a/items").where("bidId", "!=", null)).get()).docs;
     
-    let sheetData = [];
-    for(const user of users) {
-        let userData = user.data();
-        let id = userData.id;
-
-        sheetData.push([userData.displayName, userData.email]);
-        // let informUser = {
-        //     message: `Pozdrav ${userData.displayName.split(' ')[0]}, htjeli bi te 
-        //     informirati da smo popravili pregled predmeta u <b><a href="https://hrabrenjuske.hr/app/my-items">Moji predmeti</a></b>.` 
-        // };
-        // await store.doc(`/users/${id}`).update({ informUser });
+    let sum = 0;
+    for(const item of items) {
+        let data = item.data();
+        sum += data.bid;
     }
 
-    const wb = XLSX.utils.book_new();
-    wb.SheetNames.push("Mailovi"); 
-    
-    const ws1 = XLSX.utils.aoa_to_sheet(sheetData);
-    wb.Sheets["Mailovi"] = ws1;
-
-    XLSX.writeFile(wb, `Mailovi - 07.04.21.xlsx`, { bookType: 'xlsx'} );
+    console.log(sum);
 
 
 })()

@@ -31,7 +31,7 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore.document("auction
     const auctionSnapshot = await store.doc(`auctions/${after.auctionId}`).get();
     const auctionDoc = (await auctionSnapshot.data()) as Auction;
 
-    if(auctionDoc.endDate.seconds + 1 > admin.firestore.Timestamp.fromDate(new Date()).seconds) {
+    if(auctionDoc.endDate.seconds + 1 < admin.firestore.Timestamp.fromDate(new Date()).seconds) {
       functions.logger.error("Raised money function invoked out of auction END timeframe");
       return null;
     }
