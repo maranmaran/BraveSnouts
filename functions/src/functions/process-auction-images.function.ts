@@ -34,6 +34,7 @@ export const processAuctionImagesFn = europeFunctions
         async (data, context) => {
 
             let useCompression = true;
+            let bufferSize = 10;
 
             try {
                 const auctionId = data.auctionId;
@@ -53,8 +54,15 @@ export const processAuctionImagesFn = europeFunctions
                     //#region Download from temp
                     // download all images in temp/images_to_transform
                     logger.log("Downloading images");
-                    const downloadJobs: Promise<void>[] = [];
+                    let downloadJobs: Promise<void>[] = [];
                     for (const file of files[0]) {
+                        
+                        // buffer
+                        if (downloadJobs.length == bufferSize) {
+                            await Promise.all(downloadJobs);
+                            downloadJobs = [];
+                        }
+
                         downloadJobs.push(new Promise<void>(async (res, err) => {
                             // const filePath = file.name;
                             // const fileDir = path.dirname(file.name);
@@ -76,7 +84,7 @@ export const processAuctionImagesFn = europeFunctions
                     for (const file of filesToTransform) {
 
                         // buffer
-                        if (transformJobs.length == 5) {
+                        if (transformJobs.length == bufferSize) {
                             await Promise.all(transformJobs);
                             transformJobs = [];
                         }
@@ -93,7 +101,7 @@ export const processAuctionImagesFn = europeFunctions
                                 .autoOrient()
                                 // .interlace('Plane')
                                 .gaussian(0.05)
-                                // .resize(500, 500)
+                                .resize(500, 500)
                                 .quality(85)
                                 .compress('JPEG')
                                 .writeAsync(`${transformedFolder}/${fileName}.jpg`);
@@ -121,8 +129,15 @@ export const processAuctionImagesFn = europeFunctions
 
                     //#region Upload processed images
                     // upload to bucket under auction-items/auctionId/...
-                    const uploadJobs: Promise<void>[] = [];
+                    let uploadJobs: Promise<void>[] = [];
                     for (const file of filesToTransform) {
+
+                            // buffer
+                        if (uploadJobs.length == bufferSize) {
+                            await Promise.all(uploadJobs);
+                            uploadJobs = [];
+                        }
+    
                         uploadJobs.push(new Promise<void>(async (res, err) => {
                             let image = path.basename(file, path.extname(file));
 
