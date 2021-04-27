@@ -34,7 +34,7 @@ export const processAuctionImagesFn = europeFunctions
         async (data, context) => {
 
             let useCompression = true;
-            let bufferSize = 10;
+            let bufferSize = 20;
 
             try {
                 const auctionId = data.auctionId;
