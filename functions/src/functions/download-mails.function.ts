@@ -13,7 +13,10 @@ const path = require('path');
 export const downloadMailsFn = europeFunctions.https.onCall(
     async (data, context) => {
 
-        const users = (await (await store.collection("/users/").where("emailSettings.auctionAnnouncements", "==", true)).get()).docs;
+        const users = (await (await store.collection("/users/")
+            .where("emailSettings.auctionAnnouncements", "==", true)
+            .where("emailSettings.bidUpdates", "==", true)
+        ).get()).docs;
     
         let sheetData = [];
         for(const user of users) {

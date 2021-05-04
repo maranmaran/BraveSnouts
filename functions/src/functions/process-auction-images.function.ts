@@ -96,15 +96,19 @@ export const processAuctionImagesFn = europeFunctions
                             await mkdirp(path.dirname(`${transformedFolder}/${fileName}.jpg`));
 
                             logger.log("Transforming to " + transformedFolder + "/" + fileName + ".jpg")
-                            await magick(`${tempFolder}/${file}`)
-                                .strip()
-                                .autoOrient()
-                                .interlace('Plane')
-                                .gaussian(0.05)
-                                .resize(500, 500)
-                                .quality(50)
-                                .compress('JPEG')
-                                .writeAsync(`${transformedFolder}/${fileName}.jpg`);
+                            try {
+                                await magick(`${tempFolder}/${file}`)
+                                    .strip()
+                                    .autoOrient()
+                                    .interlace('Plane')
+                                    .gaussian(0.05)
+                                    .resize(500, 500)
+                                    .quality(50)
+                                    .compress('JPEG')
+                                    .writeAsync(`${transformedFolder}/${fileName}.jpg`);
+                            } catch(errorMagick) {
+                                console.error(errorMagick);
+                            }
 
                             // // thumbnail
                             // await mkdirp(path.dirname(`${transformedFolder}/${fileName}_thumb.jpg`));
@@ -143,16 +147,20 @@ export const processAuctionImagesFn = europeFunctions
 
                             logger.info("Uploading " + image);
 
-                            await bucket.upload(`${transformedFolder}/${image}.jpg`, {
-                                destination: `auction-items/${auctionId}/${image}`, gzip: true, public: true, metadata: {
-                                    cacheControl: 'public,max-age=1210000',
-                                    contentType: 'image/jpeg',
-                                    metadata: {
-                                        firebaseStorageDownloadTokens: uuidv4(),
+                            try {
+                                await bucket.upload(`${transformedFolder}/${image}.jpg`, {
+                                    destination: `auction-items/${auctionId}/${image}`, gzip: true, public: true, metadata: {
+                                        cacheControl: 'public,max-age=1210000',
+                                        contentType: 'image/jpeg',
+                                        metadata: {
+                                            firebaseStorageDownloadTokens: uuidv4(),
+                                        }
                                     }
-                                }
-                            });
-                            fs.unlinkSync(`${transformedFolder}/${image}.jpg`);
+                                });
+                                fs.unlinkSync(`${transformedFolder}/${image}.jpg`);
+                            } catch(bucketErr) {
+                                console.error(bucketErr);
+                            }
 
                             // await bucket.upload(`${transformedFolder}/${image}_thumb.jpg`, {
                             //     destination: `auction-items/${auctionId}/${image}_thumb`, gzip: true, public: true,
