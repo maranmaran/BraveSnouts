@@ -1,13 +1,14 @@
+@use '~@angular/material' as mat;
 @import "~@angular/material/theming";
 
 @mixin elevation-theme($theme) {
 
     .elevate {
-        @include mat-elevation-transition;
+        @include mat.elevation-transition;
 
         &.selected {
             &.selected {
-                @include mat-elevation(8, mat-color(map-get($theme, primary), 800), 1);
+                @include mat.elevation(8, mat.get-color-from-palette(map-get($theme, primary), 800), 1);
             }
         }
     }
@@ -16,27 +17,27 @@
         .elevate {
             &.hover {
                 &:hover {
-                    @include mat-elevation(4, mat-color(map-get($theme, primary), 800), 1);
+                    @include mat.elevation(4, mat.get-color-from-palette(map-get($theme, primary), 800), 1);
                 }
                 &:hover.default {
-                    @include mat-elevation(4);
+                    @include mat.elevation(4);
                 }
                 &:hover.warn {
-                    @include mat-elevation(4, mat-color(map-get($theme, warn), 800), 1);
+                    @include mat.elevation(4, mat.get-color-from-palette(map-get($theme, warn), 800), 1);
                 }
             }
             &.hover-big {
                 &:hover {
-                    @include mat-elevation(8, mat-color(map-get($theme, primary), 800), 1);
+                    @include mat.elevation(8, mat.get-color-from-palette(map-get($theme, primary), 800), 1);
                 }
             }
             &.hover-large {
                 &:hover {
                     &.primary {
-                      @include mat-elevation(12, mat-color(map-get($theme, primary), 800), 1);
+                      @include mat.elevation(12, mat.get-color-from-palette(map-get($theme, primary), 800), 1);
                     }
 
-                    @include mat-elevation(12);
+                    @include mat.elevation(12);
                 }
 
             }

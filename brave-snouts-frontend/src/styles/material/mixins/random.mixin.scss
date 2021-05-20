@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @import "~@angular/material/theming";
 
 @mixin random-theme($theme) {
-  $warn: mat-color(map-get($theme, warn), default);
+  $warn: mat.get-color-from-palette(map-get($theme, warn), default);
 
   .bid-errors {
     color: $warn;
@@ -13,7 +14,7 @@
     z-index: 10;
     width: 205px;
 
-    @include mat-elevation(4);
+    @include mat.elevation(4);
 
     position: absolute;
     bottom: 60px;
@@ -22,21 +23,21 @@
 
   .background {
     &.warn.lighter {
-      background: mat-color(map-get($theme, warn), 50) !important;
+      background: mat.get-color-from-palette(map-get($theme, warn), 50) !important;
     }
 
     &.primary.lighter {
-      background: mat-color(map-get($theme, primary), 50) !important;
+      background: mat.get-color-from-palette(map-get($theme, primary), 50) !important;
     }
   }
 
   .foreground {
     &.warn.default {
-      color: mat-color(map-get($theme, warn), "default") !important;
+      color: mat.get-color-from-palette(map-get($theme, warn), "default") !important;
     }
 
     &.primary.lighter {
-      color: mat-color(map-get($theme, primary), "default") !important;
+      color: mat.get-color-from-palette(map-get($theme, primary), "default") !important;
     }
   }
 

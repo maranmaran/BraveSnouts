@@ -1,3 +1,4 @@
+@use '~@angular/cdk' as cdk;
 @import "~@angular/material/theming";
 @import '~@angular/cdk/text-field/text-field';
 
@@ -7,13 +8,13 @@
 
   .theme-light {
     input {
-      @include cdk-text-field-autofill-color(transparent, black);
+      @include cdk.text-field-autofill-color(transparent, black);
     }
   }
 
   .theme-dark {
     input {
-      @include cdk-text-field-autofill-color(transparent, white);
+      @include cdk.text-field-autofill-color(transparent, white);
     }
   }
 }
