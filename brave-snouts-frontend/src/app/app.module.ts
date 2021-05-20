@@ -7,9 +7,11 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireFunctionsModule, REGION } from '@angular/fire/functions';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HotToastModule } from '@ngneat/hot-toast';
 import { GalleryModule, GALLERY_CONFIG } from 'ng-gallery';
 import { LightboxModule, LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
 import { CountdownModule } from 'ngx-countdown';
@@ -92,6 +94,9 @@ registerLocaleData(hrLocale);
     FormsModule,
     ReactiveFormsModule,
     VirtualScrollerModule,
+
+    FlexLayoutModule,
+    HotToastModule.forRoot(),
   ],
 
   declarations: [
