@@ -6,13 +6,13 @@ import { ActivatedRoute } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
-import { IPageInfo } from 'ngx-virtual-scroller';
 import { noop, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
+import { IPageInfo } from 'src/app/shared/virtual-scroll/virtual-scroller';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { Bid } from 'src/business/models/bid.model';
@@ -33,11 +33,15 @@ import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.scss'],
-  providers: [AuctionRepository, BidsRepository, AuctionItemRepository, WinnersRepository, FunctionsService]
+  providers: [
+    AuctionRepository,
+    BidsRepository,
+    AuctionItemRepository,
+    WinnersRepository,
+    FunctionsService,
+  ],
 })
 export class AdminPageComponent implements OnInit, OnDestroy {
-
-
   constructor(
     private readonly auctionRepo: AuctionRepository,
     private readonly bidRepo: BidsRepository,
@@ -50,7 +54,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private readonly loadingSvc: ProgressBarService,
     private readonly toastSvc: HotToastService,
     private readonly storage: StorageService
-  ) { }
+  ) {}
 
   private _auctionId: string;
 
@@ -65,23 +69,28 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   bids$: Observable<Bid[]>;
 
   state: 'future' | 'active' | 'expired';
-  config: CountdownConfig
+  config: CountdownConfig;
 
   private _subsink = new SubSink();
 
   ngOnInit(): void {
     this._auctionId = this.route.snapshot.paramMap.get('id');
-    this.state = this.route.snapshot.paramMap.get('state') as 'future' | 'active' | 'expired';
+    this.state = this.route.snapshot.paramMap.get('state') as
+      | 'future'
+      | 'active'
+      | 'expired';
 
-    this.auction$ = this.auctionRepo.getOne(this._auctionId)
-      .pipe(
-        tap(auction => this.setupCountdown(auction)),
-      );
+    this.auction$ = this.auctionRepo
+      .getOne(this._auctionId)
+      .pipe(tap((auction) => this.setupCountdown(auction)));
 
     this._subsink.add(
-      this.winnersRepo.getAuctionWinners(this._auctionId, ref => ref.orderBy('userInfo.name', 'asc'))
-        .subscribe(winners => this.auctionWinners = winners)
-    )
+      this.winnersRepo
+        .getAuctionWinners(this._auctionId, (ref) =>
+          ref.orderBy('userInfo.name', 'asc')
+        )
+        .subscribe((winners) => (this.auctionWinners = winners))
+    );
 
     this.onLoadMore({ endIndex: -1 } as IPageInfo);
   }
@@ -100,7 +109,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   /** Loads more data when page hits bottom */
   onLoadMore(event: IPageInfo) {
-
     // only if no other fetch is in progress
     if (this.fetchInProgress) {
       return;
@@ -119,31 +127,32 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.fetchInProgress = true;
     this.loadingSvc.active$.next(true);
 
-    const subscription = this.itemsRepo.getScrollPage(this._auctionId, this.last)
-      .pipe(
+    const subscription = this.itemsRepo
+      .getScrollPage(this._auctionId, this.last)
+      .pipe()
+      .subscribe(
+        (items) => {
+          // disable next if no more items
+          if (items.length < this.itemsRepo.pageSize) {
+            this.noMoreData = true;
+          }
 
-      ).subscribe(items => {
+          // join items
+          this.items = mergeArrays(this.items, items);
+          // console.log(`Currently having ${this.items.length} items.`, this.items)
+          // console.log("Types are", items.map(item => item.type))
+          // console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
+          // console.log("\n")
 
-        // disable next if no more items
-        if (items.length < this.itemsRepo.pageSize) {
-          this.noMoreData = true;
-        }
+          // set last item
+          this.last = this.items[this.items.length - 1];
 
-        // join items
-        this.items = mergeArrays(this.items, items);
-        // console.log(`Currently having ${this.items.length} items.`, this.items)
-        // console.log("Types are", items.map(item => item.type))
-        // console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
-        // console.log("\n")
-
-        // set last item
-        this.last = this.items[this.items.length - 1];
-
-        // update flags
-        this.fetchInProgress = false;
-        this.loadingSvc.active$.next(false);
-
-      }, err => console.log(err));
+          // update flags
+          this.fetchInProgress = false;
+          this.loadingSvc.active$.next(false);
+        },
+        (err) => console.log(err)
+      );
 
     this._subsink.add(subscription);
   }
@@ -153,26 +162,36 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   getBids(itemId: string) {
     this.activeItemId = itemId;
 
-    const query = ref => ref.where('itemId', '==', itemId).orderBy("date", "desc").limit(5);
+    const query = (ref) =>
+      ref.where('itemId', '==', itemId).orderBy('date', 'desc').limit(5);
     this.bids$ = this.bidRepo.getAll(query);
   }
 
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown(auction: Auction) {
-    const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
-    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss");
+    const today = moment(new Date(), 'DD/MM/YYYY HH:mm:ss');
+    const auctionEnd = moment(auction.endDate.toDate(), 'DD/MM/YYYY HH:mm:ss');
     const dateDiff = auctionEnd.diff(today);
     const duration = moment.duration(dateDiff);
     const leftTime = duration.asSeconds();
 
-    this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
+    this.config = {
+      leftTime,
+      format: 'HHh mmm sss',
+      formatDate: formatDateToHoursOnlyNgxCountdown,
+    };
   }
 
   openAuctionWinnersDetails() {
-
-    let winnersMap = new Map<string, {winner: WinnerOnAuction, auctionIds: Set<string>}>();
-    for(const winner of this.auctionWinners) {
-      winnersMap.set(winner.id, { winner, auctionIds: new Set<string>([this._auctionId])});
+    let winnersMap = new Map<
+      string,
+      { winner: WinnerOnAuction; auctionIds: Set<string> }
+    >();
+    for (const winner of this.auctionWinners) {
+      winnersMap.set(winner.id, {
+        winner,
+        auctionIds: new Set<string>([this._auctionId]),
+      });
     }
 
     this.dialog.open(WinnerDetailsDialogComponent, {
@@ -182,9 +201,8 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['dialog', 'no-padding'],
-      data: { winners: winnersMap }
+      data: { winners: winnersMap },
     });
-
   }
 
   endAuction(auctionId) {
@@ -194,48 +212,54 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
-      panelClass: 'restrict-height-handover'
+      panelClass: 'restrict-height-handover',
     });
 
-    dialogRef.afterClosed()
+    dialogRef
+      .afterClosed()
       .pipe(take(1))
-      .subscribe(handoverDetails => {
-        if (!handoverDetails) return;
+      .subscribe(
+        (handoverDetails) => {
+          if (!handoverDetails) return;
 
-        this.functionsSvc.endAuction(auctionId, handoverDetails)
-          .pipe(
-            take(1),
-            this.toastSvc.observe(
-              {
+          this.functionsSvc
+            .endAuction(auctionId, handoverDetails)
+            .pipe(
+              take(1),
+              this.toastSvc.observe({
                 loading: 'Aukcija se zatvara..',
-                success: "Uspješno završena aukcija",
-                error: "Nešto je pošlo po zlu",
-              }
+                success: 'Uspješno završena aukcija',
+                error: 'Nešto je pošlo po zlu',
+              })
             )
-          )
-          .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
-
-      }, err => console.log(err))
-
+            .subscribe(/*res => console.log(res)*/ noop, (err) =>
+              console.log(err)
+            ); // TODO: Something with res
+        },
+        (err) => console.log(err)
+      );
   }
 
   async onSendWinnerMails() {
-
     const auction = await this.auction$.pipe(take(1)).toPromise();
     const handoverDetails = auction.handoverDetails;
 
-    let confirmAnswer = await this.confirmDialog('Sigurno želiš poslati pobjedničke mailove?');
-    if(!confirmAnswer) return;
+    let confirmAnswer = await this.confirmDialog(
+      'Sigurno želiš poslati pobjedničke mailove?'
+    );
+    if (!confirmAnswer) return;
 
-    this.functionsSvc.sendWinnerMails([this._auctionId], handoverDetails)
-    .pipe(
-      take(1),
-      this.toastSvc.observe({
-        loading: 'Šaljem mailove..',
-        success: 'Uspješno poslani mailovi',
-        error: 'Nešto je pošlo po zlu'
-      })
-    ).subscribe(noop, err => console.log(err))
+    this.functionsSvc
+      .sendWinnerMails([this._auctionId], handoverDetails)
+      .pipe(
+        take(1),
+        this.toastSvc.observe({
+          loading: 'Šaljem mailove..',
+          success: 'Uspješno poslani mailovi',
+          error: 'Nešto je pošlo po zlu',
+        })
+      )
+      .subscribe(noop, (err) => console.log(err));
   }
 
   confirmDialog(text: string, yes = 'Želim', no = 'Ne želim') {
@@ -245,73 +269,80 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       maxWidth: '20rem',
       autoFocus: false,
       closeOnNavigation: true,
-      data: { text, yes, no }
+      data: { text, yes, no },
     });
 
-    return dialogRef.afterClosed().pipe(take(1)).toPromise() as Promise<boolean>
+    return dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .toPromise() as Promise<boolean>;
   }
 
   changeHandoverDetails(auctionId) {
-
     const dialogRef = this.dialog.open(HandoverDialogComponent, {
       height: 'auto',
       width: '98%',
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
-      panelClass: 'restrict-height-handover'
+      panelClass: 'restrict-height-handover',
     });
 
-    dialogRef.afterClosed()
+    dialogRef
+      .afterClosed()
       .pipe(take(1))
-      .subscribe(handoverDetails => {
-        if (!handoverDetails || handoverDetails.length == 0) return;
+      .subscribe(
+        (handoverDetails) => {
+          if (!handoverDetails || handoverDetails.length == 0) return;
 
-        this.functionsSvc.changeHandoverDetails([auctionId], handoverDetails)
-          .pipe(
-            take(1),
-            this.toastSvc.observe(
-              {
+          this.functionsSvc
+            .changeHandoverDetails([auctionId], handoverDetails)
+            .pipe(
+              take(1),
+              this.toastSvc.observe({
                 loading: 'Mijenjam..',
-                success: "Uspješna izmjena",
-                error: "Nešto je pošlo po zlu",
-              }
-            ),
-          )
-          .subscribe(/*res => console.log(res)*/noop, err => console.log(err)); // TODO: Something with res
-
-      }, err => console.log(err))
-
+                success: 'Uspješna izmjena',
+                error: 'Nešto je pošlo po zlu',
+              })
+            )
+            .subscribe(/*res => console.log(res)*/ noop, (err) =>
+              console.log(err)
+            ); // TODO: Something with res
+        },
+        (err) => console.log(err)
+      );
   }
 
   openPostalInformation(data) {
-
     const dialogRef = this.dialog.open(PostDetailsComponent, {
       height: 'auto',
       width: 'auto',
       maxWidth: '98%',
       autoFocus: false,
       closeOnNavigation: true,
-      data
+      data,
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
-
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(noop, (err) => console.log(err));
   }
 
   openHandoverInformation(data) {
-
     const dialogRef = this.dialog.open(MessageDialogComponent, {
       height: 'auto',
       width: 'auto',
       maxWidth: '98%',
       autoFocus: false,
       closeOnNavigation: true,
-      data
+      data,
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
-
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(noop, (err) => console.log(err));
   }
 
   onItemDescription(item: AuctionItem) {
@@ -322,7 +353,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['item-dialog', 'mat-elevation-z8'],
-      data: item.description
+      data: item.description,
     });
   }
 
@@ -345,19 +376,20 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   onDownloadExcel(auction: Auction) {
-    this.functionsSvc.exportAuction([this._auctionId])
+    this.functionsSvc
+      .exportAuction([this._auctionId])
       .pipe(
         take(1),
-        this.toastSvc.observe(
-          {
-            loading: 'Priprema podataka..',
-            success: "Uspješno exportano",
-            error: "Nešto je pošlo po zlu",
-          }
-        ),
-        switchMap(res => this.storage.getDownloadUrl(`exports/${auction.name}.xlsx`))
+        this.toastSvc.observe({
+          loading: 'Priprema podataka..',
+          success: 'Uspješno exportano',
+          error: 'Nešto je pošlo po zlu',
+        }),
+        switchMap((res) =>
+          this.storage.getDownloadUrl(`exports/${auction.name}.xlsx`)
+        )
       )
-      .subscribe(url => {
+      .subscribe((url) => {
         window.location.href = url;
       }, console.log);
   }
@@ -369,24 +401,29 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       maxWidth: '20rem',
       autoFocus: false,
       closeOnNavigation: true,
-      data: { text: `Sigurno želiš informirati korisnike da su dodane novi predmeti u ovu aukciju?`, yes: 'Želim', no: 'Ne želim' }
+      data: {
+        text: `Sigurno želiš informirati korisnike da su dodane novi predmeti u ovu aukciju?`,
+        yes: 'Želim',
+        no: 'Ne želim',
+      },
     });
 
-    return dialogRef.afterClosed().pipe(take(1))
-      .subscribe(method => {
+    return dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((method) => {
+        if (!method) return;
 
-        if (!method)
-          return;
-
-        this.functionsSvc.sendNewItemsAddedMail(auctionId)
-        .pipe(
-          this.toastSvc.observe({
-            loading: 'Slanje...',
-            success: 'Uspješno',
-            error: 'Nešto je pošlo po zlu'
-          })
-        )
-        .subscribe(noop);
-      })
+        this.functionsSvc
+          .sendNewItemsAddedMail(auctionId)
+          .pipe(
+            this.toastSvc.observe({
+              loading: 'Slanje...',
+              success: 'Uspješno',
+              error: 'Nešto je pošlo po zlu',
+            })
+          )
+          .subscribe(noop);
+      });
   }
 }

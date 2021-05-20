@@ -12,11 +12,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
-import { IPageInfo } from 'src/app/shared/virtual-scroll/virtual-scroll';
+import {
+  IPageInfo,
+  VirtualScrollerComponent,
+} from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { AuthService } from 'src/business/services/auth.service';
