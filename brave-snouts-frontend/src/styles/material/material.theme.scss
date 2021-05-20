@@ -1,4 +1,5 @@
 // ======================================= MIXINS ==========================================
+@use '~@angular/material' as mat;
 @import "./mixins/scrollbar.mixin.scss";
 @import "./mixins/section.mixin.scss";
 @import "./mixins/autofill.mixin.scss";
@@ -27,17 +28,17 @@
 
 // ======================================= THEME ==========================================
 @import "~@angular/material/theming";
-@include mat-core();
+@include mat.core();
 
-$primary: $mat-cyan;
-$accent: $mat-cyan;
-$warning: $mat-red;
+$primary: mat.$cyan-palette;
+$accent: mat.$cyan-palette;
+$warning: mat.$red-palette;
 
-$theme-light-primary: mat-palette($primary, 700, 400, 900);
-$theme-light-accent: mat-palette($accent, A700);
-$theme-light-warn: mat-palette($warning, A700);
+$theme-light-primary: mat.define-palette($primary, 700, 400, 900);
+$theme-light-accent: mat.define-palette($accent, A700);
+$theme-light-warn: mat.define-palette($warning, A700);
 
-$theme-light: mat-light-theme(
+$theme-light: mat.define-light-theme(
   $theme-light-primary,
   $theme-light-accent,
   $theme-light-warn
@@ -47,26 +48,26 @@ $theme-light: mat-light-theme(
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
-$custom-typography: mat-typography-config(
+$custom-typography: mat.define-typography-config(
   $font-family: 'Mali, cursive',
-  $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500)
+  $headline: mat.define-typography-level(32px, 48px, 700),
+  $body-1: mat.define-typography-level(16px, 24px, 500)
 );
 
 // // Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
-// @include mat-base-typography($custom-typography);
+// @include mat.typography-hierarchy($custom-typography);
 
 // // Override typography for a specific Angular Material components.
-// @include mat-checkbox-typography($custom-typography);
+// @include mat.checkbox-typography($custom-typography);
 
 // // Override typography for all Angular Material, including mat-base-typography and all components.
-// @include angular-material-typography($custom-typography);
+// @include mat.all-component-typographies($custom-typography);
 
 // Override the typography in the core CSS.
-@include mat-core($custom-typography);
+@include mat.core($custom-typography);
 
 
 .theme-light {
-  @include angular-material-theme($theme-light);
+  @include mat.all-component-themes($theme-light);
   @include custom-components-theme($theme-light);
 }

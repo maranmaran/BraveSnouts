@@ -1,8 +1,9 @@
+@use '~@angular/material' as mat;
 @import "~@angular/material/theming";
 
 @mixin scrollbar-theme($theme) {
   $primary: map-get($theme, primary);
-  $primary-lighter: mat-color($primary, lighter);
+  $primary-lighter: mat.get-color-from-palette($primary, lighter);
   $radius: 5px;
 
   *::-webkit-scrollbar {

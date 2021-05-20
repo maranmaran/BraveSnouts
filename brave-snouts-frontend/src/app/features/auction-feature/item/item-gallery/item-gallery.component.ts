@@ -47,7 +47,6 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private readonly dialog: MatDialog,
-    private readonly itemsRepo: AuctionItemRepository,
     private readonly itemDialogSvc: ItemDialogService,
     private readonly authSvc: AuthService,
     public readonly itemScrollViewSvc: ItemScrollViewService,

@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "~@angular/material/theming";
 
 @mixin section-theme($theme) {
@@ -7,7 +8,7 @@
 
 
   .section {
-  @include mat-elevation(2);
+  @include mat.elevation(2);
     background-color: $dialog;
     padding: 1rem;
     border-radius: 8px;

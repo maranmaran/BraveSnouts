@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "~@angular/material/theming";
 
 
@@ -85,7 +86,7 @@
         }
 
         &--active {
-          color: mat-color($accent) !important;
+          color: mat.get-color-from-palette($accent) !important;
         }
       }
     }
@@ -107,8 +108,8 @@
 
   // clock component
   .timepicker {
-    // --clock-hand-color: mat-color($accent) !important;
-    $accentColor: mat-color($accent);
+    // --clock-hand-color: mat.get-color-from-palette($accent) !important;
+    $accentColor: mat.get-color-from-palette($accent);
     --clock-hand-color:  #{$accentColor};
 
     // UPPER DIAL
@@ -120,7 +121,7 @@
 
       &__time {
         // color: $theme-text !important;
-        color: get-conditioned-text-color(mat-color($primary)) !important;
+        color: get-conditioned-text-color(mat.get-color-from-palette($primary)) !important;
       }
 
       &__container {
@@ -130,17 +131,17 @@
 
     .timepicker-period__btn {
       // color: $theme-text !important;
-      color: get-conditioned-text-color(mat-color($primary)) !important;
+      color: get-conditioned-text-color(mat.get-color-from-palette($primary)) !important;
 
 
       &:focus {
-        background-color: enchance-brightness(mat-color($primary), 30%) !important;
+        background-color: enchance-brightness(mat.get-color-from-palette($primary), 30%) !important;
       }
     }
 
     // Bottom - CANCEL OK buttons
     .timepicker-button {
-      color: mat-color($accent) !important;
+      color: mat.get-color-from-palette($accent) !important;
     }
 
     .clock-face {
@@ -155,14 +156,14 @@
         }
 
         > span.active {
-          background-color: mat-color($accent) !important;
-          color: get-conditioned-text-color(mat-color($accent)) !important;
+          background-color: mat.get-color-from-palette($accent) !important;
+          color: get-conditioned-text-color(mat.get-color-from-palette($accent)) !important;
         }
       }
     }
 
     &__header {
-      background-color: mat-color($primary) !important;
+      background-color: mat.get-color-from-palette($primary) !important;
     }
     &__body {
       background-color: $theme-background !important;

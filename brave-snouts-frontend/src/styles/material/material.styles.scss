@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "./material.theme.scss";
 
 .mat-form-field {
@@ -12,13 +13,13 @@
   &:hover {
     // transform: scale(1.01);
     // transition: 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: 2px solid mat-color($theme-light-primary, default) !important;
+    border: 2px solid mat.get-color-from-palette($theme-light-primary, default) !important;
   }
 
   &:focus,
   &:active,
   &:visited {
-    border: 2px solid mat-color($theme-light-primary, default) !important;
+    border: 2px solid mat.get-color-from-palette($theme-light-primary, default) !important;
   }
 }
 
