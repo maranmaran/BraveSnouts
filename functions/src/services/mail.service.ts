@@ -105,7 +105,7 @@ export const sendEndAuctionMail = async (auctions: Auction[], handoverDetails: s
 /**Sends outbidded mail */
 export const sendOutbiddedMail = async (user: UserInfo, itemBefore: AuctionItem, itemAfter: AuctionItem) => {
 
-  logger.info(`Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}-${itemBefore.bid} kn to ${itemAfter.bid} kn!`);
+  logger.info(`Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${itemBefore.bid} kn to ${itemAfter.bid} kn!`);
 
   // load and customize html template
   const emailVariables = {

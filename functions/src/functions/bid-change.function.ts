@@ -10,6 +10,8 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
     
     const before = change.before.data() as AuctionItem;
     const after = change.after.data() as AuctionItem;
+
+    logger.info(`Before BidId: ${before.bidId} - After BidId: ${after.bidId}`);
     
     if(!after.user || !before.user) {
       logger.info(`User id is not present. Before:${before.user} After:${after.user}`);
@@ -18,6 +20,11 @@ export const bidChangeFn = europeFunctions.firestore.document("auctions/{auction
 
     if(after.bid === before.bid) {
       logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
+      return null;
+    }
+    
+    if (after.bid < before.bid) {
+      logger.warn(`Lesser value bid of ${after.bid} < ${before.bid}. Bid IDs: after: ${after.bidId} and before: ${before.bidId}`);
       return null;
     }
 
