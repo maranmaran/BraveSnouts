@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, of } from 'rxjs';
 import { concatMap, map, take } from 'rxjs/operators';
-import { IPageInfo } from 'src/app/shared/virtual-scroll/virtual-scroller';
+import { IPageInfo } from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';

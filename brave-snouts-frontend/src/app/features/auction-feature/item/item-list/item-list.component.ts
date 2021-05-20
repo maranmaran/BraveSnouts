@@ -11,8 +11,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
-import { VirtualScrollerComponent } from 'src/app/shared/virtual-scroll/virtual-scroll';
-import { IPageInfo } from 'src/app/shared/virtual-scroll/virtual-scroller';
+import {
+  IPageInfo,
+  VirtualScrollerComponent,
+} from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { AuthService } from 'src/business/services/auth.service';
