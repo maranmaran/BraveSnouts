@@ -17,7 +17,6 @@ import { DragScrollModule } from 'ngx-drag-scroll';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { QuillModule } from 'ngx-quill';
-import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AuctionDetailsComponent } from 'src/app/features/auction-feature/auction/auction-details/auction-details.component';
 import { AuctionFormComponent } from 'src/app/features/auction-feature/auction/auction-form/auction-form.component';
 import { AuctionListComponent } from 'src/app/features/auction-feature/auction/auction-list/auction-list.component';
@@ -55,13 +54,14 @@ import { ItemGalleryComponent } from './features/auction-feature/item/item-galle
 import { ItemMediaComponent } from './features/auction-feature/item/item-media/item-media.component';
 import { SingleItemDialogComponent } from './features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { SingleItemComponent } from './features/auction-feature/item/single-item/single-item.component';
+import { AdminAuctionsPageComponent } from './features/auction-feature/user/admin-auctions-page/admin-auctions-page.component';
 import { AdminPageComponent } from './features/auction-feature/user/admin-page/admin-page.component';
 import { WinnerDetailsDialogComponent } from './features/auction-feature/user/winner-details-dialog/winner-details-dialog.component';
 import { ChangeEmailDialogComponent } from './features/auth-feature/change-email-dialog/change-email-dialog.component';
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { RegisterComponent } from './features/auth-feature/register/register.component';
-import { AdminAuctionsPageComponent } from './features/auction-feature/user/admin-auctions-page/admin-auctions-page.component';
+import { VirtualScrollerModule } from './shared/virtual-scroll/virtual-scroll';
 
 registerLocaleData(hrLocale);
 
@@ -84,7 +84,7 @@ registerLocaleData(hrLocale);
     LightboxModule,
     CountdownModule,
     DragScrollModule,
-    QuillModule.forRoot({modules}),
+    QuillModule.forRoot({ modules }),
 
     // Shared
     MaterialModule,
@@ -95,7 +95,6 @@ registerLocaleData(hrLocale);
   ],
 
   declarations: [
-
     // core
     AppComponent,
     ToolbarComponent,
@@ -150,10 +149,10 @@ registerLocaleData(hrLocale);
     WinnerDetailsDialogComponent,
     RegisterComponent,
     AuctionBulkImageFormComponent,
-    AdminAuctionsPageComponent
+    AdminAuctionsPageComponent,
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: "hr" },
+    { provide: LOCALE_ID, useValue: 'hr' },
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: REGION, useValue: 'europe-west1' },
@@ -167,16 +166,15 @@ registerLocaleData(hrLocale);
         imageSize: 'contain',
         thumb: false,
         loop: false,
-      }
+      },
     },
     {
       provide: LIGHTBOX_CONFIG,
       useValue: {
         imageSize: 'contain',
-      }
-    }
+      },
+    },
   ],
-  bootstrap: [AppComponent]
-
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
