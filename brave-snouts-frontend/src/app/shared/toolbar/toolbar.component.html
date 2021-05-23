@@ -1,82 +1,115 @@
 <mat-toolbar class="toolbar" color="primary" fxLayout="row">
-
   <div fxFlex="30" fxLayout="row">
-    <button mat-icon-button *ngIf="(admin$ | async); privacyPolicy" [matMenuTriggerFor]="adminMenu">
+    <button
+      mat-icon-button
+      *ngIf="admin$ | async; privacyPolicy"
+      [matMenuTriggerFor]="adminMenu"
+    >
       <mat-icon>menu</mat-icon>
     </button>
     <mat-menu #adminMenu="matMenu">
       <button mat-menu-item (click)="onCreateAuction()">
-        <mat-icon matPrefix>
-          add
-        </mat-icon>
+        <mat-icon matPrefix> add </mat-icon>
         <span class="mat-small">Napravi aukciju</span>
       </button>
       <button mat-menu-item (click)="onCreateAuctionThroughImages()">
-        <mat-icon matPrefix>
-          image
-        </mat-icon>
+        <mat-icon matPrefix> image </mat-icon>
         <span class="mat-small">Napravi aukciju (preko slika)</span>
       </button>
       <button mat-menu-item routerLink="/app/admin-auctions-page">
-        <mat-icon matPrefix>
-          admin_panel_settings
-        </mat-icon>
+        <mat-icon matPrefix> admin_panel_settings </mat-icon>
         <span class="mat-small">Admin sučelje</span>
       </button>
     </mat-menu>
 
     <ng-container *ngIf="!(admin$ | async)">
-
-      <button mat-icon-button class="elevate hover default" matTooltip="Polica privatnosti"
-        routerLink="/app/privacy-policy">
+      <button
+        mat-icon-button
+        class="elevate hover default"
+        matTooltip="Polica privatnosti"
+        routerLink="/app/privacy-policy"
+      >
         <mat-icon>policy</mat-icon>
       </button>
 
-      <button mat-icon-button class="elevate hover default" matTooltip="Pravila aukcije" routerLink="/app/rules">
+      <button
+        mat-icon-button
+        class="elevate hover default"
+        matTooltip="Pravila aukcije"
+        routerLink="/app/rules"
+      >
         <mat-icon>info</mat-icon>
       </button>
-
     </ng-container>
-
   </div>
 
   <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
-
-
-    <div #logo class="logo elevate hover" [ngClass]="{'pointer': !rootRoute}" (click)="onLogoClick()"
-      [hidden]="clickFlag">
-      <mat-progress-spinner *ngIf="(active$ | async)" class="spinner" mode="indeterminate" color="accent">
+    <div
+      #logo
+      class="logo elevate hover"
+      style="z-index: 100"
+      [ngClass]="{ pointer: !rootRoute }"
+      (click)="onLogoClick()"
+      [hidden]="clickFlag"
+    >
+      <mat-progress-spinner
+        *ngIf="active$ | async"
+        class="spinner"
+        mode="indeterminate"
+        color="accent"
+      >
       </mat-progress-spinner>
     </div>
 
     <div class="logo-animated" [hidden]="!clickFlag"></div>
   </div>
 
-  <div fxFlex="30" class="user-auth h-100 relative" fxLayout="row" fxLayoutAlign="end center">
-
-
-    <button mat-icon-button class="elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">
+  <div
+    fxFlex="30"
+    class="user-auth h-100 relative"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+  >
+    <button
+      mat-icon-button
+      class="elevate hover default"
+      matTooltip="Pomoć"
+      (click)="onShowContactHelp()"
+    >
       <mat-icon>help</mat-icon>
     </button>
 
-    <button *ngIf="!(user$ | async)" mat-stroked-button class="p-0" (click)="onLogin()">Prijava</button>
+    <button
+      *ngIf="!(user$ | async)"
+      mat-stroked-button
+      class="p-0"
+      (click)="onLogin()"
+    >
+      Prijava
+    </button>
 
-    <ng-container *ngIf="(user$ | async) as user">
-
-      <img *ngIf="user?.photoURL; else noPhoto" class="avatar pointer elevate hover default" src="{{ user.photoURL}}"
-        matTooltip="{{ user.displayName }}" [matMenuTriggerFor]="profileMenu" />
+    <ng-container *ngIf="user$ | async as user">
+      <img
+        *ngIf="user?.photoURL; else noPhoto"
+        class="avatar pointer elevate hover default"
+        src="{{ user.photoURL }}"
+        matTooltip="{{ user.displayName }}"
+        [matMenuTriggerFor]="profileMenu"
+      />
 
       <ng-template #noPhoto>
-        <img id="anonymous" matTooltip="{{ (userInfo$ | async)?.displayName }}"
-          class="avatar pointer elevate hover-large mat-elevation-z2" src="assets/placeholders/anonymous.svg"
-          [matMenuTriggerFor]="profileMenu" />
+        <img
+          id="anonymous"
+          matTooltip="{{ (userInfo$ | async)?.displayName }}"
+          class="avatar pointer elevate hover-large mat-elevation-z2"
+          src="assets/placeholders/anonymous.svg"
+          [matMenuTriggerFor]="profileMenu"
+        />
       </ng-template>
 
       <mat-menu #profileMenu="matMenu">
         <button mat-menu-item routerLink="/app/my-items">
-          <mat-icon matPrefix>
-            redeem
-          </mat-icon>
+          <mat-icon matPrefix> redeem </mat-icon>
           Moji predmeti
         </button>
         <button mat-menu-item (click)="onShowContactHelp()">
@@ -88,20 +121,20 @@
           Promijeni e-mail
         </button>
         <button mat-menu-item (click)="onLogout()">
-          <mat-icon matPrefix>
-            exit_to_app
-          </mat-icon>
+          <mat-icon matPrefix> exit_to_app </mat-icon>
           Odjava
         </button>
       </mat-menu>
-
     </ng-container>
-
   </div>
-
 </mat-toolbar>
 
-<mat-tab-group *ngIf="itemScrollViewSvc.show" #tabs mat-stretch-tabs (selectedTabChange)="onTabChange($event)">
+<mat-tab-group
+  *ngIf="itemScrollViewSvc.show"
+  #tabs
+  mat-stretch-tabs
+  (selectedTabChange)="onTabChange($event)"
+>
   <mat-tab label="grid">
     <ng-template mat-tab-label>
       <mat-icon color="warn" class="example-tab-icon">view_module</mat-icon>
@@ -113,4 +146,3 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
-
