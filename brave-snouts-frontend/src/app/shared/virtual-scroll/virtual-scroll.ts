@@ -937,12 +937,16 @@ export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {
             this.renderer.setStyle(
               this.contentElementRef.nativeElement,
               'transform',
-              `${this._translateDir}(0px, ${viewport.padding}px, 0px)`
+              `${this._translateDir}(${
+                this.horizontal ? viewport.padding : 0
+              }px, ${!this.horizontal ? viewport.padding : 0}px, 0px)`
             );
             this.renderer.setStyle(
               this.contentElementRef.nativeElement,
               'webkitTransform',
-              `${this._translateDir}(0px, ${viewport.padding}px, 0px)`
+              `${this._translateDir}(${
+                this.horizontal ? viewport.padding : 0
+              }px, ${!this.horizontal ? viewport.padding : 0}px, 0px)`
             );
           }
         }
@@ -960,12 +964,16 @@ export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {
           this.renderer.setStyle(
             this.headerElementRef.nativeElement,
             'transform',
-            `${this._translateDir}(0px, ${offset}px, 0px)`
+            `${this._translateDir}(${this.horizontal ? offset : 0}px, ${
+              !this.horizontal ? offset : 0
+            }px, 0px)`
           );
           this.renderer.setStyle(
             this.headerElementRef.nativeElement,
             'webkitTransform',
-            `${this._translateDir}(0px, ${offset}px, 0px)`
+            `${this._translateDir}(${this.horizontal ? offset : 0}px, ${
+              !this.horizontal ? offset : 0
+            }px, 0px)`
           );
         }
 
