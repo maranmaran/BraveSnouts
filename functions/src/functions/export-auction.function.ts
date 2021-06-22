@@ -43,27 +43,31 @@ export const exportAuctionFn = europeFunctions.https.onCall(
         const usersMap: Map<string, User> = new Map<string, User>();
         const winnersMap: Map<string, WinnerOnAuction> = new Map<string, WinnerOnAuction>();
         const winnerItemsMap: Map<string, AuctionItem[]> = new Map<string, AuctionItem[]>();
-        
+        const itemsMap: Map<string, AuctionItem> = new Map<string, AuctionItem>();
+
         // fill above MAPS and add all items data to PREDMETI sheet
         for(const id of ids) {
             const auction = (await (await store.doc(`auctions/${id}`).get()).data()) as Auction;
-            const winners = (await store.collection(`auctions/${id}/winners`).get()).docs.map(d => d.data()) as WinnerOnAuction[];
-            const items = [].concat(...winners.map(x => x.items)) as AuctionItem[];
-            
             sheetTitle += auction.name + '_';
-    
+            
+            const items = (await store.collection(`auctions/${id}/items`).get()).docs.map(d => d.data()) as AuctionItem[];
+            for(const item of items) {
+                itemsMap.set(item.id, item);
+            }
+            
+            const winners = (await store.collection(`auctions/${id}/winners`).get()).docs.map(d => d.data()) as WinnerOnAuction[];
             for(const winner of winners) {
                 let userId = winner.id;
                 const user = await (await store.doc(`users/${userId}`).get()).data() as User;
-
+                
                 if (!usersMap.has(userId)) {
                     usersMap.set(userId, user);
                 }
-
+                
                 if (!winnersMap.has(userId)) {
                     winnersMap.set(userId, winner);
                 }
-
+                
                 // save items for each winner
                 if (!winnerItemsMap.has(userId)) {
                     winnerItemsMap.set(userId, winner.items);
@@ -71,15 +75,16 @@ export const exportAuctionFn = europeFunctions.https.onCall(
                     const currentItems = winnerItemsMap.get(userId) as AuctionItem[];
                     winnerItemsMap.set(userId, [...currentItems, ...winner.items]);
                 }
-
+                
                 for(const item of winner.items) {
                     itemsSheetData.push([
-                        `${item.name.toUpperCase()}, ${item.description}`,
+                        `${item.name.toUpperCase()}, ${itemsMap.get(item.id).description}`,
                         winner.userInfo?.name,
                         item.bid
                     ])
                 }
             }
+            
         }
 
         // prepare DONATORI sheet
@@ -93,7 +98,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
             for (const item of winnerItems as AuctionItem[]) {
                 donatorsSheetData.push([
                     !nameWritten ? winner.userInfo.name : "",
-                    `${item.name.toUpperCase()}, ${item.description}`,
+                    `${item.name.toUpperCase()}, ${itemsMap.get(item.id).description}`,
                     item.bid
                 ]);
 
