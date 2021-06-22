@@ -97,7 +97,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
       endDate: [auction.endDate, [Validators.required]],
       startTime: [startTime, [Validators.required]],
       endTime: [endTime, [Validators.required]],
-      description: ['Opis aukcije..']
+      description: ['']
     });
   }
 
