@@ -37,7 +37,6 @@
     "moment": "^2.29.1",
     "ng-gallery": "^5.0.0",
     "ngx-countdown": "^11.0.3",
-    "ngx-drag-scroll": "^9.0.0-beta.4",
     "ngx-dropzone": "^2.5.0",
     "ngx-material-timepicker": "^5.5.3",
     "ngx-quill": "^13.4.0",
