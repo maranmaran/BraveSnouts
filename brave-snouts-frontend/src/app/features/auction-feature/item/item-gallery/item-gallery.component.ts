@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   OnDestroy,
@@ -14,7 +15,6 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
-import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import {
   IPageInfo,
   VirtualScrollerComponent,
@@ -67,6 +67,11 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
     this._subsink.add(
       this.itemScrollViewSvc.view$.subscribe((view) => {
+        if (view == 'grid' && window.history.state == 'Items view') {
+          // clear history state so we can go back
+          console.log('going back because manual');
+          window.history.go(-1);
+        }
         this.changeDetectorRef.detectChanges();
         this.scroller.refresh();
       })
@@ -92,23 +97,21 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     return item.id;
   }
 
+  lastScrollItemIdx = 0;
   openItem(item: AuctionItem) {
     // override for scroll
-    this.openItemsScrollTabOnIndex(
-      this.items.findIndex((it) => it.id == item.id)
-    );
-    // this.openItemWithScroll(item);
-    return;
+    this.lastScrollItemIdx = this.items.findIndex((it) => it.id == item.id);
+    this.openItemsScrollTabOnIndex(this.lastScrollItemIdx);
 
-    let dialogRef = this.dialog.open(SingleItemDialogComponent, {
-      height: 'auto',
-      width: '98%',
-      maxWidth: '20rem',
-      autoFocus: false,
-      closeOnNavigation: true,
-      panelClass: ['item-dialog', 'mat-elevation-z8'],
-      data: { item, svc: this.itemDialogSvc },
-    });
+    // let dialogRef = this.dialog.open(SingleItemDialogComponent, {
+    //   height: 'auto',
+    //   width: '98%',
+    //   maxWidth: '20rem',
+    //   autoFocus: false,
+    //   closeOnNavigation: true,
+    //   panelClass: ['item-dialog', 'mat-elevation-z8'],
+    //   data: { item, svc: this.itemDialogSvc },
+    // });
 
     // dialogRef.afterClosed()
   }
@@ -118,7 +121,18 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
   openItemsScrollTabOnIndex(idx: number) {
     this.itemScrollViewSvc.switchTab('items');
 
+    window.history.pushState('Items view', 'Items view', window.location.href);
+
     this.scroller.scrollToIndex(idx, true, 50, 0);
+  }
+
+  // Handle back button navigation (history)
+  @HostListener('window:popstate') onPopState() {
+    console.log('popping state');
+    if (this.itemScrollViewSvc.view == 'items') {
+      this.itemScrollViewSvc.switchTab('grid');
+      // this.openItemsScrollTabOnIndex(this.lastScrollItemIdx);
+    }
   }
 
   openItemWithScroll(item: AuctionItem) {
