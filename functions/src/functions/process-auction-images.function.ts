@@ -209,6 +209,8 @@ export const processAuctionImagesFn = europeFunctions
                     }
                 }
 
+                logger.debug(`Images arr length is ${imagesArr.length}`);
+
                 let items = [];
                 try {
                     items = await getAuctionItems(auctionId);

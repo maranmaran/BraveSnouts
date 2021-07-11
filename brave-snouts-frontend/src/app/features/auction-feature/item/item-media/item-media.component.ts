@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { environment } from 'src/environments/environment';
 
@@ -33,7 +34,7 @@ export class ItemMediaComponent implements OnInit {
 
   mobileImageUrl: string;
 
-  ngOnInit(): void {
+  async ngOnInit() {
 
     // no items
     if(!this.dbMedia || this.dbMedia.length == 0)
@@ -41,24 +42,29 @@ export class ItemMediaComponent implements OnInit {
 
     // show all
     if(!this.onlyFirst) {
-      this.setupGallery();
+      await this.setupGallery();
     } else {
       this.mobileImageUrl = this.dbMedia[0].thumb ?? this.dbMedia[0].url
     }
   }
 
   /* Sets up images and videos for gallery component */
-  setupGallery() {
+  async setupGallery() {
 
     const galleryRef = this.gallery.ref(this.galleryId);
 
-    for (const { url, type, thumb } of this.dbMedia) {
-      if(type == 'image')
-        galleryRef.addImage({ src: url, thumb: thumb ?? url, type });
+    const itemsLen = (await galleryRef.state.pipe(first()).toPromise()).items.length;
 
-      if(type == 'video')
-        galleryRef.addVideo({ src: url, thumb: thumb ?? url, type });
+    if(!itemsLen && itemsLen == 0) {
+      for (const { url, type, thumb } of this.dbMedia) {
+        if(type == 'image')
+          galleryRef.addImage({ src: url, thumb: thumb ?? url, type });
+  
+        if(type == 'video')
+          galleryRef.addVideo({ src: url, thumb: thumb ?? url, type });
+      }
     }
+
   }
 
   /* Opens fullscreen view of image aka lightbox */
