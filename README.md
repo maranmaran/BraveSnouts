@@ -10,7 +10,7 @@ There will possibly be future plans or turning this into their official public w
 
 If you wish to contribute please contact me by mail
 
-<b>So far raised over 10 000 HRK through the app which can handle large amount of auction items and over 1000 users active at a time</b>
+<b>So far raised over 100 000 HRK through the app which can handle large amount of auction items and over 1000 users active at a time</b>
 
 While costing next to nothing to host, maintain and be active
 
