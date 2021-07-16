@@ -71,14 +71,6 @@
         <!-- <mj-text>U slučaju preuzimanja poštom potrebno je uplatiti dodatnih 20kn radi poštarine.</mj-text> -->
         <mj-text>U slučaju preuzimanja poštom potrebno je uplatiti dodatnu poštarinu.</mj-text>
         <mj-text>
-          <ul>
-            <li>1 knjiga - 15kn poštarina</li>
-            <li>2-5 knjiga - 25kn poštarina</li>
-            <li>5-10 knjiga - 35kn poštarina</li>
-            <li>10+ knjiga - 45kn poštarina</li>
-          </ul>      
-        </mj-text>
-        <mj-text>
           <span style="text-decoration: underline;">Opis plaćanja:</span>
           <i style="text-decoration: none;">"{{payment_detail}}"</i>
         </mj-text>
