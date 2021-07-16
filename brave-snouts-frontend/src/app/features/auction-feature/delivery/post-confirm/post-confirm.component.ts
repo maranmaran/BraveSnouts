@@ -25,6 +25,7 @@ export class PostConfirmComponent implements OnInit {
   private _auctionIds: string[];
   private _userId: string;
 
+  public postageFee: number;
   public originalDonation: number;
   public totalDonation: number; // with addition postal send price (20HRK)
   public paymentDetail: string;
@@ -42,6 +43,7 @@ export class PostConfirmComponent implements OnInit {
     this._auctionIds = this.route.snapshot.paramMap.get('auctionIds').split(',');
     this._userId = this.route.snapshot.paramMap.get('userId');
     this.originalDonation = parseFloat(this.route.snapshot.paramMap.get('donation'));
+    this.postageFee = parseFloat(this.route.snapshot.paramMap.get('postageFee'));
     this.paymentDetail = this.route.snapshot.paramMap.get('paymentDetails');
 
     if(!this._auctionIds || !this._userId || !this.originalDonation) {
@@ -53,7 +55,7 @@ export class PostConfirmComponent implements OnInit {
     }
 
 
-    this.totalDonation = this.originalDonation + 20;
+    this.totalDonation = this.originalDonation + this.postageFee;
 
     this.postDeliveryInfoForm = this.fb.group({
       fullName: this.fb.control('', Validators.required),
@@ -118,13 +120,21 @@ export class PostConfirmComponent implements OnInit {
   sendConfirmation() {
     let form = this.postDeliveryInfoForm.value;
 
+    // TODO: Unused probably
     let data = {
       fullName: form.fullName,
       address: `${form.address}, ${form.city}, ${form.zipNumber}`,
       phoneNumber: this.postDeliveryInfoForm.value.phoneNumber,
     }
 
-    this.functionSvc.sendPostConfirm(this._userId, this._auctionIds, this.postDeliveryInfoForm.value, this.originalDonation, this.paymentDetail).pipe(take(1)).subscribe(noop)
+    this.functionSvc.sendPostConfirm(
+      this._userId, 
+      this._auctionIds, 
+      this.postDeliveryInfoForm.value, 
+      this.originalDonation, 
+      this.paymentDetail, 
+      this.postageFee)
+    .pipe(take(1)).subscribe(noop)
   }
 
 }

@@ -17,6 +17,7 @@ export const handoverConfirmFn = europeFunctions.https.onCall(
       
       const totalDonation = data.totalDonation;
       const paymentDetail = data.paymentDetail;
+      const postageFee = data.postageFee;
   
       // process auction// add to map
       const userDb = await (await store.doc(`users/${userId}`).get()).data() as User;
@@ -27,7 +28,7 @@ export const handoverConfirmFn = europeFunctions.https.onCall(
       } 
 
       if(chosenOption === 'post') {
-        await sendPostConfirmationMail(userDb, auctionIds, chosenOptionData, totalDonation, paymentDetail)
+        await sendPostConfirmationMail(userDb, auctionIds, chosenOptionData, totalDonation, paymentDetail, postageFee)
         return { status: 200 };
       }
 
