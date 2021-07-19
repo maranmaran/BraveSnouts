@@ -23,10 +23,14 @@ import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-
   selector: 'app-admin-auctions-page',
   templateUrl: './admin-auctions-page.component.html',
   styleUrls: ['./admin-auctions-page.component.scss'],
-  providers: [AuctionItemRepository, AuctionRepository, WinnersRepository, FunctionsService]
+  providers: [
+    AuctionItemRepository,
+    AuctionRepository,
+    WinnersRepository,
+    FunctionsService,
+  ],
 })
 export class AdminAuctionsPageComponent implements OnInit {
-
   displayedColumns: string[] = ['select', 'name', 'processed'];
   dataSource = new MatTableDataSource<Auction>([]);
   selection = new SelectionModel<Auction>(true, []);
@@ -42,33 +46,33 @@ export class AdminAuctionsPageComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
     private readonly storage: StorageService,
-    private readonly loadingSvc: ProgressBarService,
-  ) { }
+    private readonly loadingSvc: ProgressBarService
+  ) {}
 
   private _subsink = new SubSink();
 
   async ngOnInit() {
-    this._subsink.add(
-      this.getAuctions()
-    );
+    this._subsink.add(this.getAuctions());
   }
 
   /** Gets all auctions */
   getAuctions() {
-    let query = ref => ref.where('archived', '==', false); // @see {sortAdminAuctions (auction-list.component.ts)}
-    return this.auctionRepo.getAll(query)
-    .subscribe(auctions => {
-      this.dataSource.data = auctions;
-      this.table.renderRows();
-      this.updateSelectionModel(this.dataSource.data);
-    }, err => console.log(err));
+    let query = (ref) => ref.where('archived', '==', false); // @see {sortAdminAuctions (auction-list.component.ts)}
+    return this.auctionRepo.getAll(query).subscribe(
+      (auctions) => {
+        this.dataSource.data = auctions;
+        this.table.renderRows();
+        this.updateSelectionModel(this.dataSource.data);
+      },
+      (err) => console.log(err)
+    );
   }
 
   /** Whether or not only processeed auctions have been selected */
-  public get onlyProcessedAuctionsSelected() : boolean {
+  public get onlyProcessedAuctionsSelected(): boolean {
     return this.selection.selected
-    .map(a => a.processed)
-    .reduce((prev, cur) => cur &&= prev, true)
+      .map((a) => a.processed)
+      .reduce((prev, cur) => (cur &&= prev), true);
   }
 
   //#region Actions
@@ -77,93 +81,132 @@ export class AdminAuctionsPageComponent implements OnInit {
     const handoverDetails = await this.getHandoverDetails();
     if (!handoverDetails) return;
 
-    for(const auction of this.selection.selected) {
-      let endAuction$ = this.functionsSvc.endAuction(auction.id, handoverDetails)
-      .pipe(
-        take(1),
-        this.toastSvc.observe({
-          loading: `Zatvaranje "${auction.name}"..`,
-          success: `Uspješno zatvorena "${auction.name}"`,
-          error: `Nešto je pošlo po zlu sa zatvaranjem "${auction.name}"`,
-        }),
-      );
-      await endAuction$.toPromise().catch(err => console.log(err));
+    for (const auction of this.selection.selected) {
+      let endAuction$ = this.functionsSvc
+        .endAuction(auction.id, handoverDetails)
+        .pipe(
+          take(1),
+          this.toastSvc.observe({
+            loading: `Zatvaranje "${auction.name}"..`,
+            success: `Uspješno zatvorena "${auction.name}"`,
+            error: `Nešto je pošlo po zlu sa zatvaranjem "${auction.name}"`,
+          })
+        );
+      await endAuction$.toPromise().catch((err) => console.log(err));
     }
   }
 
   async onSendWinnerMails() {
-    const auctionIds = this.selection.selected.map(x => x.id);
-    const handoverDetails = this.selection.selected.map(x => x.handoverDetails);
+    const auctionIds = this.selection.selected.map((x) => x.id);
+    const handoverDetails = this.selection.selected.map(
+      (x) => x.handoverDetails
+    );
 
     let allDetailsAreSame = true;
-    for(let i = 1; i < handoverDetails.length; i++) {
-      if(handoverDetails[i].join('') != handoverDetails[i-1].join('')) {
+    for (let i = 1; i < handoverDetails.length; i++) {
+      if (handoverDetails[i].join('') != handoverDetails[i - 1].join('')) {
         allDetailsAreSame = false;
         break;
       }
     }
 
-    if(!allDetailsAreSame) {
-      this.toastSvc.warning("Detalji preuzimanje nisu isti za sve označene aukcije", { dismissible: true, duration: 20000 })
-      this.toastSvc.warning("Zatvori trenutno označene aukcije ponovno i ponovi ovu akciju", { dismissible: true, duration: 20000 })
+    if (!allDetailsAreSame) {
+      this.toastSvc.warning(
+        'Detalji preuzimanje nisu isti za sve označene aukcije',
+        { dismissible: true, duration: 20000 }
+      );
+      this.toastSvc.warning(
+        'Zatvori trenutno označene aukcije ponovno i ponovi ovu akciju',
+        { dismissible: true, duration: 20000 }
+      );
     }
 
-    let confirmAnswer = await this.confirmDialog('Sigurno želiš poslati pobjedničke mailove trenutno označenim aukcijama?');
-    if(!confirmAnswer) return;
+    let confirmAnswer = await this.confirmDialog(
+      'Sigurno želiš poslati pobjedničke mailove trenutno označenim aukcijama?'
+    );
+    if (!confirmAnswer) return;
 
-    this.functionsSvc.sendWinnerMails(auctionIds, handoverDetails[0])
-    .pipe(
-      take(1),
-      this.toastSvc.observe({
-        loading: 'Šaljem mailove..',
-        success: 'Uspješno poslani mailovi',
-        error: 'Nešto je pošlo po zlu'
-      })
-    ).subscribe(noop, err => console.log(err))
+    this.functionsSvc
+      .sendWinnerMails(auctionIds, handoverDetails[0])
+      .pipe(
+        take(1),
+        this.toastSvc.observe({
+          loading: 'Šaljem mailove..',
+          success: 'Uspješno poslani mailovi',
+          error: 'Nešto je pošlo po zlu',
+        })
+      )
+      .subscribe(noop, (err) => console.log(err));
   }
 
   async onChangeHandoverDetails() {
     const handoverDetails = await this.getHandoverDetails();
     if (!handoverDetails) return;
 
-    this.functionsSvc.changeHandoverDetails(this.selection.selected.map(a => a.id), handoverDetails)
-    .pipe(
-      take(1),
-      this.toastSvc.observe({
-        loading: `Šaljem mailove`,
-        success: `Uspješna izmjena`,
-        error: `Nešto je pošlo po zlu`,
-      })
-    ).subscribe(noop, err => console.log(err));
+    this.functionsSvc
+      .changeHandoverDetails(
+        this.selection.selected.map((a) => a.id),
+        handoverDetails
+      )
+      .pipe(
+        take(1),
+        this.toastSvc.observe({
+          loading: `Šaljem mailove`,
+          success: `Uspješna izmjena`,
+          error: `Nešto je pošlo po zlu`,
+        })
+      )
+      .subscribe(noop, (err) => console.log(err));
   }
 
   onDownloadExcelTable() {
-    this.functionsSvc.exportAuction(this.selection.selected.map(a => a.id))
-    .pipe(
-      take(1),
-      this.toastSvc.observe({
-        loading: `Pripremam excel`,
-        success: `Uspješno`,
-        error: `Nešto je pošlo po zlu`,
-      }),
-    ).subscribe(res => window.location.href = res[1].mediaLink, err => console.log(err));
+    const fileName = window.prompt(
+      'Unesi naziv exportane datoteke, prazno za default',
+      ''
+    );
+    this.functionsSvc
+      .exportAuction(
+        this.selection.selected.map((a) => a.id),
+        fileName
+      )
+      .pipe(
+        take(1),
+        this.toastSvc.observe({
+          loading: `Pripremam excel`,
+          success: `Uspješno`,
+          error: `Nešto je pošlo po zlu`,
+        })
+      )
+      .subscribe(
+        (res) => (window.location.href = res[1].mediaLink),
+        (err) => console.log(err)
+      );
   }
 
   async onShowWinners() {
-
     this.loadingSvc.active$.next(true);
-    let winners = new Map<string, {winner: WinnerOnAuction, auctionIds: Set<string>}>();
-    for(const auction of this.selection.selected) {
-      const winnerDocs = await this.winnersRepo.getAuctionWinners(auction.id).pipe(take(1)).toPromise();
-      for(const winner of winnerDocs) {
-        if(winners.has(winner.id)) {
+    let winners = new Map<
+      string,
+      { winner: WinnerOnAuction; auctionIds: Set<string> }
+    >();
+    for (const auction of this.selection.selected) {
+      const winnerDocs = await this.winnersRepo
+        .getAuctionWinners(auction.id)
+        .pipe(take(1))
+        .toPromise();
+      for (const winner of winnerDocs) {
+        if (winners.has(winner.id)) {
           let current = winners.get(winner.id);
-          !current.auctionIds.has(auction.id) && current.auctionIds.add(auction.id);
+          !current.auctionIds.has(auction.id) &&
+            current.auctionIds.add(auction.id);
           current.winner.bids.push(...winner.bids);
           current.winner.items.push(...winner.items);
-          winners.set(winner.id, current)
+          winners.set(winner.id, current);
         } else {
-          winners.set(winner.id, { winner: winner, auctionIds: new Set<string>([auction.id])})
+          winners.set(winner.id, {
+            winner: winner,
+            auctionIds: new Set<string>([auction.id]),
+          });
         }
       }
     }
@@ -176,20 +219,25 @@ export class AdminAuctionsPageComponent implements OnInit {
       autoFocus: false,
       closeOnNavigation: true,
       panelClass: ['dialog', 'no-padding', 'winners-admin-auctions-dialog'],
-      data: { winners }
+      data: { winners },
     });
   }
 
   onDownloadMails() {
-    this.functionsSvc.downloadMails()
-    .pipe(
-      take(1),
-      this.toastSvc.observe({
-        loading: `Pripremam excel`,
-        success: `Uspješno`,
-        error: `Nešto je pošlo po zlu`,
-      }),
-    ).subscribe(res => window.location.href = res[1].mediaLink, err => console.log(err));
+    this.functionsSvc
+      .downloadMails()
+      .pipe(
+        take(1),
+        this.toastSvc.observe({
+          loading: `Pripremam excel`,
+          success: `Uspješno`,
+          error: `Nešto je pošlo po zlu`,
+        })
+      )
+      .subscribe(
+        (res) => (window.location.href = res[1].mediaLink),
+        (err) => console.log(err)
+      );
   }
 
   //#endregion
@@ -203,7 +251,7 @@ export class AdminAuctionsPageComponent implements OnInit {
       maxWidth: '30rem',
       autoFocus: false,
       closeOnNavigation: true,
-      panelClass: 'restrict-height-handover'
+      panelClass: 'restrict-height-handover',
     });
 
     return dialogRef.afterClosed().pipe(take(1)).toPromise();
@@ -216,10 +264,13 @@ export class AdminAuctionsPageComponent implements OnInit {
       maxWidth: '20rem',
       autoFocus: false,
       closeOnNavigation: true,
-      data: { text, yes, no }
+      data: { text, yes, no },
     });
 
-    return dialogRef.afterClosed().pipe(take(1)).toPromise() as Promise<boolean>
+    return dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .toPromise() as Promise<boolean>;
   }
 
   //#endregion
@@ -235,17 +286,17 @@ export class AdminAuctionsPageComponent implements OnInit {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.data.forEach((row) => this.selection.select(row));
   }
 
   /**Updates selection model object references with new ones */
   updateSelectionModel(auctions: Auction[]) {
-    let newModel = new SelectionModel<Auction>(true, [])
+    let newModel = new SelectionModel<Auction>(true, []);
 
-    for(const model of this.selection.selected) {
-      let idx = auctions.findIndex(x => x.id == model.id);
+    for (const model of this.selection.selected) {
+      let idx = auctions.findIndex((x) => x.id == model.id);
       newModel.select(auctions[idx]);
     }
 

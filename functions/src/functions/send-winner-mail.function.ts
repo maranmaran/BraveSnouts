@@ -111,7 +111,8 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         for (const [userInfo, _] of userBids) {
             await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
         }
+        
+        logger.info(`Reverted endAuctionMailSent flag`);
     }
-
-    logger.info(`Reverted endAuctionMailSent flag`);
+    
 }
