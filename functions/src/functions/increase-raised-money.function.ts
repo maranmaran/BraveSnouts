@@ -1,4 +1,3 @@
-import * as admin from "firebase-admin";
 import * as firebase from "firebase-admin";
 import * as functions from "firebase-functions";
 import { europeFunctions, store } from "..";
@@ -50,7 +49,7 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore
 
     if (
       auctionDoc.endDate.seconds + 1 <
-      admin.firestore.Timestamp.fromDate(new Date()).seconds
+      firebase.firestore.Timestamp.fromDate(new Date()).seconds
     ) {
       functions.logger.error(
         "Raised money function invoked out of auction END timeframe"
