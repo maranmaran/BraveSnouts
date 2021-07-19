@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
 import { europeFunctions, store } from "..";
 import { AuctionItem, User } from "../models/models";
+import { config } from "./../index";
 import { WinnerOnAuction } from "./../models/models";
 import moment = require("moment");
 const os = require("os");
@@ -16,7 +17,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
     const filename = data.filename?.trim();
 
     const itemsSheetData: any[][] = [];
-    itemsSheetData.push(["PREDMET", "DONATOR", "DONACIJA"]);
+    itemsSheetData.push(["PREDMET", "LINK", "DONATOR", "DONACIJA"]);
 
     const donatorsSheetData: any[][] = [];
     donatorsSheetData.push(["DONATOR", "PREDMET", "DONACIJA"]);
@@ -84,6 +85,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
         for (const item of winner.items) {
           itemsSheetData.push([
             `${item.name.toUpperCase()}, ${itemsMap.get(item.id).description}`,
+            `${config.base.url}/item;auctionId=${item.auctionId};itemId=${item.id}`,
             winner.userInfo?.name,
             item.bid,
           ]);
