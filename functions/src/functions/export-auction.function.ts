@@ -33,7 +33,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
 
     const sheetTitle =
       !filename || filename === ""
-        ? `Export-${moment(new Date()).format("dd.MM.YY")}`
+        ? `Export-${moment(new Date()).format("dd/MM/YY")}`
         : filename;
 
     const usersMap: Map<string, User> = new Map<string, User>();
