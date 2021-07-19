@@ -376,8 +376,9 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   onDownloadExcel(auction: Auction) {
+    const filename = window.prompt('Dodaj naziv datoteke', '');
     this.functionsSvc
-      .exportAuction([this._auctionId])
+      .exportAuction([this._auctionId], filename)
       .pipe(
         take(1),
         this.toastSvc.observe({
