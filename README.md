@@ -12,9 +12,10 @@ If you wish to contribute please contact me by mail
 
 <b>So far raised over 100 000 HRK through the app which can handle large amount of auction items and over 1000 users active at a time</b>
 
-While costing next to nothing to host, maintain and be active
+**While costing next to nothing to host, maintain and be active**
 
-Resuce organization has 10 000+ organic followers
+Resuce organization has** 10 000+ organic followers**
+Website has ~1200 organic active users per auction
 
 [Production](https://hrabrenjuske.hr)
 
