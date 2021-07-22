@@ -51,8 +51,13 @@
         Ukoliko niste u mogućnosti doći na primopredaju, osvojene predmete
         šaljemo poštom.
       </div>
-      <!-- <div class="mt-3 bold">U tom slučaju potrebno je uplatiti dodatnih <span class="foreground warn default">20kn</span> za poštarinu.</div> -->
       <div class="mt-3 bold">
+        U tom slučaju potrebno je uplatiti dodatnih
+        <span class="foreground warn default">{{ postageFee }} kn</span> za
+        poštarinu.
+      </div>
+      <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION BELOW -->
+      <!-- <div class="mt-3 bold">
         U tom slučaju potrebno je uplatiti dodatnu poštarinu.
       </div>
       <div class="mt-3 bold">
@@ -62,7 +67,7 @@
           <li>5-10 knjiga - 35kn poštarina</li>
           <li>10+ knjiga - 45kn poštarina</li>
         </ul>
-      </div>
+      </div> -->
       <div class="mt-3 bold">
         Ukupno {{ originalDonation }} kn +
         <span class="foreground warn default">{{ postageFee }} kn</span> =
