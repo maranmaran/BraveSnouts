@@ -1,107 +1,73 @@
+
 import { Injectable } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/functions';
 
 @Injectable()
 export class FunctionsService {
-  constructor(private functions: AngularFireFunctions) {}
 
-  /** @deprecated */
-  compressImage(file: File) {
-    const callable = this.functions.httpsCallable('compressImage');
+    constructor(private functions: AngularFireFunctions) { }
 
-    return callable({ file });
-  }
+    /** @deprecated */
+    compressImage(file: File) {
+        const callable = this.functions.httpsCallable('compressImage');
 
-  /** Calls cloud function to process auction end */
-  endAuction(auctionId: string, handoverDetails: string[]) {
-    const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
+        return callable({ file });
+    }
 
-    return callable({ auctionId, handoverDetails });
-  }
+    /** Calls cloud function to process auction end */
+    endAuction(auctionId: string, handoverDetails: string[]) {
+        const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
 
-  /** Calls cloud function to send winner emails */
-  sendWinnerMails(auctionIds: string[], handoverDetails: string[]) {
-    const callable = this.functions.httpsCallable(
-      'sendWinnerMail-sendWinnerMailFn'
-    );
+        return callable({ auctionId, handoverDetails });
+    }
 
-    return callable({ auctionIds, handoverDetails });
-  }
+    /** Calls cloud function to send winner emails */
+    sendWinnerMails(auctionIds: string[], handoverDetails: string[]) {
+        const callable = this.functions.httpsCallable('sendWinnerMail-sendWinnerMailFn');
 
-  /** Sends email update for handover via cloud function */
-  changeHandoverDetails(auctionIds: string[], handoverDetails: string[]) {
-    const callable = this.functions.httpsCallable(
-      'changeHandover-changeHandoverFn'
-    );
+        return callable({ auctionIds, handoverDetails });
+    }
 
-    return callable({ auctionIds, handoverDetails });
-  }
+    /** Sends email update for handover via cloud function */
+    changeHandoverDetails(auctionIds: string[], handoverDetails: string[]) {
+        const callable = this.functions.httpsCallable('changeHandover-changeHandoverFn');
 
-  exportAuction(auctionIds: string[], filename: string) {
-    const callable = this.functions.httpsCallable(
-      'exportAuction-exportAuctionFn'
-    );
+        return callable({ auctionIds, handoverDetails });
+    }
 
-    return callable({ auctionIds, filename });
-  }
+    exportAuction(auctionIds: string[]) {
+      const callable = this.functions.httpsCallable('exportAuction-exportAuctionFn');
 
-  processAuctionImages(auctionId: string, imageBucketPath: string) {
-    const callable = this.functions.httpsCallable(
-      'processAuctionImages-processAuctionImagesFn'
-    );
+      return callable({ auctionIds });
+    }
 
-    return callable({ auctionId, imageBucketPath });
-  }
+    processAuctionImages(auctionId: string, imageBucketPath: string) {
+      const callable = this.functions.httpsCallable('processAuctionImages-processAuctionImagesFn');
 
-  sendPostConfirm(
-    userId,
-    auctionIds,
-    formData,
-    totalDonation,
-    paymentDetail,
-    postageFee
-  ) {
-    const callable = this.functions.httpsCallable(
-      'handoverConfirm-handoverConfirmFn'
-    );
+      return callable({ auctionId, imageBucketPath });
+    }
 
-    return callable({
-      userId,
-      auctionIds,
-      chosenOption: 'post',
-      chosenOptionData: formData,
-      totalDonation,
-      paymentDetail,
-      postageFee,
-    });
-  }
+    sendPostConfirm(userId, auctionIds, formData, totalDonation, paymentDetail, postageFee) {
+      const callable = this.functions.httpsCallable('handoverConfirm-handoverConfirmFn');
 
-  sendHandoverConfirm(userId, auctionIds, chosenOptionData) {
-    const callable = this.functions.httpsCallable(
-      'handoverConfirm-handoverConfirmFn'
-    );
+      return callable({ userId, auctionIds, chosenOption: 'post', chosenOptionData: formData, totalDonation, paymentDetail, postageFee });
+    }
 
-    return callable({
-      userId,
-      auctionIds,
-      chosenOption: 'handover',
-      chosenOptionData,
-    });
-  }
+    sendHandoverConfirm(userId, auctionIds, chosenOptionData) {
+      const callable = this.functions.httpsCallable('handoverConfirm-handoverConfirmFn');
 
-  sendNewItemsAddedMail(auctionId) {
-    const callable = this.functions.httpsCallable(
-      'newItemsAdded-newItemsAddedFn'
-    );
+      return callable({ userId, auctionIds, chosenOption: 'handover', chosenOptionData });
+    }
 
-    return callable({ auctionId });
-  }
+    sendNewItemsAddedMail(auctionId) {
+      const callable = this.functions.httpsCallable('newItemsAdded-newItemsAddedFn');
 
-  downloadMails() {
-    const callable = this.functions.httpsCallable(
-      'downloadMails-downloadMailsFn'
-    );
+      return callable({ auctionId });
+    }
 
-    return callable({});
-  }
+    downloadMails() {
+      const callable = this.functions.httpsCallable('downloadMails-downloadMailsFn');
+
+      return callable({});
+    }
 }

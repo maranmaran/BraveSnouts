@@ -20,6 +20,7 @@ const gmailPassword = config.gmail?.password;
 if (gmailEmail && gmailPassword) {
   mailOpts = {
     service: "Gmail",
+    pool: true,
     auth: {
       user: gmailEmail,
       pass: gmailPassword,
@@ -31,8 +32,6 @@ else {
   mailOpts = {
     host: "smtp.ethereal.email",
     port: 587,
-    pool: true,
-    maxMessages: 500,
     secure: false, // true for 465, false for other ports
     auth: {
       user: config.mail?.user,
