@@ -14,8 +14,9 @@ If you wish to contribute please contact me by mail
 
 **While costing next to nothing to host, maintain and be active**
 
-Resuce organization has** 10 000+ organic followers**
-Website has ~1200 organic active users per auction
+Resuce organization has *10 000+ organic followers*
+
+Website has ~1200 organic active users per auction at the moment
 
 [Production](https://hrabrenjuske.hr)
 
