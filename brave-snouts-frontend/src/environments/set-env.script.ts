@@ -1,10 +1,9 @@
 /* tslint:disable */
 
-
 // @ts-nocheck
 const { writeFile, existsSync, mkdirSync } = require('fs');
 const { argv } = require('yargs');
-const { removeSync } = require("fs-extra");
+const { removeSync } = require('fs-extra');
 
 require('dotenv').config();
 const environment = argv.environment;
@@ -24,7 +23,7 @@ function writeFileUsingFS(targetPath, environmentFileContent) {
 const isProduction = environment === 'prod';
 
 //creates the `environment.prod.ts` and `environment.ts` file if it does not exist
-if(isProduction) {
+if (isProduction) {
   removeSync('./src/environments/environment.prod.ts');
   writeFileUsingFS('./src/environments/environment.prod.ts', '');
 } else {
@@ -39,7 +38,7 @@ writeFileUsingFS('./src/environments/environment.ts', '');
 const targetPath = isProduction
   ? './src/environments/environment.prod.ts'
   : './src/environments/environment.dev.ts';
-const defaultTargetPath = './src/environments/environment.ts'
+const defaultTargetPath = './src/environments/environment.ts';
 
 //actual content to be compiled dynamically and pasted into respective environment files
 
@@ -53,29 +52,22 @@ const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
 const appId = process.env.FIREBASE_APP_ID;
 const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
 
-if(!apiKey)
-  throw new Error(`apiKey missing`);
-if(!authDomain)
-  throw new Error(`authDomain missing`);
+if (!apiKey) throw new Error(`apiKey missing`);
+if (!authDomain) throw new Error(`authDomain missing`);
 // if(!databaseURL)
 //   throw new Error(`databaseURL missing`);
-if(!projectId)
-  throw new Error(`projectId missing`);
-if(!storageBucket)
-  throw new Error(`storageBucket missing`);
-if(!messagingSenderId)
-  throw new Error(`messagingSenderId missing`);
-if(!appId)
-  throw new Error(`appId missing`);
-if(!measurementId)
-  throw new Error(`measurementId missing`);
+if (!projectId) throw new Error(`projectId missing`);
+if (!storageBucket) throw new Error(`storageBucket missing`);
+if (!messagingSenderId) throw new Error(`messagingSenderId missing`);
+if (!appId) throw new Error(`appId missing`);
+if (!measurementId) throw new Error(`measurementId missing`);
 
-if(projectId == "bravesnoutsprod") {
-  console.error("\n\n\n")
-  console.error("===========================================================")
-  console.error("==============Watch out you are in PROD env================")
-  console.error("===========================================================")
-  console.error("\n\n\n")
+if (projectId == 'bravesnoutsprod') {
+  console.error('\n\n\n');
+  console.error('===========================================================');
+  console.error('==============Watch out you are in PROD env================');
+  console.error('===========================================================');
+  console.error('\n\n\n');
 }
 
 // Build environment file
@@ -102,7 +94,7 @@ const buildEnvironmentFileContent = `
       maxBidOffset: ${process.env.APP_MAX_BID_OFFSET ?? 30},
       bidStepSize: ${process.env.APP_BID_STEP_SIZE ?? 5}
     },
-    imageCacheSeed: ${process.env.CACHE_SEED ?? 6}
+    imageCacheSeed: ${process.env.CACHE_SEED ?? 7}
   };
 `;
 
@@ -113,6 +105,5 @@ const defaultEnvironmentFileContent = `
 export const environment: any = {
 };`;
 writeFileUsingFS(defaultTargetPath, defaultEnvironmentFileContent); // appending data into the target file
-
 
 /* tslint:enable */
