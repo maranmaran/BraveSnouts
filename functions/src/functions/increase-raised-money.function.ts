@@ -14,9 +14,12 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore
       await store.collection("auctions").doc(before.auctionId).get()
     ).data()) as Auction;
 
+    functions.logger.debug(auction.endDate.seconds);
+    functions.logger.debug(firebase.firestore.Timestamp.fromDate(new Date()).seconds);
+
     if (
-      auction.endDate.nanoseconds <
-      firebase.firestore.Timestamp.fromDate(new Date()).nanoseconds
+      auction.endDate.seconds <
+      firebase.firestore.Timestamp.fromDate(new Date()).seconds
     ) {
       functions.logger.info(`Auction ended`);
       return null;
@@ -46,16 +49,6 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore
       .doc(`auctions/${after.auctionId}`)
       .get();
     const auctionDoc = (await auctionSnapshot.data()) as Auction;
-
-    if (
-      auctionDoc.endDate.seconds + 1 <
-      firebase.firestore.Timestamp.fromDate(new Date()).seconds
-    ) {
-      functions.logger.error(
-        "Raised money function invoked out of auction END timeframe"
-      );
-      return null;
-    }
 
     const raisedMoney = (auctionDoc.raisedMoney ?? 0) + addedMoney;
     functions.logger.info(`New raised total is now ${raisedMoney}`);
