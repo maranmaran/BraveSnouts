@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions";
 import { europeFunctions, store } from "..";
 import { Auction, User } from "../models/models";
 import { sendNewItemsAddedMail } from './../services/mail.service';
@@ -19,6 +20,7 @@ export const newItemsAddedFn = europeFunctions.https.onCall(
             return { status: 200 };
         }
         catch (error) {
+            logger.error(error);
             return { status: 500, error }
         }
     }

@@ -6,41 +6,50 @@ import * as path from "path";
 import { config } from "..";
 import { Auction, AuctionItem, Bid, UserInfo } from "../models/models";
 import { User } from "./../models/models";
-import Mail = require("nodemailer/lib/mailer");
+const MailComposer = require("nodemailer/lib/mail-composer");
 import mjml2html = require("mjml");
+const mailgun = require("mailgun-js");
 
 //#region Mail service
-let mailOpts = {};
 
-// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
-const gmailEmail = config.gmail?.user;
-const gmailPassword = config.gmail?.password;
+const getService = () => {
+  switch (config.mail.provider) {
+    case 'mailgun':
+      return mailgun({ apiKey: config.mailgun?.apikey, domain: config.mailgun?.domain, host: "api.eu.mailgun.net" });
+    case 'gmail':
+      return nodemailer.createTransport({
+        service: "Gmail",
+        pool: true,
+        auth: {
+          user: config.gmail?.user,
+          pass: config.gmail?.password,
+        },
+      });
+    case 'ethereal':
+      return nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: config.ethereal?.user,
+          pass: config.ethereal?.password,
+        },
+      });
+  }
+};
 
-// PROD
-if (gmailEmail && gmailPassword) {
-  mailOpts = {
-    service: "Gmail",
-    pool: true,
-    auth: {
-      user: gmailEmail,
-      pass: gmailPassword,
-    },
-  };
+const sendMail = async composer => {
+  const message = (await composer.compile().build()).toString('ascii');
+
+  switch (config.mail.provider) {
+    case 'mailgun':
+      return await getService().messages().sendMime({ to: composer.mail.to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message })
+    case 'gmail':
+    case 'ethereal':
+      return await getService().sendMail(message)
+  }
 }
-// DEV
-else {
-  mailOpts = {
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: config.mail?.user,
-      pass: config.mail?.password,
-    },
-  };
-}
 
-const mailSvc = nodemailer.createTransport(mailOpts);
 //#endregion
 
 //#region Links
@@ -65,6 +74,8 @@ const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {
 };
 
 //#endregion
+
+//#region Functions and mails - business logic
 
 /**Sends auction end mail */
 export const sendEndAuctionMail = async (
@@ -133,25 +144,26 @@ export const sendEndAuctionMail = async (
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
   // send it
-  const email: Mail.Options = {
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+  const composer = new MailComposer({
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject: "Čestitamo na osvojenim predmetima!",
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
 
 /**Sends outbidded mail */
@@ -185,26 +197,28 @@ export const sendOutbiddedMail = async (
   let emailTemplatePrecompiled = handlebars.compile(outbiddedTemplate.html);
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
-  const email = {
+  // send it
+  const composer = new MailComposer({
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject: `Tvoja ponuda za predmet "${itemBefore.name}" je nadmašena!`,
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
 
 /**Sends new handover details mail */
@@ -238,26 +252,28 @@ export const sendHandoverDetailsUpdateMail = async (
   );
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
-  const email = {
+  // send it
+  const composer = new MailComposer({
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject: "Promjena informacija za osobno preuzimanje!",
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
 
 /**Sends new handover details mail */
@@ -291,26 +307,28 @@ export const sendHandoverConfirmationMail = async (
   );
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
-  const email = {
+  // send it
+  const composer = new MailComposer({
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject: "[Osobno preuzimanje] Potvrda",
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
 
 /**Sends new handover details mail */
@@ -353,26 +371,28 @@ export const sendPostConfirmationMail = async (
   );
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
-  const email = {
+  // send it
+  const composer = new MailComposer({
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject: "[Preuzimanje poštom] Potvrda",
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
 
 /** Sends mail informing that new auction items were added to the auction */
@@ -403,26 +423,28 @@ export const sendNewItemsAddedMail = async (user: User, auction: Auction) => {
   let emailTemplatePrecompiled = handlebars.compile(template.html);
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
-  const email = {
+  // send it
+  const composer = new MailComposer({
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject: "Novi predmeti u aukciji!",
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
 
 /** Sends mail informing that auction is ending soon */
@@ -455,24 +477,28 @@ export const sendAuctionAnnouncementMail = async (
   let emailTemplatePrecompiled = handlebars.compile(template.html);
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 
-  const email = {
+  // send it
+  const composer = new MailComposer({
     // from: '"Hrabre njupke" <noreply.hrabrenjuske@gmail.com>',
-    from: '"Hrabre njuške" <noreply.hrabrenjuške@gmail.com>',
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to: user.email,
     subject,
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.jpg",
+        filename: "njuske-original-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.jpg"
+          "njuske-original-compressed.png"
         ),
-        cid: "logo",
+        cid: "logo.png",
       },
     ],
-  };
+  });
 
-  await mailSvc.sendMail(email);
+  const res = await sendMail(composer);
+  console.debug(res);
 };
+
+//#endregion

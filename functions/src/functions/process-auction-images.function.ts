@@ -56,7 +56,7 @@ export const processAuctionImagesFn = europeFunctions
                     logger.log("Downloading images");
                     let downloadJobs: Promise<void>[] = [];
                     for (const file of files[0]) {
-                        
+
                         // buffer
                         if (downloadJobs.length == bufferSize) {
                             await Promise.all(downloadJobs);
@@ -106,7 +106,7 @@ export const processAuctionImagesFn = europeFunctions
                                     .quality(50)
                                     .compress('JPEG')
                                     .writeAsync(`${transformedFolder}/${fileName}.jpg`);
-                            } catch(errorMagick) {
+                            } catch (errorMagick) {
                                 console.error(errorMagick);
                             }
 
@@ -136,12 +136,12 @@ export const processAuctionImagesFn = europeFunctions
                     let uploadJobs: Promise<void>[] = [];
                     for (const file of filesToTransform) {
 
-                            // buffer
+                        // buffer
                         if (uploadJobs.length == bufferSize) {
                             await Promise.all(uploadJobs);
                             uploadJobs = [];
                         }
-    
+
                         uploadJobs.push(new Promise<void>(async (res, err) => {
                             let image = path.basename(file, path.extname(file));
 
@@ -158,7 +158,7 @@ export const processAuctionImagesFn = europeFunctions
                                     }
                                 });
                                 fs.unlinkSync(`${transformedFolder}/${image}.jpg`);
-                            } catch(bucketErr) {
+                            } catch (bucketErr) {
                                 console.error(bucketErr);
                             }
 
@@ -215,26 +215,26 @@ export const processAuctionImagesFn = europeFunctions
                 try {
                     items = await getAuctionItems(auctionId);
 
-                    if(items.length > 0) {
+                    if (items.length > 0) {
                         await modifyExistingItemsWithImages(auctionId, items, imagesArr);
                     }
                 } catch {
                     logger.info("No items.. creating new ones");
                 }
 
-                if(items.length == 0) {
+                if (items.length == 0) {
                     await createNewItemsWithImages(auctionId, imagesArr);
                 }
 
                 return auctionId;
             } catch (error) {
                 logger.error(error);
-                throw new Error(error);
+                throw error;
             }
         });
 
 async function modifyExistingItemsWithImages(auctionId, items: AuctionItem[], imagesArr) {
-    if(items.length == 0) {
+    if (items.length == 0) {
         return;
     }
 
@@ -247,15 +247,15 @@ async function modifyExistingItemsWithImages(auctionId, items: AuctionItem[], im
     }
 
     // update each item where image has the name
-    for(const item of items) {
-        if(item.media.length == 0) {
+    for (const item of items) {
+        if (item.media.length == 0) {
             continue;
         }
 
         let key = item.media[0].name;
         let imageData = imagesMap.get(key);
 
-        if(imageData != null && imageData.length > 0) {
+        if (imageData != null && imageData.length > 0) {
             logger.info("Updating image on item " + item.id);
             const itemDoc = store.doc(`auctions/${auctionId}`).collection('items').doc(item.id)
             await itemDoc.update({ media: imageData });

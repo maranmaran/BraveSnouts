@@ -27,7 +27,7 @@
 
         <!--Logo + greetings-->
 
-        <mj-image width="100px" src="cid:logo.png" alt="Hrabre njuske logo"></mj-image>
+        <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
         <!-- <mj-image width="100px" src="./../assets/njuske-original-compressed.png" alt="Hrabre njuske logo"></mj-image> -->
 
         <mj-text align="center" font-weight="bold" font-size="23px">
@@ -41,23 +41,22 @@
 
         <!--Outbidded message body-->
         <mj-text font-weight="bold">
-          Šaljemo potvrdu sa podacima koje ste ispunili za preuzimanje poštom
+          Šaljemo potvrdu sa opcijom koju ste označili
         </mj-text>
-        
-        <mj-text padding-top="10px">
-            <ul>
-                <li>Ime i prezime: {{full_name}}</li>
-                <li>Adresa: {{address}}</li>
-                <li>Telefon: {{phone}}</li>
-            </ul>
+        <mj-text padding-top="30px" align="center">
+          {{chosen_handover_option}}
         </mj-text>
 
-        <mj-text padding-top="50px" align="center">
-          Promijeniti informacije možete ponovnim posjetom na link 
-          <a href="{{post_confirm_url}}">ovdje</a>.
+        <mj-text font-weight="bold" padding-top="30px">
+          Molimo, na primopredaju donesite točan iznos donacije.
+        </mj-text>
+
+        <mj-text padding-top="80px" align="center">
+          Promijeniti odabir možete ponovnim posjetom na link 
+          <a href="{{handover_confirm_url}}">ovdje</a>.
         </mj-text>
         <mj-text  align="center">
-          Također moguće je i promjeniti odabir u <b>osobno preuzimanje</b> tako da posjetite link iz maila sa osvojenim predmetima i odaberete lokaciju.
+          Također moguće je i promjeniti odabir u <b>preuzimanje poštom</b> tako da posjetite link iz maila sa osvojenim predmetima.
         </mj-text>
         
         <!--Footer-->
@@ -71,3 +70,5 @@
     </mj-section>
   </mj-body>
 </mjml>
+
+

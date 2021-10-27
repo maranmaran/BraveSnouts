@@ -11,22 +11,28 @@ import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformatio
 export const sendWinnerMailFn = europeFunctions.https.onCall(
     async (data, context) => {
 
-        const auctionIds = data.auctionIds as string[];
-        const handoverDetails = data.handoverDetails;
+        try {
+            const auctionIds = data.auctionIds as string[];
+            const handoverDetails = data.handoverDetails;
 
-        const auctions = await getAuctions(auctionIds);
-        const userBids = await getAllAuctionUserBidsMap(auctionIds);
+            const auctions = await getAuctions(auctionIds);
+            const userBids = await getAllAuctionUserBidsMap(auctionIds);
 
-        const userBidsTransformed = new Map<UserInfo, Bid[]>();
-        for (const [_, val] of userBids) {
-            userBidsTransformed.set(val.user, val.bids);
+            const userBidsTransformed = new Map<UserInfo, Bid[]>();
+            for (const [_, val] of userBids) {
+                userBidsTransformed.set(val.user, val.bids);
+            }
+
+            logger.info("Sending emails")
+            // logger.error("Uncomment send mails to actually send mails");
+            await sendMails(auctions, userBidsTransformed, handoverDetails);
+
+            return null;
+
+        } catch (e) {
+            logger.error(e);
+            throw e;
         }
-
-        logger.info("Sending emails")
-        // logger.error("Uncomment send mails to actually send mails");
-        await sendMails(auctions, userBidsTransformed, handoverDetails);
-
-        return null;
     }
 );
 
@@ -104,15 +110,15 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
 
     logger.info(`Sent ${sentMailsCounter} mails out of ${userBids.size}.`);
 
-    if (sentMailsCounter == userBids.size || 
-        sentMailsCounter == 0 || 
+    if (sentMailsCounter == userBids.size ||
+        sentMailsCounter == 0 ||
         sentMailsCounter + skippedCounter == userBids.size) {
-            
+
         for (const [userInfo, _] of userBids) {
             await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
         }
-        
+
         logger.info(`Reverted endAuctionMailSent flag`);
     }
-    
+
 }

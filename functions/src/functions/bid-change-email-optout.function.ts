@@ -1,14 +1,23 @@
+import { logger } from "firebase-functions";
 import { europeFunctions, store } from "..";
 
 export const bidChangeEmailOptOutFn = europeFunctions.https.onRequest(async (req, resp) => {
 
-    const userId = req.params.userId;
+    try {
 
-    await store.collection("users").doc(userId).update({
-        emailSettings: {
-            bidUpdates: false,
-        },
-    });
+        const userId = req.params.userId;
 
-    resp.jsonp({ status: 'ok', code: 200 });
+        await store.collection("users").doc(userId).update({
+            emailSettings: {
+                bidUpdates: false,
+            },
+        });
+
+        resp.jsonp({ status: 'ok', code: 200 });
+
+    } catch (e) {
+        logger.error(e);
+        throw e;
+    }
+
 })

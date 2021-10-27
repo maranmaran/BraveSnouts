@@ -26,6 +26,7 @@
     "firebase-functions": "^3.14.1",
     "gm": "^1.23.1",
     "handlebars": "^4.7.7",
+    "mailgun-js": "^0.22.0",
     "mjml": "^4.10.0",
     "mkdirp": "^1.0.3",
     "mkdirp-promise": "^5.0.1",

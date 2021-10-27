@@ -8,33 +8,40 @@ export const announcerFn = europeFunctions.pubsub.schedule('0 10-22 * * *')
     .timeZone('Europe/Zagreb')
     .onRun(async ctx => {
 
-        let startingSoon1Hour = await getStartingSoonAuctions(1, 10);
-        let startingSoon24Hours = await getStartingSoonAuctions(24, 10);
+        try {
+            let startingSoon1Hour = await getStartingSoonAuctions(1, 10);
+            let startingSoon24Hours = await getStartingSoonAuctions(24, 10);
 
-        let started = await getStartedAuctions();
+            let started = await getStartedAuctions();
 
-        let endingSoon1Hour = await getEndingSoonAuctions(1, 10);
-        let endingSoon24Hours = await getEndingSoonAuctions(24, 10);
+            let endingSoon1Hour = await getEndingSoonAuctions(1, 10);
+            let endingSoon24Hours = await getEndingSoonAuctions(24, 10);
 
-        if(
-            startingSoon1Hour.auctions?.length > 0 || 
-            startingSoon24Hours.auctions?.length > 0 || 
-            started.auctions?.length > 0 || 
-            endingSoon1Hour.auctions?.length > 0 || 
-            endingSoon24Hours.auctions?.length > 0 
-        ) {
-            logger.log("Sending announcements");
-            
-            // get users to send updates to..
-            let users = await getUsers();
+            if (
+                startingSoon1Hour.auctions?.length > 0 ||
+                startingSoon24Hours.auctions?.length > 0 ||
+                started.auctions?.length > 0 ||
+                endingSoon1Hour.auctions?.length > 0 ||
+                endingSoon24Hours.auctions?.length > 0
+            ) {
+                logger.log("Sending announcements");
 
-            // execute callbacks
-            await startingSoon1Hour.callback(users)
-            await startingSoon24Hours.callback(users)
-            await started.callback(users)
-            await endingSoon1Hour.callback(users)
-            await endingSoon24Hours.callback(users)
+                // get users to send updates to..
+                let users = await getUsers();
+
+                // execute callbacks
+                await startingSoon1Hour.callback(users)
+                await startingSoon24Hours.callback(users)
+                await started.callback(users)
+                await endingSoon1Hour.callback(users)
+                await endingSoon24Hours.callback(users)
+            }
+
+        } catch (e) {
+            logger.error(e);
+            throw e;
         }
+
     })
 
 /** Retrieves document data and id in object  */

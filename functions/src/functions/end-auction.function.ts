@@ -10,11 +10,17 @@ import { UserInfo, WinnerOnAuction } from './../models/models';
 export const endAuctionFn = europeFunctions.https.onCall(
   async (data, context) => {
 
-    const auctionId = data.auctionId;
-    const handoverDetails = data.handoverDetails;
+    try {
+      const auctionId = data.auctionId;
+      const handoverDetails = data.handoverDetails;
 
-    // process auction
-    return await auctionEnd(auctionId, handoverDetails);
+      // process auction
+      return await auctionEnd(auctionId, handoverDetails);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
+
   }
 );
 
@@ -116,7 +122,7 @@ export const getUserInformation = async (userIds: string[]) => {
   for await (const userId of userIds) {
     try {
 
-      if(userInfoMap.has(userId)) {
+      if (userInfoMap.has(userId)) {
         // already seen
         continue;
       }
@@ -159,27 +165,27 @@ export const getUserBidsMap = (bids: Bid[], userInfoMap: Map<string, UserInfo>):
 const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) => {
 
   // write to winners collection from Auction
-  
+
   for await (const [user, bids] of userBids) {
 
     const winner = Object.assign({}, new WinnerOnAuction({
+      id: user.id,
+
+      auctionId: auctionId,
+      items: bids.map(b => b.item),
+      bids: bids,
+
+      userInfo: {
         id: user.id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber
+      },
 
-        auctionId: auctionId,
-        items: bids.map(b => b.item),
-        bids: bids,
-
-        userInfo: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          phoneNumber: user.phoneNumber
-        },
-
-        paymentStatus: 'pending',
-        deliveryChoice: null,
-        postalInformation: null,
-      })
+      paymentStatus: 'pending',
+      deliveryChoice: null,
+      postalInformation: null,
+    })
     );
 
     await store.doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner).catch(err => logger.error(err));
@@ -192,22 +198,22 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
         auctionId: auctionId,
         itemId: bid.item.id,
         bidId: bid.item.bidId,
-  
+
         userInfo: {
           id: user.id,
           name: user.name,
           email: user.email,
           phoneNumber: user.phoneNumber
         },
-  
+
         paymentStatus: 'pending',
         deliveryChoice: null,
         postalInformation: null,
       }
 
-      await store.collection(`auctions/${auctionId}/items`).doc(winnerInstance.itemId).update(Object.assign({}, { winner: winnerInstance } ));
+      await store.collection(`auctions/${auctionId}/items`).doc(winnerInstance.itemId).update(Object.assign({}, { winner: winnerInstance }));
     }
-    
+
   }
 }
 

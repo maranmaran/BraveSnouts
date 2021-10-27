@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions";
 import { europeFunctions, store } from "..";
 import { WinnerOnAuction } from "../models/models";
 import { sendHandoverDetailsUpdateMail } from "../services/mail.service";
@@ -14,11 +15,11 @@ export const changeHandoverFn = europeFunctions.https.onCall(
 
             const usersMap = new Map<string, UserInfo>();
 
-            for(const auctionId of auctionIds) {
+            for (const auctionId of auctionIds) {
                 const winnerDocs = await store.collection(`auctions/${auctionId}/winners`).get();
                 const winners = winnerDocs.docs.map(winner => (winner.data() as WinnerOnAuction));
-                
-                for(const winner of winners) {
+
+                for (const winner of winners) {
                     usersMap.set(winner.userInfo.id, winner.userInfo);
                 }
 
@@ -32,6 +33,7 @@ export const changeHandoverFn = europeFunctions.https.onCall(
             return { status: 'ok', code: 200 };
         }
         catch (error) {
+            logger.error(error);
             return { status: 'error', code: 401, message: 'Failed to send handover details update' }
         }
 

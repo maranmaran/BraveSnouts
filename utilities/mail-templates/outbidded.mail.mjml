@@ -24,25 +24,37 @@
   <mj-body>
     <mj-section>
       <mj-column>
-        <mj-image width="100px" src="cid:logo.png" alt="Hrabre njuske logo"></mj-image>
+
+        <!--Logo + greetings-->
+
+        <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
         <!-- <mj-image width="100px" src="./../assets/njuske-original-compressed.png" alt="Hrabre njuske logo"></mj-image> -->
+
         <mj-text align="center" font-weight="bold" font-size="23px">
           Pozdrav {{user_name}},
         </mj-text>
-        
+        <mj-text align="center" font-size="14px" color="#bbb">
+          Hvala na sudjelovanju!
+        </mj-text>
+
         <mj-divider></mj-divider>
 
-        <mj-text align="center">
-          Dodali smo nove predmete u aukciju "{{auction_name}}".
+        <!--Outbidded message body-->
+        <mj-text>
+          Želimo vas obavijestiti kako je vaša ponuda za predmet <b>{{item_name}}</b>
+          od <b>{{item_bid_before}} kn</b> nadmašena te trenutno iznosi <b>{{item_bid_after}} kn</b>.
         </mj-text>
-        <mj-text align="center">
-          Aukciji možete pristupiti 
-          <a href="{{auction_url}}">ovdje.</a>
+        <mj-text padding-top="30px">
+          Predmet možete pronaći klikom <a href="{{item_url}}">ovdje</a>
+          ili na <b>svojim predmetima</b>.
         </mj-text>
 
         <!--Footer-->
-        <mj-text align="center" padding-top="30px" color="#bbb" font-size="10px">
+        <mj-text align="center" padding-top="50px" color="#bbb" font-size="10px">
           Ukoliko više ne želite primati ovakve poruke, kliknite <a style="margin-left: 5px" href="{{optout_url}}">ovdje</a>
+        </mj-text>
+        <mj-text align="center" color="#bbb" padding-top="8px" font-size="10px" padding="0">
+          Ukoliko trebate pomoć, možete nam se obratiti na mail <a>app.hrabrenjuske@gmail.com</a>
         </mj-text>
         <mj-text align="center" color="#bbb"  padding-top="8px"  font-size="10px" padding="0">
           Hrabre njuške je neprofitna udruga te se aukcijom prikupljaju donacije za brigu o životinjama na skrbi. 

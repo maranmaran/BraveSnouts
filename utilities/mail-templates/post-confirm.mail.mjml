@@ -27,7 +27,7 @@
 
         <!--Logo + greetings-->
 
-        <mj-image width="100px" src="cid:logo.png" alt="Hrabre njuske logo"></mj-image>
+        <mj-image width="100px" src="cid:logo" alt="Hrabre njuske logo"></mj-image>
         <!-- <mj-image width="100px" src="./../assets/njuske-original-compressed.png" alt="Hrabre njuske logo"></mj-image> -->
 
         <mj-text align="center" font-weight="bold" font-size="23px">
