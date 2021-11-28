@@ -25,6 +25,7 @@ Make sure you have appropriate `.env` file
 **App settings:**
 - APP_MIN_BID_OFFSET
 - APP_MAX_BID_OFFSET
+- BASE_URL
 
 ## Deployment 
 

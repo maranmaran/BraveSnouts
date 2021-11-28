@@ -24,8 +24,8 @@ export const bidChangeFn = europeFunctions.firestore
       ).data()) as Auction;
 
       if (
-        auction.endDate.nanoseconds <
-        firebase.firestore.Timestamp.fromDate(new Date()).nanoseconds
+        auction.endDate.seconds <
+        firebase.firestore.Timestamp.fromDate(new Date()).seconds
       ) {
         logger.info(`Auction ended`);
         return null;
