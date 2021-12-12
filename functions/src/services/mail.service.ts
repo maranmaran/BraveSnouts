@@ -151,11 +151,11 @@ export const sendEndAuctionMail = async (
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
@@ -206,11 +206,11 @@ export const sendOutbiddedMail = async (
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
@@ -261,11 +261,11 @@ export const sendHandoverDetailsUpdateMail = async (
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
@@ -316,11 +316,11 @@ export const sendHandoverConfirmationMail = async (
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
@@ -380,11 +380,11 @@ export const sendPostConfirmationMail = async (
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
@@ -432,11 +432,11 @@ export const sendNewItemsAddedMail = async (user: User, auction: Auction) => {
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
@@ -486,11 +486,11 @@ export const sendAuctionAnnouncementMail = async (
     html: emailTemplate,
     attachments: [
       {
-        filename: "njuske-original-compressed.png",
+        filename: "njuske-kapica-compressed.png",
         path: path.join(
           process.cwd(),
           "assets",
-          "njuske-original-compressed.png"
+          "njuske-kapica-compressed.png"
         ),
         cid: "logo.png",
       },
