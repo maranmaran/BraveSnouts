@@ -33,7 +33,7 @@ export const processAuctionImagesFn = europeFunctions
     .onCall(
         async (data, context) => {
 
-            let useCompression = true;
+            let useCompression = false;
             let bufferSize = 20;
 
             try {
@@ -197,7 +197,7 @@ export const processAuctionImagesFn = europeFunctions
                     for (const file of files[0]) {
                         const image = path.basename(file.name, path.extname(file.name));
 
-                        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
+                        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/temp%2F${auctionId}%2F${image}?alt=media`
 
                         imagesArr.push({
                             name: image,

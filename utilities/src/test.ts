@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import path from "path";
-import { Auction } from "./models";
+import { AuctionItem } from "./models";
 
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
@@ -22,21 +22,30 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
   admin.initializeApp(firebaseConfig);
   const store = admin.firestore();
 
+  const auctionsToFix = [
+    '0cecca06-8ff1-4745-80f4-2f61255a8ca7',
+    '19fee63a-378c-4798-8d6c-8245e7ee60d5',
+    '54b4cf6a-9cd0-4dea-86e0-1996f082f364',
+    '6fa9d50c-8e77-4af2-bd7d-ce997a074019',
+    'e72a1e92-3f22-4200-bb84-d731843c6561',
+  ];
 
-  const auction = (await (
-    await store.collection("auctions").doc("01547a2a-af48-47df-8aa9-3563f5773291").get()
-  ).data()) as Auction;
+  for (const auctionId of auctionsToFix) {
 
-  console.log(auction);
+    const itemsQuery = store.doc(`auctions/${auctionId}`).collection('items');
+    const itemsSnapshot = await itemsQuery.get();
+    const items = itemsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as AuctionItem[];
 
-  const auctionNano = auction.endDate.seconds;
-  const currentNano = admin.firestore.Timestamp.fromDate(new Date()).seconds
-  if (auctionNano < currentNano) {
-    console.log("ended");
-    return;
+    for (const item of items) {
+      for (const mediaItem of item.media) {
+        mediaItem.url = mediaItem.url.replace('auction-items', 'temp');
+        mediaItem.thumb = mediaItem.url.replace('auction-items', 'temp');
+      }
+
+      const itemDoc = store.doc(`auctions/${auctionId}`).collection('items').doc(item.id)
+      await itemDoc.update({ media: item.media });
+    }
   }
 
-  console.log("still going");
-
-
+  console.log('Done');
 })();

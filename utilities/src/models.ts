@@ -27,7 +27,7 @@ export class AuctionItem {
     constructor(data: Partial<AuctionItem>) {
         Object.assign(this, data);
     }
-    
+
     id: string;
     auctionId: string;
     name: string;
@@ -41,7 +41,7 @@ export class AuctionItem {
     bid: number = 0;
     user: string;
 
-    
+
     winner: Winner;
 }
 
@@ -57,7 +57,7 @@ export class Winner {
         name: string;
         email: string;
     };
-    
+
     deliveryChoice?: 'postal' | 'handover';
     handoverOption: string;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
@@ -74,6 +74,7 @@ export interface FirebaseFile {
     path: string,
     type: string,
     name: string,
+    thumb: string;
     url: string,
 }
 
