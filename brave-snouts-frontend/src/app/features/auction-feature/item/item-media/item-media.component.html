@@ -2,12 +2,26 @@
 
     <ng-container *ngIf="!onlyFirst; else singleMedia">
       <gallery *ngIf="dbMedia.length > 1" class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
-      <img *ngIf="dbMedia.length == 1" class="w-100 h-100 single-gallery-image pointer" src="{{ dbMedia[0].url  + '&' + imageCacheSeed }}" (click)="openLightbox()"/>
-    </ng-container>
-
+      <img *ngIf="dbMedia.length == 1" 
+        class="w-100 h-100 single-gallery-image pointer" 
+        (click)="openLightbox()"
+        [ngStyle]="{
+          'background': 'url('+ dbMedia[0].url + '&' + imageCacheSeed + ') 50% 50% no-repeat',
+          'background-size': 'contain'
+        }"
+        [src]="(loadGradually$ | async) ? tempImageUrl(dbMedia[0].url) + '&' + imageCacheSeed : dbMedia[0].url + '&' + imageCacheSeed"
+        />
+      </ng-container>
+   
     <ng-template #singleMedia>
         <div>
-            <img id="single-image" class="img-fluid" src="{{ mobileImageUrl + '&' + imageCacheSeed }}" />
+            <img id="single-image" class="img-fluid" 
+            [ngStyle]="{
+              'background': 'url('+ mobileImageUrl + '&' + imageCacheSeed + ') 50% 50% no-repeat',
+              'background-size': 'cover'
+            }"
+            [src]="(loadGradually$ | async) ? dbMedia[0].url + '&' + imageCacheSeed : mobileImageUrl + '&' + imageCacheSeed"
+            />
             <ng-content></ng-content>
         </div>
     </ng-template>

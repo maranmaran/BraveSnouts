@@ -16,6 +16,14 @@ const magick = GM.subClass({ imageMagick: true });
 var blueBirdPromise = require("bluebird");
 blueBirdPromise.promisifyAll(GM.prototype);
 
+interface ImageProcessingSettings {
+    compress: boolean;
+    compressQuality: number;
+    compressResizeHeight: number;
+    compressResizeWidth: number;
+    compressMethod: string;
+    compressExtension: string;
+}
 
 // const runtimeOpts: RuntimeOptions = {
 //     timeoutSeconds: 300,
@@ -33,7 +41,10 @@ export const processAuctionImagesFn = europeFunctions
     .onCall(
         async (data, context) => {
 
-            let useCompression = false;
+            const settings = (await store.doc("config/image-processing").get()).data() as ImageProcessingSettings;
+
+            logger.info('Loaded settings:' + JSON.stringify(settings));
+
             let bufferSize = 20;
 
             try {
@@ -44,7 +55,7 @@ export const processAuctionImagesFn = europeFunctions
                 const files = await bucket.getFiles({ prefix: imagesTempStoragePath });
                 const imagesArr = []; // image links to add to auction items
 
-                if (useCompression) {
+                if (settings.compress) {
                     const tempFolder = path.join(os.tmpdir(), "images_to_transform");
                     await mkdirp(path.dirname(tempFolder));
 
@@ -102,10 +113,10 @@ export const processAuctionImagesFn = europeFunctions
                                     .autoOrient()
                                     .interlace('Plane')
                                     .gaussian(0.05)
-                                    .resize(500, 500)
-                                    .quality(50)
-                                    .compress('JPEG')
-                                    .writeAsync(`${transformedFolder}/${fileName}.jpg`);
+                                    .resize(settings.compressResizeWidth ?? 500, settings.compressResizeHeight ?? 500)
+                                    .quality(settings.compressQuality ?? 50)
+                                    .compress(settings.compressMethod ?? 'JPEG')
+                                    .writeAsync(`${transformedFolder}/${fileName}.${settings.compressExtension ?? 'jpg'}`);
                             } catch (errorMagick) {
                                 console.error(errorMagick);
                             }
