@@ -71,7 +71,7 @@ export class ItemMediaComponent implements OnInit {
     const itemPathEncoded = `temp%2F${this.auctionId}%2F${media.name}`; // 2%F = / when encodeURIcomponent()
     const fullTempUrl = `${storageUrl}/v0/b/${projectId}/o/${itemPathEncoded}?alt=media`;
 
-    return fullTempUrl;
+    return media.tempUrl ?? fullTempUrl;
   };
 
   private getItemImages() {
