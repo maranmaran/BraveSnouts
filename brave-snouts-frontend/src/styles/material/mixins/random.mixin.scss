@@ -1,8 +1,16 @@
-@use '~@angular/material' as mat;
+@use "~@angular/material" as mat;
 @import "~@angular/material/theming";
 
 @mixin random-theme($theme) {
   $warn: mat.get-color-from-palette(map-get($theme, warn), default);
+
+  #remove-file-btn {
+    border-radius: 100%;
+    padding: 1px;
+    background: #ff0;
+    margin: 5px;
+    color: red !important;
+  }
 
   .bid-errors {
     color: $warn;
@@ -23,21 +31,33 @@
 
   .background {
     &.warn.lighter {
-      background: mat.get-color-from-palette(map-get($theme, warn), 50) !important;
+      background: mat.get-color-from-palette(
+        map-get($theme, warn),
+        50
+      ) !important;
     }
 
     &.primary.lighter {
-      background: mat.get-color-from-palette(map-get($theme, primary), 50) !important;
+      background: mat.get-color-from-palette(
+        map-get($theme, primary),
+        50
+      ) !important;
     }
   }
 
   .foreground {
     &.warn.default {
-      color: mat.get-color-from-palette(map-get($theme, warn), "default") !important;
+      color: mat.get-color-from-palette(
+        map-get($theme, warn),
+        "default"
+      ) !important;
     }
 
     &.primary.lighter {
-      color: mat.get-color-from-palette(map-get($theme, primary), "default") !important;
+      color: mat.get-color-from-palette(
+        map-get($theme, primary),
+        "default"
+      ) !important;
     }
   }
 
@@ -185,10 +205,18 @@
     }
   }
 
-  .ng-animating div mat-accordion mat-expansion-panel mat-expansion-panel-header {
+  .ng-animating
+    div
+    mat-accordion
+    mat-expansion-panel
+    mat-expansion-panel-header {
     height: 48px;
   }
-  .ng-animating div mat-accordion mat-expansion-panel div.mat-expansion-panel-content {
+  .ng-animating
+    div
+    mat-accordion
+    mat-expansion-panel
+    div.mat-expansion-panel-content {
     height: 0px;
     visibility: hidden;
   }
