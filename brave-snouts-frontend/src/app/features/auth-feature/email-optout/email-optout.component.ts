@@ -20,7 +20,7 @@ export class EmailOptoutComponent implements OnInit {
     private route: ActivatedRoute,
     private store: AngularFirestore,
     private authSvc: AuthService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.optout = this.route.snapshot.paramMap.get('optout');
@@ -56,16 +56,16 @@ export class EmailOptoutComponent implements OnInit {
     }
 
     let currentId = user?.uid || user?.id;
-    if (currentId != userId) {
-      this.bootstrap = true;
-      this.success = false;
-      return;
-    }
+    // if (currentId != userId) {
+    //   this.bootstrap = true;
+    //   this.success = false;
+    //   return;
+    // }
 
     // do optout
     this.store
       .collection('users')
-      .doc(userId)
+      .doc(currentId)
       .valueChanges()
       .pipe(take(1))
       .subscribe(
@@ -86,7 +86,7 @@ export class EmailOptoutComponent implements OnInit {
 
           this.store
             .collection('users')
-            .doc(userId)
+            .doc(currentId)
             .update({ emailSettings })
             .then(() => (this.success = true))
             .catch((err) => (console.log(err), (this.success = false)))
