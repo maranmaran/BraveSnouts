@@ -32,7 +32,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
   auction: FormGroup;
   files: FirebaseFile[] = [];
 
-  auctionId: string = uuidv4();
+  auctionId: string;
 
   // flags
   uploadState$ = new BehaviorSubject<boolean>(false);
@@ -62,10 +62,13 @@ export class AuctionBulkImageFormComponent implements OnInit {
   ngOnInit(): void {
 
     let auction = {
+      id: uuidv4(),
       name: 'Aukcija',
       startDate: new Date(),
       endDate: moment(new Date()).add(1, 'day').toDate()
     };
+
+    this.auctionId = auction.id;
 
     // create auction form
     this.createAuctionForm(auction as unknown as Auction);
