@@ -102,6 +102,7 @@ export class ItemMediaComponent implements OnInit {
           galleryRef.addVideo(galleryItem);
       }
     }
+
   }
 
   /* Opens fullscreen view of image aka lightbox */
