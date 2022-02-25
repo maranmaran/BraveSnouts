@@ -47,7 +47,7 @@ export class ItemMediaComponent implements OnInit {
   media: ItemMedia[];
 
   public get isMobile(): boolean {
-    return this.mediaObs.isActive('lt-sm')
+    return this.mobileView;
   }
 
   async ngOnInit() {
