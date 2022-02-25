@@ -56,11 +56,13 @@ export const processAuctionImagesFn = europeFunctions
                 const files = await bucket.getFiles({ prefix: imagesTempStoragePath });
                 const imagesArr = []; // image links to add to auction items
 
+                const localFolderGuid = uuidv4();
+
                 if (settings.compress) {
-                    const tempFolder = path.join(os.tmpdir(), "images_to_transform");
+                    const tempFolder = path.join(os.tmpdir(), "images_to_transform" + `/${localFolderGuid}`);
                     await mkdirp(path.dirname(tempFolder));
 
-                    const transformedFolder = path.join(os.tmpdir(), "transformed");
+                    const transformedFolder = path.join(os.tmpdir(), "transformed" + `/${localFolderGuid}`);
                     await mkdirp(path.dirname(transformedFolder));
 
                     //#region Download from temp
