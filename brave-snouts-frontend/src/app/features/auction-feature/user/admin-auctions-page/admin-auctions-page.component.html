@@ -8,6 +8,7 @@
         <button mat-flat-button color="warn" [disabled]="!selection.hasValue()" (click)="onCloseAuctions()">Zatvori aukcije</button>
         <button mat-flat-button color="warn" [disabled]="!selection.hasValue() || !onlyProcessedAuctionsSelected" (click)="onSendWinnerMails()">Pošalji pobjednički mail</button>
         <button mat-flat-button color="warn" [disabled]="!selection.hasValue() || !onlyProcessedAuctionsSelected" (click)="onChangeHandoverDetails()">Promjeni mjesto preuzimanje</button>
+        <button mat-flat-button color="warn" [disabled]="!selection.hasValue() || !onlyProcessedAuctionsSelected" (click)="onArchiveAuction()">Arhiviraj aukcije</button>
       </div>
 
       <div class="w-100" fxFlex id="right" fxLayout="row" fxLayoutAlign="end" fxLayout.lt-md="column"

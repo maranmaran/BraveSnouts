@@ -4,8 +4,8 @@ import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { noop } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { from, noop } from 'rxjs';
+import { first, mergeMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { Auction } from 'src/business/models/auction.model';
@@ -47,7 +47,7 @@ export class AdminAuctionsPageComponent implements OnInit {
     private readonly toastSvc: HotToastService,
     private readonly storage: StorageService,
     private readonly loadingSvc: ProgressBarService
-  ) {}
+  ) { }
 
   private _subsink = new SubSink();
 
@@ -157,6 +157,19 @@ export class AdminAuctionsPageComponent implements OnInit {
         })
       )
       .subscribe(noop, (err) => console.log(err));
+  }
+
+  onArchiveAuction() {
+    from(this.selection.selected.map(x => x.id))
+      .pipe(
+        first(),
+        this.toastSvc.observe({
+          loading: `Arhiviram`,
+          success: `Uspješno`,
+          error: `Nešto je pošlo po zlu`,
+        }),
+        mergeMap(id => this.auctionRepo.update(id, { archived: true }))
+      ).subscribe(noop);
   }
 
   onDownloadExcelTable() {
