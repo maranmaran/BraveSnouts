@@ -1,11 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MediaObserver } from '@angular/flex-layout';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { environment } from 'src/environments/environment';
 import { GlobalSettingsService } from './../../../../../business/services/settings.service';
+
+interface ItemMedia {
+  type: string;
+  thumbUrl: string;
+  compressedUrl: string;
+  originalUrl: string;
+}
 
 @Component({
   selector: 'app-item-media',
@@ -25,20 +32,23 @@ export class ItemMediaComponent implements OnInit {
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox,
     private readonly settingsSvc: GlobalSettingsService,
+    protected readonly mediaObs: MediaObserver
     // private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     // this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
   }
 
   @Input('media') dbMedia: FirebaseFile[];
+  @Input() auctionId: string;
+  // TODO: Fix.. this needs to be in FirebaseFile under path like bucket/auctionId.. right now: bucket/fileName
   @Input() galleryId: string;
-  @Input('first') onlyFirst: boolean = false;
+  @Input('first') mobileView: boolean = false;
 
-  firstUrl$: Observable<string>;
+  media: ItemMedia[];
 
-  mobileImageUrl: string;
-
-  tempImageUrl = (imagePath: string) => imagePath.replace('auction-items', 'temp');
+  public get isMobile(): boolean {
+    return this.mediaObs.isActive('lt-sm')
+  }
 
   async ngOnInit() {
 
@@ -46,12 +56,31 @@ export class ItemMediaComponent implements OnInit {
     if (!this.dbMedia || this.dbMedia.length == 0)
       return;
 
-    // show all
-    if (!this.onlyFirst) {
-      await this.setupGallery();
-    } else {
-      this.mobileImageUrl = this.dbMedia[0].thumb + '&' + this.imageCacheSeed ?? this.dbMedia[0].url + '&' + this.imageCacheSeed
-    }
+    this.media = this.getItemImages();
+
+    await this.setupGallery();
+  }
+
+  private getCachedImageUrl = (url: string) => url + '&' + this.imageCacheSeed;
+  private getOriginalImageUrl = (media: FirebaseFile) => {
+    //TODO: This needs to be fixed. url and thumbUrl have different guid behind auction-items
+    // This guid should actually be auctionId...
+
+    const storageUrl = 'https://firebasestorage.googleapis.com';
+    const projectId = environment.firebaseConfig.projectId + '.appspot.com';
+    const itemPathEncoded = `temp%2F${this.auctionId}%2F${media.name}`; // 2%F = / when encodeURIcomponent()
+    const fullTempUrl = `${storageUrl}/v0/b/${projectId}/o/${itemPathEncoded}?alt=media`;
+
+    return fullTempUrl;
+  };
+
+  private getItemImages() {
+    return this.dbMedia.map(x => ({
+      type: x.type,
+      thumbUrl: this.getCachedImageUrl(x.thumb),
+      compressedUrl: this.getCachedImageUrl(x.url),
+      originalUrl: this.getCachedImageUrl(this.getOriginalImageUrl(x))
+    } as ItemMedia));
   }
 
   /* Sets up images and videos for gallery component */
@@ -62,12 +91,15 @@ export class ItemMediaComponent implements OnInit {
     const itemsLen = (await galleryRef.state.pipe(first()).toPromise()).items.length;
 
     if (!itemsLen && itemsLen == 0) {
-      for (const { url, type, thumb } of this.dbMedia) {
+      for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
+
+        const galleryItem = { src: originalUrl ?? compressedUrl, thumb: thumbUrl ?? compressedUrl, type };
+
         if (type == 'image')
-          galleryRef.addImage({ src: this.tempImageUrl(url) + '&' + this.imageCacheSeed, thumb: thumb + '&' + this.imageCacheSeed ?? url + '&' + this.imageCacheSeed, type });
+          galleryRef.addImage(galleryItem);
 
         if (type == 'video')
-          galleryRef.addVideo({ src: this.tempImageUrl(url) + '&' + this.imageCacheSeed, thumb: thumb + '&' + this.imageCacheSeed ?? url + '&' + this.imageCacheSeed, type });
+          galleryRef.addVideo(galleryItem);
       }
     }
 

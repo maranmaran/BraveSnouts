@@ -6,10 +6,20 @@ export interface GlobalSettings {
     gradualImageLoading: boolean;
 }
 
+export interface ImageProcessingSettings {
+    compress: boolean;
+    compressQuality: number;
+    compressResizeHeight: number;
+    compressResizeWidth: number;
+    compressMethod: string;
+    compressExtension: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class GlobalSettingsService {
 
     settings$ = this.get();
+    imageProcessingSettings$ = this.getImageProcessingSettings();
 
     constructor(
         private readonly firestore: AngularFirestore
@@ -19,6 +29,11 @@ export class GlobalSettingsService {
 
     private get() {
         return this.firestore.doc<GlobalSettings>('config/global').valueChanges().pipe(first(), shareReplay(1));
+    }
+
+
+    private getImageProcessingSettings() {
+        return this.firestore.doc<ImageProcessingSettings>('config/image-processing').valueChanges().pipe(first(), shareReplay(1));
     }
 
 }

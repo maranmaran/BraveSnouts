@@ -8,7 +8,7 @@ import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { BehaviorSubject, from, noop } from 'rxjs';
-import { concatMap, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
+import { concatMap, finalize, first, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -18,6 +18,7 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
 import { StorageService } from 'src/business/services/storage.service';
 import { SubSink } from 'subsink';
 import { v4 as uuidv4 } from 'uuid';
+import { GlobalSettingsService } from './../../../../../business/services/settings.service';
 
 @Component({
   selector: 'app-auction-bulk-image-form',
@@ -54,9 +55,9 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly router: Router,
     private readonly toastSvc: HotToastService,
     private readonly functionSvc: FunctionsService,
+    private readonly settingsSvc: GlobalSettingsService
   ) { }
 
-  _useCompression = true;
 
   ngOnInit(): void {
 
@@ -120,13 +121,14 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
     this.uploadState$.next(true);
 
+    const useCompression = (await this.settingsSvc.imageProcessingSettings$.pipe(first()).toPromise()).compress;
 
     this._subsink.add(from(event.addedFiles).pipe(
 
       mergeMap((file: File) => {
 
         const name = `${Guid.create()}`;
-        const path = `${this._useCompression ? 'temp' : 'auction-items'}/${this.auctionId}/${name}`;
+        const path = `${useCompression ? 'temp' : 'auction-items'}/${this.auctionId}/${name}`;
         const type = this.getFirebaseFileType(file.type);
 
         let { ref, task } = this.storage.uploadFile(file, path);
@@ -140,7 +142,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
       finalize(() => this.uploadState$.next(false))
     )
-    .subscribe(noop, err => console.log(err)))
+      .subscribe(noop, err => console.log(err)))
 
   }
 
@@ -185,22 +187,24 @@ export class AuctionBulkImageFormComponent implements OnInit {
       description: this.auction.value.description,
     });
 
+    const useCompression = (await this.settingsSvc.imageProcessingSettings$.pipe(first()).toPromise()).compress;
+
     from(this.auctionRepo.set(this.auctionId, auction))
       .pipe(
         take(1),
         concatMap(() =>
           this.functionSvc
-          .processAuctionImages(this.auctionId, `${this._useCompression ? 'temp' : 'auction-items'}/${this.auctionId}`)
-          .pipe(
-            take(1),
-            this.toastSvc.observe(
-              {
-                loading: 'Stvaranje aukcije..',
-                success: "Aukcija uspješno stvorena",
-                error: "Nešto je pošlo po zlu",
-              }
-            ))
-          ),
+            .processAuctionImages(this.auctionId, `${useCompression ? 'temp' : 'auction-items'}/${this.auctionId}`)
+            .pipe(
+              take(1),
+              this.toastSvc.observe(
+                {
+                  loading: 'Stvaranje aukcije..',
+                  success: "Aukcija uspješno stvorena",
+                  error: "Nešto je pošlo po zlu",
+                }
+              ))
+        ),
       ).subscribe(() => this.postCreate(), err => console.log(err));
   }
 
@@ -211,21 +215,21 @@ export class AuctionBulkImageFormComponent implements OnInit {
     this.clearFiles();
 
     this.auctionRepo.getOne(this.auctionId)
-    .pipe(
-      take(1),
-      tap(console.log),
-      concatMap(auction => this.itemsRepo.getAll(this.auctionId).pipe(take(1), map(items => [auction, items]))),
-      concatMap(([auction, items]) => this.router.navigate(
-        ['/app/edit-auction'],
-        { state: { auction, items, action: 'edit' } }
-      ))
-    ).subscribe(noop, err => console.log(err));
+      .pipe(
+        take(1),
+        tap(console.log),
+        concatMap(auction => this.itemsRepo.getAll(this.auctionId).pipe(take(1), map(items => [auction, items]))),
+        concatMap(([auction, items]) => this.router.navigate(
+          ['/app/edit-auction'],
+          { state: { auction, items, action: 'edit' } }
+        ))
+      ).subscribe(noop, err => console.log(err));
   }
 
   clearFiles() {
-    if(!this.filesToDeleteQueue) return;
+    if (!this.filesToDeleteQueue) return;
 
-    for(const file of this.filesToDeleteQueue) {
+    for (const file of this.filesToDeleteQueue) {
       this.storage.deleteFile(file.url).catch(err => console.log(err))
     }
   }

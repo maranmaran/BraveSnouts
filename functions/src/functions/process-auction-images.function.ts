@@ -1,4 +1,3 @@
-// import { Promise } from "bluebird";
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import * as fs from 'fs';
@@ -22,7 +21,7 @@ interface ImageProcessingSettings {
     compressResizeHeight: number;
     compressResizeWidth: number;
     compressMethod: string;
-    compressExtension: string;
+    compressExtension: string; enableProdMode
 }
 
 // const runtimeOpts: RuntimeOptions = {
@@ -190,11 +189,13 @@ export const processAuctionImagesFn = europeFunctions
 
                             imagesArr.push({
                                 name: image,
-                                path: `auction-items/${image}`,
+                                path: `auction-items/${auctionId}`,
+                                fullPath: `auction-items/${auctionId}/${image}`,
+                                tempPath: `temp/${auctionId}/${image}`,
                                 type: 'image',
                                 url: imageUrl,
-                                // thumb: thumbUrl
-                                thumb: imageUrl
+                                thumb: imageUrl,
+                                tempUrl: imageUrl.replace('auction-items', 'temp')
                             });
 
                             res();
@@ -212,8 +213,11 @@ export const processAuctionImagesFn = europeFunctions
 
                         imagesArr.push({
                             name: image,
-                            path: `auction-items/${image}`,
+                            path: `auction-items/${auctionId}`,
+                            fullPath: `auction-items/${auctionId}/${image}`,
+                            tempPath: `temp/${auctionId}/${image}`,
                             type: 'image',
+                            tempUrl: imageUrl,
                             url: imageUrl,
                             thumb: imageUrl
                         });

@@ -3,7 +3,7 @@ import { AngularFireFunctions } from '@angular/fire/functions';
 
 @Injectable()
 export class FunctionsService {
-  constructor(private functions: AngularFireFunctions) {}
+  constructor(private functions: AngularFireFunctions) { }
 
   /** @deprecated */
   compressImage(file: File) {
