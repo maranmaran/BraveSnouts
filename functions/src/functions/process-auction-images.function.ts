@@ -50,6 +50,8 @@ export const processAuctionImagesFn = europeFunctions
                 const auctionId = data.auctionId;
                 const imagesTempStoragePath = data.imageBucketPath;
 
+                logger.info(`Processing auction: ${auctionId} and path ${imagesTempStoragePath}`);
+
                 const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
                 const files = await bucket.getFiles({ prefix: imagesTempStoragePath });
                 const imagesArr = []; // image links to add to auction items

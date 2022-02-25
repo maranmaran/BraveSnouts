@@ -69,6 +69,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     };
 
     this.auctionId = auction.id;
+    console.log(this.auctionId);
 
     // create auction form
     this.createAuctionForm(auction as unknown as Auction);
