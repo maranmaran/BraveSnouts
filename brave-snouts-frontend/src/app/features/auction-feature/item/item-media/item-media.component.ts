@@ -102,7 +102,6 @@ export class ItemMediaComponent implements OnInit {
           galleryRef.addVideo(galleryItem);
       }
     }
-
   }
 
   /* Opens fullscreen view of image aka lightbox */
@@ -111,12 +110,15 @@ export class ItemMediaComponent implements OnInit {
     // this.gallery.ref(this.galleryId).setConfig({imageSize: 'contain'});
 
     let lightboxData = [];
-    for (const { url, type } of this.dbMedia) {
+    for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
+
+      const galleryItem = { src: originalUrl ?? compressedUrl, thumb: thumbUrl ?? compressedUrl, type };
+
       if (type == 'image')
-        lightboxData.push({ src: url + '&' + this.imageCacheSeed, thumb: url + '&' + this.imageCacheSeed, type });
+        lightboxData.push(galleryItem);
 
       if (type == 'video')
-        lightboxData.push({ src: url + '&' + this.imageCacheSeed, thumb: url + '&' + this.imageCacheSeed, type });
+        lightboxData.push(galleryItem);
     }
 
     this.lightbox.open(imageIdx, this.galleryId, {
