@@ -23,10 +23,9 @@ export class EmailOptoutComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    let userId = this.route.snapshot.paramMap.get('userId');
     this.optout = this.route.snapshot.paramMap.get('optout');
 
-    if (!userId || !this.optout) {
+    if (!this.optout) {
       return;
     }
 

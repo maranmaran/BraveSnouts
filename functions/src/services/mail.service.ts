@@ -54,8 +54,8 @@ const sendMail = async composer => {
 
 //#region Links
 
-const getEmailOptoutLink = (userId: string, optout: string) =>
-  `${config.base.url}/email-optout;userId=${userId};optout=${optout}`;
+const getEmailOptoutLink = (optout: string) =>
+  `${config.base.url}/email-optout;optout=${optout}`;
 
 const getPostConfirmUrl = (
   userId: string,
@@ -178,7 +178,7 @@ export const sendOutbiddedMail = async (
 
   // load and customize html template
   const emailVariables = {
-    optout_url: getEmailOptoutLink(user.id, "bidchange"),
+    optout_url: getEmailOptoutLink("bidchange"),
     item_url: `${config.base.url}/item;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
     item_name: itemAfter.name,
     item_bid_before: itemBefore.bid,
@@ -406,7 +406,7 @@ export const sendNewItemsAddedMail = async (user: User, auction: Auction) => {
     user_name: user.displayName.trim().split(" ")[0],
     auction_name: auction.name,
     auction_url: `${config.base.url}/auction;id=${auction.id}`,
-    optout_url: getEmailOptoutLink(user.id, "auctionannouncements"),
+    optout_url: getEmailOptoutLink("auctionannouncements"),
   };
 
   let template = mjml2html(
@@ -464,7 +464,7 @@ export const sendAuctionAnnouncementMail = async (
     auction_name: auction.name,
     announce_message: message,
     auction_url: `${config.base.url}/auction;id=${auction.id}`,
-    optout_url: getEmailOptoutLink(user.id, "auctionannouncements"),
+    optout_url: getEmailOptoutLink("auctionannouncements"),
   };
 
   let template = mjml2html(
