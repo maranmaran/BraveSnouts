@@ -67,18 +67,25 @@
         <mj-text>
           <div>Plaćanje:</div>
           <ul>
-            <!-- <li>PBZ - HR4223400091110951628</li> -->
-            <li>Erste - HR9224020063209851271</li>
+            <li>PBZ - HR4223400091110951628</li>
+            <!-- <li>Erste - HR9224020063209851271</li> -->
             <li>Revolut - 0994513163</li>
             <li>Paypal - hrabre.njuske1@gmail.com</li>
             <li>Keks - 098787823</li>
           </ul>
         </mj-text>
-        <mj-text
+        <!-- <mj-text
           >U slučaju preuzimanja poštom potrebno je uplatiti dodatnih
           {{postage_fee}} kn radi poštarine.</mj-text
+        > -->
+
+        <!--BOOK AUCTION-->
+        <mj-text
+          >U slučaju preuzimanja poštom potrebno je uplatiti dodatnu poštarinu.
+          Detalji su na linku za preuzimanje poštom.</mj-text
         >
-        <!-- <mj-text>U slučaju preuzimanja poštom potrebno je uplatiti dodatnu poštarinu.</mj-text> -->
+        <!--BOOK AUCTION-->
+
         <mj-text>
           <span style="text-decoration: underline">Opis plaćanja:</span>
           <i style="text-decoration: none">"{{payment_detail}}"</i>

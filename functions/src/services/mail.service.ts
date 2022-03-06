@@ -90,22 +90,22 @@ export const sendEndAuctionMail = async (
   const totalDonation = items
     .map((x) => x.value)
     .reduce((prev, cur) => prev + cur);
-  const postageFee = 20; // TODO: Put in config
+  let postageFee = 20; // TODO: Put in config
 
   // TODO: Remove after book auction
-  // const totalItems = items.length;
-  // if (totalItems == 1) {
-  //   postageFee = 15;
-  // }
-  // if (totalItems >= 2 && totalItems <= 5) {
-  //   postageFee = 25;
-  // }
-  // if (totalItems >= 5 && totalItems <= 10) {
-  //   postageFee = 35;
-  // }
-  // if (totalItems > 10) {
-  //   postageFee = 45;
-  // }
+  const totalItems = items.length;
+  if (totalItems == 1) {
+    postageFee = 20;
+  }
+  if (totalItems >= 2 && totalItems <= 5) {
+    postageFee = 30;
+  }
+  if (totalItems >= 5 && totalItems <= 10) {
+    postageFee = 40;
+  }
+  if (totalItems > 10) {
+    postageFee = 50;
+  }
 
   const paymentDetail = `${user.name}`;
 
