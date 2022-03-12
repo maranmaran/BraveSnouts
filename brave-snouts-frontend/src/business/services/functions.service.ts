@@ -19,7 +19,7 @@ export class FunctionsService {
     return callable({ auctionId, handoverDetails });
   }
 
-  testSendWinnerMail(email = "app.hrabrenjuske@gmail.com", items = 10) {
+  testSendWinnerMail(email, items) {
     const callable = this.functions.httpsCallable('testSendWinnerMail-testSendWinnerMailFn');
 
     return callable({ email, items });

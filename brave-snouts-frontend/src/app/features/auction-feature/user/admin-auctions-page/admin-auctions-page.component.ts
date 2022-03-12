@@ -4,12 +4,13 @@ import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { from, noop } from 'rxjs';
-import { first, mergeMap, switchMap, take } from 'rxjs/operators';
+import { combineLatest, from, noop } from 'rxjs';
+import { first, map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { Auction } from 'src/business/models/auction.model';
 import { WinnerOnAuction } from 'src/business/models/winner.model';
+import { AuthService } from 'src/business/services/auth.service';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
@@ -40,6 +41,7 @@ export class AdminAuctionsPageComponent implements OnInit {
 
   constructor(
     public readonly mediaObs: MediaObserver,
+    private readonly authSvc: AuthService,
     private readonly auctionRepo: AuctionRepository,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly winnersRepo: WinnersRepository,
@@ -256,11 +258,19 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   onSendTestMail() {
-    this.settingsSvc.settings$.pipe(first(),
-      switchMap(settings =>
-        this.functionsSvc.testSendWinnerMail(settings.testing.email ?? "app.hrabrenjuske@gmail.com", settings.testing.itemsCount ?? 10)
-      )
-    );
+    combineLatest([
+      this.settingsSvc.settings$.pipe(first()),
+      this.authSvc.user$.pipe(first())
+    ]).pipe(
+      first(),
+      map(([settings, user]) => { return { email: settings.testing.email ?? user.email, itemsCount: settings.testing.itemsCount ?? 10 } }),
+      switchMap(((data: { email: string, itemsCount: number }) => {
+        console.log(data);
+
+        return this.functionsSvc.testSendWinnerMail(data.email, data.itemsCount)
+      }
+      ))
+    ).subscribe(noop);
   }
 
   //#endregion

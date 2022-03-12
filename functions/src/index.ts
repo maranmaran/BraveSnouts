@@ -17,12 +17,9 @@ const exportAuctionFn = require('./functions/export-auction.function');
 const processAuctionImagesFn = require('./functions/process-auction-images.function');
 const handoverConfirmFn = require('./functions/handover-confirm.function');
 const newItemsAddedFn = require('./functions/new-items-added.function');
-// const announcerFn = require('./functions/auction-announcer.function');
 const sendWinnerMailFn = require('./functions/send-winner-mail.function');
 const testSendWinnerMailFn = require('./functions/test-send-winner-mail.function');
 const downloadMailsFn = require('./functions/download-mails.function');
-// const archiveAuctionFn = require('./functions/archive-auction.function');
-// const bidChangeEmailOptOutFn = require('./functions/bid-change-email-optout.function');
 
 //#region 
 

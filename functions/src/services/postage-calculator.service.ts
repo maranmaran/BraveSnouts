@@ -14,7 +14,7 @@ export async function calculatePostage(itemsWonCount: number) {
 
     let postageFee = 20;
     for (const rule of rules) {
-        if (rule.lower >= itemsWonCount) {
+        if (itemsWonCount >= rule.lower) {
             postageFee = rule.postage;
         }
     }
