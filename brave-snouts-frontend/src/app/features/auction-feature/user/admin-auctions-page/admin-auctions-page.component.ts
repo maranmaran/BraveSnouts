@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
 import { from, noop } from 'rxjs';
-import { first, mergeMap, take } from 'rxjs/operators';
+import { first, mergeMap, switchMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { Auction } from 'src/business/models/auction.model';
@@ -16,6 +16,7 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
 import { SubSink } from 'subsink';
 import { ProgressBarService } from './../../../../../business/services/progress-bar.service';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
+import { GlobalSettingsService } from './../../../../../business/services/settings.service';
 import { StorageService } from './../../../../../business/services/storage.service';
 import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
 
@@ -46,7 +47,8 @@ export class AdminAuctionsPageComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
     private readonly storage: StorageService,
-    private readonly loadingSvc: ProgressBarService
+    private readonly loadingSvc: ProgressBarService,
+    private readonly settingsSvc: GlobalSettingsService
   ) { }
 
   private _subsink = new SubSink();
@@ -251,6 +253,14 @@ export class AdminAuctionsPageComponent implements OnInit {
         (res) => (window.location.href = res[1].mediaLink),
         (err) => console.log(err)
       );
+  }
+
+  onSendTestMail() {
+    this.settingsSvc.settings$.pipe(first(),
+      switchMap(settings =>
+        this.functionsSvc.testEndAuction(settings.testing.email ?? "app.hrabrenjuske@gmail.com", settings.testing.itemsCount ?? 10)
+      )
+    );
   }
 
   //#endregion

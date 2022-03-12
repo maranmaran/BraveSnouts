@@ -17,6 +17,7 @@
   "dependencies": {
     "@types/cookie-parser": "^1.4.2",
     "@types/handlebars": "^4.1.0",
+    "@types/lodash": "^4.14.179",
     "@types/mjml": "^4.7.0",
     "@types/nodemailer": "^6.4.2",
     "bluebird": "^3.7.2",
@@ -26,6 +27,7 @@
     "firebase-functions": "^3.14.1",
     "gm": "^1.23.1",
     "handlebars": "^4.7.7",
+    "lodash": "^4.17.21",
     "mailgun-js": "^0.22.0",
     "mjml": "^4.10.0",
     "mkdirp": "^1.0.3",

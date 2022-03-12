@@ -6,6 +6,7 @@ import * as path from "path";
 import { config } from "..";
 import { Auction, AuctionItem, Bid, UserInfo } from "../models/models";
 import { User } from "./../models/models";
+import { calculatePostage } from "./postage-calculator.service";
 const MailComposer = require("nodemailer/lib/mail-composer");
 import mjml2html = require("mjml");
 const mailgun = require("mailgun-js");
@@ -77,6 +78,11 @@ const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {
 
 //#region Functions and mails - business logic
 
+export class WinnerMailOptions {
+  extraPostageMessage: string = "";
+  extraMessage: string = "";
+}
+
 /**Sends auction end mail */
 export const sendEndAuctionMail = async (
   auctions: Auction[],
@@ -90,26 +96,16 @@ export const sendEndAuctionMail = async (
   const totalDonation = items
     .map((x) => x.value)
     .reduce((prev, cur) => prev + cur);
-  let postageFee = 20; // TODO: Put in config
 
-  // TODO: Remove after book auction
-  const totalItems = items.length;
-  if (totalItems == 1) {
-    postageFee = 20;
-  }
-  if (totalItems >= 2 && totalItems <= 5) {
-    postageFee = 30;
-  }
-  if (totalItems >= 5 && totalItems <= 10) {
-    postageFee = 40;
-  }
-  if (totalItems > 10) {
-    postageFee = 50;
-  }
+  const postageFee = await calculatePostage(items.length) ?? 20;
+
+  const postage_details = `U slučaju preuzimanja poštom potrebno je uplatiti dodatnih ${postageFee} kn radi poštarine.`
 
   const paymentDetail = `${user.name}`;
 
-  const emailVariables = {
+  const customStoreParams = {};
+
+  let emailVariables = {
     post_confirm_url: getPostConfirmUrl(
       user.id,
       totalDonation.toString(),
@@ -122,6 +118,8 @@ export const sendEndAuctionMail = async (
       auctions.map((x) => x.id)
     ),
     user_name: user.name.trim().split(" ")[0],
+    postage_details,
+    postage_remark: '',
     handover_details: `<ul>${handoverDetails
       .map((detail) => `<li>${detail}</li>`)
       .join("\n")}</ul>`,
@@ -131,8 +129,11 @@ export const sendEndAuctionMail = async (
       .join("\n")}</ul>`,
     total: totalDonation,
     postage_fee: postageFee,
+    ...customStoreParams
   };
-  // const rawTemplate = fs.readFileSync(path.join(process.cwd(), 'mail-templates', 'end-auction.mail.html'), 'utf8');
+
+
+  // TODO: read from storage...
   let endAuctionTemplate = mjml2html(
     fs.readFileSync(
       path.join(process.cwd(), "mail-templates", "end-auction.mail.mjml"),
@@ -140,6 +141,7 @@ export const sendEndAuctionMail = async (
     ),
     {}
   );
+
   let emailTemplatePrecompiled = handlebars.compile(endAuctionTemplate.html);
   const emailTemplate = emailTemplatePrecompiled(emailVariables);
 

@@ -1,8 +1,7 @@
 import { logger } from 'firebase-functions';
 import { europeFunctions, store } from '..';
-import { Auction, AuctionItem, Bid } from '../models/models';
+import { Auction, AuctionItem, Bid, UserInfo } from '../models/models';
 import { sendEndAuctionMail } from '../services/mail.service';
-import { UserInfo } from './../models/models';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
 /** Processes auctions end
  * Picks up item winners and sends email notification templates for won items
@@ -44,6 +43,7 @@ const getAuctions = async (auctionIds: string[]) => {
 
     return auctions;
 }
+
 const getAllAuctionUserBidsMap = async (auctionIds: string[]) => {
     const allAuctionUserBidsMap = new Map<string, { user: UserInfo, bids: Bid[] }>();
     for (const auctionId of auctionIds) {

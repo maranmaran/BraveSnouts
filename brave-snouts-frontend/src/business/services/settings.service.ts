@@ -4,6 +4,10 @@ import { first, shareReplay } from "rxjs/operators";
 
 export interface GlobalSettings {
     gradualImageLoading: boolean;
+    testing: {
+        email: string;
+        itemsCount: number;
+    }
 }
 
 export interface ImageProcessingSettings {
