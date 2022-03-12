@@ -19,8 +19,8 @@ export class FunctionsService {
     return callable({ auctionId, handoverDetails });
   }
 
-  testEndAuction(email = "app.hrabrenjuske@gmail.com", items = 10) {
-    const callable = this.functions.httpsCallable('testEndAuction-testEndAuctionFn');
+  testSendWinnerMail(email = "app.hrabrenjuske@gmail.com", items = 10) {
+    const callable = this.functions.httpsCallable('testSendWinnerMail-testSendWinnerMailFn');
 
     return callable({ email, items });
   }

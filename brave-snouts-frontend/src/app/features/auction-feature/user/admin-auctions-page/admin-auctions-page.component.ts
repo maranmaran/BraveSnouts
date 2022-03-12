@@ -258,7 +258,7 @@ export class AdminAuctionsPageComponent implements OnInit {
   onSendTestMail() {
     this.settingsSvc.settings$.pipe(first(),
       switchMap(settings =>
-        this.functionsSvc.testEndAuction(settings.testing.email ?? "app.hrabrenjuske@gmail.com", settings.testing.itemsCount ?? 10)
+        this.functionsSvc.testSendWinnerMail(settings.testing.email ?? "app.hrabrenjuske@gmail.com", settings.testing.itemsCount ?? 10)
       )
     );
   }
