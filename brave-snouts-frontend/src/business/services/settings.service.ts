@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
-import { first, shareReplay } from "rxjs/operators";
+import { first, map, shareReplay } from "rxjs/operators";
 
 export interface GlobalSettings {
     gradualImageLoading: boolean;
@@ -8,6 +8,15 @@ export interface GlobalSettings {
         email: string;
         itemsCount: number;
     }
+}
+
+export interface MailVariables {
+    [key: string]: MailVariable
+}
+
+export interface MailVariable {
+    message: string;
+    show: boolean;
 }
 
 export interface ImageProcessingSettings {
@@ -38,6 +47,23 @@ export class GlobalSettingsService {
 
     private getImageProcessingSettings() {
         return this.firestore.doc<ImageProcessingSettings>('config/image-processing').valueChanges().pipe(first(), shareReplay(1));
+    }
+
+
+    async getMailVariables() {
+        return this.firestore.doc<MailVariables>("config/mail-variables").valueChanges().pipe(
+            map(variables => {
+                const activeVariables = {};
+
+                for (const variable in variables) {
+                    if (!variables[variable].show) {
+                        continue;
+                    }
+
+                    activeVariables[variable] = variables[variable].message
+                }
+            })
+        );
     }
 
 }
