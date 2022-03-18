@@ -1,4 +1,4 @@
-import * as firebase from 'firebase-admin';
+import { firestore } from "firebase-admin";
 
 export class Auction {
 
@@ -9,8 +9,8 @@ export class Auction {
     id: string;
     name: string;
     description: string;
-    startDate: firebase.firestore.Timestamp;
-    endDate: firebase.firestore.Timestamp;
+    startDate: firestore.Timestamp;
+    endDate: firestore.Timestamp;
     items: AuctionItem[];
 
     raisedMoney: 0
