@@ -28,6 +28,18 @@ export interface ImageProcessingSettings {
     compressExtension: string;
 }
 
+
+export interface BankAccount {
+    visible: boolean;
+    type: string;
+    account: string;
+    image: string;
+}
+
+export interface BankAccountSettings {
+    [key: string]: BankAccount;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
 
@@ -65,6 +77,12 @@ export class SettingsService {
 
                 return activeVariables;
             })
+        );
+    }
+
+    getAccounts() {
+        return this.firestore.doc<BankAccountSettings>("config/bank-accounts").valueChanges().pipe(
+            map(variables => Array.from(Object.entries(variables)).filter(x => x[1].visible).map(x => x[1]).sort((a, b) => a.type >= b.type ? 1 : -1))
         );
     }
 

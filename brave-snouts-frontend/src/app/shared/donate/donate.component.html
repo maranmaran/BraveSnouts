@@ -13,7 +13,6 @@
     fxLayoutAlign="center center"
   >
     <div class="mb-3 mr-0">
-      <!-- [ngClass]="{'mat-title-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }"> -->
       <b>Pomoći možete i na druge načine:</b>
       <ul>
         <li>Donacijom potrepština za životinje</li>
@@ -24,14 +23,6 @@
         <li>Direktnom uplatom na račun udruge uz naznaku "donacija".</li>
       </ul>
     </div>
-    <!-- <div class="mb-3 mr-0 no-wrap"
-                [ngClass]="{'mat-display-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }">
-                želiš pomoći primamo i donacije
-            </div>
-            <div class="mb-3 mr-0 no-wrap"
-                [ngClass]="{'mat-display-1': mediaObs.isActive('gt-sm'), 'mat-title': mediaObs.isActive('lt-md') }">
-                Cijenimo podršku !
-            </div> -->
   </div>
 
   <div
@@ -43,68 +34,16 @@
       'w-100': mediaObs.isActive('lt-md')
     }"
   >
-    <!-- <div class="section" id="pbz" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
-                <img class="img-fluid" src="assets/donate-logo/erste.svg" alt="ERSTE">
-                <div class="m-0" [ngClass]="{'mat-title': mediaObs.isActive('gt-sm')}">HR9224020063209851271</div>
-            </div> --->
     <div
+      *ngFor="let account of accounts$ | async"
       class="section"
-      id="pbz"
       fxLayout="row"
       fxLayoutGap="10px"
       fxLayoutAlign="start center"
     >
-      <img class="img-fluid" src="assets/donate-logo/pbz-logo.jpg" alt="PBZ" />
+      <img class="img-fluid" [src]="account.image" />
       <div class="m-0" [ngClass]="{ 'mat-title': mediaObs.isActive('gt-sm') }">
-        HR4223400091110951628
-      </div>
-    </div>
-    <div
-      class="section"
-      id="paypal"
-      fxLayout="row"
-      fxLayoutGap="5px"
-      fxLayoutAlign="start center"
-    >
-      <img
-        class="img-fluid"
-        src="assets/donate-logo/paypal-logo.svg"
-        alt="paypal"
-      />
-      <div class="m-0" [ngClass]="{ 'mat-title': mediaObs.isActive('gt-sm') }">
-        hrabre.njuske1@gmail.com
-      </div>
-    </div>
-    <div
-      class="section"
-      id="keks"
-      fxLayout="row"
-      fxLayoutGap="13px"
-      fxLayoutAlign="start center"
-    >
-      <img
-        class="img-fluid"
-        src="assets/donate-logo/keks-logo.jpg"
-        alt="kekspay"
-      />
-      <div class="m-0" [ngClass]="{ 'mat-title': mediaObs.isActive('gt-sm') }">
-        098787823
-      </div>
-    </div>
-    <div
-      class="section"
-      id="revolut"
-      fxLayout="row"
-      fxLayoutGap="16px"
-      fxLayoutAlign="start center"
-    >
-      <img
-        class="img-fluid"
-        src="assets/donate-logo/revolut-logo.svg"
-        alt="revolut"
-      />
-      <div class="m-0" [ngClass]="{ 'mat-title': mediaObs.isActive('gt-sm') }">
-        0994513163
+        {{ account.account }}
       </div>
     </div>
   </div>

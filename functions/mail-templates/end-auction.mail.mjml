@@ -66,13 +66,7 @@
         </mj-text>
         <mj-text>
           <div>Plaćanje:</div>
-          <ul>
-            <li>PBZ - HR4223400091110951628</li>
-            <!-- <li>Erste - HR9224020063209851271</li> -->
-            <li>Revolut - 0994513163</li>
-            <li>Paypal - hrabre.njuske1@gmail.com</li>
-            <li>Keks - 098787823</li>
-          </ul>
+          <mj-text>{{{ bank_accounts }}} </mj-text>
         </mj-text>
 
         <mj-text> {{{ postage_details }}} </mj-text>
