@@ -15,7 +15,7 @@ export const sendOutbiddedMail = async (
 
     // load and customize html template
     const emailVariables = {
-        optout_url: getEmailOptoutLink("bidchange"),
+        optout_url: getEmailOptoutLink(),
         item_url: `${config.base.url}/item;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
         item_name: itemAfter.name,
         item_bid_before: itemBefore.bid,
