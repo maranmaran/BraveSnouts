@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { noop, throwError } from 'rxjs';
-import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, startWith, take, tap } from 'rxjs/operators';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -14,6 +14,7 @@ import { WinnersRepository } from './../../../../../business/services/repositori
   templateUrl: './post-confirm.component.html',
   styleUrls: ['./post-confirm.component.scss'],
   providers: [AuctionItemRepository, FunctionsService, WinnersRepository],
+  encapsulation: ViewEncapsulation.None,
 })
 export class PostConfirmComponent implements OnInit {
 
@@ -31,7 +32,7 @@ export class PostConfirmComponent implements OnInit {
   public totalDonation: number; // with addition postal send price (20HRK)
   public paymentDetail: string;
 
-  settings$ = this.settingsSvc.getMailVariables();
+  settings$ = this.settingsSvc.getMailVariables().pipe(startWith({}));
 
   constructor(
     private readonly fb: FormBuilder,

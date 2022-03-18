@@ -74,12 +74,10 @@
             <li>Keks - 098787823</li>
           </ul>
         </mj-text>
-        <!-- <mj-text
-          >U slučaju preuzimanja poštom potrebno je uplatiti dodatnih
-          {{postage_fee}} kn radi poštarine.</mj-text
-        > -->
 
         <mj-text> {{{ postage_details }}} </mj-text>
+
+        <mj-text> {{{ postage_rules }}} </mj-text>
 
         <mj-text>
           <span style="text-decoration: underline">Opis plaćanja:</span>
@@ -87,12 +85,6 @@
         </mj-text>
 
         <mj-text> {{{ postage_remark }}} </mj-text>
-
-        <!-- <mj-text>
-          <span style="font-weight: bold;">Napomena:</span>
-          <div style="margin-top: 10px">Kako bismo pakete mogli poslati prije blagdana 
-          molimo Vas da uplatu izvršite najkasnije do srijede, 31.03.</div>
-        </mj-text> -->
 
         <mj-divider></mj-divider>
         <mj-text font-weight="bold" font-size="14px">

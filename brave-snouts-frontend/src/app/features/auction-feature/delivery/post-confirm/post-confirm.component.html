@@ -62,16 +62,17 @@
       ></div>
       <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION ABOVE -->
     </div>
-    <app-donate class="w-100" [text]="false"></app-donate>
     <div class="section mat-title text-center">
       <div class="bold">Opis plaćanja:</div>
       <div class="mt-3">{{ paymentDetail }}</div>
     </div>
 
     <div
+      class="section mat-title text-center"
       *ngIf="(settings$ | async).postage_remark"
       [innerHtml]="(settings$ | async).postage_remark"
     ></div>
+    <app-donate class="w-100" [text]="false"></app-donate>
   </div>
 
   <div

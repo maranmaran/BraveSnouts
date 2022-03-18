@@ -24,15 +24,17 @@ export class MailSettingsService {
         const res = await doc.get();
         const dbVariables = res.data() as MailVariables;
 
-        for (const entry of Object.entries(dbVariables)) {
-            console.log(entry);
+        const activeVariables = {};
 
+        for (const entry of Object.entries(dbVariables)) {
             if (!entry[1].show) {
                 continue;
             }
 
-            this._mailVariables[entry[0]] = entry[1].message
+            activeVariables[entry[0]] = entry[1].message
         }
+
+        this._mailVariables = activeVariables;
 
         logger.log(this._mailVariables);
 

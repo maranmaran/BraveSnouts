@@ -50,7 +50,7 @@ export class SettingsService {
     }
 
 
-    async getMailVariables() {
+    getMailVariables() {
         return this.firestore.doc<MailVariables>("config/mail-variables").valueChanges().pipe(
             map(variables => {
                 const activeVariables = {};
@@ -62,6 +62,8 @@ export class SettingsService {
 
                     activeVariables[entry[0]] = entry[1].message
                 }
+
+                return activeVariables;
             })
         );
     }
