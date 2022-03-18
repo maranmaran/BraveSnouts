@@ -1,4 +1,22 @@
-<div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
+<div *ngIf="bootstrap" class="container">
+  <h1 class="mb-5">Email notifikacije</h1>
+
+  <div class="controls-grid">
+    <div>Informacije i najave aukcija:</div>
+    <mat-slide-toggle
+      [formControl]="auctionAnnouncements"
+      color="warn"
+    ></mat-slide-toggle>
+
+    <div>Mail o nadmašenoj ponudi:</div>
+    <mat-slide-toggle
+      [formControl]="bidUpdates"
+      color="warn"
+    ></mat-slide-toggle>
+  </div>
+</div>
+
+<!-- <div *ngIf="bootstrap && success" class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start center">
     <div class="animation-ctn">
         <div class="icon icon--order-success svg">
             <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">
@@ -18,4 +36,4 @@
 <div *ngIf="bootstrap && !success" class="container mt-5" fxLayout="column" fxLayoutAlign="start center">
     <h3>Nešto je pošlo po zlu i nismo te mogli odjaviti od dobivanja e-maila.</h3>
     <h3>Molim vas kontaktirajte nas putem korisničku službe na app.hrabrenjuske@gmail.com ! </h3>
-</div>
+</div> -->

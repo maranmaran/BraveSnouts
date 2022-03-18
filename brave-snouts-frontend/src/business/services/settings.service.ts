@@ -29,7 +29,7 @@ export interface ImageProcessingSettings {
 }
 
 @Injectable({ providedIn: 'root' })
-export class GlobalSettingsService {
+export class SettingsService {
 
     settings$ = this.get();
     imageProcessingSettings$ = this.getImageProcessingSettings();

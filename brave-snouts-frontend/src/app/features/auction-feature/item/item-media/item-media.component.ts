@@ -5,7 +5,7 @@ import { Lightbox } from 'ng-gallery/lightbox';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { environment } from 'src/environments/environment';
-import { GlobalSettingsService } from './../../../../../business/services/settings.service';
+import { SettingsService } from './../../../../../business/services/settings.service';
 
 interface ItemMedia {
   type: string;
@@ -31,7 +31,7 @@ export class ItemMediaComponent implements OnInit {
   constructor(
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox,
-    private readonly settingsSvc: GlobalSettingsService,
+    private readonly settingsSvc: SettingsService,
     protected readonly mediaObs: MediaObserver
     // private readonly changeDetectorRef: ChangeDetectorRef
   ) {

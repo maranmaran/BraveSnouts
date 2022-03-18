@@ -1,34 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { map, take } from 'rxjs/operators';
+import { HotToastService } from '@ngneat/hot-toast';
+import { from, noop, Subject } from 'rxjs';
+import { first, map, skip, take, takeUntil } from 'rxjs/operators';
 import { User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
+import { EmailSettings } from './../../../../../../utilities/src/models';
 
 @Component({
   selector: 'app-email-optout',
   templateUrl: './email-optout.component.html',
   styleUrls: ['./email-optout.component.scss'],
 })
-export class EmailOptoutComponent implements OnInit {
+export class EmailOptoutComponent implements OnInit, OnDestroy {
   success: boolean;
   bootstrap: boolean = false;
 
-  optout: string;
+  private ngUnsubscribeSubject = new Subject<void>();
+
+  userId: string;
+
+  emailSettings: EmailSettings;
+  auctionAnnouncements = new FormControl(false);
+  bidUpdates = new FormControl(false);
 
   constructor(
     private route: ActivatedRoute,
     private store: AngularFirestore,
-    private authSvc: AuthService
+    private authSvc: AuthService,
+    private toastSvc: HotToastService
   ) { }
 
   async ngOnInit() {
-    this.optout = this.route.snapshot.paramMap.get('optout');
-
-    if (!this.optout) {
-      return;
-    }
-
     // verify login
     const isAuth = await this.authSvc.isAuthenticated$
       .pipe(take(1))
@@ -56,45 +61,68 @@ export class EmailOptoutComponent implements OnInit {
     }
 
     let currentId = user?.uid || user?.id;
-    // if (currentId != userId) {
-    //   this.bootstrap = true;
-    //   this.success = false;
-    //   return;
-    // }
 
-    // do optout
+    this.getSettings(currentId);
+
+    this.bidUpdates.valueChanges.pipe(
+      skip(1),
+      takeUntil(this.ngUnsubscribeSubject)
+    ).subscribe(async () => await this.updateSettings())
+
+    this.auctionAnnouncements.valueChanges.pipe(
+      skip(1),
+      takeUntil(this.ngUnsubscribeSubject)
+    ).subscribe(async () => await this.updateSettings())
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribeSubject.next();
+    this.ngUnsubscribeSubject.complete();
+  }
+
+  private getSettings(userId: string) {
     this.store
       .collection('users')
-      .doc(currentId)
+      .doc(userId)
       .valueChanges()
       .pipe(take(1))
       .subscribe(
         (user: User) => {
-          let emailSettings = user.emailSettings;
+          this.emailSettings = user.emailSettings;
 
-          switch (this.optout) {
-            case 'auctionannouncements':
-              emailSettings.auctionAnnouncements = false;
-              break;
-            case 'bidchange':
-              emailSettings.bidUpdates = false;
-              break;
+          this.auctionAnnouncements.setValue(this.emailSettings.auctionAnnouncements);
+          this.bidUpdates.setValue(this.emailSettings.bidUpdates);
 
-            default:
-              break;
-          }
-
-          this.store
-            .collection('users')
-            .doc(currentId)
-            .update({ emailSettings })
-            .then(() => (this.success = true))
-            .catch((err) => (console.log(err), (this.success = false)))
-            .finally(() => (this.bootstrap = true));
+          this.bootstrap = true;
+          this.userId = userId;
         },
         (err) => (
           console.log(err), (this.bootstrap = true), (this.success = false)
         )
       );
   }
+
+  async updateSettings() {
+
+    this.emailSettings = {
+      auctionAnnouncements: this.auctionAnnouncements.value,
+      bidUpdates: this.bidUpdates.value
+    };
+
+    from(
+      this.store
+        .collection('users')
+        .doc(this.userId)
+        .update({ emailSettings: this.emailSettings })
+    ).pipe(
+      first(),
+      this.toastSvc.observe({
+        loading: { content: "Spremanje postavki", duration: 1000 },
+        success: { content: "Uspješno spremljeno", duration: 1000 },
+        error: { content: "Nešto je pošlo po zlu", duration: 1000 },
+      }),
+      takeUntil(this.ngUnsubscribeSubject))
+      .subscribe(noop);
+  }
+
 }

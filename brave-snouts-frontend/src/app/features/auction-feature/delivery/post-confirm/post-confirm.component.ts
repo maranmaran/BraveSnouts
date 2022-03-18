@@ -6,7 +6,7 @@ import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
-import { SettingsService } from './../../../../../../../functions/src/services/settings.service';
+import { SettingsService } from 'src/business/services/settings.service';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
 
 @Component({

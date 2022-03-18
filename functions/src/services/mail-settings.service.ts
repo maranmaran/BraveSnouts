@@ -8,7 +8,7 @@ export interface MailVariable {
     show: boolean;
 }
 
-export class SettingsService {
+export class MailSettingsService {
     private readonly _store: FirebaseFirestore.Firestore
     private _mailVariables: {
         [key: string]: string

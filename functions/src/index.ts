@@ -2,7 +2,7 @@
 import * as admin from 'firebase-admin';
 // dependancies
 import * as functions from 'firebase-functions';
-import { SettingsService } from './services/settings.service';
+import { SettingsService } from './services/mail-settings.service';
 admin.initializeApp();
 
 export const store = admin.firestore();

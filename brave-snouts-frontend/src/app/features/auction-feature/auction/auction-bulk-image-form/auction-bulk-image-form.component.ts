@@ -18,7 +18,7 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
 import { StorageService } from 'src/business/services/storage.service';
 import { SubSink } from 'subsink';
 import { v4 as uuidv4 } from 'uuid';
-import { GlobalSettingsService } from './../../../../../business/services/settings.service';
+import { SettingsService } from './../../../../../business/services/settings.service';
 
 @Component({
   selector: 'app-auction-bulk-image-form',
@@ -55,7 +55,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly router: Router,
     private readonly toastSvc: HotToastService,
     private readonly functionSvc: FunctionsService,
-    private readonly settingsSvc: GlobalSettingsService
+    private readonly settingsSvc: SettingsService
   ) { }
 
 

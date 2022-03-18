@@ -17,7 +17,7 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
 import { SubSink } from 'subsink';
 import { ProgressBarService } from './../../../../../business/services/progress-bar.service';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
-import { GlobalSettingsService } from './../../../../../business/services/settings.service';
+import { SettingsService } from './../../../../../business/services/settings.service';
 import { StorageService } from './../../../../../business/services/storage.service';
 import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
 
@@ -50,7 +50,7 @@ export class AdminAuctionsPageComponent implements OnInit {
     private readonly toastSvc: HotToastService,
     private readonly storage: StorageService,
     private readonly loadingSvc: ProgressBarService,
-    private readonly settingsSvc: GlobalSettingsService
+    private readonly settingsSvc: SettingsService
   ) { }
 
   private _subsink = new SubSink();
