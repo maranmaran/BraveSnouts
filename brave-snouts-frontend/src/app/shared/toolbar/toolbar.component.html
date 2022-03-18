@@ -120,6 +120,10 @@
           <mat-icon>mail</mat-icon>
           Promijeni e-mail
         </button>
+        <button mat-menu-item [routerLink]="['email-optout']">
+          <mat-icon>notifications_active</mat-icon>
+          Postavke notifikacija
+        </button>
         <button mat-menu-item (click)="onLogout()">
           <mat-icon matPrefix> exit_to_app </mat-icon>
           Odjava

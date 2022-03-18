@@ -41,7 +41,34 @@
       fxLayoutGap="10px"
       fxLayoutAlign="start center"
     >
-      <img class="img-fluid" [src]="account.image" />
+      <div [ngSwitch]="account.type">
+        <img
+          class="img-fluid"
+          src="assets/donate-logo/pbz-logo.jpg"
+          *ngSwitchCase="'pbz'"
+        />
+        <img
+          class="img-fluid"
+          src="assets/donate-logo/erste.svg"
+          *ngSwitchCase="'erste'"
+        />
+        <img
+          class="img-fluid"
+          src="assets/donate-logo/keks-logo.jpg"
+          *ngSwitchCase="'keks'"
+        />
+        <img
+          class="img-fluid"
+          src="assets/donate-logo/revolut-logo.svg"
+          *ngSwitchCase="'revolut'"
+        />
+        <img
+          class="img-fluid"
+          src="assets/donate-logo/paypal-logo.svg"
+          *ngSwitchCase="'paypal'"
+        />
+        <img class="img-fluid" [src]="account.image" *ngSwitchDefault />
+      </div>
       <div class="m-0" [ngClass]="{ 'mat-title': mediaObs.isActive('gt-sm') }">
         {{ account.account }}
       </div>
