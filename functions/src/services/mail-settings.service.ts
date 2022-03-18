@@ -1,3 +1,4 @@
+import { logger } from 'firebase-functions';
 
 export interface MailVariables {
     [key: string]: MailVariable
@@ -23,13 +24,17 @@ export class MailSettingsService {
         const res = await doc.get();
         const dbVariables = res.data() as MailVariables;
 
-        for (const variable in dbVariables) {
-            if (!dbVariables[variable].show) {
+        for (const entry of Object.entries(dbVariables)) {
+            console.log(entry);
+
+            if (!entry[1].show) {
                 continue;
             }
 
-            this._mailVariables[variable] = dbVariables[variable].message
+            this._mailVariables[entry[0]] = entry[1].message
         }
+
+        logger.log(this._mailVariables);
 
         return this._mailVariables;
     }

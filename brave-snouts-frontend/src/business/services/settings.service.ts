@@ -55,12 +55,12 @@ export class SettingsService {
             map(variables => {
                 const activeVariables = {};
 
-                for (const variable in variables) {
-                    if (!variables[variable].show) {
+                for (const entry of Object.entries(variables)) {
+                    if (!entry[1].show) {
                         continue;
                     }
 
-                    activeVariables[variable] = variables[variable].message
+                    activeVariables[entry[0]] = entry[1].message
                 }
             })
         );
