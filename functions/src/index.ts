@@ -2,13 +2,13 @@
 import * as admin from 'firebase-admin';
 // dependancies
 import * as functions from 'firebase-functions';
-import { SettingsService } from './services/mail-settings.service';
+import { MailSettingsService } from './services/mail-settings.service';
 admin.initializeApp();
 
 export const store = admin.firestore();
 export const europeFunctions = functions.region('europe-west1');
 export const config = functions.config();
-export const settingsSvc = new SettingsService(store);
+export const settingsSvc = new MailSettingsService(store);
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 // settingsSvc.initialize();
