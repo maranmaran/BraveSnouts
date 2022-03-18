@@ -1,7 +1,7 @@
+/* eslint-disable eqeqeq */
 import { logger } from 'firebase-functions';
 import { europeFunctions, store } from '..';
 import { Auction, AuctionItem, Bid, UserInfo } from '../models/models';
-import { sendEndAuctionMail } from '../services/mail.service';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
 /** Processes auctions end
  * Picks up item winners and sends email notification templates for won items
@@ -36,7 +36,7 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 );
 
 const getAuctions = async (auctionIds: string[]) => {
-    let auctions: Auction[] = [];
+    const auctions: Auction[] = [];
     for (const auctionId of auctionIds) {
         auctions.push(await getAuction(auctionId));
     }
@@ -121,4 +121,8 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         logger.info(`Reverted endAuctionMailSent flag`);
     }
 
+}
+
+function sendEndAuctionMail(auctions: Auction[], handoverDetails: string[], userInfo: UserInfo, bids: Bid[]) {
+    throw new Error('Function not implemented.');
 }

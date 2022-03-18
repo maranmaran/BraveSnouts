@@ -1,7 +1,8 @@
 import { logger } from 'firebase-functions';
 import { europeFunctions, store } from '../index';
 import { User } from '../models/models';
-import { sendHandoverConfirmationMail, sendPostConfirmationMail } from '../services/mail.service';
+import { sendHandoverConfirmationMail } from '../services/mail-factories/handover-information-mail.factory';
+import { sendPostConfirmationMail } from '../services/mail-factories/post-information-mail.factory';
 
 /**
  * Confirms chosen handover option

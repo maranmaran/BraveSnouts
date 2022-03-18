@@ -1,12 +1,14 @@
-import { logger } from "firebase-functions";
+import { storage } from "firebase-admin";
+import { logger } from 'firebase-functions';
+import * as fs from 'fs';
 import * as nodemailer from "nodemailer";
+import * as os from 'os';
+import * as path from 'path';
 import { config } from "..";
-import { Auction, AuctionItem, Bid, User, UserInfo } from "../models/models";
-import { getComposer, getEmailOptoutLink, getHandoverConfirmUrl, getPostConfirmUrl, getTemplate } from "./mail-content.service";
-import { calculatePostage } from "./postage-calculator.service";
+import handlebars = require("handlebars");
+import mjml2html = require("mjml");
 const mailgun = require("mailgun-js");
-
-//#region Mail service
+const MailComposer = require("nodemailer/lib/mail-composer");
 
 const getService = () => {
   switch (config.mail.provider) {
@@ -34,7 +36,7 @@ const getService = () => {
   }
 };
 
-const sendMail = async composer => {
+export const sendMail = async composer => {
   const message = (await composer.compile().build()).toString('ascii');
 
   switch (config.mail.provider) {
@@ -46,186 +48,85 @@ const sendMail = async composer => {
   }
 }
 
-//#endregion
-
-//#region Functions and mails - business logic
-
-export class WinnerMailOptions {
-  extraPostageMessage: string = "";
-  extraMessage: string = "";
+export function getComposer(to: string, subject: string, html: string) {
+  return new MailComposer({
+    from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
+    to,
+    subject,
+    html,
+    attachments: [
+      {
+        filename: "njuske-original-compressed.png",
+        path: path.join(
+          process.cwd(),
+          "assets",
+          "njuske-original-compressed.png"
+        ),
+        cid: "logo.png",
+      },
+    ],
+  });
 }
 
-/**Sends auction end mail */
-export const sendEndAuctionMail = async (
-  auctions: Auction[],
-  handoverDetails: string[],
-  user: UserInfo,
-  items: Bid[]
-) => {
-  logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
-  // load and customize html template
-  const totalDonation = items
-    .map((x) => x.value)
-    .reduce((prev, cur) => prev + cur);
+export async function getTemplate(name: string, variables: any) {
 
-  const postageFee = await calculatePostage(items.length) ?? 20;
+  logger.log('Getting template ' + name);
 
-  const postage_details = `U slučaju preuzimanja poštom potrebno je uplatiti dodatnih ${postageFee} kn radi poštarine.`
+  const mjmlFile = await getMjmlTemplate(name);
 
-  const paymentDetail = `${user.name}`;
+  const html = mjml2html(mjmlFile, {}).html;
+  const emailFactory = handlebars.compile(html);
+  const template = emailFactory(variables);
 
-  const customStoreParams = {};
+  return template;
+}
 
-  let emailVariables = {
-    post_confirm_url: getPostConfirmUrl(
-      user.id,
-      totalDonation.toString(),
-      paymentDetail,
-      postageFee,
-      auctions.map((x) => x.id)
-    ),
-    handover_confirm_url: getHandoverConfirmUrl(
-      user.id,
-      auctions.map((x) => x.id)
-    ),
-    user_name: user.name.trim().split(" ")[0],
-    postage_details,
-    postage_remark: '',
-    handover_details: `<ul>${handoverDetails
-      .map((detail) => `<li>${detail}</li>`)
-      .join("\n")}</ul>`,
-    payment_detail: paymentDetail,
-    items_html: `<ul>${items
-      .map((item) => `<li>${item.item.name} - ${item.value}kn</li>`)
-      .join("\n")}</ul>`,
-    total: totalDonation,
-    postage_fee: postageFee,
-    ...customStoreParams
-  };
+// Loads raw template from storage or file system (fallback)
+async function getMjmlTemplate(name: string) {
 
-  const template = getTemplate("end-auction.mail.mjml", emailVariables);
+  const fsPath = path.join(process.cwd(), "mail-templates");
+  const fsPathFull = path.join(fsPath, name);
 
-  const composer = getComposer(user.email, "Čestitamo na osvojenim predmetima!", template);
+  const storagePath = path.join(os.tmpdir(), "storage-templates");
+  const storagePathFull = path.join(storagePath, name);
 
-  const res = await sendMail(composer);
-  console.debug(res);
+  try {
+    deleteFolderRecursive(storagePath);
+    fs.mkdirSync(storagePath);
+
+    const bucket = storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+
+    logger.log("Retrieving template from storage")
+
+    const downloadRes = await bucket.file(`mail-templates/${name}`).download({ destination: storagePathFull });
+
+    console.log(downloadRes);
+
+    return downloadRes ? fs.readFileSync(storagePathFull, "utf8") : fs.readFileSync(fsPathFull, "utf8");
+  } catch (err) {
+    logger.error(err);
+    logger.log("Retrieving template from file system");
+    return fs.readFileSync(fsPathFull, "utf8");
+  }
+
+}
+
+function deleteFolderRecursive(directoryPath) {
+  if (fs.existsSync(directoryPath)) {
+    fs.readdirSync(directoryPath).forEach((file, index) => {
+      const curPath = path.join(directoryPath, file);
+      if (fs.lstatSync(curPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(curPath);
+      } else {
+        // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(directoryPath);
+  }
 };
 
-/**Sends outbidded mail */
-export const sendOutbiddedMail = async (
-  user: UserInfo,
-  itemBefore: AuctionItem,
-  itemAfter: AuctionItem
-) => {
-  logger.info(
-    `Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${itemBefore.bid} kn to ${itemAfter.bid} kn!`
-  );
-
-  // load and customize html template
-  const emailVariables = {
-    optout_url: getEmailOptoutLink("bidchange"),
-    item_url: `${config.base.url}/item;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
-    item_name: itemAfter.name,
-    item_bid_before: itemBefore.bid,
-    item_bid_after: itemAfter.bid,
-    user_name: user.name.trim().split(" ")[0],
-  };
-
-  const template = getTemplate("outbidded.mail.mjml", emailVariables);
-
-  const composer = getComposer(user.email, `Tvoja ponuda za predmet "${itemBefore.name}" je nadmašena!`, template);
-
-  const res = await sendMail(composer);
-  console.debug(res);
-};
-
-/**Sends new handover details mail */
-export const sendHandoverDetailsUpdateMail = async (
-  user: UserInfo,
-  auctionIds: string[],
-  handoverDetails: string[]
-) => {
-  logger.info(`Sending mail to ${user.email} for handover details update`);
-
-  // load and customize html template
-  const emailVariables = {
-    handover_details: `<ul>${handoverDetails
-      .map((detail) => `<li>${detail}</li>`)
-      .join("\n")}</ul>`,
-    // handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auctionId};userId=${user.id}`,
-    handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
-    user_name: user.name.trim().split(" ")[0],
-  };
-
-  const template = getTemplate("new-handover.mail.mjml", emailVariables);
-
-  // send it
-  const composer = getComposer(user.email, "Promjena informacija za osobno preuzimanje!", template);
-
-  const res = await sendMail(composer);
-  console.debug(res);
-};
-
-/**Sends new handover details mail */
-export const sendHandoverConfirmationMail = async (
-  user: User,
-  auctionIds: string[],
-  chosenHandoverOption: string
-) => {
-  logger.info(
-    `Sending mail to ${user.email} for chosen handover option update`
-  );
-
-  // load and customize html template
-  const emailVariables = {
-    // handover_confirm_url: `${config.base.url}/handover-confirm;auctionId=${auctionId};userId=${user.id}`,
-    handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
-    user_name: user.displayName.trim().split(" ")[0],
-    chosen_handover_option: chosenHandoverOption,
-  };
-
-  const template = getTemplate("handover-confirm.mail.mjml", emailVariables);
-
-  // send it
-  const composer = getComposer(user.email, "[Osobno preuzimanje] Potvrda", template);
-
-  const res = await sendMail(composer);
-  console.debug(res);
-};
-
-/**Sends new handover details mail */
-export const sendPostConfirmationMail = async (
-  user: User,
-  auctionIds: string[],
-  postFormData: any,
-  totalDonation: string,
-  paymentDetail: string,
-  postageFee: number
-) => {
-  logger.info(`Sending mail to ${user.email} for chosen post option confirm`);
-
-  // load and customize html template
-  const emailVariables = {
-    post_confirm_url: getPostConfirmUrl(
-      user.id,
-      totalDonation,
-      paymentDetail,
-      postageFee,
-      auctionIds
-    ),
-    user_name: user.displayName.trim().split(" ")[0],
-    full_name: postFormData.fullName,
-    address: postFormData.address,
-    phone: postFormData.phoneNumber,
-  };
-
-  const template = getTemplate("post-confirm.mail.mjml", emailVariables);
-
-  const composer = getComposer(user.email, "[Preuzimanje poštom] Potvrda", template);
-
-  const res = await sendMail(composer);
-  console.debug(res);
-};
-
-//#endregion
+export const getEmailOptoutLink = (optout: string) =>
+  `${config.base.url}/email-optout;optout=${optout}`;

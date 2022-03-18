@@ -2,8 +2,8 @@ import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
-import { europeFunctions } from "..";
-import { store } from '../index';
+import { europeFunctions, store } from "..";
+
 const os = require('os');
 const path = require('path');
 
@@ -21,9 +21,9 @@ export const downloadMailsFn = europeFunctions.https.onCall(
                 .where("emailSettings.bidUpdates", "==", true)
             ).get()).docs;
 
-            let sheetData = [];
+            const sheetData = [];
             for (const user of users) {
-                let userData = user.data();
+                const userData = user.data();
                 sheetData.push([userData.displayName, userData.email]);
             }
 

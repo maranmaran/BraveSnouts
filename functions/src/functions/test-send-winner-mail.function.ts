@@ -1,7 +1,7 @@
 import { logger } from 'firebase-functions';
 import { europeFunctions } from '..';
 import { Auction, Bid, UserInfo } from '../models/models';
-import { sendEndAuctionMail } from '../services/mail.service';
+import { sendWinnerMail } from '../services/mail-factories/winner-mail.factory';
 
 export const testSendWinnerMailFn = europeFunctions.https.onCall(
     async (data, context) => {
@@ -28,7 +28,7 @@ export const testSendWinnerMailFn = europeFunctions.https.onCall(
 
             const auctions: Auction[] = [];
 
-            await sendEndAuctionMail(auctions, handoverDetails, testUser, bids);
+            await sendWinnerMail(auctions, handoverDetails, testUser, bids);
 
             return null;
 

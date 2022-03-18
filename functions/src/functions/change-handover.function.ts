@@ -1,8 +1,7 @@
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "..";
-import { WinnerOnAuction } from "../models/models";
-import { sendHandoverDetailsUpdateMail } from "../services/mail.service";
-import { UserInfo } from './../models/models';
+import { UserInfo, WinnerOnAuction } from "../models/models";
+import { sendHandoverDetailsUpdateMail } from "../services/mail-factories/handover-information-mail.factory";
 
 /** Sends email update to all people with new handover details for auction */
 export const changeHandoverFn = europeFunctions.https.onCall(
