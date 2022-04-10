@@ -1,7 +1,7 @@
 import { logger } from "firebase-functions";
 import { config, settingsSvc } from "../..";
 import { User, UserInfo } from "../../models/models";
-import { getComposer, getTemplate, sendMail } from './../mail.service';
+import { getComposer, getTemplate, getTemplateRaw, sendMail } from './../mail.service';
 
 /**Sends new handover details mail */
 export const sendHandoverDetailsUpdateMail = async (
@@ -20,7 +20,8 @@ export const sendHandoverDetailsUpdateMail = async (
         ...(await settingsSvc.getMailVariables())
     };
 
-    const template = await getTemplate("new-handover.mail.mjml", emailVariables);
+    const templateRaw = await getTemplateRaw("new-handover.mail.mjml");
+    const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "Promjena informacija za osobno preuzimanje!", template);
     const res = await sendMail(composer);
     console.debug(res);
@@ -45,7 +46,8 @@ export const sendHandoverConfirmationMail = async (
         ...(await settingsSvc.getMailVariables())
     };
 
-    const template = await getTemplate("handover-confirm.mail.mjml", emailVariables);
+    const templateRaw = await getTemplateRaw("handover-confirm.mail.mjml");
+    const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "[Osobno preuzimanje] Potvrda", template);
     const res = await sendMail(composer);
     console.debug(res);

@@ -68,14 +68,17 @@ export function getComposer(to: string, subject: string, html: string) {
   });
 }
 
-
-export async function getTemplate(name: string, variables: any) {
-
+export async function getTemplateRaw(name: string) {
   logger.log('Getting template ' + name);
-
   const mjmlFile = await getMjmlTemplate(name);
+  console.log('fetched raw template');
+  return mjmlFile;
+}
 
-  const html = mjml2html(mjmlFile, {}).html;
+
+export async function getTemplate(mjml: any, variables: any) {
+
+  const html = mjml2html(mjml, {}).html;
   const emailFactory = handlebars.compile(html);
   const template = emailFactory(variables);
 

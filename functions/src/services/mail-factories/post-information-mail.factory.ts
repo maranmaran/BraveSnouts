@@ -1,7 +1,7 @@
 import { logger } from "firebase-functions";
 import { config, settingsSvc } from "../..";
 import { User } from "../../models/models";
-import { getComposer, getTemplate, sendMail } from "../mail.service";
+import { getComposer, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
 /**Sends new handover details mail */
 export const sendPostConfirmationMail = async (
@@ -30,7 +30,8 @@ export const sendPostConfirmationMail = async (
         ...(await settingsSvc.getMailVariables())
     };
 
-    const template = await getTemplate("post-confirm.mail.mjml", emailVariables);
+    const templateRaw = await getTemplateRaw("post-confirm.mail.mjml");
+    const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "[Preuzimanje poštom] Potvrda", template);
     const res = await sendMail(composer);
     console.debug(res);

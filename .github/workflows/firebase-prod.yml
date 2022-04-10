@@ -2,22 +2,22 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Production
-'on':
+"on":
   push:
     branches:
       - main
-        
+
 defaults:
   run:
     working-directory: ./brave-snouts-frontend
-    
+
 jobs:
-  build_and_deploy:
+  hosting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build-prod
-        env: 
+        env:
           BASE_URL: ${{ secrets.BASE_URL_PROD }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_PROD }}
           FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN_PROD }}
@@ -29,10 +29,21 @@ jobs:
           CACHE_SEED: ${{ secrets.CACHE_SEED }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_BRAVESNOUTSPROD }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BRAVESNOUTSPROD }}"
           channelId: live
           projectId: bravesnoutsprod
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
-         
+
+  functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
+          PROJECT_PATH: "./functions"

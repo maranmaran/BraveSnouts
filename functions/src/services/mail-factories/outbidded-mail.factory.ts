@@ -1,7 +1,7 @@
 import { logger } from "firebase-functions";
 import { config, settingsSvc } from "../..";
 import { AuctionItem, UserInfo } from "../../models/models";
-import { getComposer, getEmailOptoutLink, getTemplate, sendMail } from "../mail.service";
+import { getComposer, getEmailOptoutLink, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
 /**Sends outbidded mail */
 export const sendOutbiddedMail = async (
@@ -24,7 +24,8 @@ export const sendOutbiddedMail = async (
         ...(await settingsSvc.getMailVariables())
     };
 
-    const template = await getTemplate("outbidded.mail.mjml", emailVariables);
+    const templateRaw = await getTemplateRaw("outbidded.mail.mjml");
+    const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, `Tvoja ponuda za predmet "${itemBefore.name}" je nadmašena!`, template);
     const res = await sendMail(composer);
     console.debug(res);

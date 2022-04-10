@@ -2,16 +2,18 @@ import { logger } from "firebase-functions";
 import { Auction, Bid, UserInfo } from "../../models/models";
 import { getComposer, getTemplate, sendMail } from "../mail.service";
 import { calculatePostage } from "../postage-calculator.service";
-import { settingsSvc } from './../../index';
 import { getHandoverConfirmUrl } from "./handover-information-mail.factory";
 import { getPostConfirmUrl } from "./post-information-mail.factory";
+
 
 /**Sends auction end mail */
 export const sendWinnerMail = async (
     auctions: Auction[],
     handoverDetails: string[],
     user: UserInfo,
-    items: Bid[]
+    items: Bid[],
+    settingsMailVariables: any,
+    templateRaw: any
 ) => {
     logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
@@ -21,7 +23,6 @@ export const sendWinnerMail = async (
     const totalDonation = items
         .map((x) => x.value)
         .reduce((prev, cur) => prev + cur);
-
 
     const emailVariables = {
         post_confirm_url: getPostConfirmUrl(
@@ -47,10 +48,10 @@ export const sendWinnerMail = async (
             .join("\n")}</ul>`,
         total: totalDonation,
         postage_fee: postageFee,
-        ...(await settingsSvc.getMailVariables())
+        ...settingsMailVariables
     };
 
-    const template = await getTemplate("end-auction.mail.mjml", emailVariables);
+    const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "Čestitamo na osvojenim predmetima!", template);
     const res = await sendMail(composer);
     console.debug(res);
