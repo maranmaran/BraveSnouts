@@ -1,6 +1,7 @@
 {
   "name": "functions",
   "scripts": {
+    "install": "npm ci",
     "lint": "eslint \"src/**/*\"",
     "build": "tsc",
     "build:watch": "tsc -w",
