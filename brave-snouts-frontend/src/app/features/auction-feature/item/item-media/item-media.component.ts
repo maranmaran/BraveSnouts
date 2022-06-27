@@ -61,7 +61,7 @@ export class ItemMediaComponent implements OnInit {
     await this.setupGallery();
   }
 
-  private getCachedImageUrl = (url: string) => url + '&' + this.imageCacheSeed;
+  private getCachedImageUrl = (url: string) => url + '&cacheKey=' + this.imageCacheSeed;
   private getOriginalImageUrl = (media: FirebaseFile) => {
     //TODO: This needs to be fixed. url and thumbUrl have different guid behind auction-items
     // This guid should actually be auctionId...
