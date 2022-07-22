@@ -24,6 +24,7 @@ const handoverConfirmFn = require('./functions/handover-confirm.function');
 const sendWinnerMailFn = require('./functions/send-winner-mail.function');
 const testSendWinnerMailFn = require('./functions/test-send-winner-mail.function');
 const downloadMailsFn = require('./functions/download-mails.function');
+const fetchEurCurrencyFn = require('./functions/fetch-eur-currency.function');
 
 //#region 
 
@@ -69,6 +70,9 @@ export const downloadMails = downloadMailsFn;
 
 // exports auction details, winners and donations 
 export const exportAuction = exportAuctionFn;
+
+// fetches EUR conversion rate in scheduled manner from HNB (Croatian national bank) API
+export const fetchEurCurrency = fetchEurCurrencyFn;
 
 //#endregion
 

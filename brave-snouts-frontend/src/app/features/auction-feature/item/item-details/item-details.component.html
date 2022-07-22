@@ -6,30 +6,35 @@
   fxLayoutGap="1rem"
 >
   <mat-card-title
+    [ngStyle]="{
+      visibility:
+        item.bid == item.startBid && !item.bidId ? 'hidden' : 'visible'
+    }"
+    class="relative"
     style="height: 64px"
     fxLayout="row"
-    fxLayoutAlign="space-between center"
+    fxLayoutAlign="center center"
     fxLayoutGap="1rem"
   >
-    <label
+    <!-- <label
       class="mb-0 mat-title bold"
       [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
     >
       {{ item.name }}
-    </label>
+    </label> -->
 
-    <div fxLayout="column" class="mr-0">
+    <div fxLayout="column" class="mr-0 relative">
       <div class="mat-small text-center no-wrap" style="background: whitesmoke">
         Trenutna ponuda
       </div>
 
       <label
-        class="mat-title"
+        class="mat-title absolute"
         [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
         [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
         class="no-wrap mb-0 mat-title bold center"
       >
-        {{ item.user ? item.bid + " kn" : item.startBid + " kn" }}
+        {{ (item.user ? item.bid : item.startBid) | moneyAsync | async }}
       </label>
     </div>
   </mat-card-title>
@@ -100,19 +105,6 @@
       fxLayout="row"
       fxLayoutAlign="center center"
     >
-      <!-- <div fxFlex="17" class="center mr-1">
-        <div class="mat-small">{{item.bid + ' kn'}}</div>
-      </div>
-
-      <mat-slider fxFlex class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid" [step]="bidStepSize"
-        [min]="item.bid" [max]="item.bid + 30" [value]="bidSlider.min" (input)="bidSliderChange($event)"
-        [thumbLabel]="true">
-      </mat-slider>
-
-      <div fxFlex="17" class="center mr-1">
-        <div class="mat-small">{{bidSlider.value + ' kn'}}</div>
-      </div> -->
-
       <button
         class="mr-5 offer-button"
         mat-icon-button
@@ -127,7 +119,7 @@
         class="mat-title m-0 bold"
         [ngClass]="{ 'foreground accent default': currentBid != item.bid }"
       >
-        {{ currentBid + " kn" }}
+        {{ currentBid | moneyAsync | async }}
       </div>
 
       <button

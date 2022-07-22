@@ -163,6 +163,7 @@
               <mat-form-field>
                 <mat-label>Početna cijena</mat-label>
                 <input
+                  #startValue
                   id="price-{{ scroll.viewPortInfo.startIndex + i }}"
                   matInput
                   type="number"
@@ -170,7 +171,9 @@
                   value="0.00"
                   formControlName="startPrice"
                 />
-                <span class="ml-1" matSuffix>kn</span>
+                <span class="ml-1" matSuffix
+                  >kn | {{ startValue.value | eurAsync | async }}</span
+                >
               </mat-form-field>
             </mat-card-title>
 

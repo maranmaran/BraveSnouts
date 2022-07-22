@@ -53,8 +53,10 @@
       </div>
       <div class="mt-3 bold">
         U tom slučaju potrebno je uplatiti dodatnih
-        <span class="foreground warn default">{{ postageFee }} kn</span> za
-        poštarinu.
+        <span class="foreground warn default">{{
+          postageFee | moneyAsync | async
+        }}</span>
+        za poštarinu.
       </div>
       <div
         *ngIf="(settings$ | async).postage_rules"

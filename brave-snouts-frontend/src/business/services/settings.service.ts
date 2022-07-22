@@ -3,6 +3,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { first, map, shareReplay } from "rxjs/operators";
 
 export interface GlobalSettings {
+    eur: number;
     gradualImageLoading: boolean;
     testing: {
         email: string;

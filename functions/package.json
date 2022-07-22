@@ -20,6 +20,7 @@
     "@types/lodash": "^4.14.179",
     "@types/mjml": "^4.7.0",
     "@types/nodemailer": "^6.4.2",
+    "axios": "^0.27.2",
     "bluebird": "^3.7.2",
     "child-process-promise": "^2.2.1",
     "cors": "^2.8.5",

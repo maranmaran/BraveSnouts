@@ -78,9 +78,9 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
 
-    if(!this.auction) {
+    if (!this.auction) {
       this.auctionRepo.getOne(this.item.auctionId)
-      .pipe(take(1)).subscribe(a => this.auction = a);
+        .pipe(take(1)).subscribe(a => this.auction = a);
       // this.toastSvc.error("Nema informacija o aukciji!!!");
     }
 
@@ -138,19 +138,19 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   onAuthDataChange() {
     return [
       this.authSvc.user$
-      .subscribe(user => (
-                    this.userId = user?.uid,
-                    this.userData = user,
-                    this.changeDetectorRef.detectChanges()
-                  ),
-                  err => console.log(err)),
+        .subscribe(user => (
+          this.userId = user?.uid,
+          this.userData = user,
+          this.changeDetectorRef.detectChanges()
+        ),
+          err => console.log(err)),
 
       this.authSvc.isAuthenticated$
-      .subscribe(isAuth => (
-                    this.isAuthenticated = isAuth,
-                    this.changeDetectorRef.detectChanges()
-                  ),
-                  err => console.log(err))
+        .subscribe(isAuth => (
+          this.isAuthenticated = isAuth,
+          this.changeDetectorRef.detectChanges()
+        ),
+          err => console.log(err))
     ]
   }
 
@@ -178,10 +178,10 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   //#region Bidding
 
   topBidChange(timeout = 750) {
-      this.topBidChanged = true;
-      this.topBidChanged$.next(this.topBidChanged)
-      setTimeout(() => (this.topBidChanged = false, this.topBidChanged$.next(this.topBidChanged)), timeout);
-      // setTimeout(() => (this.topBidChanged = false, this.ChangeDetectorRef.detectChanges()), timeout);
+    this.topBidChanged = true;
+    this.topBidChanged$.next(this.topBidChanged)
+    setTimeout(() => (this.topBidChanged = false, this.topBidChanged$.next(this.topBidChanged)), timeout);
+    // setTimeout(() => (this.topBidChanged = false, this.ChangeDetectorRef.detectChanges()), timeout);
   }
 
   /* Disables bid button for XY milliseconds */
@@ -196,7 +196,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
    */
   async onBid(item: AuctionItem) {
 
-    if(this.auction.endDate.toDate() < new Date()) {
+    if (this.auction.endDate.toDate() < new Date()) {
       this.toastSvc.warning("Nažalost aukcija je završila");
       return this.router.navigate(["/"]);
     }
@@ -375,11 +375,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   //   this.lastTouchedControl = 'control';
   //   this.controlsValid = this.validateBidControl();
   // }
-
-  /* Formats selected price on slider */
-  formatBid(value: number) {
-    return value + 'kn'
-  }
 
   /* Tracking function for items. React in real time only on bid changes*/
   bidFn(item) {

@@ -1,27 +1,41 @@
 .header {
-    font-size: 20px;
-    margin-bottom: 12px;
-    font-weight: 500;
-    display: flex;
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 500;
+  display: flex;
 }
 
-.mat-card-image{
-    
-    // height: 400px;
-    height: 300px;
-    display: flex;
+.mat-card-image {
+  // height: 400px;
+  height: 300px;
+  display: flex;
 
-    img, video {
-        width: 100%;
-    }
+  img,
+  video {
+    width: 100%;
+  }
 }
-@media(max-width: 600px) {
-    .mat-card-image {
-        height: 200px;
-    }
+@media (max-width: 600px) {
+  .mat-card-image {
+    height: 200px;
+  }
 }
 
 .footer {
-    position: relative;
-    bottom: 0;
+  position: relative;
+  bottom: 0;
+}
+
+#slider-row {
+  width: 100% !important;
+  display: flex !important;
+  flex: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+
+  padding: 0.5rem 0 !important;
+
+  button {
+    margin: 0 !important;
+  }
 }

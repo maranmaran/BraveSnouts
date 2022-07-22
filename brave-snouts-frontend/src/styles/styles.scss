@@ -171,7 +171,6 @@ label {
   cursor: pointer;
 }
 
-
 .btn-small {
   font-size: 10px !important;
 }
@@ -180,7 +179,6 @@ label {
   position: relative;
   bottom: 10px;
 }
-
 
 .logo-base {
   cursor: pointer;
@@ -214,15 +212,15 @@ label {
 
 .restrict-height-handover {
   .mat-dialog-container {
-      max-height: 60vh !important;
+    max-height: 60vh !important;
   }
 }
 
 .truncated {
   display: block;
-    white-space: nowrap; /* forces text to single line */
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap; /* forces text to single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .overflow-hidden {
