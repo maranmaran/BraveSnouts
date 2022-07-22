@@ -46,7 +46,7 @@
           Osvojeni predmeti
         </mj-text>
         <mj-text> {{{items_html}}} </mj-text>
-        <mj-text font-size="14px"> Ukupno: {{total}} kn </mj-text>
+        <mj-text font-size="14px"> Ukupno: {{total}} </mj-text>
         <mj-divider></mj-divider>
         <mj-text align="center" font-weight="bold" font-size="14px">
           Potvrda preuzimanja

@@ -1,5 +1,5 @@
 import { logger } from "firebase-functions";
-import { config, settingsSvc } from "../..";
+import { config, currencySvc, settingsSvc } from "../..";
 import { AuctionItem, UserInfo } from "../../models/models";
 import { getComposer, getEmailOptoutLink, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
@@ -9,8 +9,11 @@ export const sendOutbiddedMail = async (
     itemBefore: AuctionItem,
     itemAfter: AuctionItem
 ) => {
+    const item_bid_before = await currencySvc.formatHrkAndEur(itemBefore.bid);
+    const item_bid_after = await currencySvc.formatHrkAndEur(itemAfter.bid);
+
     logger.info(
-        `Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${itemBefore.bid} kn to ${itemAfter.bid} kn!`
+        `Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${item_bid_before} to ${item_bid_after}!`
     );
 
     // load and customize html template
@@ -18,8 +21,8 @@ export const sendOutbiddedMail = async (
         optout_url: getEmailOptoutLink(),
         item_url: `${config.base.url}/item;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
         item_name: itemAfter.name,
-        item_bid_before: itemBefore.bid,
-        item_bid_after: itemAfter.bid,
+        item_bid_before,
+        item_bid_after,
         user_name: user.name.trim().split(" ")[0],
         ...(await settingsSvc.getMailVariables())
     };

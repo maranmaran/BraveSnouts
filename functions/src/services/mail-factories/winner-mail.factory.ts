@@ -1,4 +1,5 @@
 import { logger } from "firebase-functions";
+import { currencySvc } from "../..";
 import { Auction, Bid, UserInfo } from "../../models/models";
 import { getComposer, getTemplate, sendMail } from "../mail.service";
 import { calculatePostage } from "../postage-calculator.service";
@@ -17,7 +18,9 @@ export const sendWinnerMail = async (
     logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
     const postageFee = await calculatePostage(items.length) ?? 20;
-    const postage_details = `U slučaju preuzimanja poštom potrebno je uplatiti dodatnih ${postageFee} kn radi poštarine.`
+    const formattedFee = await currencySvc.formatHrkAndEur(postageFee);
+
+    const postage_details = `U slučaju preuzimanja poštom potrebno je uplatiti dodatnih ${formattedFee} radi poštarine.`
     const paymentDetail = `${user.name}`;
     const totalDonation = items
         .map((x) => x.value)
@@ -43,9 +46,12 @@ export const sendWinnerMail = async (
             .join("\n")}</ul>`,
         payment_detail: paymentDetail,
         items_html: `<ul>${items
-            .map((item) => `<li>${item.item.name} - ${item.value}kn</li>`)
+            .map(async (item) => {
+                const itemVal = await currencySvc.formatHrkAndEur(item.value);
+                return `<li>${item.item.name} - ${itemVal}</li>`
+            })
             .join("\n")}</ul>`,
-        total: totalDonation,
+        total: await currencySvc.formatHrkAndEur(totalDonation),
         postage_fee: postageFee,
         ...settingsMailVariables
     };
