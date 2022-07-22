@@ -5,7 +5,6 @@ import { calculatePostage } from "../postage-calculator.service";
 import { getHandoverConfirmUrl } from "./handover-information-mail.factory";
 import { getPostConfirmUrl } from "./post-information-mail.factory";
 
-
 /**Sends auction end mail */
 export const sendWinnerMail = async (
     auctions: Auction[],

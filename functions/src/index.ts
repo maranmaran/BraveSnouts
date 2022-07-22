@@ -1,3 +1,4 @@
+import { CurrencyService } from './services/currency.service';
 // initialize
 import * as admin from 'firebase-admin';
 // dependancies
@@ -9,6 +10,7 @@ export const store = admin.firestore();
 export const europeFunctions = functions.region('europe-west1');
 export const config = functions.config();
 export const settingsSvc = new MailSettingsService(store);
+export const currencySvc = new CurrencyService(store);
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 // settingsSvc.initialize();
