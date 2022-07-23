@@ -9,6 +9,10 @@ export const sendOutbiddedMail = async (
     itemBefore: AuctionItem,
     itemAfter: AuctionItem
 ) => {
+
+    // get currency info
+    await currencySvc.getEurRate();
+
     const item_bid_before = currencySvc.formatHrkAndEur(itemBefore.bid);
     const item_bid_after = currencySvc.formatHrkAndEur(itemAfter.bid);
 
