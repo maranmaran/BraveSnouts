@@ -263,6 +263,11 @@ export class AdminAuctionsPageComponent implements OnInit {
       this.authSvc.user$.pipe(first())
     ]).pipe(
       first(),
+      this.toastSvc.observe({
+        loading: `Slanje test maila`,
+        success: `Uspješno"`,
+        error: `Nešto je pošlo po zlu`,
+      }),
       map(([settings, user]) => { return { email: settings.testing.email ?? user.email, itemsCount: settings.testing.itemsCount ?? 10 } }),
       switchMap(((data: { email: string, itemsCount: number }) => {
         console.log(data);
