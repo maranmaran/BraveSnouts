@@ -5,7 +5,7 @@ import { europeFunctions, store } from "..";
 /** Function executed every morning picks up 30+ days old 
  * auctions and marks them as **archived**  
  * CRON Schedule: At 06:00 on every day-of-week from Sunday through Saturday. */
-export const fetchEurCurrencyFn = europeFunctions.pubsub.schedule('every 1 minutes')
+export const fetchEurCurrencyFn = europeFunctions.pubsub.schedule('every 4 hours')
     .timeZone('Europe/Zagreb')
     .onRun(async ctx => {
 
