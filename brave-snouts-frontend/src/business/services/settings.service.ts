@@ -3,7 +3,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { first, map, shareReplay } from "rxjs/operators";
 
 export interface GlobalSettings {
-    eur: number;
+    eurRate: number;
     gradualImageLoading: boolean;
     testing: {
         email: string;
@@ -86,5 +86,5 @@ export class SettingsService {
             map(variables => Array.from(Object.entries(variables)).filter(x => x[1].visible).map(x => x[1]).sort((a, b) => a.type >= b.type ? 1 : -1))
         );
     }
-
 }
+

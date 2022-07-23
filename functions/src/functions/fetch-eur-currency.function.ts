@@ -16,11 +16,11 @@ export const fetchEurCurrencyFn = europeFunctions.pubsub.schedule('every 4 hours
 
             console.info(JSON.stringify(response.data));
 
-            const eur = parseFloat(response.data[0]['Srednji za devize'].toString().replace(',', '.'));
+            const eurRate = parseFloat(response.data[0]['Srednji za devize'].toString().replace(',', '.'));
 
-            logger.info("EUR conversion rate: " + eur);
+            logger.info("EUR conversion rate: " + eurRate);
 
-            await store.doc("config/global").update({ eur: eur });
+            await store.doc("config/global").update({ eurRate: eurRate });
 
         } catch (e) {
             logger.error(e);

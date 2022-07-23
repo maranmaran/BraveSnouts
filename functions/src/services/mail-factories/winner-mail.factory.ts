@@ -18,7 +18,7 @@ export const sendWinnerMail = async (
     logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
     const postageFee = await calculatePostage(items.length) ?? 20;
-    const formattedFee = await currencySvc.formatHrkAndEur(postageFee);
+    const formattedFee = currencySvc.formatHrkAndEur(postageFee);
 
     const postage_details = `U slučaju preuzimanja poštom potrebno je uplatiti dodatnih ${formattedFee} radi poštarine.`
     const paymentDetail = `${user.name}`;
@@ -46,12 +46,12 @@ export const sendWinnerMail = async (
             .join("\n")}</ul>`,
         payment_detail: paymentDetail,
         items_html: `<ul>${items
-            .map(async (item) => {
-                const itemVal = await currencySvc.formatHrkAndEur(item.value);
+            .map((item) => {
+                const itemVal = currencySvc.formatHrkAndEur(item.value);
                 return `<li>${item.item.name} - ${itemVal}</li>`
             })
             .join("\n")}</ul>`,
-        total: await currencySvc.formatHrkAndEur(totalDonation),
+        total: currencySvc.formatHrkAndEur(totalDonation),
         postage_fee: postageFee,
         ...settingsMailVariables
     };

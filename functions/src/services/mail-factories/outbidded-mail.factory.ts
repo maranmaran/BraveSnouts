@@ -9,8 +9,8 @@ export const sendOutbiddedMail = async (
     itemBefore: AuctionItem,
     itemAfter: AuctionItem
 ) => {
-    const item_bid_before = await currencySvc.formatHrkAndEur(itemBefore.bid);
-    const item_bid_after = await currencySvc.formatHrkAndEur(itemAfter.bid);
+    const item_bid_before = currencySvc.formatHrkAndEur(itemBefore.bid);
+    const item_bid_after = currencySvc.formatHrkAndEur(itemAfter.bid);
 
     logger.info(
         `Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${item_bid_before} to ${item_bid_after}!`

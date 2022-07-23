@@ -12,6 +12,10 @@ export const config = functions.config();
 export const settingsSvc = new MailSettingsService(store);
 export const currencySvc = new CurrencyService(store);
 
+const eurRateFetch = async () => await currencySvc.getEurRate();
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+eurRateFetch();
+
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 // settingsSvc.initialize();
 
