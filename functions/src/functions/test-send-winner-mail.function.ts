@@ -1,5 +1,5 @@
 import { logger } from 'firebase-functions';
-import { europeFunctions, settingsSvc } from '..';
+import { currencySvc, europeFunctions, settingsSvc } from '..';
 import { Auction, Bid, UserInfo } from '../models/models';
 import { sendWinnerMail } from '../services/mail-factories/winner-mail.factory';
 import { getTemplateRaw } from '../services/mail.service';
@@ -32,6 +32,9 @@ export const testSendWinnerMailFn = europeFunctions.https.onCall(
 
             const mailVariables = await settingsSvc.getMailVariables();
             const template = await getTemplateRaw("end-auction.mail.mjml");
+
+
+            await currencySvc.getEurRate();
 
             await sendWinnerMail(auctions, handoverDetails, testUser, bids, mailVariables, template);
 
