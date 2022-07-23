@@ -6,22 +6,24 @@
   fxLayoutGap="1rem"
 >
   <mat-card-title
-    [ngStyle]="{
-      visibility:
-        item.bid == item.startBid && !item.bidId ? 'hidden' : 'visible'
-    }"
     class="relative"
     style="height: 64px"
     fxLayout="row"
-    fxLayoutAlign="center center"
+    fxLayoutAlign="space-between center"
     fxLayoutGap="1rem"
   >
-    <!-- <label
+    <!-- fxLayoutAlign="space-between center" -->
+    <!-- [ngStyle]="{
+      visibility:
+        item.bid == item.startBid && !item.bidId ? 'hidden' : 'visible'
+    }" -->
+
+    <label
       class="mb-0 mat-title bold"
       [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
     >
       {{ item.name }}
-    </label> -->
+    </label>
 
     <div fxLayout="column" class="mr-0 relative">
       <div class="mat-small text-center no-wrap" style="background: whitesmoke">

@@ -1,7 +1,6 @@
 @import "~@angular/material/theming";
 
 @mixin grids-theme($theme) {
-
   // Items grid breakpoints (Full components)
 
   virtual-scroller.full-items-grid {
@@ -39,7 +38,7 @@
     }
   }
   // gt-lg
-  @media (min-width: 1270px) {
+  @media (min-width: 1300px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
