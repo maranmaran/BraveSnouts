@@ -1,3 +1,4 @@
+import { logger } from 'firebase-functions';
 import moment = require("moment");
 
 export class CurrencyService {
@@ -11,6 +12,7 @@ export class CurrencyService {
 
     async getEurRate() {
         this.eurRate = await this.getFromDb();
+        logger.info("EUR value fetched and stored in service" + " " + this.eurRate);
     }
 
     private async getFromDb() {
