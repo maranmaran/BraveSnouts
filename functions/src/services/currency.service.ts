@@ -18,9 +18,9 @@ export class CurrencyService {
     private async getFromDb() {
         const doc = this._store.doc("config/global");
         const res = await doc.get();
-        const dbVariables = res.data() as { eur: number };
+        const dbVariables = res.data() as { eurRate: number };
 
-        return dbVariables.eur;
+        return dbVariables.eurRate;
     }
 
     formatHrkAndEur(hrk: number) {

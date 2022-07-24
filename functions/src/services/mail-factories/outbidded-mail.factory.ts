@@ -9,7 +9,6 @@ export const sendOutbiddedMail = async (
     itemBefore: AuctionItem,
     itemAfter: AuctionItem
 ) => {
-
     // get currency info
     await currencySvc.getEurRate();
 
