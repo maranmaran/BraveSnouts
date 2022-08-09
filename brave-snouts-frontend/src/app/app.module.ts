@@ -17,6 +17,7 @@ import { LightboxModule, LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
 import { CountdownModule } from 'ngx-countdown';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { QuillModule } from 'ngx-quill';
 import { AuctionDetailsComponent } from 'src/app/features/auction-feature/auction/auction-details/auction-details.component';
@@ -79,6 +80,10 @@ registerLocaleData(hrLocale);
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireFunctionsModule,
+
+    // Google analytics
+    NgxGoogleAnalyticsModule.forRoot(environment.firebaseConfig.measurementId),
+    NgxGoogleAnalyticsRouterModule,
 
     // Auction
     NgxMaterialTimepickerModule,
@@ -158,6 +163,8 @@ registerLocaleData(hrLocale);
     RegisterComponent,
     AuctionBulkImageFormComponent,
     AdminAuctionsPageComponent,
+
+
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'hr' },

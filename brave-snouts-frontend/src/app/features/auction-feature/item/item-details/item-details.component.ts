@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
@@ -39,6 +40,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     public readonly mediaObs: MediaObserver,
     private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly router: Router,
+    private readonly gaService: GoogleAnalyticsService
   ) {
   }
 
@@ -260,6 +262,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       await this.itemsRepo.addItemToUser(item, this.userId);
     }
 
+    // log to analytics
+    this.gaService.event('bid-placed', 'auction-item', 'Bid placed by ' + bid.userId, bid.bid);
   }
 
   /** Checks if bid is valid */
