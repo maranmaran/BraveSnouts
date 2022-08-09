@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
-import firebase from 'firebase/app';
 import 'firebase/auth';
+import firebase from 'firebase/compat/app';
 import { from, noop, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
@@ -13,7 +13,7 @@ import {
   map,
   switchMap,
   take,
-  tap,
+  tap
 } from 'rxjs/operators';
 import { ChangeEmailDialogComponent } from 'src/app/features/auth-feature/change-email-dialog/change-email-dialog.component';
 import { LoginMethodComponent } from 'src/app/features/auth-feature/login-method/login-method.component';
@@ -31,7 +31,7 @@ export class AuthService {
     private readonly store: AngularFirestore,
     private readonly dialog: MatDialog,
     private toastSvc: HotToastService
-  ) {}
+  ) { }
 
   public get user$() {
     return this.auth.user;

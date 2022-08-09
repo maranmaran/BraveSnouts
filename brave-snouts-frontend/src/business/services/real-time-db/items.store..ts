@@ -1,5 +1,5 @@
 // import { Injectable } from "@angular/core";
-// import { QueryFn, DocumentData, AngularFirestore } from "@angular/fire/firestore";
+// import { QueryFn, DocumentData, AngularFirestore } from "@angular/fire/compat/firestore";
 // import { AuctionItem } from "src/business/models/auction-item.model";
 
 // @Injectable({providedIn: 'root'})

@@ -1,6 +1,6 @@
 import { ApplicationRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import { concatMap, map, take } from 'rxjs/operators';
 import { User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';

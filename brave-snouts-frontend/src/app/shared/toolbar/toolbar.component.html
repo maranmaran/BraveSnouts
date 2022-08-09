@@ -108,7 +108,12 @@
       </ng-template>
 
       <mat-menu #profileMenu="matMenu">
-        <button mat-menu-item routerLink="/app/my-items">
+        <button
+          mat-menu-item
+          routerLink="/app/my-items"
+          gaEvent="my_items_click"
+          gaCategory="items_tracking"
+        >
           <mat-icon matPrefix> redeem </mat-icon>
           Moji predmeti
         </button>

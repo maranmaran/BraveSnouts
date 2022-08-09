@@ -1,6 +1,6 @@
 // import { Injectable } from "@angular/core";
 // import { AuctionItem } from "src/business/models/auction-item.model";
-// import { AngularFireDatabase, QueryFn } from '@angular/fire/database';
+// import { AngularFireDatabase, QueryFn } from '@angular/fire/compat/database';
 
 // @Injectable({providedIn: 'root'})
 // export class ItemsRdbRepository {

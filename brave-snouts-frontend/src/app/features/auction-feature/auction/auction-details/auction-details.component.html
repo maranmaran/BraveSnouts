@@ -24,6 +24,8 @@
     <button
       *ngIf="userTrackedItems?.size > 0"
       routerLink="/app/my-items"
+      gaEvent="my_items_click"
+      gaCategory="items_tracking"
       class="btn-small"
       mat-raised-button
       color="primary"

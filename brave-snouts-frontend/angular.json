@@ -17,7 +17,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["rxjs-compat", "moment/locale/hr"],
+            "allowedCommonJsDependencies": [
+              "rxjs-compat",
+              "moment",
+              "quill",
+              "guid-typescript",
+              "luxon",
+              "moment/locale/hr"
+            ],
             "outputPath": "dist/brave-snouts-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",

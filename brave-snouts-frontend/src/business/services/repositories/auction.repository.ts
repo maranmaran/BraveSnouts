@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 import { Auction } from 'src/business/models/auction.model';
 
 @Injectable()

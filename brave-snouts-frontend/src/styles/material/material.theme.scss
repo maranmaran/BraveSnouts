@@ -1,5 +1,5 @@
 // ======================================= MIXINS ==========================================
-@use '~@angular/material' as mat;
+@use "@angular/material" as mat;
 @import "./mixins/scrollbar.mixin.scss";
 @import "./mixins/section.mixin.scss";
 @import "./mixins/autofill.mixin.scss";
@@ -9,7 +9,6 @@
 @import "./mixins/colors.mixin.scss";
 @import "./mixins/timepicker.mixin.scss";
 @import "./mixins/grids.mixin.scss";
-
 
 @mixin custom-components-theme($theme) {
   @include scrollbar-theme($theme);
@@ -25,9 +24,8 @@
 
 @import "./mixins/spacing.mixin.scss";
 
-
 // ======================================= THEME ==========================================
-@import "~@angular/material/theming";
+@import "@angular/material/theming";
 @include mat.core();
 
 $primary: mat.$cyan-palette;
@@ -44,14 +42,14 @@ $theme-light: mat.define-light-theme(
   $theme-light-warn
 );
 
-@import url('https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap");
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
 $custom-typography: mat.define-typography-config(
-  $font-family: 'Mali, cursive',
+  $font-family: "Mali, cursive",
   $headline: mat.define-typography-level(32px, 48px, 700),
-  $body-1: mat.define-typography-level(16px, 24px, 500)
+  $body-1: mat.define-typography-level(16px, 24px, 500),
 );
 
 // // Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
@@ -65,7 +63,6 @@ $custom-typography: mat.define-typography-config(
 
 // Override the typography in the core CSS.
 @include mat.core($custom-typography);
-
 
 .theme-light {
   @include mat.all-component-themes($theme-light);

@@ -1,30 +1,43 @@
-@use '~@angular/material' as mat;
-@import "~@angular/material/theming";
+@use "@angular/material" as mat;
+@import "@angular/material/theming";
 
 @mixin colors-theme($theme) {
-
-    .background {
-        &.warn.lighter {
-            background: mat.get-color-from-palette(map-get($theme, warn), 50) !important;
-        }
-
-        &.primary.lighter {
-            background: mat.get-color-from-palette(map-get($theme, primary), 50) !important;
-        }
+  .background {
+    &.warn.lighter {
+      background: mat.get-color-from-palette(
+        map-get($theme, warn),
+        50
+      ) !important;
     }
 
-    .foreground {
-        &.warn.default {
-            color: mat.get-color-from-palette(map-get($theme, warn), "default") !important;
-        }
+    &.primary.lighter {
+      background: mat.get-color-from-palette(
+        map-get($theme, primary),
+        50
+      ) !important;
+    }
+  }
 
-        &.accent.default {
-            color: mat.get-color-from-palette(map-get($theme, accent), "default") !important;
-        }
-
-        &.primary.lighter {
-            color: mat.get-color-from-palette(map-get($theme, primary), "default") !important;
-        }
+  .foreground {
+    &.warn.default {
+      color: mat.get-color-from-palette(
+        map-get($theme, warn),
+        "default"
+      ) !important;
     }
 
+    &.accent.default {
+      color: mat.get-color-from-palette(
+        map-get($theme, accent),
+        "default"
+      ) !important;
+    }
+
+    &.primary.lighter {
+      color: mat.get-color-from-palette(
+        map-get($theme, primary),
+        "default"
+      ) !important;
+    }
+  }
 }

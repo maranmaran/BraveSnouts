@@ -3,8 +3,8 @@ import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import firebase from 'firebase/app';
 import 'firebase/auth';
+import firebase from 'firebase/compat/app';
 import * as moment from 'moment';
 import { noop, Observable } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
@@ -29,7 +29,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     private readonly loadingSvc: ProgressBarService,
     private readonly dialog: MatDialog,
     public readonly itemScrollViewSvc: ItemScrollViewService
-  ) {}
+  ) { }
 
   user$: Observable<firebase.User | null>;
   userInfo$: Observable<User | null>;

@@ -1,37 +1,35 @@
-@import "~@angular/material/theming";
+@import "@angular/material/theming";
 
 @mixin slider-theme($theme) {
+  .bid-slider {
+    .mat-slider-wrapper {
+      .mat-slider-thumb-container {
+        .mat-slider-thumb-label {
+          width: 50px;
+          height: 50px;
+          top: -62px;
+          right: -25px;
+        }
+      }
+    }
+  }
 
+  @media (max-width: 600px) {
     .bid-slider {
-        .mat-slider-wrapper {
-            .mat-slider-thumb-container {
-                .mat-slider-thumb-label {
-                    width: 50px;
-                    height: 50px;
-                    top: -62px;
-                    right: -25px;
-                }
-            }
-        }
-    }
+      .mat-slider-wrapper {
+        .mat-slider-thumb-container {
+          .mat-slider-thumb-label {
+            width: 80px;
+            height: 80px;
+            top: -99px;
+            right: -41px;
 
-    @media(max-width: 600px) {
-        .bid-slider {
-            .mat-slider-wrapper {
-                .mat-slider-thumb-container {
-                    .mat-slider-thumb-label {
-                        width: 80px;
-                        height: 80px;
-                        top: -99px;
-                        right: -41px;
-                        
-                        .mat-slider-thumb-label-text {
-                            font-size: 23px;
-                        }
-
-                    }
-                }
+            .mat-slider-thumb-label-text {
+              font-size: 23px;
             }
+          }
         }
+      }
     }
+  }
 }
