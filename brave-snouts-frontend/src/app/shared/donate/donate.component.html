@@ -8,19 +8,31 @@
   <div
     *ngIf="text"
     fxFlex
-    fxFlexAlign="center"
+    fxFlexAlign="start"
     fxLayout="column"
     fxLayoutAlign="center center"
   >
-    <div class="mb-3 mr-0">
+    <div class="mb-3 mr-0 w-100">
       <b>Pomoći možete i na druge načine:</b>
-      <ul>
+      <ul class="primary-list">
         <li>Donacijom potrepština za životinje</li>
         <li>
-          Donacijom predmeta za buduće aukcije - javite nam se putem društvenih
-          mreža ili na mail hrabre.njuske@gmail.com
+          Donacijom predmeta za buduće aukcije
+          <ul class="secondary-list">
+            <li>Javite nam se putem društvenih mreža</li>
+
+            <li>
+              <div fxLayout="row" fxLayoutAlign="start center">
+                Ili na mail:
+                <app-email-copy></app-email-copy>
+              </div>
+            </li>
+          </ul>
         </li>
-        <li>Direktnom uplatom na račun udruge uz naznaku "donacija".</li>
+        <li>
+          Direktnom uplatom na račun udruge uz naznaku
+          <span class="foreground warn default">"donacija".</span>
+        </li>
       </ul>
     </div>
   </div>

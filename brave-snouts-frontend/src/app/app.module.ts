@@ -65,6 +65,7 @@ import { ChangeEmailDialogComponent } from './features/auth-feature/change-email
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { RegisterComponent } from './features/auth-feature/register/register.component';
+import { EmailCopyComponent } from './shared/support/email-copy.component';
 import { VirtualScrollerModule } from './shared/virtual-scroll/virtual-scroll';
 
 registerLocaleData(hrLocale);
@@ -135,6 +136,7 @@ registerLocaleData(hrLocale);
     PrivacyPolicyComponent,
     MessageDialogComponent,
     SupportComponent,
+    EmailCopyComponent,
 
     // auth
     LoginMethodComponent,
