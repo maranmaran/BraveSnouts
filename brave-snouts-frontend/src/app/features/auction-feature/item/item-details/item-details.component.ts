@@ -262,8 +262,9 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       await this.itemsRepo.addItemToUser(item, this.userId);
     }
 
-    // log to analytics
-    this.gaService.event('bid-placed', 'auction-item', 'Bid placed by ' + bid.userId, bid.bid);
+    if (bid.userId == bid.userBefore) {
+      this.gaService.event('same-person-bid', 'auction-item');
+    }
   }
 
   /** Checks if bid is valid */

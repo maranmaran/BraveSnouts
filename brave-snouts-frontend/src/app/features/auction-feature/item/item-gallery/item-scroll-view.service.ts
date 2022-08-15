@@ -4,6 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ItemScrollViewService {
   // "grid" or "items"
+
+  block = false;
+
   private _view = new BehaviorSubject<string>('grid');
   public get view$() {
     return this._view.asObservable();

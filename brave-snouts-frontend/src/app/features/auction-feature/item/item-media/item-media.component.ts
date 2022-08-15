@@ -6,6 +6,7 @@ import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { environment } from 'src/environments/environment';
 import { SettingsService } from './../../../../../business/services/settings.service';
+import { ItemScrollViewService } from './../item-gallery/item-scroll-view.service';
 
 interface ItemMedia {
   type: string;
@@ -32,7 +33,8 @@ export class ItemMediaComponent implements OnInit {
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox,
     private readonly settingsSvc: SettingsService,
-    protected readonly mediaObs: MediaObserver
+    protected readonly mediaObs: MediaObserver,
+    private readonly itemScrollSvc: ItemScrollViewService
     // private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     // this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
@@ -105,6 +107,7 @@ export class ItemMediaComponent implements OnInit {
 
   }
 
+
   /* Opens fullscreen view of image aka lightbox */
   openLightbox(imageIdx: number = 0) {
 
@@ -126,10 +129,13 @@ export class ItemMediaComponent implements OnInit {
       'panelClass': 'fullscreen',
     });
 
-    // this.lightbox.closed.pipe(take(1)).subscribe(
-    //   _ => this.gallery.ref(this.galleryId).setConfig({imageSize: 'cover'}),
-    //   err => console.log(err)
-    // );
+    history.pushState({ modal: true }, '');
+
+    this.itemScrollSvc.block = true;
+
+    this.lightbox.closed
+      .pipe(first())
+      .subscribe(() => setTimeout(() => this.itemScrollSvc.block = false));
   }
 
 }

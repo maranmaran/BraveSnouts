@@ -10,14 +10,14 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import {
   IPageInfo,
-  VirtualScrollerComponent,
+  VirtualScrollerComponent
 } from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -51,7 +51,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     private readonly authSvc: AuthService,
     public readonly itemScrollViewSvc: ItemScrollViewService,
     private readonly changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.itemScrollViewSvc.initialize();
@@ -123,20 +123,26 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
     window.history.pushState('Items view', 'Items view', window.location.href);
 
-    this.scroller.scrollToIndex(idx, true, 50, 0);
+    setTimeout(() => this.scroller.scrollToIndex(idx, true, 50, 0));
   }
 
   // Handle back button navigation (history)
   @HostListener('window:popstate') onPopState() {
     console.log('popping state');
+
+    if (this.itemScrollViewSvc.block) {
+      return;
+    }
+
     if (this.itemScrollViewSvc.view == 'items') {
       this.itemScrollViewSvc.switchTab('grid');
-      // this.openItemsScrollTabOnIndex(this.lastScrollItemIdx);
+
+      setTimeout(() => this.scroller.scrollToIndex(this.lastScrollItemIdx, true, -50, 0));
     }
   }
 
   openItemWithScroll(item: AuctionItem) {
-    let dialogRef = this.dialog.open(ItemsListDialogComponent, {
+    this.dialog.open(ItemsListDialogComponent, {
       height: '100%',
       width: '100vw',
       maxWidth: '100vw',
