@@ -46,14 +46,14 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading$ = this.loadingSvc.active$;
     this.authSvc.userId$
-    .pipe(take(1))
-    .subscribe(id => {
-      this.userId = id
+      .pipe(take(1))
+      .subscribe(id => {
+        this.userId = id
 
-      this._subsink.add(
-        this.getTrackedItems()
+        this._subsink.add(
+          this.getTrackedItems()
         );
-    });
+      });
   }
 
   // Workaround for angular component issue #13870
@@ -72,19 +72,19 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadingSvc.active$.next(true);
     return this.itemsRepo.getUserItems(this.userId).pipe(
       tap(items => this.total = items?.length),
-      mergeMap(items => this.total > 0 ? [...items] : [ "empty" ] ),
+      mergeMap(items => this.total > 0 ? [...items] : ["empty"]),
       mergeMap((item: any) => {
 
-        if(item == "empty")
+        if (item == "empty")
           return of(item);
 
         const idx = this.items.findIndex(it => it.id == item.id);
 
         return idx != -1 ? of(this.items[idx]) : this.itemsRepo.getOne(item.auctionId, item.id);
       }),
-      ).subscribe(item => {
+    ).subscribe(item => {
 
-      if(item == "empty") {
+      if (item == "empty") {
         this.total = 0;
         this.items = [];
         setTimeout(() => this.loadingSvc.active$.next(false));
@@ -93,7 +93,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const idx = this.items.findIndex(it => it.id == item.id);
 
-      if(idx != -1) {
+      if (idx != -1) {
         this.items[idx] = item;
         this.items = [...this.items];
       } else {
@@ -106,7 +106,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.itemDialogSvc.items.next(this.items);
       // console.log(this.winningItems, this.outbiddedItems);
 
-      if(this.items?.length == this.total) {
+      if (this.items?.length == this.total) {
         setTimeout(() => this.loadingSvc.active$.next(false));
       }
 
@@ -116,6 +116,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   trackByFn(_, item) {
     return item.id;
   }
+
 
   openItem(item: AuctionItem) {
 
@@ -130,6 +131,8 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     // dialogRef.afterClosed()
+
+    window.history.pushState({ modal: true }, '', '#modal');
 
   }
 }
