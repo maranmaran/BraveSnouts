@@ -72,14 +72,19 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
           console.log('going back because manual');
           window.history.go(-1);
         }
+
+        setTimeout(() => {
+          this.itemsScroller?.refresh();
+          this.gridScroller?.refresh()
+        });
+
         this.changeDetectorRef.detectChanges();
-        this.scroller.refresh();
       })
     );
   }
 
   ngOnChanges(changes) {
-    this.itemDialogSvc.items.next(changes.items.currentValue);
+    this.itemDialogSvc.items.next(changes.items?.currentValue);
   }
 
   ngOnDestroy() {
@@ -116,14 +121,17 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     // dialogRef.afterClosed()
   }
 
-  @ViewChild('itemsScroller', { static: false })
-  scroller: VirtualScrollerComponent;
+  @ViewChild('itemsScroller', { static: false }) itemsScroller: VirtualScrollerComponent;
+  @ViewChild('gridScroller', { static: false }) gridScroller: VirtualScrollerComponent;
   openItemsScrollTabOnIndex(idx: number) {
     this.itemScrollViewSvc.switchTab('items');
 
     window.history.pushState('Items view', 'Items view', window.location.href);
 
-    setTimeout(() => this.scroller.scrollToIndex(idx, true, 50, 0));
+    setTimeout(() => {
+      this.itemsScroller?.scrollToIndex(idx, true, 50, 0);
+      this.gridScroller?.scrollToIndex(idx, true, 50, 0);
+    });
   }
 
   // Handle back button navigation (history)
@@ -137,7 +145,10 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     if (this.itemScrollViewSvc.view == 'items') {
       this.itemScrollViewSvc.switchTab('grid');
 
-      setTimeout(() => this.scroller.scrollToIndex(this.lastScrollItemIdx, true, -50, 0));
+      setTimeout(() => {
+        this.itemsScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
+        this.gridScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
+      });
     }
   }
 

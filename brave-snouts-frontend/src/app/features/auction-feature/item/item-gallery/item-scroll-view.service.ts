@@ -38,6 +38,6 @@ export class ItemScrollViewService {
   switchTab(tab: string) {
     this._loading.next(true);
     this._view.next(tab);
-    setTimeout(() => this._loading.next(false), 100);
+    setTimeout(() => this._loading.next(false), 50);
   }
 }
