@@ -133,6 +133,5 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     // dialogRef.afterClosed()
 
     window.history.pushState({ modal: true }, '', '#modal');
-
   }
 }
