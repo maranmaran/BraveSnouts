@@ -9,6 +9,14 @@ export interface MailVariable {
     show: boolean;
 }
 
+
+export interface BankAccount {
+    name: string;
+    account: string;
+    visible: boolean;
+}
+
+
 export class MailSettingsService {
     private readonly _store: FirebaseFirestore.Firestore
     private _mailVariables: {
@@ -34,10 +42,29 @@ export class MailSettingsService {
             activeVariables[entry[0]] = entry[1].message
         }
 
-        this._mailVariables = activeVariables;
+        const bank_accounts = await this.getBankAccounts();
+
+        this._mailVariables = {
+            ...activeVariables,
+            bank_accounts: this.formatBankAccounts(bank_accounts)
+        };
 
         logger.log(this._mailVariables);
 
         return this._mailVariables;
+    }
+
+    async getBankAccounts() {
+        const doc = this._store.doc("config/bank-accounts");
+        const res = await doc.get();
+        return res.data() as BankAccount[];
+    }
+
+    formatBankAccounts(bankAccounts: BankAccount[]) {
+        return `
+            <ul>
+                ${bankAccounts.filter(ba => ba.visible).map(ba => `<li>${ba.name} - ${ba.account}</li>`)}
+            </ul>
+        `;
     }
 }
