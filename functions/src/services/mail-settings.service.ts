@@ -57,7 +57,7 @@ export class MailSettingsService {
     async getBankAccounts() {
         const doc = this._store.doc("config/bank-accounts");
         const res = await doc.get();
-        return res.data() as BankAccount[];
+        return Array.from(Object.values(res.data())) as BankAccount[];
     }
 
     formatBankAccounts(bankAccounts: BankAccount[]) {
