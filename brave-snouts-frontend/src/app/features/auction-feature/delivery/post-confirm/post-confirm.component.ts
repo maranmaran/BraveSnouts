@@ -29,7 +29,7 @@ export class PostConfirmComponent implements OnInit {
 
   public postageFee: number;
   public originalDonation: number;
-  public totalDonation: number; // with addition postal send price (20HRK)
+  public totalDonation: number; // with addition postal send price (3€)
   public paymentDetail: string;
 
   settings$ = this.settingsSvc.getMailVariables().pipe(startWith({}));

@@ -45,7 +45,7 @@ import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 import { modules } from 'src/business/models/editor.config';
 import { AuctionDatePipe } from 'src/business/pipes/custom-date.pipe';
-import { EurPipe, MoneyPipe } from 'src/business/pipes/money.pipe';
+import { MoneyPipe } from 'src/business/pipes/money.pipe';
 import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -131,7 +131,6 @@ registerLocaleData(hrLocale);
     TruncatePipe,
     AuctionDatePipe,
     MoneyPipe,
-    EurPipe,
     ConfirmDialogComponent,
     PrivacyPolicyComponent,
     MessageDialogComponent,

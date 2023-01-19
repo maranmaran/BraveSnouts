@@ -12,7 +12,7 @@ export async function calculatePostage(itemsWonCount: number) {
     let rules = docs.map(x => x.data()) as PostageRule[];
     rules = sortBy(rules, x => x.lower);
 
-    let postageFee = 20;
+    let postageFee = 3;
     for (const rule of rules) {
         if (itemsWonCount >= rule.lower) {
             postageFee = rule.postage;

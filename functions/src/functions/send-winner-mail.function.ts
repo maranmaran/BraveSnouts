@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 import { logger } from 'firebase-functions';
-import { currencySvc, europeFunctions, settingsSvc, store } from '..';
+import { europeFunctions, settingsSvc, store } from '..';
 import { Auction, AuctionItem, Bid, UserInfo } from '../models/models';
 import { sendWinnerMail } from '../services/mail-factories/winner-mail.factory';
 import { getTemplateRaw } from '../services/mail.service';
@@ -15,10 +15,6 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
         try {
             const auctionIds = data.auctionIds as string[];
             const handoverDetails = data.handoverDetails;
-
-
-            // get currency info
-            await currencySvc.getEurRate();
 
             const auctions = await getAuctions(auctionIds);
             const userBids = await getAllAuctionUserBidsMap(auctionIds);

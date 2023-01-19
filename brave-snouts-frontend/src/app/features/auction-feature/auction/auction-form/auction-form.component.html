@@ -167,13 +167,11 @@
                   id="price-{{ scroll.viewPortInfo.startIndex + i }}"
                   matInput
                   type="number"
-                  step="1"
+                  step="0.5"
                   value="0.00"
                   formControlName="startPrice"
                 />
-                <span class="ml-1" matSuffix
-                  >kn | {{ startValue.value | eurAsync | async }}</span
-                >
+                <span class="ml-1" matSuffix>€</span>
               </mat-form-field>
             </mat-card-title>
 

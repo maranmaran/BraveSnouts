@@ -1,5 +1,5 @@
 import { logger } from "firebase-functions";
-import { config, currencySvc, settingsSvc } from "../..";
+import { config, settingsSvc } from "../..";
 import { AuctionItem, UserInfo } from "../../models/models";
 import { getComposer, getEmailOptoutLink, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
@@ -9,11 +9,8 @@ export const sendOutbiddedMail = async (
     itemBefore: AuctionItem,
     itemAfter: AuctionItem
 ) => {
-    // get currency info
-    await currencySvc.getEurRate();
-
-    const item_bid_before = currencySvc.formatHrkAndEur(itemBefore.bid);
-    const item_bid_after = currencySvc.formatHrkAndEur(itemAfter.bid);
+    const item_bid_before = `${itemBefore.bid} €`;
+    const item_bid_after = `${itemAfter.bid} €`;
 
     logger.info(
         `Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${item_bid_before} to ${item_bid_after}!`
