@@ -412,5 +412,19 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   }
   //#endregion
 
+  //#region Bid modification
+  private readonly bidModifier = 0.7; // TODO: Put into database
+
+  subtractBid() {
+    this.currentBid -= this.bidModifier;
+    this.currentBid = Math.ceil(this.currentBid * 100) / 100;
+  }
+
+  addBid() {
+    this.currentBid += this.bidModifier;
+    this.currentBid = Math.floor(this.currentBid * 100) / 100;
+  }
+  //#endregion
+
 
 }

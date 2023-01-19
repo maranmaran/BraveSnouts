@@ -115,7 +115,7 @@
         class="mr-5 offer-button"
         mat-icon-button
         color="warn"
-        (click)="currentBid = currentBid - 0.7"
+        (click)="subtractBid()"
         [disabled]="currentBid == item.bid"
       >
         <mat-icon>remove</mat-icon>
@@ -132,7 +132,7 @@
         class="ml-5 offer-button"
         mat-icon-button
         color="primary"
-        (click)="currentBid = currentBid + 0.7"
+        (click)="addBid()"
       >
         <mat-icon>add</mat-icon>
       </button>
