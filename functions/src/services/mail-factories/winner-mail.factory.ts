@@ -21,9 +21,10 @@ export const sendWinnerMail = async (
 
     const postage_details = `U slučaju preuzimanja poštom potrebno je uplatiti dodatnih ${formattedFee} radi poštarine.`
     const paymentDetail = `${user.name}`;
-    const totalDonation = items
+    let totalDonation = items
         .map((x) => x.value)
         .reduce((prev, cur) => prev + cur);
+    totalDonation = Math.round(totalDonation * 100) / 100;
 
     const emailVariables = {
         post_confirm_url: getPostConfirmUrl(

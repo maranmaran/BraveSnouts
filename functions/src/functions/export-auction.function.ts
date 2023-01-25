@@ -114,8 +114,11 @@ export const exportAuctionFn = europeFunctions.https.onCall(
           totalSum += item.bid;
         }
 
+        userSum = Math.round(userSum * 100) / 100;
         donatorsSheetData.push([`${winner.userInfo.name} Total`, "", userSum]);
       }
+
+      totalSum = Math.round(totalSum * 100) / 100;
       donatorsSheetData.push(["Grand total", "", totalSum]);
 
       // prepare SLANJE sheet

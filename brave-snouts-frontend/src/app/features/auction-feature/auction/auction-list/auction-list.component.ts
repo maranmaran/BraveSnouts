@@ -90,6 +90,8 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       tap(auctions => {
         this.totalDonated = auctions.filter(a => this.getAuctionState(a) == 'active')
           .reduce((prev, cur) => prev += cur.raisedMoney, 0);
+
+        this.totalDonated = Math.round(this.totalDonated * 100) / 100;
       }),
       tap(() => this.loadingSvc.active$.next(false)),
       tap(() => this.auctionsBootstrapped = true),
