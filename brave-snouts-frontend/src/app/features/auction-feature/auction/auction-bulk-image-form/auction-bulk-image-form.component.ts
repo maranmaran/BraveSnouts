@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -7,6 +6,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { BehaviorSubject, from, noop } from 'rxjs';
 import { concatMap, finalize, first, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
@@ -15,10 +15,10 @@ import { AuthService } from 'src/business/services/auth.service';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
+import { SettingsService } from 'src/business/services/settings.service';
 import { StorageService } from 'src/business/services/storage.service';
 import { SubSink } from 'subsink';
 import { v4 as uuidv4 } from 'uuid';
-import { SettingsService } from './../../../../../business/services/settings.service';
 
 @Component({
   selector: 'app-auction-bulk-image-form',

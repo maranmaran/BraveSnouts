@@ -7,18 +7,18 @@ export class AuctionItem {
         Object.assign(this, data);
     }
 
-    id: string;
-    auctionId: string;
-    name: string;
-    description: string;
-    media: FirebaseFile[];
+    id: string = null;
+    auctionId: string = null;
+    name: string = null;
+    description: string = null;
+    media: FirebaseFile[] = [];
 
     startBid: number = 0;
 
     // user bid data
-    bidId: string;
+    bidId: string = null;
     bid: number = 0;
-    user: string;
+    user: string = null;
 
-    winner: Winner;
+    winner: Winner = null;
 }

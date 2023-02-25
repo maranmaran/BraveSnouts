@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { noop, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
@@ -54,7 +54,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private readonly loadingSvc: ProgressBarService,
     private readonly toastSvc: HotToastService,
     private readonly storage: StorageService
-  ) {}
+  ) { }
 
   private _auctionId: string;
 
@@ -232,9 +232,10 @@ export class AdminPageComponent implements OnInit, OnDestroy {
                 error: 'Nešto je pošlo po zlu',
               })
             )
-            .subscribe(/*res => console.log(res)*/ noop, (err) =>
-              console.log(err)
-            ); // TODO: Something with res
+            .subscribe({
+              next: noop,
+              error: err => console.error(err)
+            });
         },
         (err) => console.log(err)
       );
@@ -305,9 +306,10 @@ export class AdminPageComponent implements OnInit, OnDestroy {
                 error: 'Nešto je pošlo po zlu',
               })
             )
-            .subscribe(/*res => console.log(res)*/ noop, (err) =>
-              console.log(err)
-            ); // TODO: Something with res
+            .subscribe({
+              next: noop,
+              error: err => console.error(err)
+            });
         },
         (err) => console.log(err)
       );

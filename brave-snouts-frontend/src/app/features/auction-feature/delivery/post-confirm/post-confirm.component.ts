@@ -123,15 +123,6 @@ export class PostConfirmComponent implements OnInit {
   }
 
   sendConfirmation() {
-    let form = this.postDeliveryInfoForm.value;
-
-    // TODO: Unused probably
-    let data = {
-      fullName: form.fullName,
-      address: `${form.address}, ${form.city}, ${form.zipNumber}`,
-      phoneNumber: this.postDeliveryInfoForm.value.phoneNumber,
-    }
-
     this.functionSvc.sendPostConfirm(
       this._userId,
       this._auctionIds,

@@ -3,7 +3,7 @@
     <ng-container *ngIf="auctions$ | async as auctions; else noAuctions">
       <ng-container *ngIf="auctions.length > 0; else noAuctions">
         <div @fadeIn id="auctions" fxLayout="column" fxLayoutGap="0.5rem">
-          <div class="mat-title bold text-center" *ngIf="totalDonated">
+          <div class="mat-headline-6 bold text-center" *ngIf="totalDonated">
             Trenutno sakupljeno {{ totalDonated | moneyAsync | async }}
           </div>
           <div fxLayout="row" fxLayoutGap="0.5rem">
@@ -26,13 +26,13 @@
               color="warn"
               class="w-100 mb-3 elevate hover-big"
               routerLink="/app/rules"
-              matTooltip="Pravila aukcije"
             >
               Pravila aukcije
             </button>
           </div>
 
           <mat-card
+            appearance="raised"
             *ngFor="let auction of auctions"
             class="pointer background lighter elevate hover"
             (click)="onClick(auction)"
@@ -48,13 +48,13 @@
 
                 <ng-container [ngSwitch]="getAuctionState(auction)">
                   <mat-card-subtitle *ngSwitchCase="'future'">
-                    {{ auction.startDate.toDate() | auctionDate: "Počinje u" }}
+                    {{ auction.startDate.toDate() | auctionDate : "Počinje u" }}
                   </mat-card-subtitle>
                   <mat-card-subtitle *ngSwitchCase="'expired'">
-                    {{ auction.endDate.toDate() | auctionDate: "Završila u" }}
+                    {{ auction.endDate.toDate() | auctionDate : "Završila u" }}
                   </mat-card-subtitle>
                   <mat-card-subtitle *ngSwitchDefault>
-                    {{ auction.endDate.toDate() | auctionDate: "Traje do" }}
+                    {{ auction.endDate.toDate() | auctionDate : "Traje do" }}
                   </mat-card-subtitle>
                 </ng-container>
               </mat-card-title>
@@ -96,7 +96,7 @@
     </ng-container>
 
     <ng-template #noAuctions>
-      <i *ngIf="auctionsBootstrapped" class="custom-font center mat-title"
+      <i *ngIf="auctionsBootstrapped" class="custom-font center mat-headline-6"
         >Trenutno nema aktivnih aukcija</i
       >
     </ng-template>

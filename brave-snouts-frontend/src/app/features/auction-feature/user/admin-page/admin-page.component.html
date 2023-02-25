@@ -20,7 +20,7 @@
         fxFlex="100%"
         fxFlex.lt-md="100%"
       >
-        <div class="mat-title mb-0 bold">{{ auction.name }}</div>
+        <div class="mat-headline-6 mb-0 bold">{{ auction.name }}</div>
         <div
           fxLayout="row"
           fxLayoutGap="1rem"
@@ -33,14 +33,16 @@
           <div [ngSwitch]="state">
             <ng-container *ngSwitchCase="'future'">
               Počinje:
-              {{ auction.startDate.toDate() | date: "MMM d, HH:mm:ss" }}
+              {{ auction.startDate.toDate() | date : "MMM d, HH:mm:ss" }}
             </ng-container>
             <ng-container *ngSwitchCase="'expired'">
-              Završila: {{ auction.endDate.toDate() | date: "MMM d, HH:mm:ss" }}
+              Završila:
+              {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
             </ng-container>
 
             <ng-container *ngSwitchCase="'active'">
-              Traje do: {{ auction.endDate.toDate() | date: "MMM d, HH:mm:ss" }}
+              Traje do:
+              {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
             </ng-container>
           </div>
           <countdown
@@ -70,7 +72,7 @@
         fxFlex="100%"
         fxFlex.lt-md="100%"
       >
-        <div class="mat-title mb-0 bold">
+        <div class="mat-headline-6 mb-0 bold">
           Ukupno donirano {{ auction.raisedMoney | moneyAsync | async }}
         </div>
       </div>
@@ -154,6 +156,7 @@
         fxLayoutGap="0.5rem"
       >
         <mat-card
+          appearance="raised"
           id="item"
           class="elevate hover selected"
           [ngClass]="{ selected: activeItemId == item.id }"
@@ -186,6 +189,7 @@
         </mat-card>
 
         <mat-card
+          appearance="raised"
           id="winner"
           *ngIf="item.winner as winner; else filler"
           class="elevate hover selected mt-2"
@@ -309,14 +313,18 @@
 
   <div *ngIf="!!(bids$ | async)">
     <ng-container *ngIf="(bids$ | async)?.length > 0; else noBids">
-      <mat-card *ngFor="let bid of bids$ | async" class="elevate hover">
+      <mat-card
+        appearance="raised"
+        *ngFor="let bid of bids$ | async"
+        class="elevate hover"
+      >
         <mat-card-header>
           <img mat-card-avatar [src]="bid.userInfo?.avatar" />
           <mat-card-title>
             {{ bid.userInfo?.name }} - {{ bid.bid | moneyAsync | async }}
           </mat-card-title>
           <mat-card-subtitle>
-            {{ bid.date.toDate() | date: "MMM d, h:mm:ss" }}
+            {{ bid.date.toDate() | date : "MMM d, h:mm:ss" }}
           </mat-card-subtitle>
           <mat-card-subtitle>
             {{ bid.userInfo?.email }}

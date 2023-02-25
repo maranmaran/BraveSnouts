@@ -8,12 +8,12 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
+import { MediaObserver } from 'ngx-flexible-layout';
 import {
   IPageInfo,
-  VirtualScrollerComponent,
+  VirtualScrollerComponent
 } from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';

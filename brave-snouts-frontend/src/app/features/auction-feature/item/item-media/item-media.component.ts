@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
+import { SettingsService } from 'src/business/services/settings.service';
 import { environment } from 'src/environments/environment';
-import { SettingsService } from './../../../../../business/services/settings.service';
 import { ItemScrollViewService } from './../item-gallery/item-scroll-view.service';
 
 interface ItemMedia {

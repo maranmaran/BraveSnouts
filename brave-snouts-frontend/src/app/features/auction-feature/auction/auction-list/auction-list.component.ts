@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { QueryFn } from '@angular/fire/compat/firestore';
-import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { from, noop, Observable, of, Subscription } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';

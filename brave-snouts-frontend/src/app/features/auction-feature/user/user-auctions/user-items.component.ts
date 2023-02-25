@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';

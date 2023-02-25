@@ -3,7 +3,6 @@
 @import "./mixins/scrollbar.mixin.scss";
 @import "./mixins/section.mixin.scss";
 @import "./mixins/autofill.mixin.scss";
-@import "./mixins/slider.mixin.scss";
 @import "./mixins/random.mixin.scss";
 @import "./mixins/elevation.mixin.scss";
 @import "./mixins/colors.mixin.scss";
@@ -14,7 +13,6 @@
   @include scrollbar-theme($theme);
   @include section-theme($theme);
   @include autofill-theme($theme);
-  @include slider-theme($theme);
   @include random-theme($theme);
   @include elevation-theme($theme);
   @include colors-theme($theme);
@@ -27,6 +25,7 @@
 // ======================================= THEME ==========================================
 @import "@angular/material/theming";
 @include mat.core();
+// @include mat.legacy-core();
 
 $primary: mat.$cyan-palette;
 $accent: mat.$cyan-palette;
@@ -36,35 +35,31 @@ $theme-light-primary: mat.define-palette($primary, 700, 400, 900);
 $theme-light-accent: mat.define-palette($accent, A700);
 $theme-light-warn: mat.define-palette($warning, A700);
 
-$theme-light: mat.define-light-theme(
-  $theme-light-primary,
-  $theme-light-accent,
-  $theme-light-warn
-);
-
 @import url("https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap");
-
-// Define a custom typography config that overrides the font-family as well as the
-// `headlines` and `body-1` levels.
 $custom-typography: mat.define-typography-config(
   $font-family: "Mali, cursive",
-  $headline: mat.define-typography-level(32px, 48px, 700),
+  $headline-1: mat.define-typography-level(32px, 48px, 700),
   $body-1: mat.define-typography-level(16px, 24px, 500),
 );
 
-// // Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
-// @include mat.typography-hierarchy($custom-typography);
-
-// // Override typography for a specific Angular Material components.
-// @include mat.checkbox-typography($custom-typography);
-
-// // Override typography for all Angular Material, including mat-base-typography and all components.
-// @include mat.all-component-typographies($custom-typography);
-
-// Override the typography in the core CSS.
-@include mat.core($custom-typography);
+$theme-light: mat.define-light-theme(
+  (
+    color: (
+      primary: $theme-light-primary,
+      accent: $theme-light-accent,
+      warn: $theme-light-warn,
+    ),
+    typography: $custom-typography,
+    density: 0,
+  )
+);
 
 .theme-light {
+  @include mat.core-theme($theme-light);
   @include mat.all-component-themes($theme-light);
+
+  // @include mat.legacy-core-theme($theme-light);
+  // @include mat.all-legacy-component-themes($theme-light);
+
   @include custom-components-theme($theme-light);
 }

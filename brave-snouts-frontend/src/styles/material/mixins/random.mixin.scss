@@ -81,6 +81,7 @@
   }
 
   .item-dialog {
+    /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
     mat-dialog-container {
       margin: 0 !important;
       padding: 0px !important;
@@ -90,7 +91,7 @@
     .container {
       margin: 0 !important;
       padding: 0 !important;
-
+      /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
       mat-card {
         box-shadow: none;
       }
@@ -98,6 +99,7 @@
   }
 
   .items-dialog {
+    /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
     mat-dialog-container {
       margin: 0 !important;
       padding: 0px !important;
@@ -107,7 +109,7 @@
     .container {
       margin: 0 !important;
       padding: 0 !important;
-
+      /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
       mat-card {
         box-shadow: none;
       }
@@ -138,7 +140,7 @@
   }
 
   .dialog-no-padding {
-    .mat-dialog-container {
+    .mat-mdc-dialog-container {
       padding: 0 !important;
     }
   }
@@ -193,13 +195,13 @@
 
   .dialog {
     &.no-padding {
-      .mat-dialog-container {
+      .mat-mdc-dialog-container {
         padding: 0 !important;
       }
     }
 
     &.no-overflow {
-      .mat-dialog-container {
+      .mat-mdc-dialog-container {
         overflow: hidden !important;
       }
     }
@@ -222,7 +224,7 @@
   }
 
   .winners-admin-auctions-dialog {
-    .mat-dialog-container {
+    .mat-mdc-dialog-container {
       overflow-y: hidden !important;
     }
   }

@@ -9,6 +9,9 @@ import { User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { EmailSettings } from './../../../../../../utilities/src/models';
 
+/**
+ * TODO: This is actually not email optout confirmation anymore but notification management component for user
+ */
 @Component({
   selector: 'app-email-optout',
   templateUrl: './email-optout.component.html',

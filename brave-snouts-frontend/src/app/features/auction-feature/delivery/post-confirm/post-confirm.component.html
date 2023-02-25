@@ -46,7 +46,7 @@
         Spremi
       </button>
     </div>
-    <div class="section mat-title text-center">
+    <div class="section mat-headline-6 text-center">
       <div>
         Ukoliko niste u mogućnosti doći na primopredaju, osvojene predmete
         šaljemo poštom.
@@ -64,13 +64,13 @@
       ></div>
       <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION ABOVE -->
     </div>
-    <div class="section mat-title text-center">
+    <div class="section mat-headline-6 text-center">
       <div class="bold">Opis plaćanja:</div>
       <div class="mt-3">{{ paymentDetail }}</div>
     </div>
 
     <div
-      class="section mat-title text-center"
+      class="section mat-headline-6 text-center"
       *ngIf="(settings$ | async).postage_remark"
       [innerHtml]="(settings$ | async).postage_remark"
     ></div>

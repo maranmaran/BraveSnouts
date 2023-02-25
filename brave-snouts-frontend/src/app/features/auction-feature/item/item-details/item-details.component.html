@@ -1,4 +1,5 @@
 <mat-card
+  appearance="raised"
   *ngIf="bootstrapped"
   @skipInitAnimation
   class="auction-item m-2 mat-elevation-z5 elevate hover-large primary"
@@ -19,7 +20,7 @@
     }" -->
 
     <label
-      class="mb-0 mat-title bold"
+      class="mb-0 mat-headline-6 bold"
       [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
     >
       {{ item.name }}
@@ -31,7 +32,7 @@
       </div>
 
       <label
-        class="mat-title absolute"
+        class="mat-headline-6 absolute"
         [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
         [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
         class="no-wrap mb-0 mat-title bold center"
@@ -106,7 +107,7 @@
     fxLayoutAlign="center center"
   >
     <div
-      id="slider-row"
+      id="bit-action-row"
       class="w-100 mb-3"
       fxLayout="row"
       fxLayoutAlign="center center"
@@ -122,7 +123,7 @@
       </button>
 
       <div
-        class="mat-title m-0 bold"
+        class="mat-headline-6 m-0 bold"
         [ngClass]="{ 'foreground accent default': currentBid != item.bid }"
       >
         {{ currentBid | moneyAsync | async }}

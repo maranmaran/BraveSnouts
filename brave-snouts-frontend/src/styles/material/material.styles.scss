@@ -1,7 +1,7 @@
 @use "@angular/material" as mat;
 @import "./material.theme.scss";
 
-.mat-form-field {
+.mat-mdc-form-field {
   width: 100% !important;
 }
 
@@ -23,21 +23,21 @@
   }
 }
 
-.mat-card {
+.mat-mdc-card {
   display: flex;
   flex-direction: column;
 }
 
-.mat-card-header {
+.mat-mdc-card-header {
   flex-shrink: 0;
 }
 
-.mat-card-content {
+.mat-mdc-card-content {
   flex-grow: 1;
   overflow: auto;
 }
 
-.mat-card-actions {
+.mat-mdc-card-actions {
   margin-right: 0;
 }
 
@@ -45,11 +45,4 @@
   position: relative;
   bottom: 1rem;
   left: 1rem;
-}
-
-// disable slider animation from 100 to 0
-.mat-slider {
-  .mat-slider-thumb-container {
-    transition: none;
-  }
 }

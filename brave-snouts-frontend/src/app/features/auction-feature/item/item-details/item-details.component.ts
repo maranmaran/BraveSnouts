@@ -1,10 +1,8 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
-import { FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -56,9 +54,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   userData: any;
   isAuthenticated: boolean;
 
-  // elements
-  @ViewChild(MatSlider) slider: MatSlider;
-
   // Flags
   // disables bid related actions for a period of time
   bidDisabled: boolean;
@@ -68,8 +63,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   // bid controls
   currentBid: number;
-  // bidControl: FormControl;
-  bidSlider: number;
 
   // component specific
   bootstrapped = false;
@@ -164,16 +157,9 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     // this.manualChangeDetection.queueChangeDetection();
   }
 
-  /* Sets up slider and custom bid control */
+  /* Sets up bid controls and value */
   setupControls(item: AuctionItem) {
-    // this.bidControl = this.getBidControl(item.bid);
-    // this._subsink.add(this.bidControl.valueChanges.subscribe(change => this.bidControlChange(change)));
-
-    this.bidSlider = item.bid + environment.itemCardConfig.minBidOffset;
-
     this.currentBid = item.user ? item.bid : item.startBid;
-
-    this.controlsValid = false;
   }
   //#endregion
 
@@ -183,7 +169,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.topBidChanged = true;
     this.topBidChanged$.next(this.topBidChanged)
     setTimeout(() => (this.topBidChanged = false, this.topBidChanged$.next(this.topBidChanged)), timeout);
-    // setTimeout(() => (this.topBidChanged = false, this.ChangeDetectorRef.detectChanges()), timeout);
   }
 
   /* Disables bid button for XY milliseconds */
@@ -244,7 +229,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
       userId: this.userData.uid,
       userInfo: { name: user.name, avatar: user.avatar, email: user.email, id: this.userData.uid },
       date: this.bidsRepo.timestamp,
-      bid: this.getBidPrice() ?? item.bid + environment.itemCardConfig.minBidOffset,
+      bid: this.currentBid ?? item.bid + environment.itemCardConfig.minBidOffset,
       bidBefore: item.bid ?? null,
       userBefore: item?.user ?? null,
       bidIdBefore: item?.bidId ?? null
@@ -268,128 +253,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /** Checks if bid is valid */
-  public get isBidValid(): boolean {
-
-    //TODO: Temp because of plus minus
+  public get isBidValid() {
     return this.currentBid > this.item.bid;
-
-    if (this.lastTouchedControl == null)
-      return false;
-
-    if (this.lastTouchedControl == 'slider')
-      return this.validateBidSlider();
-
-    // return this.validateBidControl();
-  }
-
-  /** Validates slider bid */
-  validateBidSlider() {
-    const sliderBid = this.slider.value;
-    const currentBid = this.currentBid;
-
-    const errors: ValidationErrors = {};
-
-    if (!sliderBid)
-      errors['sliderNull'] = 'Vrijednost kliznika je neispravna';
-
-    if (!currentBid)
-      errors['currentNull'] = 'Trenutna vrijednost predmeta je neispravna';
-
-    if (sliderBid <= currentBid)
-      errors['sameBid'] = 'Ne može se dati ponuda manja ili jednaka trenutnoj';
-
-    if (sliderBid % 5 != 0)
-      errors['incrementOfFive'] = 'Ponuda mora biti višekratnik broja 5';
-
-    const errorsCount = Object.keys(errors)?.length;
-    if (Object.keys(errors)?.length > 0) {
-      // console.log(errors);
-    }
-
-    // console.log("Validating slider", errors);
-
-    return errorsCount == 0; // VALID if no errors
-  }
-
-  /** Validates custom input for bid */
-  // validateBidControl() {
-  //   const controlBid = this.bidControl.value;
-  //   const controlBidValid = this.bidControl.valid;
-
-  //   const currentBid = this.currentBid;
-
-  //   let errors: ValidationErrors = this.bidControl.errors ?? {};
-
-  //   if (!controlBid || !controlBidValid)
-  //     errors['controlNull'] = 'Vrijednost ponude je neispravna';
-
-  //   if (!currentBid)
-  //     errors['currentNull'] = 'Trenutna vrijednost predmeta je neispravna';
-
-  //   if (controlBid % 1 != 0 || /^\d+$/.test(controlBid) == false) {
-  //     errors['decimal'] = "Cijena mora biti prirodan broj"
-  //   }
-
-  //   if (controlBid % 5 != 0) {
-  //     errors['incrementOfFive'] = 'Ponuda mora biti višekratnik broja 5';
-  //   }
-
-  //   const errorsCount = Object.keys(errors)?.length;
-  //   if (Object.keys(errors)?.length > 0) {
-  //     this.bidControl.setErrors(errors);
-  //   }
-
-  //   // console.log("Validating control", errors);
-
-  //   return errorsCount == 0; // VALID if no errors
-
-  // }
-
-  /* Gets current bid price from custom input and slider  */
-  getBidPrice() {
-
-    // TODO Temp because of minus plus
-    return this.currentBid;
-
-    if (this.lastTouchedControl == null)
-      throw new Error("Can not put offer if no control was touched");
-
-    if (this.lastTouchedControl == 'slider')
-      return this.slider.value;
-
-    // return this.bidControl.value;
-  }
-
-  lastTouchedControl?: 'control' | 'slider' = null;
-  controlsValid = false;
-
-  /* Selected price cache from slider */
-  bidSliderChange(event: MatSliderChange) {
-    this.bidSlider = event.value;
-
-    // update price control
-    // this.bidControl.setValue(event.value, { onlySelf: true, emitEvent: false });
-    // this.bidControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-
-    this.lastTouchedControl = 'slider';
-    this.controlsValid = this.validateBidSlider();
-  }
-
-  /** Custom input bid change */
-  // bidControlChange(event: any) {
-  //   this.lastTouchedControl = 'control';
-  //   this.controlsValid = this.validateBidControl();
-  // }
-
-  /* Tracking function for items. React in real time only on bid changes*/
-  bidFn(item) {
-    return item.bid
-  }
-
-  /* Scaffolds bid form control (located on the right of slider)*/
-  getBidControl(currentBid) {
-    return new FormControl(currentBid + environment.itemCardConfig.maxBidOffset, [
-      Validators.min(currentBid + environment.itemCardConfig.minBidOffset), Validators.required]);
   }
 
   //#endregion

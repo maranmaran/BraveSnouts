@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CountdownConfig } from 'ngx-countdown';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { Observable, of } from 'rxjs';
 import { concatMap, map, take, tap } from 'rxjs/operators';
 import { itemAnimations } from 'src/business/animations/item.animations';
@@ -48,14 +48,14 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     this.getUserTrackedItems();
 
     this.auction$ = this.auctionsRepo.getOne(auctionId)
-    .pipe(
-      tap(auction => this.setupCountdown(auction))
-    );
+      .pipe(
+        tap(auction => this.setupCountdown(auction))
+      );
 
     this._subsink.add(
 
       this.auction$.pipe(map(auction => auction.raisedMoney)).subscribe(money => {
-        if(money != this._previousMoneyRaised) {
+        if (money != this._previousMoneyRaised) {
           this.moneyRaised = true;
           setTimeout(() => (this.moneyRaised = false, this.changeDetectionRef.detectChanges()), 1000);
         }

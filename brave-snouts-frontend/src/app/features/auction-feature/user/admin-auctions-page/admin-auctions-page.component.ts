@@ -1,9 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { combineLatest, from, noop } from 'rxjs';
 import { first, map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
@@ -12,14 +12,13 @@ import { Auction } from 'src/business/models/auction.model';
 import { WinnerOnAuction } from 'src/business/models/winner.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { FunctionsService } from 'src/business/services/functions.service';
+import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
+import { WinnersRepository } from 'src/business/services/repositories/winners.repository';
+import { SettingsService } from 'src/business/services/settings.service';
 import { SubSink } from 'subsink';
-import { ProgressBarService } from './../../../../../business/services/progress-bar.service';
-import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
-import { SettingsService } from './../../../../../business/services/settings.service';
-import { StorageService } from './../../../../../business/services/storage.service';
-import { WinnerDetailsDialogComponent } from './../winner-details-dialog/winner-details-dialog.component';
+import { WinnerDetailsDialogComponent } from '../winner-details-dialog/winner-details-dialog.component';
 
 @Component({
   selector: 'app-admin-auctions-page',
@@ -43,12 +42,10 @@ export class AdminAuctionsPageComponent implements OnInit {
     public readonly mediaObs: MediaObserver,
     private readonly authSvc: AuthService,
     private readonly auctionRepo: AuctionRepository,
-    private readonly itemsRepo: AuctionItemRepository,
     private readonly winnersRepo: WinnersRepository,
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
-    private readonly storage: StorageService,
     private readonly loadingSvc: ProgressBarService,
     private readonly settingsSvc: SettingsService
   ) { }

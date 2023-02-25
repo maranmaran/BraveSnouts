@@ -1,8 +1,9 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, Input, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
+import { MediaObserver } from 'ngx-flexible-layout';
+import { of } from 'rxjs';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
-import { SettingsService } from 'src/business/services/settings.service';
+import { BankAccount, SettingsService } from 'src/business/services/settings.service';
 
 @Component({
   selector: 'app-donate',
@@ -13,8 +14,7 @@ import { SettingsService } from 'src/business/services/settings.service';
 export class DonateComponent implements OnInit {
 
   @Input() text = true;
-
-  accounts$ = this.settingsSvc.getAccounts();
+  accounts$ = of<BankAccount[]>([]);
 
   constructor(
     public readonly mediaObs: MediaObserver,
@@ -22,7 +22,7 @@ export class DonateComponent implements OnInit {
     private readonly settingsSvc: SettingsService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.accounts$ = this.settingsSvc.getAccounts();
   }
-
 }

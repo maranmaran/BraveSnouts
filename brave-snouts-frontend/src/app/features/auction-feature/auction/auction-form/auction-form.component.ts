@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { BehaviorSubject, from, noop } from 'rxjs';
 import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -272,6 +272,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       endDate: firebase.firestore.Timestamp.fromDate(endDate),
       // description: this.auction.value.description,
     });
+
     if (!this.createMode) {
       // to keep before state
       delete auction.processed;

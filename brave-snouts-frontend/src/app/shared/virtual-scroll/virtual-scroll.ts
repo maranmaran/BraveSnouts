@@ -102,72 +102,72 @@ export interface IViewport extends IPageInfo {
   },
   styles: [
     `
-      :host {
-        position: relative;
-        display: block;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      :host.horizontal.selfScroll {
-        overflow-y: visible;
-        overflow-x: auto;
-      }
-
-      :host.horizontal.selfScroll.rtl {
-        transform: scaleX(-1);
-      }
-
-      :host.vertical.selfScroll {
-        overflow-y: auto;
-        overflow-x: visible;
-      }
-
-      .scrollable-content {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        max-width: 100vw;
-        max-height: 100vh;
-        position: absolute;
-      }
-
-      .scrollable-content ::ng-deep > * {
-        box-sizing: border-box;
-      }
-
-      :host.horizontal {
-        white-space: nowrap;
-      }
-
-      :host.horizontal .scrollable-content {
-        display: flex;
-      }
-
-      :host.horizontal .scrollable-content ::ng-deep > * {
-        flex-shrink: 0;
-        flex-grow: 0;
-        white-space: initial;
-      }
-
-      :host.horizontal.rtl .scrollable-content ::ng-deep > * {
-        transform: scaleX(-1);
-      }
-
-      .total-padding {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 1px;
-        width: 1px;
-        transform-origin: 0 0;
-        opacity: 0;
-      }
-
-      :host.horizontal .total-padding {
-        height: 100%;
-      }
-    `,
+          :host {
+            position: relative;
+            display: block;
+            -webkit-overflow-scrolling: touch;
+          }
+    
+          :host.horizontal.selfScroll {
+            overflow-y: visible;
+            overflow-x: auto;
+          }
+    
+          :host.horizontal.selfScroll.rtl {
+            transform: scaleX(-1);
+          }
+    
+          :host.vertical.selfScroll {
+            overflow-y: auto;
+            overflow-x: visible;
+          }
+    
+          .scrollable-content {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            max-width: 100vw;
+            max-height: 100vh;
+            position: absolute;
+          }
+    
+          .scrollable-content ::ng-deep > * {
+            box-sizing: border-box;
+          }
+    
+          :host.horizontal {
+            white-space: nowrap;
+          }
+    
+          :host.horizontal .scrollable-content {
+            display: flex;
+          }
+    
+          :host.horizontal .scrollable-content ::ng-deep > * {
+            flex-shrink: 0;
+            flex-grow: 0;
+            white-space: initial;
+          }
+    
+          :host.horizontal.rtl .scrollable-content ::ng-deep > * {
+            transform: scaleX(-1);
+          }
+    
+          .total-padding {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 1px;
+            width: 1px;
+            transform-origin: 0 0;
+            opacity: 0;
+          }
+    
+          :host.horizontal .total-padding {
+            height: 100%;
+          }
+        `,
   ],
 })
 export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {

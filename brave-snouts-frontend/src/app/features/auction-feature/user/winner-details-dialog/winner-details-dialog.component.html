@@ -17,6 +17,7 @@
     [items]="winners"
   >
     <mat-card
+      appearance="raised"
       id="winner"
       *ngFor="let winner of scroll.viewPortItems; trackBy: trackByFn"
       class="mat-elevation-z8 elevate hover-large mt-2"
