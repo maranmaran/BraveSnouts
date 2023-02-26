@@ -1,9 +1,7 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
+  Component, EventEmitter,
   HostListener,
   Input,
   OnChanges,
@@ -37,7 +35,7 @@ import { ItemScrollViewService } from './item-scroll-view.service';
 export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() auction: Auction;
   @Input() items: AuctionItem[];
-  @Input() parentScroll: ElementRef;
+  @Input() parentScroll: Element;
   @Output() loadMore = new EventEmitter<IPageInfo>();
 
   private readonly _subsink = new SubSink();

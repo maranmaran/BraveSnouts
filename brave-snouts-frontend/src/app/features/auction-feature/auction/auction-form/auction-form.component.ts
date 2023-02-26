@@ -91,7 +91,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     if (!this.createMode) {
       // received timestamp convert to date
       startDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
-      endDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
+      endDate = new firebase.firestore.Timestamp(auction.endDate.seconds, auction.endDate.nanoseconds).toDate();
     }
 
     const startTime = moment(startDate).format('HH:mm');

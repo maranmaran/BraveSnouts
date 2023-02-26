@@ -130,7 +130,7 @@ export class WinnerDetailsDialogComponent implements OnInit {
     });
   }
 
-  trackByFn(winner: WinnerOnAuction) {
+  trackByFn(_: number, winner: WinnerOnAuction) {
     return winner.id;
   }
 

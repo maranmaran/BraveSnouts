@@ -81,7 +81,6 @@
   }
 
   .item-dialog {
-    /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
     mat-dialog-container {
       margin: 0 !important;
       padding: 0px !important;
@@ -91,7 +90,7 @@
     .container {
       margin: 0 !important;
       padding: 0 !important;
-      /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+
       mat-card {
         box-shadow: none;
       }
@@ -99,7 +98,6 @@
   }
 
   .items-dialog {
-    /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
     mat-dialog-container {
       margin: 0 !important;
       padding: 0px !important;
@@ -109,7 +107,7 @@
     .container {
       margin: 0 !important;
       padding: 0 !important;
-      /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+
       mat-card {
         box-shadow: none;
       }
@@ -145,18 +143,33 @@
     }
   }
 
+  .small-icon-button {
+  }
+
   .offer-button {
     $size: 50px;
 
     width: $size !important;
     height: $size !important;
-    line-height: $size !important;
+    padding: 0px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
 
-    mat-icon {
+    & > *[role="img"] {
+      width: $size;
+      height: $size;
+      font-size: $size;
+
+      svg {
+        width: $size;
+        height: $size;
+      }
+    }
+
+    .mat-mdc-button-touch-target {
       width: $size !important;
       height: $size !important;
-      line-height: $size !important;
-      font-size: $size !important;
     }
   }
 

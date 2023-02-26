@@ -6,15 +6,11 @@
   fxLayout="column"
   fxLayoutGap="1rem"
 >
-  <div
-    class="back-btn m-0 ml-1 mr-1"
-    fxLayout="row"
-    fxLayoutAlign="space-between"
-  >
+  <div class="back-btn" fxLayout="row" fxLayoutAlign="space-between">
     <button
       routerLink="/app/auctions"
       class="btn-small"
-      mat-raised-button
+      mat-mini-fab
       color="warn"
     >
       <mat-icon>arrow_back</mat-icon>
@@ -50,8 +46,8 @@
       <div
         class="mb-0 bold"
         [ngClass]="{
-          'mat-headline': mediaObs.isActive('gt-md'),
-          'mat-title': mediaObs.isActive('lt-lg'),
+          'mat-h1': mediaObs.isActive('gt-md'),
+          'mat-h2': mediaObs.isActive('lt-lg'),
           'mat-body': mediaObs.isActive('lt-sm')
         }"
       >
@@ -63,8 +59,8 @@
         [config]="config"
         class="m-0 bold"
         [ngClass]="{
-          'mat-headline': mediaObs.isActive('gt-md'),
-          'mat-title': mediaObs.isActive('lt-lg'),
+          'mat-h1': mediaObs.isActive('gt-md'),
+          'mat-h2': mediaObs.isActive('lt-lg'),
           'mat-body': mediaObs.isActive('lt-sm')
         }"
       ></countdown>
@@ -74,8 +70,8 @@
       <div
         class="mb-0 bold"
         [ngClass]="{
-          'mat-headline': mediaObs.isActive('gt-md'),
-          'mat-title': mediaObs.isActive('lt-lg'),
+          'mat-h1': mediaObs.isActive('gt-md'),
+          'mat-h2': mediaObs.isActive('lt-lg'),
           'mat-body': mediaObs.isActive('lt-sm')
         }"
         fxLayout="row"
@@ -95,7 +91,6 @@
   <app-item-list
     [auction]="auction"
     [auctionId]="auction.id"
-    [trackedItems]="userTrackedItems"
     [parentScroll]="scrollingBlock"
   ></app-item-list>
 </div>

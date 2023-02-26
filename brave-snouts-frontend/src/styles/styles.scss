@@ -87,37 +87,6 @@ gallery {
   }
 }
 
-#item-max-price-control {
-  width: 4.7rem !important;
-
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-  .mat-form-field-wrapper {
-    padding: 0 !important;
-    width: 4.7rem !important;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-  .mat-form-field-suffix {
-    top: 0 !important;
-  }
-}
-
-// @import url('https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap');
-
-// .custom-font {
-//     font-family: 'Mali', cursive !important;
-// }
-
 .no-wrap {
   white-space: nowrap;
 }
@@ -177,8 +146,7 @@ label {
 }
 
 .back-btn {
-  position: relative;
-  bottom: 10px;
+  margin: 0.75rem;
 }
 
 .logo-base {

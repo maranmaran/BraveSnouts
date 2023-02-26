@@ -133,125 +133,132 @@
             fxLayout="column"
             fxLayoutGap="1rem"
           >
-            <mat-card-title class="header">
-              <div
-                fxLayout="row"
-                fxLayoutAlign="start center"
-                fxLayoutGap="0.5rem"
-              >
+            <mat-card-header fxLayout="column">
+              <mat-card-title class="header" fxLayout="column">
+                <div
+                  fxLayout="row"
+                  fxLayoutAlign="start center"
+                  fxLayoutGap="0.5rem"
+                >
+                  <mat-form-field>
+                    <mat-label>Naziv</mat-label>
+                    <input
+                      id="name-{{ scroll.viewPortInfo.startIndex + i }}"
+                      matInput
+                      formControlName="name"
+                    />
+                  </mat-form-field>
+
+                  <button
+                    id="deleteBtn-{{ scroll.viewPortInfo.startIndex + i }}"
+                    mat-icon-button
+                    class="relative"
+                    type="button"
+                    color="warn"
+                    style="bottom: 0.75rem"
+                    (click)="removeItem(scroll.viewPortInfo.startIndex + i)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+
                 <mat-form-field>
-                  <mat-label>Naziv</mat-label>
+                  <mat-label>Početna cijena</mat-label>
                   <input
-                    id="name-{{ scroll.viewPortInfo.startIndex + i }}"
+                    #startValue
+                    id="price-{{ scroll.viewPortInfo.startIndex + i }}"
                     matInput
-                    formControlName="name"
+                    type="number"
+                    step="0.5"
+                    value="0.00"
+                    formControlName="startPrice"
                   />
+                  <span class="mr-2" matSuffix>€</span>
                 </mat-form-field>
+              </mat-card-title>
+            </mat-card-header>
 
-                <button
-                  id="deleteBtn-{{ scroll.viewPortInfo.startIndex + i }}"
-                  mat-icon-button
-                  class="relative"
-                  type="button"
-                  color="warn"
-                  style="bottom: 0.75rem"
-                  (click)="removeItem(scroll.viewPortInfo.startIndex + i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-
-              <mat-form-field>
-                <mat-label>Početna cijena</mat-label>
-                <input
-                  #startValue
-                  id="price-{{ scroll.viewPortInfo.startIndex + i }}"
-                  matInput
-                  type="number"
-                  step="0.5"
-                  value="0.00"
-                  formControlName="startPrice"
-                />
-                <span class="ml-1" matSuffix>€</span>
-              </mat-form-field>
-            </mat-card-title>
-
-            <div fxLayout="column" fxLayoutGap="1rem">
-              <div class="media">
-                <mat-progress-bar
-                  *ngIf="
-                    uploadStates$[scroll.viewPortInfo.startIndex + i] | async
-                  "
-                  mode="indeterminate"
-                >
-                </mat-progress-bar>
-
-                <ngx-dropzone
-                  id="images-{{ scroll.viewPortInfo.startIndex + i }}"
-                  class="auction-item-media-dropzone pb-0"
-                  (change)="
-                    uploadFiles($event, scroll.viewPortInfo.startIndex + i)
-                  "
-                  [disableClick]="dragActive"
-                >
-                  <ngx-dropzone-label
+            <mat-card-content>
+              <div fxLayout="column" fxLayoutGap="1rem">
+                <div class="media">
+                  <mat-progress-bar
                     *ngIf="
-                      files[scroll.viewPortInfo.startIndex + i]?.length == 0
+                      uploadStates$[scroll.viewPortInfo.startIndex + i] | async
                     "
+                    mode="indeterminate"
                   >
-                    <button mat-stroked-button type="button">Učitaj</button>
-                  </ngx-dropzone-label>
+                  </mat-progress-bar>
 
-                  <drag-scroll
-                    class="form-drag-scroll"
-                    *ngIf="
-                      files[scroll.viewPortInfo.startIndex + i]?.length > 0
+                  <ngx-dropzone
+                    id="images-{{ scroll.viewPortInfo.startIndex + i }}"
+                    class="auction-item-media-dropzone pb-0"
+                    (change)="
+                      uploadFiles($event, scroll.viewPortInfo.startIndex + i)
                     "
-                    [drag-scroll-y-disabled]="true"
-                    [snap-disabled]="true"
-                    (dragStart)="dragActive = true"
-                    (dragEnd)="dragEnd()"
-                    fxLayout="row"
+                    [disableClick]="dragActive"
                   >
-                    <div
-                      class="item"
-                      drag-scroll-item
-                      *ngFor="
-                        let file of files[scroll.viewPortInfo.startIndex + i]
+                    <ngx-dropzone-label
+                      *ngIf="
+                        files[scroll.viewPortInfo.startIndex + i]?.length == 0
                       "
                     >
-                      <ng-container *ngIf="file.url as url">
-                        <img *ngIf="file.type == 'image'" [src]="url" />
-                        <video *ngIf="file.type == 'video'" [src]="url"></video>
-                        <button
-                          id="remove-file-btn"
-                          type="button"
-                          mat-icon-button
-                          color="accent"
-                          (click)="
-                            removeFile(
-                              scroll.viewPortInfo.startIndex + i,
-                              file,
-                              url,
-                              $event
-                            )
-                          "
-                        >
-                          <mat-icon>close</mat-icon>
-                        </button>
-                      </ng-container>
-                    </div>
-                  </drag-scroll>
-                </ngx-dropzone>
-              </div>
+                      <button mat-stroked-button type="button">Učitaj</button>
+                    </ngx-dropzone-label>
 
-              <textarea
-                id="description-{{ scroll.viewPortInfo.startIndex + i }}"
-                class="editor"
-                [placeholder]="'Opis predmeta'"
-                formControlName="description"
-              ></textarea>
-            </div>
+                    <drag-scroll
+                      class="form-drag-scroll"
+                      *ngIf="
+                        files[scroll.viewPortInfo.startIndex + i]?.length > 0
+                      "
+                      [drag-scroll-y-disabled]="true"
+                      [snap-disabled]="true"
+                      (dragStart)="dragActive = true"
+                      (dragEnd)="dragEnd()"
+                      fxLayout="row"
+                    >
+                      <div
+                        class="item mr-2"
+                        drag-scroll-item
+                        *ngFor="
+                          let file of files[scroll.viewPortInfo.startIndex + i]
+                        "
+                      >
+                        <ng-container *ngIf="file.url as url">
+                          <img *ngIf="file.type == 'image'" [src]="url" />
+                          <video
+                            *ngIf="file.type == 'video'"
+                            [src]="url"
+                          ></video>
+                          <button
+                            id="remove-file-btn"
+                            type="button"
+                            mat-icon-button
+                            color="accent"
+                            (click)="
+                              removeFile(
+                                scroll.viewPortInfo.startIndex + i,
+                                file,
+                                url,
+                                $event
+                              )
+                            "
+                          >
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </ng-container>
+                      </div>
+                    </drag-scroll>
+                  </ngx-dropzone>
+                </div>
+
+                <textarea
+                  id="description-{{ scroll.viewPortInfo.startIndex + i }}"
+                  class="editor"
+                  [placeholder]="'Opis predmeta'"
+                  formControlName="description"
+                ></textarea>
+              </div>
+            </mat-card-content>
           </mat-card>
         </form>
         <div *ngIf="isMobile" class="form-actions mt-2">

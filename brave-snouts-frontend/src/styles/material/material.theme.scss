@@ -38,8 +38,9 @@ $theme-light-warn: mat.define-palette($warning, A700);
 @import url("https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap");
 $custom-typography: mat.define-typography-config(
   $font-family: "Mali, cursive",
-  $headline-1: mat.define-typography-level(32px, 48px, 700),
-  $body-1: mat.define-typography-level(16px, 24px, 500),
+  $headline-5: mat.define-typography-level(32px, 48px, 700),
+  $headline-6: mat.define-typography-level(24px, 36px, 600),
+  $body-2: mat.define-typography-level(16px, 24px, 500),
 );
 
 $theme-light: mat.define-light-theme(
@@ -57,9 +58,7 @@ $theme-light: mat.define-light-theme(
 .theme-light {
   @include mat.core-theme($theme-light);
   @include mat.all-component-themes($theme-light);
-
-  // @include mat.legacy-core-theme($theme-light);
-  // @include mat.all-legacy-component-themes($theme-light);
+  @include mat.typography-hierarchy($custom-typography);
 
   @include custom-components-theme($theme-light);
 }

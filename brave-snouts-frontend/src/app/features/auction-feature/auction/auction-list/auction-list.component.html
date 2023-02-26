@@ -3,7 +3,7 @@
     <ng-container *ngIf="auctions$ | async as auctions; else noAuctions">
       <ng-container *ngIf="auctions.length > 0; else noAuctions">
         <div @fadeIn id="auctions" fxLayout="column" fxLayoutGap="0.5rem">
-          <div class="mat-headline-6 bold text-center" *ngIf="totalDonated">
+          <div class="mat-h2 bold text-center" *ngIf="totalDonated">
             Trenutno sakupljeno {{ totalDonated | moneyAsync | async }}
           </div>
           <div fxLayout="row" fxLayoutGap="0.5rem">
@@ -96,7 +96,7 @@
     </ng-container>
 
     <ng-template #noAuctions>
-      <i *ngIf="auctionsBootstrapped" class="custom-font center mat-headline-6"
+      <i *ngIf="auctionsBootstrapped" class="custom-font center mat-h2"
         >Trenutno nema aktivnih aukcija</i
       >
     </ng-template>

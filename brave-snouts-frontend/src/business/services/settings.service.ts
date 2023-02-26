@@ -14,7 +14,6 @@ export class SettingsService {
         return this.firestore.doc<GlobalSettings>('config/global').valueChanges().pipe(first(), shareReplay(1));
     }
 
-
     private getImageProcessingSettings() {
         if (!this.firestore) {
             return;
@@ -22,7 +21,6 @@ export class SettingsService {
 
         return this.firestore.doc<ImageProcessingSettings>('config/image-processing').valueChanges().pipe(first(), shareReplay(1));
     }
-
 
     getMailVariables() {
         return this.firestore.doc<MailVariables>("config/mail-variables").valueChanges().pipe(
@@ -55,7 +53,6 @@ export class SettingsService {
             );
     }
 }
-
 
 export interface GlobalSettings {
     eurRate: number;

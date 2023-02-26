@@ -1,9 +1,7 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
+  Component, EventEmitter,
   Input,
   OnDestroy,
   OnInit,
@@ -60,7 +58,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   @Input() auction: Auction;
   @Input('auctionId') auctionId: string = 'k83JqY20Bjnv58hmYcHb';
-  @Input() parentScroll: ElementRef;
+  @Input() parentScroll: Element;
 
   private _subsink = new SubSink();
 

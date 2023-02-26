@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -6,9 +6,7 @@ import {
   ElementRef,
   EventEmitter,
   Inject,
-  Input,
-  NgModule,
-  NgZone,
+  Input, NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -1686,15 +1684,4 @@ export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {
   }
 }
 
-@NgModule({
-  exports: [VirtualScrollerComponent],
-  declarations: [VirtualScrollerComponent],
-  imports: [CommonModule],
-  providers: [
-    {
-      provide: 'virtual-scroller-default-options',
-      useFactory: VIRTUAL_SCROLLER_DEFAULT_OPTIONS_FACTORY,
-    },
-  ],
-})
-export class VirtualScrollerModule { }
+

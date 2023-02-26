@@ -20,7 +20,7 @@
         fxFlex="100%"
         fxFlex.lt-md="100%"
       >
-        <div class="mat-headline-6 mb-0 bold">{{ auction.name }}</div>
+        <div class="mat-h2 mb-0 bold">{{ auction.name }}</div>
         <div
           fxLayout="row"
           fxLayoutGap="1rem"
@@ -72,7 +72,7 @@
         fxFlex="100%"
         fxFlex.lt-md="100%"
       >
-        <div class="mat-headline-6 mb-0 bold">
+        <div class="mat-h2 mb-0 bold">
           Ukupno donirano {{ auction.raisedMoney | moneyAsync | async }}
         </div>
       </div>
@@ -151,7 +151,7 @@
   >
     <div #container fxLayout="row" fxLayoutGap="0.5rem">
       <div
-        *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn"
+        *ngFor="let item of scroll.viewPortItems"
         fxLayout="column"
         fxLayoutGap="0.5rem"
       >
@@ -317,6 +317,7 @@
         appearance="raised"
         *ngFor="let bid of bids$ | async"
         class="elevate hover"
+        style="margin-bottom: 1rem"
       >
         <mat-card-header>
           <img mat-card-avatar [src]="bid.userInfo?.avatar" />

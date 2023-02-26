@@ -1,20 +1,27 @@
-
 <div class="container" fxLayout="column" fxLayoutAlign="center start">
-    
-    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
-        <mat-icon>
-            close
-        </mat-icon>
+  <button mat-icon-button fxFlexAlign="end" (click)="onClose()">
+    <mat-icon> close </mat-icon>
+  </button>
+
+  <div fxLayout="column" fxLayoutGap="0.5rem" class="w-100 mb-4">
+    <mat-form-field
+      *ngFor="let control of handoverDetails.controls; index as i"
+      fxFlex="2 1 100%"
+    >
+      <mat-label>Detalji preuzimanja</mat-label>
+      <input matInput [formControl]="$any(handoverDetails.controls[i])" />
+    </mat-form-field>
+    <button fxFlexAlign="end" mat-flat-button color="warn" (click)="onAdd()">
+      Dodaj mjesto preuzimanja
     </button>
-
-      <div fxLayout="column" fxLayoutGap="0.5rem" class="w-100 mb-4" >
-          <mat-form-field *ngFor="let control of handoverDetails.controls; index as i" fxFlex="2 1 100%">
-              <mat-label>Detalji preuzimanja</mat-label>
-              <input matInput  [formControl]="handoverDetails.controls[i]">
-          </mat-form-field>
-          <button fxFlexAlign="end" mat-flat-button color="warn" (click)="onAdd()">Dodaj mjesto preuzimanja</button>
-          <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!handoverDetails.valid">Spremi</button>
-      </div>
-
-
+    <button
+      fxFlexAlign="end"
+      mat-flat-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!handoverDetails.valid"
+    >
+      Spremi
+    </button>
+  </div>
 </div>

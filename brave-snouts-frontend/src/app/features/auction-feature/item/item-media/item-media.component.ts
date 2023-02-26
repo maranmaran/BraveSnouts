@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { MediaObserver } from 'ngx-flexible-layout';
@@ -27,12 +27,13 @@ export class ItemMediaComponent implements OnInit {
   // private manualChangeDetection: ManualChangeDetection;
   protected imageCacheSeed = environment.imageCacheSeed;
 
-  protected loadGradually$ = this.settingsSvc.settings$.pipe(map(x => x.gradualImageLoading));
+  protected loadGradually$ = inject(SettingsService).settings$.pipe(
+    map(x => x.gradualImageLoading)
+  );
 
   constructor(
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox,
-    private readonly settingsSvc: SettingsService,
     protected readonly mediaObs: MediaObserver,
     private readonly itemScrollSvc: ItemScrollViewService
     // private readonly changeDetectorRef: ChangeDetectorRef
@@ -42,7 +43,6 @@ export class ItemMediaComponent implements OnInit {
 
   @Input('media') dbMedia: FirebaseFile[];
   @Input() auctionId: string;
-  // TODO: Fix.. this needs to be in FirebaseFile under path like bucket/auctionId.. right now: bucket/fileName
   @Input() galleryId: string;
   @Input('first') mobileView: boolean = false;
 
@@ -65,7 +65,8 @@ export class ItemMediaComponent implements OnInit {
 
   private getCachedImageUrl = (url: string) => url + '&cacheKey=' + this.imageCacheSeed;
   private getOriginalImageUrl = (media: FirebaseFile) => {
-    //TODO: This needs to be fixed. url and thumbUrl have different guid behind auction-items
+    //TODO: This needs to be fixed. 
+    // 'url' and 'thumbUrl' have different guid behind 'auction-items'
     // This guid should actually be auctionId...
 
     const storageUrl = 'https://firebasestorage.googleapis.com';

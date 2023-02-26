@@ -278,16 +278,28 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   //#endregion
 
   //#region Bid modification
-  private readonly bidModifier = 0.7; // TODO: Put into database
+
+  // TODO: Put into database
+  // Bid modifier is step between bids 
+  // (current 0.7EUR + or -, before it was 5HRK)
+  private readonly bidModifier = 0.7;
 
   subtractBid() {
-    this.currentBid -= this.bidModifier;
-    this.currentBid = Math.ceil(this.currentBid * 100) / 100;
+    let currentModified = this.currentBid * 100;
+    const bidModified = this.bidModifier * 100;
+
+    currentModified -= bidModified;
+
+    this.currentBid = Math.round(currentModified) / 100;
   }
 
   addBid() {
-    this.currentBid += this.bidModifier;
-    this.currentBid = Math.floor(this.currentBid * 100) / 100;
+    let currentModified = this.currentBid * 100;
+    const bidModified = this.bidModifier * 100;
+
+    currentModified += bidModified;
+
+    this.currentBid = Math.round(currentModified) / 100;
   }
   //#endregion
 
