@@ -39,7 +39,6 @@ $theme-light-warn: mat.define-palette($warning, A700);
 $custom-typography: mat.define-typography-config(
   $font-family: "Mali, cursive",
   $headline-5: mat.define-typography-level(32px, 48px, 700),
-  $headline-6: mat.define-typography-level(24px, 36px, 600),
   $body-2: mat.define-typography-level(16px, 24px, 500),
 );
 

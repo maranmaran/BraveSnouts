@@ -1,5 +1,5 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { registerLocaleData } from '@angular/common';
+import { NgOptimizedImage, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import hrLocale from '@angular/common/locales/hr';
 import { LOCALE_ID, NgModule } from '@angular/core';
@@ -74,6 +74,7 @@ registerLocaleData(hrLocale);
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    NgOptimizedImage,
 
     // Firebase
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -128,6 +129,7 @@ registerLocaleData(hrLocale);
     ItemListComponent,
     ItemDetailsComponent,
     ItemMediaComponent,
+
     ItemsListDialogComponent,
     ItemGalleryComponent,
 
@@ -174,11 +176,19 @@ registerLocaleData(hrLocale);
     {
       provide: GALLERY_CONFIG,
       useValue: {
+        imageSize: 'contain',
+        scrollBehavior: 'smooth',
+        loadingStrategy: 'preload',
+
+        itemAutosize: false,
+        autoHeight: true,
+
         dots: false,
         counter: false,
-        imageSize: 'contain',
         thumb: false,
         loop: false,
+
+        debug: false,
       },
     },
   ],

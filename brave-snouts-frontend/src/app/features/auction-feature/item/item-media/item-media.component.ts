@@ -19,12 +19,10 @@ interface ItemMedia {
   selector: 'app-item-media',
   templateUrl: './item-media.component.html',
   styleUrls: ['./item-media.component.scss'],
-  providers: [],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  providers: []
 })
 export class ItemMediaComponent implements OnInit {
 
-  // private manualChangeDetection: ManualChangeDetection;
   protected imageCacheSeed = environment.imageCacheSeed;
 
   protected loadGradually$ = inject(SettingsService).settings$.pipe(
@@ -36,9 +34,7 @@ export class ItemMediaComponent implements OnInit {
     private readonly lightbox: Lightbox,
     protected readonly mediaObs: MediaObserver,
     private readonly itemScrollSvc: ItemScrollViewService
-    // private readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    // this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
   }
 
   @Input('media') dbMedia: FirebaseFile[];
@@ -52,15 +48,14 @@ export class ItemMediaComponent implements OnInit {
     return this.mobileView;
   }
 
-  async ngOnInit() {
-
+  ngOnInit() {
     // no items
     if (!this.dbMedia || this.dbMedia.length == 0)
       return;
 
     this.media = this.getItemImages();
 
-    await this.setupGallery();
+    this.setupGallery();
   }
 
   private getCachedImageUrl = (url: string) => url + '&cacheKey=' + this.imageCacheSeed;
@@ -87,32 +82,31 @@ export class ItemMediaComponent implements OnInit {
   }
 
   /* Sets up images and videos for gallery component */
-  async setupGallery() {
+  setupGallery() {
 
     const galleryRef = this.gallery.ref(this.galleryId);
 
-    const itemsLen = (await galleryRef.state.pipe(first()).toPromise()).items.length;
+    const itemsLen = galleryRef.stateSnapshot.items.length;
 
-    if (!itemsLen && itemsLen == 0) {
-      for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
-
-        const galleryItem = { src: originalUrl ?? compressedUrl, thumb: thumbUrl ?? compressedUrl, type };
-
-        if (type == 'image')
-          galleryRef.addImage(galleryItem);
-
-        if (type == 'video')
-          galleryRef.addVideo(galleryItem);
-      }
+    if (itemsLen > 0) {
+      return;
     }
 
+    for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
+
+      const galleryItem = { src: originalUrl ?? compressedUrl, thumb: thumbUrl ?? compressedUrl, type };
+
+      if (type == 'image')
+        galleryRef.addImage(galleryItem);
+
+      if (type == 'video')
+        galleryRef.addVideo(galleryItem);
+    }
   }
 
 
   /* Opens fullscreen view of image aka lightbox */
   openLightbox(imageIdx: number = 0) {
-
-    // this.gallery.ref(this.galleryId).setConfig({imageSize: 'contain'});
 
     let lightboxData = [];
     for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
