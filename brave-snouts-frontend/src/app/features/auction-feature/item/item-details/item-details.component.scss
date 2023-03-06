@@ -5,7 +5,7 @@
   display: flex;
 }
 
-.mat-mdc-card-image {
+.card-image {
   // height: 400px;
   height: 300px;
   display: flex;
@@ -15,6 +15,7 @@
     width: 100%;
   }
 }
+
 @media (max-width: 600px) {
   .mat-mdc-card-image {
     height: 200px;
@@ -42,4 +43,8 @@
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+#description {
+  max-height: 44px;
 }

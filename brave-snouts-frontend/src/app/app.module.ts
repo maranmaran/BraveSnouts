@@ -181,7 +181,7 @@ registerLocaleData(hrLocale);
         loadingStrategy: 'preload',
 
         itemAutosize: false,
-        autoHeight: true,
+        autoHeight: false,
 
         dots: false,
         counter: false,
