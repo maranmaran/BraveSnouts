@@ -10,10 +10,10 @@ name: Deploy to Development
 
 defaults:
   run:
-    working-directory: ./brave-snouts-frontend
+    working-directory: ./src
 
 jobs:
-  hosting:
+  auctions_hosting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,6 +28,7 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
           FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID_DEV }}
           CACHE_SEED: ${{ secrets.CACHE_SEED }}
+          PROJECT_PATH: "./auctions/brave-snouts-frontend"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -37,7 +38,7 @@ jobs:
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
 
-  functions:
+  auctions_functions:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,4 +48,4 @@ jobs:
           args: deploy --only functions --project dev
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
-          PROJECT_PATH: "./functions"
+          PROJECT_PATH: "./auctions/functions"

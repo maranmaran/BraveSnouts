@@ -28,6 +28,7 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_PROD }}
           FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID_PROD }}
           CACHE_SEED: ${{ secrets.CACHE_SEED }}
+          PROJECT_PATH: "./auctions/brave-snouts-frontend"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -47,4 +48,4 @@ jobs:
           args: deploy --only functions --project prod
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
-          PROJECT_PATH: "./functions"
+          PROJECT_PATH: "./auctions/functions"
