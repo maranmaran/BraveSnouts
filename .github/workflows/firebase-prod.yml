@@ -8,16 +8,13 @@ name: Deploy to Production
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: ./brave-snouts-frontend
-
 jobs:
-  hosting:
+  auctions_hosting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build-prod
+        working-directory: ./src/auctions/brave-snouts-frontend
         env:
           BASE_URL: ${{ secrets.BASE_URL_PROD }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_PROD }}
@@ -28,7 +25,6 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_PROD }}
           FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID_PROD }}
           CACHE_SEED: ${{ secrets.CACHE_SEED }}
-          PROJECT_PATH: "./auctions/brave-snouts-frontend"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -38,14 +34,13 @@ jobs:
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
 
-  functions:
+  auctions_functions:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only functions --project prod
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
-          PROJECT_PATH: "./auctions/functions"
+          PROJECT_PATH: "./functions"
