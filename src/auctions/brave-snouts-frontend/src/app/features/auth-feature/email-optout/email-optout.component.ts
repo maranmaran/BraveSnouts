@@ -5,9 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { from, noop, Subject } from 'rxjs';
 import { first, map, skip, take, takeUntil } from 'rxjs/operators';
-import { User } from 'src/business/models/user.model';
+import { EmailSettings, User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
-import { EmailSettings } from './../../../../../../utilities/src/models';
 
 /**
  * TODO: This is actually not email optout confirmation anymore but notification management component for user
