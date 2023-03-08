@@ -1,6 +1,9 @@
 {
   "projects": {
-    "dev": "bravesnoutsdev",
-    "prod": "bravesnoutsprod"
+    "auctions_dev": "bravesnoutsdev",
+    "web_dev": "bravesnoutsdevweb",
+    "webshop_dev": "bravesnoutsdevwebshop",
+    "fostering_dev": "bravesnoutsdevfostering",
+    "auctions_prod": "bravesnoutsprod"
   }
 }
