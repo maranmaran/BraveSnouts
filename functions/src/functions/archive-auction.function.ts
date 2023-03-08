@@ -3,7 +3,6 @@ import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
 import { Auction } from "../models/models";
 
-
 /** Function executed every morning picks up 30+ days old 
  * auctions and marks them as **archived**  
  * CRON Schedule: At 06:00 on every day-of-week from Sunday through Saturday. */
@@ -27,7 +26,7 @@ export const archiveAuctionFn = europeFunctions.pubsub.schedule('0 6 * * 0-6')
 
       for (const auction of auctions) {
         auction.archived = true;
-        await store.collection('auctions').doc(auction.id).update(auction);
+        await store.collection('auctions').doc(auction.id).update(auction as any);
       }
 
       logger.info(`${auctions.length} auctions archived`);
