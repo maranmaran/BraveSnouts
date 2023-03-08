@@ -1,19 +1,17 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
+  Component, EventEmitter,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
+import { MediaObserver } from 'ngx-flexible-layout';
 import {
   IPageInfo,
-  VirtualScrollerComponent,
+  VirtualScrollerComponent
 } from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -60,7 +58,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   @Input() auction: Auction;
   @Input('auctionId') auctionId: string = 'k83JqY20Bjnv58hmYcHb';
-  @Input() parentScroll: ElementRef;
+  @Input() parentScroll: Element;
 
   private _subsink = new SubSink();
 

@@ -26,40 +26,42 @@ const routes: Routes = [
   // { path: '', component: MaintenanceComponent},
   { path: '', redirectTo: 'app', pathMatch: 'full' },
 
-  { path: 'app', component: AppContainerComponent, children: [
+  {
+    path: 'app', component: AppContainerComponent, children: [
 
-    { path: '', redirectTo: 'auctions', pathMatch: 'full'},
+      { path: '', redirectTo: 'auctions', pathMatch: 'full' },
 
-    { path: 'auctions', component: AuctionListComponent },
+      { path: 'auctions', component: AuctionListComponent },
 
-    { path: 'post-confirm', component: PostConfirmComponent },
-    { path: 'handover-confirm', component: HandoverConfirmComponent },
+      { path: 'post-confirm', component: PostConfirmComponent },
+      { path: 'handover-confirm', component: HandoverConfirmComponent },
 
-    { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
-    { path: 'create-auction-bulk-image-upload', component: AuctionBulkImageFormComponent },
-    { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
+      { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
+      { path: 'create-auction-bulk-image-upload', component: AuctionBulkImageFormComponent },
+      { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
 
-    { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
-    { path: 'item', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
+      { path: 'auction', canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
+      { path: 'item', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
 
-    { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
-    { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
-    { path: 'admin-auctions-page', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
+      { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
+      { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
+      { path: 'admin-auctions-page', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
 
-    { path: 'email-login', component: EmailLoginComponent },
-    { path: 'email-optout', component: EmailOptoutComponent },
+      { path: 'email-login', component: EmailLoginComponent },
+      { path: 'email-optout', component: EmailOptoutComponent },
 
-    { path: 'privacy-policy', component: PrivacyPolicyComponent },
-    { path: 'rules', component: AuctionRulesComponent },
+      { path: 'privacy-policy', component: PrivacyPolicyComponent },
+      { path: 'rules', component: AuctionRulesComponent },
 
-  ]},
+    ]
+  },
 
   // non matched routes
   { path: '**', redirectTo: '/' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

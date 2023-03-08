@@ -53,7 +53,9 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore
         .get();
       const auctionDoc = (await auctionSnapshot.data()) as Auction;
 
-      const raisedMoney = (auctionDoc.raisedMoney ?? 0) + addedMoney;
+      let raisedMoney = (auctionDoc.raisedMoney ?? 0) + addedMoney;
+      raisedMoney = Math.round(raisedMoney * 100) / 100;
+
       functions.logger.info(`New raised total is now ${raisedMoney}`);
 
       await store.doc(`auctions/${after.auctionId}`).update({ raisedMoney });

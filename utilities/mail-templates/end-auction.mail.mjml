@@ -46,7 +46,7 @@
           Osvojeni predmeti
         </mj-text>
         <mj-text> {{{items_html}}} </mj-text>
-        <mj-text font-size="14px"> Ukupno: {{total}} kn </mj-text>
+        <mj-text font-size="14px"> Ukupno: {{total}}</mj-text>
         <mj-divider></mj-divider>
         <mj-text align="center" font-weight="bold" font-size="14px">
           Potvrda preuzimanja
@@ -71,12 +71,12 @@
             <li>Erste - HR9224020063209851271</li>
             <li>Revolut - 0994513163</li>
             <li>Paypal - hrabre.njuske1@gmail.com</li>
-            <li>Keks - 0994513163</li>
+            <li>Keks - 098787823</li>
           </ul>
         </mj-text>
         <mj-text
           >U slučaju preuzimanja poštom potrebno je uplatiti dodatnih
-          {{postage_fee}} kn radi poštarine.</mj-text
+          {{postage_fee}} radi poštarine.</mj-text
         >
         <!-- <mj-text>U slučaju preuzimanja poštom potrebno je uplatiti dodatnu poštarinu.</mj-text> -->
         <mj-text>

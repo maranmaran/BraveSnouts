@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { BehaviorSubject, from, noop } from 'rxjs';
 import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -86,12 +86,12 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
 
-    let startDate = auction.startDate as unknown  as Date;
+    let startDate = auction.startDate as unknown as Date;
     let endDate = auction.endDate as unknown as Date;
-    if(!this.createMode) {
+    if (!this.createMode) {
       // received timestamp convert to date
       startDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
-      endDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
+      endDate = new firebase.firestore.Timestamp(auction.endDate.seconds, auction.endDate.nanoseconds).toDate();
     }
 
     const startTime = moment(startDate).format('HH:mm');
@@ -171,7 +171,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     this.files.splice(index, 1);
     this.uploadStates$.splice(index, 1);
 
-    if(!this.createMode) {
+    if (!this.createMode) {
       this.itemsToDeleteQueue.push({ itemId: item.value.id, user: item.value.user, auctionId: this.auction.value.id, bid: item.value.bid });
     }
   }
@@ -208,11 +208,11 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
             const path = `auction-items/${this.auction.value.id}/${name}`;
             const type = this.getFirebaseFileType(file.type);
 
-            let {ref, task} = this.storage.uploadFile(file, path);
+            let { ref, task } = this.storage.uploadFile(file, path);
             await task;
             let url = await ref.getDownloadURL().pipe(take(1)).toPromise();
 
-            let finalFile = { name, type, path, url } as FirebaseFile;
+            let finalFile = { name, type, path, fulLPath: path, tempPath: path, url, tempUrl: url, thumb: url } as FirebaseFile;
             this.files[index].push(finalFile);
           }),
           // tap(res => console.log(res)),
@@ -272,7 +272,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       endDate: firebase.firestore.Timestamp.fromDate(endDate),
       // description: this.auction.value.description,
     });
-    if(!this.createMode) {
+
+    if (!this.createMode) {
       // to keep before state
       delete auction.processed;
       delete auction.raisedMoney;
@@ -331,18 +332,18 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     )
 
     let raisedMoneyToSubtract = 0;
-    for(const item of this.itemsToDeleteQueue) {
+    for (const item of this.itemsToDeleteQueue) {
       from(this.auctionItemRepo.delete(item.auctionId, item.itemId))
-      .pipe(take(1)).subscribe(noop);
+        .pipe(take(1)).subscribe(noop);
 
-      if(item.user) {
+      if (item.user) {
         raisedMoneyToSubtract += item.bid;
       }
     }
 
-    if(raisedMoneyToSubtract > 0) {
+    if (raisedMoneyToSubtract > 0) {
       from(this.auctionRepo.update(this.auction.value.id, { raisedMoney: this.auction.value.raisedMoney - raisedMoneyToSubtract }))
-      .pipe(take(1)).subscribe(noop);
+        .pipe(take(1)).subscribe(noop);
     }
 
   }
@@ -364,9 +365,9 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   }
 
   clearFiles() {
-    if(!this.filesToDeleteQueue) return;
+    if (!this.filesToDeleteQueue) return;
 
-    for(const file of this.filesToDeleteQueue) {
+    for (const file of this.filesToDeleteQueue) {
       this.storage.deleteFile(file.url).catch(err => console.log(err))
     }
   }

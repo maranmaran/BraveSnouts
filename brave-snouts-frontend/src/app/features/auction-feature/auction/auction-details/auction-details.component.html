@@ -1,44 +1,100 @@
-<div class="container" #scrollingBlock [ngClass]="{'mt-2': mediaObs.isActive('lt-sm')}" *ngIf="(auction$ | async) as auction" fxLayout="column" fxLayoutGap="1rem">
+<div
+  class="container"
+  #scrollingBlock
+  [ngClass]="{ 'mt-2': mediaObs.isActive('lt-sm') }"
+  *ngIf="auction$ | async as auction"
+  fxLayout="column"
+  fxLayoutGap="1rem"
+>
+  <div
+    class="auction-toolbar mt-2"
+    fxLayout="row"
+    fxLayoutAlign="space-between"
+  >
+    <button
+      routerLink="/app/auctions"
+      class="btn-small"
+      mat-mini-fab
+      color="warn"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      <!-- Natrag -->
+    </button>
 
-    <div class="back-btn m-0 ml-1 mr-1" fxLayout="row" fxLayoutAlign="space-between">
-        <button routerLink="/app/auctions" class="btn-small" mat-raised-button color="warn" >
-            <mat-icon>arrow_back</mat-icon>
-            <!-- Natrag -->
-        </button>
+    <button
+      *ngIf="userTrackedItems?.size > 0"
+      routerLink="/app/my-items"
+      gaEvent="my_items_click"
+      gaCategory="items_tracking"
+      class="btn-small"
+      mat-raised-button
+      color="primary"
+    >
+      Moji predmeti
+    </button>
+  </div>
 
-
-        <button *ngIf="userTrackedItems?.size > 0" routerLink="/app/my-items" class="btn-small" mat-raised-button color="primary" >
-            Moji predmeti
-        </button>
+  <div
+    class="auction-toolbar"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    fxLayout.lt-md="column"
+  >
+    <div
+      class="section"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      fxLayoutGap="1rem"
+      fxFlex="45%"
+    >
+      <div
+        class="mb-0 bold"
+        [ngClass]="{
+          'mat-h1': mediaObs.isActive('gt-md'),
+          'mat-h2': mediaObs.isActive('lt-lg'),
+          'mat-body': mediaObs.isActive('lt-sm')
+        }"
+      >
+        {{ auction.name }}
+      </div>
+      <countdown
+        *ngIf="config"
+        #cd
+        [config]="config"
+        class="m-0 bold"
+        [ngClass]="{
+          'mat-h1': mediaObs.isActive('gt-md'),
+          'mat-h2': mediaObs.isActive('lt-lg'),
+          'mat-body': mediaObs.isActive('lt-sm')
+        }"
+      ></countdown>
     </div>
 
-    <div class="w-100" fxLayout="row" fxLayoutAlign="space-between center" fxLayout.lt-md="column">
-        <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" fxFlex="45%">
-            <div class="mb-0 bold"  [ngClass]="{
-                'mat-headline': mediaObs.isActive('gt-md'),
-                'mat-title': mediaObs.isActive('lt-lg'),
-                'mat-body': mediaObs.isActive('lt-sm')
-            }" >
-                {{auction.name}}
-            </div>
-            <countdown *ngIf="config" #cd [config]="config" class="m-0 bold" [ngClass]="{
-                'mat-headline': mediaObs.isActive('gt-md'),
-                'mat-title': mediaObs.isActive('lt-lg'),
-                'mat-body': mediaObs.isActive('lt-sm')
-            }" ></countdown>
+    <div class="section" fxLayout="row">
+      <div
+        class="mb-0 bold"
+        [ngClass]="{
+          'mat-h1': mediaObs.isActive('gt-md'),
+          'mat-h2': mediaObs.isActive('lt-lg'),
+          'mat-body': mediaObs.isActive('lt-sm')
+        }"
+        fxLayout="row"
+        fxLayoutGap="1.5rem"
+      >
+        <label>Ukupno donirano:</label>
+        <div
+          class="foreground primary lighter"
+          [@priceOnBidChanged]="moneyRaised ? 'change' : 'no-change'"
+        >
+          {{ auction.raisedMoney | moneyAsync | async }}
         </div>
-
-        <div class="section" fxLayout="row">
-            <div class="mb-0 bold"  [ngClass]="{
-                'mat-headline': mediaObs.isActive('gt-md'),
-                'mat-title': mediaObs.isActive('lt-lg'),
-                'mat-body': mediaObs.isActive('lt-sm')
-            }" fxLayout="row" fxLayoutGap="1.5rem">
-                <label>Ukupno donirano:</label> <div class="foreground primary lighter"  [@priceOnBidChanged]="moneyRaised ? 'change' : 'no-change'">{{auction.raisedMoney}} kn</div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 
-
-    <app-item-list [auction]="auction" [auctionId]="auction.id" [trackedItems]="userTrackedItems" [parentScroll]="scrollingBlock"></app-item-list>
+  <app-item-list
+    [auction]="auction"
+    [auctionId]="auction.id"
+    [parentScroll]="scrollingBlock"
+  ></app-item-list>
 </div>

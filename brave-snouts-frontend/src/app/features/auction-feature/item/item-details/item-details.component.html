@@ -1,39 +1,86 @@
-<mat-card *ngIf="bootstrapped" @skipInitAnimation class="auction-item m-2 mat-elevation-z5 elevate hover-large primary" fxLayout="column" fxLayoutGap="1rem">
-
-  <mat-card-title style="height: 64px" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
-
-    <label class="mb-0 mat-title bold" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}">
-      {{item.name}}
+<mat-card
+  appearance="outlined"
+  *ngIf="bootstrapped"
+  @skipInitAnimation
+  class="auction-item m-2 mat-elevation-z5 elevate hover-large primary h-100"
+  fxLayout="column"
+  fxLayoutGap="1rem"
+>
+  <mat-card-title
+    class="relative"
+    style="height: 64px"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    fxLayoutGap="1rem"
+  >
+    <label
+      class="mb-0 mat-h2 bold"
+      [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
+    >
+      {{ item.name }}
     </label>
 
-    <div fxLayout="column" class="mr-0">
-      <div class="mat-small text-center no-wrap" style="background: whitesmoke">Trenutna ponuda</div>
+    <div fxLayout="column" class="mr-0 relative">
+      <div class="mat-small text-center no-wrap" style="background: whitesmoke">
+        Trenutna ponuda
+      </div>
 
-      <label class="mat-title" [ngClass]="{'mat-body': mediaObs.isActive('lt-sm')}"
-        [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'" class="no-wrap mb-0 mat-title bold center">
-        {{ item.user ? item.bid + ' kn' : item.startBid + ' kn'}}
+      <label
+        class="mat-h2 absolute"
+        [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
+        [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
+        class="no-wrap mb-0 mat-h2 bold center"
+      >
+        {{ (item.user ? item.bid : item.startBid) | moneyAsync | async }}
       </label>
     </div>
-
   </mat-card-title>
 
   <ng-container id="tags">
-    <div class="best-bid-label background warn lighter mat-small" *ngIf="userId == item.user && isAuthenticated"
-      [@fadeIn]="userId === item.user && isAuthenticated">
+    <div
+      class="best-bid-label background warn lighter mat-small"
+      *ngIf="userId == item.user && isAuthenticated"
+      [@fadeIn]="userId === item.user && isAuthenticated"
+    >
       Vaša ponuda je trenutno najbolja
     </div>
-    <div class="best-bid-label background primary lighter mat-small" *ngIf="item.bid == item.startBid && !item.bidId">
+    <div
+      class="best-bid-label background primary lighter mat-small"
+      *ngIf="item.bid == item.startBid && !item.bidId"
+    >
       Još nije dana niti jedna ponuda
     </div>
   </ng-container>
 
-  <app-item-media id="picture" class="mat-card-image" [media]="item.media" [galleryId]="item.id"></app-item-media>
+  <app-item-media
+    id="picture"
+    class="card-image"
+    [media]="item.media"
+    [galleryId]="item.id"
+    [auctionId]="item.auctionId"
+  ></app-item-media>
 
-  <mat-card-content id="description" class="m-0" style="height: 44px">
-    <div *ngIf="item.description; else noDescription" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
-      <span #description class="truncated" [innerHtml]="item.description"></span>
-      <a *ngIf="isTruncated(description)" mat-stroked-button color="accent" fxFlexAlign="end" class="mt-2 pointer"
-        (click)="onShowDescription(item.description)">
+  <mat-card-content id="description" class="m-0 overflow-hidden">
+    <div
+      *ngIf="item.description; else noDescription"
+      fxLayout="row"
+      fxLayoutGap="0.5rem"
+      fxLayoutAlign="start center"
+      class="overflow-hidden"
+    >
+      <span
+        #description
+        class="truncated overflow-hidden"
+        [innerHtml]="item.description"
+      ></span>
+      <a
+        *ngIf="isTruncated(description)"
+        mat-stroked-button
+        color="accent"
+        fxFlexAlign="end"
+        class="mt-2 pointer"
+        (click)="onShowDescription(item.description)"
+      >
         Više
       </a>
     </div>
@@ -43,43 +90,58 @@
         <i>Nema opisa predmeta</i>
       </div>
     </ng-template>
-
   </mat-card-content>
 
-  <mat-card-actions id="actions" fxLayout="column" fxLayoutAlign="center center">
-
-    <div id="slider-row" class="w-100 mb-3" fxLayout="row" fxLayoutAlign="center center">
-
-      <!-- <div fxFlex="17" class="center mr-1">
-        <div class="mat-small">{{item.bid + ' kn'}}</div>
-      </div>
-
-      <mat-slider fxFlex class="bid-slider" color="primary" #bidSlider [displayWith]="formatBid" [step]="bidStepSize"
-        [min]="item.bid" [max]="item.bid + 30" [value]="bidSlider.min" (input)="bidSliderChange($event)"
-        [thumbLabel]="true">
-      </mat-slider>
-
-      <div fxFlex="17" class="center mr-1">
-        <div class="mat-small">{{bidSlider.value + ' kn'}}</div>
-      </div> -->
-
-      <button class="mr-5 offer-button" mat-icon-button color="warn" (click)="currentBid = currentBid - 5" [disabled]="currentBid == item.bid">
+  <mat-card-actions
+    id="actions"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+  >
+    <div
+      id="bit-action-row"
+      class="w-100 mb-3"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+    >
+      <button
+        class="mr-5 offer-button"
+        mat-icon-button
+        color="warn"
+        (click)="subtractBid()"
+        [disabled]="currentBid == item.bid"
+      >
         <mat-icon>remove</mat-icon>
       </button>
 
-      <div class="mat-title m-0 bold" [ngClass]="{ 'foreground accent default': currentBid != item.bid }">{{currentBid + ' kn'}}</div>
+      <div
+        class="mat-h2 m-0 bold"
+        [ngClass]="{ 'foreground accent default': currentBid != item.bid }"
+      >
+        {{ currentBid | moneyAsync | async }}
+      </div>
 
-      <button class="ml-5 offer-button" mat-icon-button color="primary" (click)="currentBid = currentBid + 5">
+      <button
+        class="ml-5 offer-button"
+        mat-icon-button
+        color="primary"
+        (click)="addBid()"
+      >
         <mat-icon>add</mat-icon>
       </button>
-
     </div>
 
-    <button class="w-100" mat-flat-button [disabled]="bidDisabled || currentBid <= item.bid" type="button" (click)="onBid(item)" color="primary">
+    <button
+      class="w-100"
+      mat-flat-button
+      [disabled]="bidDisabled || currentBid <= item.bid"
+      type="button"
+      (click)="onBid(item)"
+      color="primary"
+    >
       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.5rem">
-        <mat-icon>  pets </mat-icon> <span>Ponudi</span> <mat-icon>  pets </mat-icon>
+        <mat-icon> pets </mat-icon> <span>Ponudi</span>
+        <mat-icon> pets </mat-icon>
       </div>
     </button>
-
   </mat-card-actions>
 </mat-card>

@@ -1,23 +1,49 @@
-<ng-container *ngIf="dbMedia && dbMedia?.length > 0; else noMedia">
+<ng-container *ngIf="media && media?.length > 0; else noMedia">
+  <ng-container *ngIf="!isMobile; else singleMedia">
+    <!-- <app-media-slider
+      class="w-100 h-100"
+      [id]="galleryId"
+      (itemClick)="openLightbox($event)"
+    ></app-media-slider> -->
+    <gallery *ngIf="media.length > 1" class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
+      <img *ngIf="media.length == 1" 
+        class="w-100 h-100 single-gallery-image pointer" 
+        (click)="openLightbox()"
+        [ngStyle]="{
+          'background': 'url('+ (media[0].compressedUrl ?? media[0].thumbUrl) + ') 50% 50% no-repeat',
+          'background-size': 'contain'
+        }"
+        [src]="(loadGradually$ | async) ? (media[0].originalUrl ?? media[0].compressedUrl) : media[0].compressedUrl"
+        />
+  </ng-container>
 
-    <ng-container *ngIf="!onlyFirst; else singleMedia">
-      <gallery *ngIf="dbMedia.length > 1" class="w-100 h-100" [id]="galleryId" (itemClick)="openLightbox($event)"></gallery>
-      <img *ngIf="dbMedia.length == 1" class="w-100 h-100 single-gallery-image pointer" src="{{ dbMedia[0].url  + '&' + imageCacheSeed }}" (click)="openLightbox()"/>
-    </ng-container>
-
-    <ng-template #singleMedia>
-        <div>
-            <img id="single-image" class="img-fluid" src="{{ mobileImageUrl + '&' + imageCacheSeed }}" />
-            <ng-content></ng-content>
-        </div>
-    </ng-template>
+  <ng-template #singleMedia>
+    <div>
+      <img
+        id="single-image"
+        class="img-fluid"
+        [ngStyle]="{
+          background: 'url(' + media[0].thumbUrl + ') 50% 50% no-repeat',
+          'background-size': 'cover'
+        }"
+        [src]="
+          (loadGradually$ | async)
+            ? media[0].compressedUrl ?? media[0].thumbUrl
+            : media[0].thumbUrl
+        "
+      />
+      <ng-content></ng-content>
+    </div>
+  </ng-template>
 </ng-container>
 
 <ng-template #noMedia>
   <div>
-    <img id="placeholder" *ngIf="!dbMedia || dbMedia?.length == 0" src="assets/placeholders/PlaceholderProductImage.svg" />
+    <img
+      id="placeholder"
+      *ngIf="!media || media?.length == 0"
+      src="assets/placeholders/PlaceholderProductImage.svg"
+    />
     <ng-content></ng-content>
   </div>
 </ng-template>
-
-

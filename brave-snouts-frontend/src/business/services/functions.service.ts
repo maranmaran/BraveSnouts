@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @Injectable()
 export class FunctionsService {
-  constructor(private functions: AngularFireFunctions) {}
+  constructor(private functions: AngularFireFunctions) { }
 
   /** @deprecated */
   compressImage(file: File) {
@@ -17,6 +17,12 @@ export class FunctionsService {
     const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
 
     return callable({ auctionId, handoverDetails });
+  }
+
+  testSendWinnerMail(email, items) {
+    const callable = this.functions.httpsCallable('testSendWinnerMail-testSendWinnerMailFn');
+
+    return callable({ email, items });
   }
 
   /** Calls cloud function to send winner emails */

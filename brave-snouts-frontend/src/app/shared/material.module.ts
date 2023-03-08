@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
   MatMomentDateModule,
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS
 } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import {
   MatFormFieldModule,
-  MAT_FORM_FIELD_DEFAULT_OPTIONS,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS
 } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -129,4 +129,4 @@ const MY_DATEPICKER_FORMAT = {
   ],
   declarations: [],
 })
-export class MaterialModule {}
+export class MaterialModule { }

@@ -1,26 +1,21 @@
-.close-btn {
-    position: relative;
-    bottom: 40px;
-    left: 32px;
-}
-
 .login-btn {
-    height: 40px;
-    width: auto;
-    border-radius: 5px;
-    cursor: pointer;
+  height: 40px;
+  width: auto;
+  border-radius: 5px;
+  cursor: pointer;
 
-    &#instagram, &#mail {
-        padding: 2px;
-        height: 36px;
-    }
+  &#instagram,
+  &#mail {
+    padding: 2px;
+    height: 36px;
+  }
 }
 
 .link {
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 #privacy {
-    outline: unset !important;
+  outline: unset !important;
 }

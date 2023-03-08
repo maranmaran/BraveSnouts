@@ -11,7 +11,7 @@ ngx-dropzone {
   overflow: hidden;
 
   drag-scroll {
-      overflow-y: hidden;
+    overflow-y: hidden;
   }
 }
 
@@ -29,15 +29,16 @@ ngx-dropzone {
     width: auto !important;
     position: relative;
 
-    img, video {
-        height: 100% !important;
+    img,
+    video {
+      height: 100% !important;
     }
 
     #remove-file-btn {
-        position: absolute;
-        z-index: 1;
-        right: 0;
-        top: -3px;
+      position: absolute;
+      z-index: 1;
+      right: 0;
+      top: -3px;
     }
   }
 }

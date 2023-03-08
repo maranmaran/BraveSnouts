@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 import { mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { environment } from 'src/environments/environment';
@@ -15,7 +15,7 @@ export class AuctionItemRepository {
     }
 
     getCollection(auctionId: string, queryFn?: QueryFn<DocumentData>) {
-        if(!queryFn) {
+        if (!queryFn) {
             queryFn = ref => ref.orderBy("name", 'asc').orderBy("id", "asc");
         }
 
@@ -41,7 +41,7 @@ export class AuctionItemRepository {
 
         const query = ref => {
             ref = ref.orderBy('name', 'asc').orderBy('id', 'asc');
-            if(last) ref = ref.startAfter(last.name, last.id);
+            if (last) ref = ref.startAfter(last.name, last.id);
             return ref.limit(this.pageSize);
         }
 
@@ -63,7 +63,7 @@ export class AuctionItemRepository {
         items.forEach(item => {
             item.auctionId = auctionId;
             const docRef = this.getDocument(item.auctionId, item.id ?? this.getId());
-            batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id} ), { merge: true }); // destructive because we can "delete" media
+            batch.set(docRef.ref, Object.assign({}, item, { id: docRef.ref.id }), { merge: true }); // destructive because we can "delete" media
         });
 
         return batch.commit();

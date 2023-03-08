@@ -1,13 +1,12 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { registerLocaleData } from '@angular/common';
+import { NgOptimizedImage, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import hrLocale from '@angular/common/locales/hr';
 import { LOCALE_ID, NgModule } from '@angular/core';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireFunctionsModule, REGION } from '@angular/fire/functions';
-import { AngularFireStorageModule } from '@angular/fire/storage';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule, SETTINGS as FIRESTORE_SETTINGS } from '@angular/fire/compat/firestore';
+import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functions';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,6 +16,8 @@ import { LightboxModule, LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
 import { CountdownModule } from 'ngx-countdown';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { FlexLayoutModule } from 'ngx-flexible-layout';
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { QuillModule } from 'ngx-quill';
 import { AuctionDetailsComponent } from 'src/app/features/auction-feature/auction/auction-details/auction-details.component';
@@ -32,7 +33,6 @@ import { LoginMethodComponent } from 'src/app/features/auth-feature/login-method
 import { AuctionRulesComponent } from 'src/app/shared/auction-rules/auction-rules.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { DonateComponent } from 'src/app/shared/donate/donate.component';
-import { FooterComponent } from 'src/app/shared/footer/footer.component';
 import { MaintenanceComponent } from 'src/app/shared/maintenance/maintenance.component';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
@@ -44,6 +44,7 @@ import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 import { modules } from 'src/business/models/editor.config';
 import { AuctionDatePipe } from 'src/business/pipes/custom-date.pipe';
+import { MoneyPipe } from 'src/business/pipes/money.pipe';
 import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -63,7 +64,8 @@ import { ChangeEmailDialogComponent } from './features/auth-feature/change-email
 import { EmailLoginComponent } from './features/auth-feature/email-login/email-login.component';
 import { EmailOptoutComponent } from './features/auth-feature/email-optout/email-optout.component';
 import { RegisterComponent } from './features/auth-feature/register/register.component';
-import { VirtualScrollerModule } from './shared/virtual-scroll/virtual-scroll';
+import { EmailCopyComponent } from './shared/support/email-copy.component';
+import { VirtualScrollerModule } from './shared/virtual-scroll/virtual-scroll.module';
 
 registerLocaleData(hrLocale);
 
@@ -72,12 +74,17 @@ registerLocaleData(hrLocale);
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    NgOptimizedImage,
 
-    // Core stuff
+    // Firebase
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireFunctionsModule,
+
+    // Google analytics
+    NgxGoogleAnalyticsModule.forRoot(environment.firebaseConfig.measurementId),
+    NgxGoogleAnalyticsRouterModule,
 
     // Auction
     NgxMaterialTimepickerModule,
@@ -93,93 +100,98 @@ registerLocaleData(hrLocale);
     ClipboardModule,
     FormsModule,
     ReactiveFormsModule,
-    VirtualScrollerModule,
 
+    // Custom shared
+    VirtualScrollerModule,
     FlexLayoutModule,
     HotToastModule.forRoot(),
   ],
 
   declarations: [
-    // core
+    // Core
     AppComponent,
+    AppContainerComponent,
     ToolbarComponent,
 
-    // Auction feature
+    // Misc
+    DonateComponent,
+    PrivacyPolicyComponent,
+    MaintenanceComponent,
+    SupportComponent,
+    AuctionRulesComponent,
+
+    // Auctions
     AuctionListComponent,
     AuctionDetailsComponent,
     AuctionFormComponent,
+    AuctionDatePipe,
+
     ItemListComponent,
     ItemDetailsComponent,
     ItemMediaComponent,
+
+    ItemsListDialogComponent,
+    ItemGalleryComponent,
+
     PostConfirmComponent,
-    HandoverConfirmComponent,
     PostDetailsComponent,
-    UserItemsComponent,
 
-    // other
-    DonateComponent,
-
-    // shared
-    TruncatedTextComponent,
-    TruncatePipe,
-    AuctionDatePipe,
-    ConfirmDialogComponent,
-    PrivacyPolicyComponent,
-    MessageDialogComponent,
-    SupportComponent,
-
-    // auth
-    LoginMethodComponent,
-
-    AdminPageComponent,
-
+    HandoverConfirmComponent,
     HandoverDialogComponent,
+
+    UserItemsComponent,
 
     SingleItemComponent,
     SingleItemDialogComponent,
 
-    ItemGalleryComponent,
-
+    // Auth
+    LoginMethodComponent,
     EmailLoginComponent,
-    EmailOptoutComponent,
-    AppContainerComponent,
-
-    PrivacyPolicyComponent,
-    MessageDialogComponent,
-    MaintenanceComponent,
-    AuctionRulesComponent,
-    FooterComponent,
-    ItemsListDialogComponent,
     ChangeEmailDialogComponent,
-    WinnerDetailsDialogComponent,
     RegisterComponent,
+    EmailOptoutComponent,
+
+    // Admin 
+    AdminPageComponent,
     AuctionBulkImageFormComponent,
     AdminAuctionsPageComponent,
+    WinnerDetailsDialogComponent,
+
+    // Shared
+    TruncatedTextComponent,
+    TruncatePipe,
+    MoneyPipe,
+    ConfirmDialogComponent,
+    MessageDialogComponent,
+    EmailCopyComponent,
+    MessageDialogComponent,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'hr' },
+    { provide: REGION, useValue: 'europe-west1' },
+    { provide: LIGHTBOX_CONFIG, useValue: { imageSize: 'contain' } },
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: REGION, useValue: 'europe-west1' },
-    // { provide: USE_EMULATOR, useValue: ['localhost', 5001] },
+    { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true } },
     {
       provide: GALLERY_CONFIG,
       useValue: {
+        imageSize: 'contain',
+        scrollBehavior: 'smooth',
+        loadingStrategy: 'preload',
+
+        itemAutosize: false,
+        autoHeight: false,
+
         dots: false,
         counter: false,
-        // imageSize: 'cover',
-        imageSize: 'contain',
         thumb: false,
         loop: false,
-      },
-    },
-    {
-      provide: LIGHTBOX_CONFIG,
-      useValue: {
-        imageSize: 'contain',
+
+        debug: false,
       },
     },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

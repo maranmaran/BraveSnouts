@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentData, QueryFn } from "@angular/fire/firestore";
+import { AngularFirestore, DocumentData, QueryFn } from "@angular/fire/compat/firestore";
 import { Bid } from '../../models/bid.model';
 import { RepositoryBase } from "./base.repository";
 
@@ -14,10 +14,10 @@ export class BidsRepository extends RepositoryBase {
 
   private getCollection(queryFn?: QueryFn<DocumentData>) {
 
-    if(!queryFn) {
+    if (!queryFn) {
       queryFn = ref => ref.orderBy("date", "desc").limit(5);
     }
-    
+
     return this.firestore.collection<Bid>('bids', queryFn);
   }
 

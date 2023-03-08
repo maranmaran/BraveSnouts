@@ -1,6 +1,6 @@
 
 import { Injectable } from "@angular/core";
-import { AngularFirestore } from "@angular/fire/firestore";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
@@ -28,7 +28,7 @@ export class AuctionActiveGuard implements CanActivate {
     let auction = this.router.getCurrentNavigation().extras.state?.auction as Auction;
     let auctionId = next.paramMap.get('id') || next.paramMap.get('auctionId');
 
-    if(!auction && !auctionId) {
+    if (!auction && !auctionId) {
       return this.router.navigate(['/app'])
     }
 
@@ -36,11 +36,11 @@ export class AuctionActiveGuard implements CanActivate {
       switchMap(admin => {
         // admin can navigate to any state of auction
         // be it future, active or expired
-        if(admin) return of(true);
+        if (admin) return of(true);
 
         // if not admin do regular check
 
-        if(!auction) {
+        if (!auction) {
           let auction$ = this.getAuction(auctionId);
 
           return auction$.pipe(map(auction => getAuctionState(auction) == 'active'));
@@ -49,7 +49,7 @@ export class AuctionActiveGuard implements CanActivate {
         return of(getAuctionState(auction) == 'active');
       }),
       switchMap(canNavigate => {
-        if(canNavigate) return of(true);
+        if (canNavigate) return of(true);
 
         return this.router.navigate(['/app']);
       })

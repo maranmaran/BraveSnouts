@@ -1,137 +1,301 @@
-<div id="admin-page" class="container" fxLayout="column" fxLayoutGap="1rem" *ngIf="(auction$ | async) as auction">
-
-  <div id="auction-details" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" fxLayout="column" fxLayoutGap="1rem">
-
+<div
+  id="admin-page"
+  class="container"
+  fxLayout="column"
+  fxLayoutGap="1rem"
+  *ngIf="auction$ | async as auction"
+>
+  <div
+    id="auction-details"
+    [ngClass]="{ 'mt-4': mediaObs.isActive('lt-sm') }"
+    fxLayout="column"
+    fxLayoutGap="1rem"
+  >
     <div fxLayout="row">
-      <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" fxFlex="100%"
-        fxFlex.lt-md="100%">
-        <div class="mat-title mb-0 bold">{{ auction.name }}</div>
-        <div fxLayout="row" fxLayoutGap="1rem" class="foreground"
-          [ngClass]="{'warn default': state == 'expired', 'primary lighter': state == 'future'}">
-
+      <div
+        class="section"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="1rem"
+        fxFlex="100%"
+        fxFlex.lt-md="100%"
+      >
+        <div class="mat-h2 mb-0 bold">{{ auction.name }}</div>
+        <div
+          fxLayout="row"
+          fxLayoutGap="1rem"
+          class="foreground"
+          [ngClass]="{
+            'warn default': state == 'expired',
+            'primary lighter': state == 'future'
+          }"
+        >
           <div [ngSwitch]="state">
             <ng-container *ngSwitchCase="'future'">
-              Počinje: {{ auction.startDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+              Počinje:
+              {{ auction.startDate.toDate() | date : "MMM d, HH:mm:ss" }}
             </ng-container>
             <ng-container *ngSwitchCase="'expired'">
-              Završila: {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+              Završila:
+              {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
             </ng-container>
 
             <ng-container *ngSwitchCase="'active'">
-              Traje do: {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
+              Traje do:
+              {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
             </ng-container>
           </div>
-          <countdown *ngIf="state == 'active' && config" class="m-0 bold" #cd [config]="config">
+          <countdown
+            *ngIf="state == 'active' && config"
+            class="m-0 bold"
+            #cd
+            [config]="config"
+          >
           </countdown>
         </div>
       </div>
     </div>
-
   </div>
 
-  <div id="auction-details" [ngClass]="{'mt-4': mediaObs.isActive('lt-sm')}" fxLayout="column" fxLayoutGap="1rem">
-
+  <div
+    id="auction-details"
+    [ngClass]="{ 'mt-4': mediaObs.isActive('lt-sm') }"
+    fxLayout="column"
+    fxLayoutGap="1rem"
+  >
     <div fxLayout="row">
-      <div class="section" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" fxFlex="100%"
-        fxFlex.lt-md="100%">
-        <div class="mat-title mb-0 bold">Ukupno donirano {{auction.raisedMoney}} kn</div>
+      <div
+        class="section"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="1rem"
+        fxFlex="100%"
+        fxFlex.lt-md="100%"
+      >
+        <div class="mat-h2 mb-0 bold">
+          Ukupno donirano {{ auction.raisedMoney | moneyAsync | async }}
+        </div>
       </div>
     </div>
-
   </div>
 
-  <div id="admin-actions" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1rem" class="section">
-    <button [disabled]="!(state == 'expired')" mat-flat-button color="warn"
-      (click)="endAuction(auction.id)">Zatvori aukciju</button>
+  <div
+    id="admin-actions"
+    fxLayout="row"
+    fxLayout.lt-sm="column"
+    fxLayoutGap="1rem"
+    class="section"
+  >
+    <button
+      [disabled]="!(state == 'expired')"
+      mat-flat-button
+      color="warn"
+      (click)="endAuction(auction.id)"
+    >
+      Zatvori aukciju
+    </button>
 
-    <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn"
-      (click)="onSendWinnerMails()">Pošalji pobjedničke mailove</button>
+    <button
+      *ngIf="state == 'expired' && auction.processed"
+      mat-flat-button
+      color="warn"
+      (click)="onSendWinnerMails()"
+    >
+      Pošalji pobjedničke mailove
+    </button>
 
-    <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="warn"
-      (click)="changeHandoverDetails(auction.id)">Promijeni podatke za osobno preuzimanje</button>
+    <button
+      *ngIf="state == 'expired' && auction.processed"
+      mat-flat-button
+      color="warn"
+      (click)="changeHandoverDetails(auction.id)"
+    >
+      Promijeni podatke za osobno preuzimanje
+    </button>
 
-    <button *ngIf="!(state == 'expired' && auction.processed)" mat-flat-button color="primary"
-      (click)="newItemsMail(auction.id)">Pošalji mail za dodane stvari</button>
+    <button
+      *ngIf="!(state == 'expired' && auction.processed)"
+      mat-flat-button
+      color="primary"
+      (click)="newItemsMail(auction.id)"
+    >
+      Pošalji mail za dodane stvari
+    </button>
 
-    <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="primary"
-      (click)="openAuctionWinnersDetails()">Pokaži sve pobjednike</button>
+    <button
+      *ngIf="state == 'expired' && auction.processed"
+      mat-flat-button
+      color="primary"
+      (click)="openAuctionWinnersDetails()"
+    >
+      Pokaži sve pobjednike
+    </button>
 
-    <button *ngIf="state == 'expired' && auction.processed" mat-flat-button color="primary"
-      (click)="onDownloadExcel(auction)">Skini tablicu</button>
+    <button
+      *ngIf="state == 'expired' && auction.processed"
+      mat-flat-button
+      color="primary"
+      (click)="onDownloadExcel(auction)"
+    >
+      Skini tablicu
+    </button>
   </div>
 
-  <virtual-scroller id="items-and-winners" class="mb-3" #scroll [items]="items" [horizontal]="true"
-    (vsEnd)="onLoadMore($event)">
+  <virtual-scroller
+    id="items-and-winners"
+    class="mb-3"
+    #scroll
+    [items]="items"
+    [horizontal]="true"
+    (vsEnd)="onLoadMore($event)"
+  >
     <div #container fxLayout="row" fxLayoutGap="0.5rem">
-      <div *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" fxLayout="column" fxLayoutGap="0.5rem">
-
-        <mat-card id="item" class="elevate hover selected" [ngClass]="{'selected': activeItemId == item.id}">
+      <div
+        *ngFor="let item of scroll.viewPortItems"
+        fxLayout="column"
+        fxLayoutGap="0.5rem"
+      >
+        <mat-card
+          appearance="raised"
+          id="item"
+          class="elevate hover selected"
+          [ngClass]="{ selected: activeItemId == item.id }"
+        >
           <mat-card-header>
             <mat-card-title>{{ item.name }}</mat-card-title>
-            <mat-card-subtitle>Donacija: {{ item.user ? item.bid : 0 }} kn</mat-card-subtitle>
+            <mat-card-subtitle
+              >Donacija:
+              {{
+                item.user ? item.bid : (0 | moneyAsync | async)
+              }}</mat-card-subtitle
+            >
           </mat-card-header>
           <mat-card-actions>
-            <button mat-stroked-button color="primary" (click)="onItemDescription(item)">Opis predmeta</button>
-            <button mat-raised-button color="primary" (click)="getBids(item.id)">Pokaži ponude</button>
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="onItemDescription(item)"
+            >
+              Opis predmeta
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="getBids(item.id)"
+            >
+              Pokaži ponude
+            </button>
           </mat-card-actions>
         </mat-card>
 
-        <mat-card id="winner" *ngIf="item.winner as winner; else filler" class="elevate hover selected mt-2"
-          [ngClass]="{'selected': activeItemId == winner.itemId}">
+        <mat-card
+          appearance="raised"
+          id="winner"
+          *ngIf="item.winner as winner; else filler"
+          class="elevate hover selected mt-2"
+          [ngClass]="{ selected: activeItemId == winner.itemId }"
+        >
           <mat-card-header>
             <mat-card-title fxLayout="row" fxLayoutAlign="start center">
-              <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon> {{ winner.userInfo.name }}
+              <mat-icon class="mr-2" style="color: #f9d935"
+                >emoji_events</mat-icon
+              >
+              {{ winner.userInfo.name }}
             </mat-card-title>
             <mat-card-subtitle>{{ winner.userInfo.email }}</mat-card-subtitle>
-            <mat-card-subtitle>{{ winner.userInfo.phoneNumber }}</mat-card-subtitle>
+            <mat-card-subtitle>{{
+              winner.userInfo.phoneNumber
+            }}</mat-card-subtitle>
           </mat-card-header>
 
           <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
-
-            <div id="delivery" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
+            <div
+              id="delivery"
+              class="mat-small"
+              fxLayout="row"
+              fxLayoutGap="0.5rem"
+            >
               <label class="pb-0 bold center">Odabir dostave:</label>
               <ng-container [ngSwitch]="winner.deliveryChoice">
-
-                <label *ngSwitchCase="'handover'" class="foreground warn default">
+                <label
+                  *ngSwitchCase="'handover'"
+                  class="foreground warn default"
+                >
                   Osobno
-                  <button mat-icon-button color="warn" *ngIf="winner.handoverOption"
-                    (click)="openHandoverInformation(winner.handoverOption)" matTooltip="{{winner.handoverOption}}">
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    *ngIf="winner.handoverOption"
+                    (click)="openHandoverInformation(winner.handoverOption)"
+                    matTooltip="{{ winner.handoverOption }}"
+                  >
                     <mat-icon>location_on</mat-icon>
                   </button>
                 </label>
 
                 <label *ngSwitchCase="'postal'" style="color: #c326ff">
                   Poštom
-                  <button mat-icon-button *ngIf="winner.postalInformation"
-                    (click)="openPostalInformation(winner.postalInformation)" matTooltip="Detalji za slanje">
+                  <button
+                    mat-icon-button
+                    *ngIf="winner.postalInformation"
+                    (click)="openPostalInformation(winner.postalInformation)"
+                    matTooltip="Detalji za slanje"
+                  >
                     <mat-icon>drafts</mat-icon>
                   </button>
                 </label>
-                <label *ngSwitchDefault class="foreground primary lighter"> Nije odabrano </label>
+                <label *ngSwitchDefault class="foreground primary lighter">
+                  Nije odabrano
+                </label>
               </ng-container>
             </div>
 
-            <div id="pack-status" class="mat-small pb-0" fxLayout="row" fxLayoutGap="0.5rem">
-
+            <div
+              id="pack-status"
+              class="mat-small pb-0"
+              fxLayout="row"
+              fxLayoutGap="0.5rem"
+            >
               <label class="pb-0 bold center">Spakirano:</label>
-              <mat-button-toggle-group [value]="winner.packed ? winner.packed : 'no'"
-                (change)="markPackedState($event, winner)">
-                <mat-button-toggle value="yes" class="foreground primary lighter">Da</mat-button-toggle>
-                <mat-button-toggle value="no" class="foreground warn default">Ne</mat-button-toggle>
+              <mat-button-toggle-group
+                [value]="winner.packed ? winner.packed : 'no'"
+                (change)="markPackedState($event, winner)"
+              >
+                <mat-button-toggle
+                  value="yes"
+                  class="foreground primary lighter"
+                  >Da</mat-button-toggle
+                >
+                <mat-button-toggle value="no" class="foreground warn default"
+                  >Ne</mat-button-toggle
+                >
               </mat-button-toggle-group>
             </div>
 
-            <div id="payment" class="mat-small pb-0" fxLayout="row" fxLayoutGap="0.5rem">
-
+            <div
+              id="payment"
+              class="mat-small pb-0"
+              fxLayout="row"
+              fxLayoutGap="0.5rem"
+            >
               <label class="pb-0 bold center">Status plaćanja:</label>
-              <mat-button-toggle-group [value]="winner.paymentStatus" (change)="markPaymentStatus($event, winner)">
-                <mat-button-toggle value="paid" class="foreground primary lighter">Plaćeno</mat-button-toggle>
+              <mat-button-toggle-group
+                [value]="winner.paymentStatus"
+                (change)="markPaymentStatus($event, winner)"
+              >
+                <mat-button-toggle
+                  value="paid"
+                  class="foreground primary lighter"
+                  >Plaćeno</mat-button-toggle
+                >
                 <mat-button-toggle value="pending">U toku</mat-button-toggle>
-                <mat-button-toggle value="notpaid" class="foreground warn default">Nije plaćeno</mat-button-toggle>
+                <mat-button-toggle
+                  value="notpaid"
+                  class="foreground warn default"
+                  >Nije plaćeno</mat-button-toggle
+                >
               </mat-button-toggle-group>
             </div>
-
-
           </mat-card-content>
 
           <mat-card-actions>
@@ -143,22 +307,25 @@
             <i>Nema najbolje ponude</i>
           </div>
         </ng-template>
-
       </div>
     </div>
   </virtual-scroller>
 
   <div *ngIf="!!(bids$ | async)">
-
-    <ng-container *ngIf="(bids$ | async)?.length > 0 ;else noBids">
-      <mat-card *ngFor="let bid of (bids$ | async)" class="elevate hover">
+    <ng-container *ngIf="(bids$ | async)?.length > 0; else noBids">
+      <mat-card
+        appearance="raised"
+        *ngFor="let bid of bids$ | async"
+        class="elevate hover"
+        style="margin-bottom: 1rem"
+      >
         <mat-card-header>
-          <img mat-card-avatar [src]="bid.userInfo?.avatar">
+          <img mat-card-avatar [src]="bid.userInfo?.avatar" />
           <mat-card-title>
-            {{ bid.userInfo?.name }} - {{ bid.bid }} kn
+            {{ bid.userInfo?.name }} - {{ bid.bid | moneyAsync | async }}
           </mat-card-title>
           <mat-card-subtitle>
-            {{ bid.date.toDate() | date: 'MMM d, h:mm:ss' }}
+            {{ bid.date.toDate() | date : "MMM d, h:mm:ss" }}
           </mat-card-subtitle>
           <mat-card-subtitle>
             {{ bid.userInfo?.email }}
@@ -171,5 +338,4 @@
       <i>Nažalost nema ponuda :( </i>
     </ng-template>
   </div>
-
 </div>

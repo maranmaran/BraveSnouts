@@ -46,7 +46,7 @@
           Osvojeni predmeti
         </mj-text>
         <mj-text> {{{items_html}}} </mj-text>
-        <mj-text font-size="14px"> Ukupno: {{total}} kn </mj-text>
+        <mj-text font-size="14px"> Ukupno: {{total}} </mj-text>
         <mj-divider></mj-divider>
         <mj-text align="center" font-weight="bold" font-size="14px">
           Potvrda preuzimanja
@@ -66,28 +66,20 @@
         </mj-text>
         <mj-text>
           <div>Plaćanje:</div>
-          <ul>
-            <!-- <li>PBZ - HR4223400091110951628</li> -->
-            <li>Erste - HR9224020063209851271</li>
-            <li>Revolut - 0994513163</li>
-            <li>Paypal - hrabre.njuske1@gmail.com</li>
-            <li>Keks - 0994513163</li>
-          </ul>
+          <mj-text>{{{ bank_accounts }}} </mj-text>
         </mj-text>
-        <mj-text
-          >U slučaju preuzimanja poštom potrebno je uplatiti dodatnih
-          {{postage_fee}} kn radi poštarine.</mj-text
-        >
-        <!-- <mj-text>U slučaju preuzimanja poštom potrebno je uplatiti dodatnu poštarinu.</mj-text> -->
+
+        <mj-text> {{{ postage_details }}} </mj-text>
+
+        <mj-text> {{{ postage_rules }}} </mj-text>
+
         <mj-text>
           <span style="text-decoration: underline">Opis plaćanja:</span>
           <i style="text-decoration: none">"{{payment_detail}}"</i>
         </mj-text>
-        <!-- <mj-text>
-          <span style="font-weight: bold;">Napomena:</span>
-          <div style="margin-top: 10px">Kako bismo pakete mogli poslati prije blagdana 
-          molimo Vas da uplatu izvršite najkasnije do srijede, 31.03.</div>
-        </mj-text> -->
+
+        <mj-text> {{{ postage_remark }}} </mj-text>
+
         <mj-divider></mj-divider>
         <mj-text font-weight="bold" font-size="14px">
           Informacije za osobno preuzimanje

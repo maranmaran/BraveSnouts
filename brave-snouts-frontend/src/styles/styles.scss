@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@use "node_modules/@ngneat/hot-toast/src/styles/styles.scss";
 @import "./bootstrap/bootstrap.styles.scss";
 @import "./material/material.styles.scss";
 
@@ -86,37 +87,6 @@ gallery {
   }
 }
 
-#item-max-price-control {
-  width: 4.7rem !important;
-
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
-
-  .mat-form-field-wrapper {
-    padding: 0 !important;
-    width: 4.7rem !important;
-  }
-
-  .mat-form-field-suffix {
-    top: 0 !important;
-  }
-}
-
-// @import url('https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap');
-
-// .custom-font {
-//     font-family: 'Mali', cursive !important;
-// }
-
 .no-wrap {
   white-space: nowrap;
 }
@@ -171,16 +141,14 @@ label {
   cursor: pointer;
 }
 
-
 .btn-small {
   font-size: 10px !important;
 }
 
 .back-btn {
-  position: relative;
-  bottom: 10px;
+  margin: 0.75rem;
+  margin-top: 0rem !important;
 }
-
 
 .logo-base {
   cursor: pointer;
@@ -213,16 +181,16 @@ label {
 }
 
 .restrict-height-handover {
-  .mat-dialog-container {
-      max-height: 60vh !important;
+  .mat-mdc-dialog-container {
+    max-height: 60vh !important;
   }
 }
 
 .truncated {
   display: block;
-    white-space: nowrap; /* forces text to single line */
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap; /* forces text to single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .overflow-hidden {

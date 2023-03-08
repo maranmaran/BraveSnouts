@@ -39,7 +39,7 @@ export class Winner {
     itemId: string;
     bidId: string;
     userId: string;
-    
+
     userInfo: {
         id: string;
         name: string;
@@ -64,7 +64,7 @@ export class WinnerOnAuction {
 
     items: AuctionItem[];
     bids: Bid[];
-    
+
     userInfo: {
         id: string;
         name: string;
@@ -91,7 +91,7 @@ export class AuctionItem {
     constructor(data: Partial<AuctionItem>) {
         Object.assign(this, data);
     }
-    
+
     id: string;
     auctionId: string;
     name: string;
@@ -111,7 +111,7 @@ export class AuctionItem {
 export interface Bid {
     value: number;
     user: string;
-    item: AuctionItem; 
+    item: AuctionItem;
 }
 
 export interface UserInfo {

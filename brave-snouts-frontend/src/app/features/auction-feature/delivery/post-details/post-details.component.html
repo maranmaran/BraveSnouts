@@ -1,15 +1,11 @@
 <div class="container" fxLayout="column" fxLayoutAlign="center start">
-    
-    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
-        <mat-icon>
-            close
-        </mat-icon>
-    </button>
+  <button mat-icon-button fxFlexAlign="end" (click)="onClose()">
+    <mat-icon> close </mat-icon>
+  </button>
 
-    <div class="mb-4" fxLayout="column" fxLayoutGap="1rem">
-        <label><b>Ime:</b> {{data.fullName}}</label>
-        <label><b>Adresa:</b> {{data.address}}</label>
-        <label><b>Telefon:</b> {{data.phoneNumber}}</label>
-    </div>
-
+  <div class="mb-4" fxLayout="column" fxLayoutGap="1rem">
+    <label><b>Ime:</b> {{ data.fullName }}</label>
+    <label><b>Adresa:</b> {{ data.address }}</label>
+    <label><b>Telefon:</b> {{ data.phoneNumber }}</label>
+  </div>
 </div>

@@ -2,10 +2,8 @@ import * as admin from "firebase-admin";
 import { logger } from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
-import { europeFunctions, store } from "..";
-import { AuctionItem, User } from "../models/models";
-import { config } from "./../index";
-import { WinnerOnAuction } from "./../models/models";
+import { config, europeFunctions, store } from "..";
+import { AuctionItem, User, WinnerOnAuction } from "../models/models";
 import moment = require("moment");
 const os = require("os");
 const path = require("path");
@@ -63,7 +61,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
           await store.collection(`auctions/${id}/winners`).get()
         ).docs.map((d) => d.data()) as WinnerOnAuction[];
         for (const winner of winners) {
-          let userId = winner.id;
+          const userId = winner.id;
           const user = (await (
             await store.doc(`users/${userId}`).get()
           ).data()) as User;
@@ -116,8 +114,11 @@ export const exportAuctionFn = europeFunctions.https.onCall(
           totalSum += item.bid;
         }
 
+        userSum = Math.round(userSum * 100) / 100;
         donatorsSheetData.push([`${winner.userInfo.name} Total`, "", userSum]);
       }
+
+      totalSum = Math.round(totalSum * 100) / 100;
       donatorsSheetData.push(["Grand total", "", totalSum]);
 
       // prepare SLANJE sheet

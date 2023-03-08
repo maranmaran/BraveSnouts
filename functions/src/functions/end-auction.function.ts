@@ -1,7 +1,6 @@
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "../index";
-import { Auction, AuctionItem, Bid, TrackedItem } from "../models/models";
-import { UserInfo, WinnerOnAuction } from './../models/models';
+import { Auction, AuctionItem, Bid, TrackedItem, UserInfo, WinnerOnAuction } from "../models/models";
 
 /** Processes auctions end
  * Picks up item winners and sends email notification templates for won items

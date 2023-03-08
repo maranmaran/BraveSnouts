@@ -1,8 +1,9 @@
+/* eslint-disable eqeqeq */
 import { logger } from 'firebase-functions';
-import { europeFunctions, store } from '..';
-import { Auction, AuctionItem, Bid } from '../models/models';
-import { sendEndAuctionMail } from '../services/mail.service';
-import { UserInfo } from './../models/models';
+import { europeFunctions, settingsSvc, store } from '..';
+import { Auction, AuctionItem, Bid, UserInfo } from '../models/models';
+import { sendWinnerMail } from '../services/mail-factories/winner-mail.factory';
+import { getTemplateRaw } from '../services/mail.service';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
 /** Processes auctions end
  * Picks up item winners and sends email notification templates for won items
@@ -24,6 +25,7 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
             }
 
             logger.info("Sending emails")
+
             // logger.error("Uncomment send mails to actually send mails");
             await sendMails(auctions, userBidsTransformed, handoverDetails);
 
@@ -37,13 +39,14 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 );
 
 const getAuctions = async (auctionIds: string[]) => {
-    let auctions: Auction[] = [];
+    const auctions: Auction[] = [];
     for (const auctionId of auctionIds) {
         auctions.push(await getAuction(auctionId));
     }
 
     return auctions;
 }
+
 const getAllAuctionUserBidsMap = async (auctionIds: string[]) => {
     const allAuctionUserBidsMap = new Map<string, { user: UserInfo, bids: Bid[] }>();
     for (const auctionId of auctionIds) {
@@ -85,6 +88,9 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
     let sentMailsCounter = 0;
     let skippedCounter = 0;
 
+    const mailVariables = await settingsSvc.getMailVariables();
+    const template = await getTemplateRaw("end-auction.mail.mjml");
+
     let sendMailJobs: Promise<void>[] = [];
     for (const [userInfo, bids] of userBids) {
 
@@ -100,7 +106,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         }
 
         sendMailJobs.push(new Promise<void>(async (res, err) => {
-            await sendEndAuctionMail(auctions, handoverDetails, userInfo, bids);
+            await sendWinnerMail(auctions, handoverDetails, userInfo, bids, mailVariables, template);
             await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
             sentMailsCounter++;
             res();

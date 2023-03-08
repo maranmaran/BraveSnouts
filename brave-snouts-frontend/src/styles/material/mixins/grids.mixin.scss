@@ -1,9 +1,7 @@
-@import "~@angular/material/theming";
+@import "@angular/material/theming";
 
 @mixin grids-theme($theme) {
-
-  // Items grid breakpoints (Full components)
-
+  //#region Items grid breakpoints (Full components)
   virtual-scroller.full-items-grid {
     .items-grid {
       height: 100%;
@@ -39,7 +37,7 @@
     }
   }
   // gt-lg
-  @media (min-width: 1270px) {
+  @media (min-width: 1300px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -72,8 +70,9 @@
       }
     }
   }
+  //#endregion
 
-  // Item media gallery SCSS (Mobile view grid with pics only)
+  //#region Item media gallery SCSS (Mobile view grid with pics only)
   virtual-scroller.items-gallery-grid-scroller {
     width: 100%;
     height: 100%;
@@ -114,6 +113,7 @@
       }
     }
   }
+  //#endregion
 
   #won-items,
   #outbidded-items {

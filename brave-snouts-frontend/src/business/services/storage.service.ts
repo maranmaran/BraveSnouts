@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { take } from 'rxjs/operators';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class StorageService {
 
     constructor(private storage: AngularFireStorage) { }
 
     uploadFile(file, filePath = null) {
-        if(!filePath) {
+        if (!filePath) {
             filePath = `images/${file.name}`;
         }
 
@@ -18,7 +18,7 @@ export class StorageService {
     }
 
     uploadFileNoRef(file, filePath = null) {
-        if(!filePath) {
+        if (!filePath) {
             filePath = `images/${file.name}`;
         }
 
@@ -31,6 +31,6 @@ export class StorageService {
     }
 
     getDownloadUrl(file) {
-      return this.storage.ref(file).getDownloadURL().pipe(take(1));
+        return this.storage.ref(file).getDownloadURL().pipe(take(1));
     }
 }

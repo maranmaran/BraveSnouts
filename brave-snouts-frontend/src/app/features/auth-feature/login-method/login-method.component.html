@@ -1,13 +1,9 @@
 <div class="container" fxLayout="column" fxLayoutAlign="start center">
+  <button mat-icon-button fxFlexAlign="end" (click)="onClose()">
+    <mat-icon> close </mat-icon>
+  </button>
 
-    <button class="close-btn" mat-icon-button fxFlexAlign="end" (click)="onClose()">
-        <mat-icon>
-            close
-        </mat-icon>
-    </button>
-
-
-    <!-- <div class="mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
+  <!-- <div class="mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
         <mat-form-field>
             <mat-label>Email</mat-label>
             <input matInput type="email" [formControl]="email">
@@ -20,28 +16,60 @@
 
     </div> -->
 
-    <div class="mb-4" fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="space-between center">
+  <div
+    class="mb-4"
+    fxLayout="row"
+    fxLayoutGap="3rem"
+    fxLayoutAlign="space-between center"
+  >
+    <img
+      id="google"
+      class="login-btn elevate hover-big"
+      src="assets/social-logo/google.svg"
+      (click)="selectMethod('gmail')"
+      matTooltip="Gmail prijava"
+    />
 
-        <img id="google" class="login-btn elevate hover-big" src="assets/social-logo/google.svg"
-            (click)="selectMethod('gmail')" matTooltip="Gmail prijava" />
-
-        <!-- <img id="facebook" class="login-btn elevate hover-big " src="assets/social-logo/facebook.svg"
+    <!-- <img id="facebook" class="login-btn elevate hover-big " src="assets/social-logo/facebook.svg"
             (click)="selectMethod('facebook')" matTooltip="Facebook prijava" /> -->
 
-        <img id="mail" class="login-btn elevate hover-big" src="assets/social-logo/message.svg"
-            (click)="selectMethod('email')" matTooltip="Prijava putem maila" />
-    </div>
+    <img
+      id="mail"
+      class="login-btn elevate hover-big"
+      src="assets/social-logo/message.svg"
+      (click)="selectMethod('email')"
+      matTooltip="Prijava putem maila"
+    />
+  </div>
 
-    <div id="privacy" class="foreground primary lighter link" routerLink="/app/privacy-policy" (click)="onClose()">Polica privatnosti</div>
+  <div
+    id="privacy"
+    class="foreground primary lighter link"
+    routerLink="/app/privacy-policy"
+    (click)="onClose()"
+  >
+    Polica privatnosti
+  </div>
 
-    <div *ngIf="method == 'email'" class="mt-5 mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
-        <mat-form-field>
-            <mat-label>Email</mat-label>
-            <input matInput type="email" [formControl]="email">
-        </mat-form-field>
+  <div
+    *ngIf="method == 'email'"
+    class="mt-5 mb-2 w-100"
+    fxLayout="column"
+    fxLayoutGap="0.5rem"
+  >
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" [formControl]="email" />
+    </mat-form-field>
 
-        <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">Prijava</button>
-    </div>
-
-
+    <button
+      fxFlexAlign="end"
+      mat-flat-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!email.valid"
+    >
+      Prijava
+    </button>
+  </div>
 </div>

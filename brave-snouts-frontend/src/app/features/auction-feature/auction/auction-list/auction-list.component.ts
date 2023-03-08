@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { QueryFn } from '@angular/fire/firestore';
-import { MediaObserver } from '@angular/flex-layout';
+import { QueryFn } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { from, noop, Observable, of, Subscription } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -21,7 +21,7 @@ import { AuctionRepository } from 'src/business/services/repositories/auction.re
   selector: 'app-auction-list',
   templateUrl: './auction-list.component.html',
   styleUrls: ['./auction-list.component.scss'],
-  animations: [ fadeIn ],
+  animations: [fadeIn],
   providers: [AuctionItemRepository, AuctionRepository]
 })
 export class AuctionListComponent implements OnInit, OnDestroy {
@@ -50,10 +50,10 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.userTracksItems$ = this.getIfUserTrackesItems();
 
     this.adminSub = this.admin$.pipe(distinctUntilChanged())
-    .subscribe(
-      admin => this.initList(admin),
-      err => console.log(err)
-    )
+      .subscribe(
+        admin => this.initList(admin),
+        err => console.log(err)
+      )
   }
 
   ngOnDestroy(): void {
@@ -89,7 +89,9 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.auctions$ = auctions$.pipe(
       tap(auctions => {
         this.totalDonated = auctions.filter(a => this.getAuctionState(a) == 'active')
-                                    .reduce((prev, cur) => prev += cur.raisedMoney, 0);
+          .reduce((prev, cur) => prev += cur.raisedMoney, 0);
+
+        this.totalDonated = Math.round(this.totalDonated * 100) / 100;
       }),
       tap(() => this.loadingSvc.active$.next(false)),
       tap(() => this.auctionsBootstrapped = true),
@@ -126,9 +128,9 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       return [];
 
     return auctions
-    .filter(a => a.archived == false)
-    .filter(a => a.processed == false)
-    .filter(a => this.getAuctionState(a) != 'expired');
+      .filter(a => a.archived == false)
+      .filter(a => a.processed == false)
+      .filter(a => this.getAuctionState(a) != 'expired');
   }
 
   /**Sorts custom for admin view active in middle, future top, expired bottom */
@@ -142,10 +144,10 @@ export class AuctionListComponent implements OnInit, OnDestroy {
   /** Returns whether or not user tracks any auction items */
   getIfUserTrackesItems() {
     return this.authSvc.userId$
-    .pipe(
-      concatMap(id => id ? this.itemsRepo.getUserItems(id).pipe(take(1)) : of(null)),
-      map(items => !!items)
-    )
+      .pipe(
+        concatMap(id => id ? this.itemsRepo.getUserItems(id).pipe(take(1)) : of(null)),
+        map(items => !!items)
+      )
   }
 
   //#endregion
@@ -154,7 +156,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   /**Navigate to selected auction */
   onClick(auction: Auction) {
-    this.router.navigate(['/app/auction', { id: auction.id } ], { state: { auction } });
+    this.router.navigate(['/app/auction', { id: auction.id }], { state: { auction } });
   }
 
   onEdit(auctionObj: Auction, event: Event) {

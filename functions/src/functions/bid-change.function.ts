@@ -8,7 +8,7 @@ import {
   User,
   UserInfo
 } from "../models/models";
-import { sendOutbiddedMail } from "../services/mail.service";
+import { sendOutbiddedMail } from "../services/mail-factories/outbidded-mail.factory";
 
 /** Sends email notification to higher bidder */
 export const bidChangeFn = europeFunctions.firestore
@@ -24,8 +24,8 @@ export const bidChangeFn = europeFunctions.firestore
       ).data()) as Auction;
 
       if (
-        auction.endDate.nanoseconds <
-        firebase.firestore.Timestamp.fromDate(new Date()).nanoseconds
+        auction.endDate.seconds <
+        firebase.firestore.Timestamp.fromDate(new Date()).seconds
       ) {
         logger.info(`Auction ended`);
         return null;

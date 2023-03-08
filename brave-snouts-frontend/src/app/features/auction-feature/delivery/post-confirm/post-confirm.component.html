@@ -46,43 +46,35 @@
         Spremi
       </button>
     </div>
-    <div class="section mat-title text-center">
+    <div class="section mat-h2 text-center">
       <div>
         Ukoliko niste u mogućnosti doći na primopredaju, osvojene predmete
         šaljemo poštom.
       </div>
       <div class="mt-3 bold">
         U tom slučaju potrebno je uplatiti dodatnih
-        <span class="foreground warn default">{{ postageFee }} kn</span> za
-        poštarinu.
+        <span class="foreground warn default">{{
+          postageFee | moneyAsync | async
+        }}</span>
+        za poštarinu.
       </div>
-      <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION BELOW -->
-      <!-- <div class="mt-3 bold">
-        U tom slučaju potrebno je uplatiti dodatnu poštarinu.
-      </div>
-      <div class="mt-3 bold">
-        <ul>
-          <li>1 knjiga - 15kn poštarina</li>
-          <li>2-5 knjiga - 25kn poštarina</li>
-          <li>5-10 knjiga - 35kn poštarina</li>
-          <li>10+ knjiga - 45kn poštarina</li>
-        </ul>
-      </div> -->
-      <div class="mt-3 bold">
-        Ukupno {{ originalDonation }} kn +
-        <span class="foreground warn default">{{ postageFee }} kn</span> =
-        {{ totalDonation }} kn
-      </div>
+      <div
+        *ngIf="(settings$ | async)['postage_rules']"
+        [innerHtml]="(settings$ | async)['postage_rules']"
+      ></div>
+      <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION ABOVE -->
     </div>
-    <app-donate class="w-100" [text]="false"></app-donate>
-    <div class="section mat-title text-center">
+    <div class="section mat-h2 text-center">
       <div class="bold">Opis plaćanja:</div>
       <div class="mt-3">{{ paymentDetail }}</div>
     </div>
-    <!-- <div class="section mat-title">
-      <div class="bold">Napomena: </div>
-      <div class="mt-3">Kako bismo pakete mogli poslati prije blagdana molimo Vas da uplatu izvršite najkasnije do srijede, 31.03.</div>
-    </div> -->
+
+    <div
+      class="section mat-h2 text-center"
+      *ngIf="(settings$ | async)['postage_remark']"
+      [innerHtml]="(settings$ | async)['postage_remark']"
+    ></div>
+    <app-donate class="w-100" [text]="false"></app-donate>
   </div>
 
   <div

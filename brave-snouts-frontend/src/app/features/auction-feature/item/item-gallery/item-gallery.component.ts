@@ -1,23 +1,21 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
+  Component, EventEmitter,
   HostListener,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ItemsListDialogComponent } from 'src/app/features/auction-feature/item/items-list-dialog/items-list-dialog.component';
 import {
   IPageInfo,
-  VirtualScrollerComponent,
+  VirtualScrollerComponent
 } from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -37,7 +35,7 @@ import { ItemScrollViewService } from './item-scroll-view.service';
 export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() auction: Auction;
   @Input() items: AuctionItem[];
-  @Input() parentScroll: ElementRef;
+  @Input() parentScroll: Element;
   @Output() loadMore = new EventEmitter<IPageInfo>();
 
   private readonly _subsink = new SubSink();
@@ -51,7 +49,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     private readonly authSvc: AuthService,
     public readonly itemScrollViewSvc: ItemScrollViewService,
     private readonly changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.itemScrollViewSvc.initialize();
@@ -72,14 +70,19 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
           console.log('going back because manual');
           window.history.go(-1);
         }
+
+        setTimeout(() => {
+          this.itemsScroller?.refresh();
+          this.gridScroller?.refresh()
+        });
+
         this.changeDetectorRef.detectChanges();
-        this.scroller.refresh();
       })
     );
   }
 
   ngOnChanges(changes) {
-    this.itemDialogSvc.items.next(changes.items.currentValue);
+    this.itemDialogSvc.items.next(changes.items?.currentValue);
   }
 
   ngOnDestroy() {
@@ -116,27 +119,39 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     // dialogRef.afterClosed()
   }
 
-  @ViewChild('itemsScroller', { static: false })
-  scroller: VirtualScrollerComponent;
+  @ViewChild('itemsScroller', { static: false }) itemsScroller: VirtualScrollerComponent;
+  @ViewChild('gridScroller', { static: false }) gridScroller: VirtualScrollerComponent;
   openItemsScrollTabOnIndex(idx: number) {
     this.itemScrollViewSvc.switchTab('items');
 
     window.history.pushState('Items view', 'Items view', window.location.href);
 
-    this.scroller.scrollToIndex(idx, true, 50, 0);
+    setTimeout(() => {
+      this.itemsScroller?.scrollToIndex(idx, true, 50, 0);
+      this.gridScroller?.scrollToIndex(idx, true, 50, 0);
+    });
   }
 
   // Handle back button navigation (history)
   @HostListener('window:popstate') onPopState() {
     console.log('popping state');
+
+    if (this.itemScrollViewSvc.block) {
+      return;
+    }
+
     if (this.itemScrollViewSvc.view == 'items') {
       this.itemScrollViewSvc.switchTab('grid');
-      // this.openItemsScrollTabOnIndex(this.lastScrollItemIdx);
+
+      setTimeout(() => {
+        this.itemsScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
+        this.gridScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
+      });
     }
   }
 
   openItemWithScroll(item: AuctionItem) {
-    let dialogRef = this.dialog.open(ItemsListDialogComponent, {
+    this.dialog.open(ItemsListDialogComponent, {
       height: '100%',
       width: '100vw',
       maxWidth: '100vw',

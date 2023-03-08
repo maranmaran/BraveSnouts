@@ -1,21 +1,29 @@
-// import { Promise } from "bluebird";
+/* eslint-disable eqeqeq */
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import * as fs from 'fs';
 import * as GM from 'gm';
 import { v4 as uuidv4 } from 'uuid';
-import { store } from '..';
-import { europeFunctions } from '../index';
+import { europeFunctions, store } from '..';
 import { AuctionItem } from '../models/models';
 import { getAuctionItems } from './end-auction.function';
+
 const path = require('path');
 const os = require('os');
 const mkdirp = require('mkdirp');
 const magick = GM.subClass({ imageMagick: true });
 
-var blueBirdPromise = require("bluebird");
+const blueBirdPromise = require("bluebird");
 blueBirdPromise.promisifyAll(GM.prototype);
 
+interface ImageProcessingSettings {
+    compress: boolean;
+    compressQuality: number;
+    compressResizeHeight: number;
+    compressResizeWidth: number;
+    compressMethod: string;
+    compressExtension: string; enableProdMode
+}
 
 // const runtimeOpts: RuntimeOptions = {
 //     timeoutSeconds: 300,
@@ -33,22 +41,29 @@ export const processAuctionImagesFn = europeFunctions
     .onCall(
         async (data, context) => {
 
-            let useCompression = true;
-            let bufferSize = 20;
+            const settings = (await store.doc("config/image-processing").get()).data() as ImageProcessingSettings;
+
+            logger.info('Loaded settings:' + JSON.stringify(settings));
+
+            const bufferSize = 20;
 
             try {
                 const auctionId = data.auctionId;
                 const imagesTempStoragePath = data.imageBucketPath;
 
+                logger.info(`Processing auction: ${auctionId} and path ${imagesTempStoragePath}`);
+
                 const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
                 const files = await bucket.getFiles({ prefix: imagesTempStoragePath });
                 const imagesArr = []; // image links to add to auction items
 
-                if (useCompression) {
-                    const tempFolder = path.join(os.tmpdir(), "images_to_transform");
+                const localFolderGuid = uuidv4();
+
+                if (settings.compress) {
+                    const tempFolder = path.join(os.tmpdir(), "images_to_transform" + `/${localFolderGuid}`);
                     await mkdirp(path.dirname(tempFolder));
 
-                    const transformedFolder = path.join(os.tmpdir(), "transformed");
+                    const transformedFolder = path.join(os.tmpdir(), "transformed" + `/${localFolderGuid}`);
                     await mkdirp(path.dirname(transformedFolder));
 
                     //#region Download from temp
@@ -80,7 +95,7 @@ export const processAuctionImagesFn = europeFunctions
                     //#region Transform downloaded images 
                     // process all images to temp/transformed
                     let transformJobs: Promise<void>[] = [];
-                    let filesToTransform = fs.readdirSync(tempFolder + "/");
+                    const filesToTransform = fs.readdirSync(tempFolder + "/");
                     for (const file of filesToTransform) {
 
                         // buffer
@@ -102,10 +117,10 @@ export const processAuctionImagesFn = europeFunctions
                                     .autoOrient()
                                     .interlace('Plane')
                                     .gaussian(0.05)
-                                    .resize(500, 500)
-                                    .quality(50)
-                                    .compress('JPEG')
-                                    .writeAsync(`${transformedFolder}/${fileName}.jpg`);
+                                    .resize(settings.compressResizeWidth ?? 500, settings.compressResizeHeight ?? 500)
+                                    .quality(settings.compressQuality ?? 50)
+                                    .compress(settings.compressMethod ?? 'JPEG')
+                                    .writeAsync(`${transformedFolder}/${fileName}.${settings.compressExtension ?? 'jpg'}`);
                             } catch (errorMagick) {
                                 console.error(errorMagick);
                             }
@@ -143,7 +158,7 @@ export const processAuctionImagesFn = europeFunctions
                         }
 
                         uploadJobs.push(new Promise<void>(async (res, err) => {
-                            let image = path.basename(file, path.extname(file));
+                            const image = path.basename(file, path.extname(file));
 
                             logger.info("Uploading " + image);
 
@@ -179,11 +194,13 @@ export const processAuctionImagesFn = europeFunctions
 
                             imagesArr.push({
                                 name: image,
-                                path: `auction-items/${image}`,
+                                path: `auction-items/${auctionId}`,
+                                fullPath: `auction-items/${auctionId}/${image}`,
+                                tempPath: `temp/${auctionId}/${image}`,
                                 type: 'image',
                                 url: imageUrl,
-                                // thumb: thumbUrl
-                                thumb: imageUrl
+                                thumb: imageUrl,
+                                tempUrl: imageUrl.replace('auction-items', 'temp')
                             });
 
                             res();
@@ -197,12 +214,15 @@ export const processAuctionImagesFn = europeFunctions
                     for (const file of files[0]) {
                         const image = path.basename(file.name, path.extname(file.name));
 
-                        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/auction-items%2F${auctionId}%2F${image}?alt=media`
+                        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${admin.instanceId().app.options.projectId}.appspot.com/o/temp%2F${auctionId}%2F${image}?alt=media`
 
                         imagesArr.push({
                             name: image,
-                            path: `auction-items/${image}`,
+                            path: `auction-items/${auctionId}`,
+                            fullPath: `auction-items/${auctionId}/${image}`,
+                            tempPath: `temp/${auctionId}/${image}`,
                             type: 'image',
+                            tempUrl: imageUrl,
                             url: imageUrl,
                             thumb: imageUrl
                         });
@@ -241,7 +261,7 @@ async function modifyExistingItemsWithImages(auctionId, items: AuctionItem[], im
     logger.info("Detected existing items.. modifying");
 
     // map images by name
-    let imagesMap = new Map();
+    const imagesMap = new Map();
     for (const images of imagesArr) {
         imagesMap.set(images.name, images);
     }
@@ -252,8 +272,8 @@ async function modifyExistingItemsWithImages(auctionId, items: AuctionItem[], im
             continue;
         }
 
-        let key = item.media[0].name;
-        let imageData = imagesMap.get(key);
+        const key = item.media[0].name;
+        const imageData = imagesMap.get(key);
 
         if (imageData != null && imageData.length > 0) {
             logger.info("Updating image on item " + item.id);
@@ -271,7 +291,7 @@ async function createNewItemsWithImages(auctionId, imagesArr) {
     const setJobs: Promise<void>[] = [];
     for (const images of imagesArr) {
 
-        let job = new Promise<void>(async (res, err) => {
+        const job = new Promise<void>(async (res, err) => {
             const itemId = uuidv4();
 
             logger.info("Creating new item " + itemId);

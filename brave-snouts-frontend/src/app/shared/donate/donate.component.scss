@@ -1,21 +1,18 @@
 img {
-    height: 50px;
+  width: 50px;
+  height: auto;
 }
 
-#pbz {
-    img {
-        height: 25px !important;
-    }
+ul.primary-list > li:not(:last-child) {
+  margin-bottom: 0.75rem;
 }
 
-#revolut {
-    img {
-        height: 45px !important;
-    }
+ul.secondary-list > li:first-child {
+  margin-top: 0.75rem;
 }
 
-#paypal {
-    img {
-        height: 58px !important;
-    }
+@media (max-width: 700px) {
+  ul {
+    padding-left: 0.75rem;
+  }
 }

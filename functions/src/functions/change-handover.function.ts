@@ -1,8 +1,8 @@
 import { logger } from "firebase-functions";
 import { europeFunctions, store } from "..";
-import { WinnerOnAuction } from "../models/models";
-import { sendHandoverDetailsUpdateMail } from "../services/mail.service";
-import { UserInfo } from './../models/models';
+import { UserInfo, WinnerOnAuction } from "../models/models";
+import { sendHandoverDetailsUpdateMail } from "../services/mail-factories/handover-information-mail.factory";
+import { getComposer, sendMail } from "../services/mail.service";
 
 /** Sends email update to all people with new handover details for auction */
 export const changeHandoverFn = europeFunctions.https.onCall(
@@ -28,6 +28,9 @@ export const changeHandoverFn = europeFunctions.https.onCall(
 
             for (const [_, userInfo] of usersMap) {
                 await sendHandoverDetailsUpdateMail(userInfo, auctionIds, handoverDetails);
+
+                const adminUpdateMessage = `Lokacija preuzimanja promijenjena za korisnika: <b>${userInfo.name}</b> na lokaciju: <b>${handoverDetails}</b>`;
+                await sendMail(getComposer("app.hrabrenjuske@gmail.com", `${userInfo.name} je promijenio/la lokaciju preuzimanja`, adminUpdateMessage));
             }
 
             return { status: 'ok', code: 200 };

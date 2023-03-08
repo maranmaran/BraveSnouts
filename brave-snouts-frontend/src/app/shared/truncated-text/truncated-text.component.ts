@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
+import { MediaObserver } from 'ngx-flexible-layout';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-truncated-text',
@@ -15,7 +14,7 @@ export class TruncatedTextComponent implements OnInit, OnDestroy {
   @Input() fallbackText: string;
 
   showAll = false;
-  
+
   constructor(
     private mediaObserver: MediaObserver
   ) { }
@@ -24,15 +23,17 @@ export class TruncatedTextComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.text = this.text?.trim() == '' ? null : this.text;
-    
+
     // on mobile we probably want to display less text.. (about 70% till further changes)
-    this.subscription = this.mediaObserver.media$.subscribe(
+    this.subscription = this.mediaObserver.asObservable().subscribe(
       media => {
-        if(media.mqAlias == 'xs') 
-          this.characters = this.characters * 0.3;
+        media.forEach(change => {
+          if (change.mqAlias == 'xs')
+            this.characters = this.characters * 0.3;
+        })
       }
     ),
-    err => console.log(err)
+      err => console.log(err)
   }
 
   ngOnDestroy() {

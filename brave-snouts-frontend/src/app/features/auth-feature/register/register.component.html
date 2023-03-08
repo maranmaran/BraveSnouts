@@ -1,31 +1,38 @@
 <div class="container" fxLayout="column">
-
-  <div class="mat-title bold">Registracija novog korisnika</div>
+  <div class="mat-h2 bold">Registracija novog korisnika</div>
 
   <div class="mb-2 w-100" fxLayout="column" fxLayoutGap="0.5rem">
-
     <form [formGroup]="registerForm">
       <mat-form-field>
         <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email">
+        <input matInput type="email" formControlName="email" />
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Ime i prezime</mat-label>
-        <input matInput formControlName="name">
+        <input matInput formControlName="name" />
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Broj telefona</mat-label>
-        <input matInput formControlName="phone">
+        <input matInput formControlName="phone" />
       </mat-form-field>
 
-      <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
-        <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()"
-          [disabled]="!registerForm.valid">Registriraj me</button>
+      <div
+        fxLayout="row"
+        fxLayoutGap="1rem"
+        fxLayoutAlign="space-between center"
+      >
+        <button
+          fxFlexAlign="end"
+          mat-flat-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="!registerForm.valid"
+        >
+          Registriraj me
+        </button>
       </div>
     </form>
-
   </div>
-
 </div>
