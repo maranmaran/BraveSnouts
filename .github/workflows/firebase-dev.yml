@@ -9,10 +9,12 @@ name: Deploy to Development
       - dev
 
 jobs:
-  auctions_hosting:
+  hosting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: npm ci && npm run build
+        working-directory: ./src/web
       - run: npm ci && npm run build-dev
         working-directory: ./src/auctions/brave-snouts-frontend
         env:
@@ -44,18 +46,3 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
           PROJECT_PATH: "./src/auctions/functions"
-
-  web_hosting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: npm ci && npm run build
-        working-directory: ./src/web
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BRAVESNOUTSDEV }}"
-          channelId: live
-          projectId: bravesnoutsdev
-        env:
-          FIREBASE_CLI_PREVIEWS: hostingchannels
