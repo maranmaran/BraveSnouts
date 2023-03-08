@@ -7,6 +7,10 @@
 **/.env
 **/key.json
 
+.env
+
+*.env
+
 # User-specific files
 *.rsuser
 *.suo
