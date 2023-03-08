@@ -30,7 +30,7 @@
       "npm --prefix \"$PROJECT_PATH\" run lint",
       "npm --prefix \"$PROJECT_PATH\" run build"
     ],
-    "source": "functions"
+    "source": "src/auctions/functions"
   },
   "emulators": {
     "functions": {
