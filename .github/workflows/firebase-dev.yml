@@ -13,10 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run build
-        working-directory: ./src/web
       - run: npm ci && npm run build-dev
-        working-directory: ./src/auctions/brave-snouts-frontend
+        working-directory: ./src/brave-snouts-frontend
         env:
           BASE_URL: ${{ secrets.BASE_URL_DEV }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_DEV }}
@@ -45,4 +43,4 @@ jobs:
           args: deploy --only functions --project auctions_dev
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
-          PROJECT_PATH: "./src/auctions/functions"
+          PROJECT_PATH: "./src/functions"

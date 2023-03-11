@@ -1,54 +1,37 @@
 {
-  "hosting": [
-    {
-      "site": "bravesnoutsdevweb",
-      "public": "src/web/dist/web",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "site": "bravesnoutsdev",
-      "public": "src/auctions/brave-snouts-frontend/dist/brave-snouts-frontend",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "headers": [
-        {
-          "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "max-age=1210000"
-            }
-          ]
-        }
-      ]
-    }
-  ],
+  "hosting": {
+    "site": "bravesnoutsdev",
+    "public": "src/brave-snouts-frontend/dist/brave-snouts-frontend",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=1210000"
+          }
+        ]
+      }
+    ]
+  },
   "functions": {
     "predeploy": [
       "npm --prefix \"$PROJECT_PATH\" ci",
       "npm --prefix \"$PROJECT_PATH\" run lint",
       "npm --prefix \"$PROJECT_PATH\" run build"
     ],
-    "source": "src/auctions/functions"
+    "source": "src/functions"
   },
   "emulators": {
     "functions": {

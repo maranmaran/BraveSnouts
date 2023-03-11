@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build-prod
-        working-directory: ./src/auctions/brave-snouts-frontend
+        working-directory: ./src/brave-snouts-frontend
         env:
           BASE_URL: ${{ secrets.BASE_URL_PROD }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_PROD }}
@@ -43,4 +43,4 @@ jobs:
           args: deploy --only functions --project prod
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
-          PROJECT_PATH: "./src/auctions/functions"
+          PROJECT_PATH: "./src/functions"
