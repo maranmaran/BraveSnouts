@@ -1,15 +1,19 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore, DocumentData, QueryFn } from "@angular/fire/compat/firestore";
+import firebase from 'firebase/compat/app';
+import 'firebase/firestore';
 import { Bid } from '../../models/bid.model';
-import { RepositoryBase } from "./base.repository";
 
 @Injectable()
-export class BidsRepository extends RepositoryBase {
+export class BidsRepository {
 
   constructor(
     private readonly firestore: AngularFirestore
   ) {
-    super();
+  }
+
+  get timestamp() {
+    return firebase.firestore.FieldValue.serverTimestamp();
   }
 
   private getCollection(queryFn?: QueryFn<DocumentData>) {

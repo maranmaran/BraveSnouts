@@ -31,12 +31,12 @@ export class SingleItemComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     setTimeout(() => {
-      if(!this.fromDialog) {
+      if (!this.fromDialog) {
         const auctionId = this.route.snapshot.paramMap.get('auctionId');
         const itemId = this.route.snapshot.paramMap.get('itemId');
 
-        if(!auctionId || !itemId) {
-          this.router.navigate(['/app']);
+        if (!auctionId || !itemId) {
+          this.router.navigate(['/aukcije']);
         } else {
           this._subsink.add(
             this.getAuction(auctionId),

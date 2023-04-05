@@ -14,7 +14,7 @@ export class EmailLoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.authSvc.completeEmailLogin().then(() => this.router.navigate(['/app']));
+    this.authSvc.completeEmailLogin().then(() => this.router.navigate(['/aukcije']));
   }
 
 }

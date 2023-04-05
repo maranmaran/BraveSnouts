@@ -29,7 +29,6 @@
     "@ngneat/hot-toast": "^5.0.1",
     "@ngneat/overview": "^4.1.0",
     "@tweenjs/tween.js": "^18.6.4",
-    "bootstrap": "^5.2.3",
     "firebase": "^9.17.1",
     "fs": "0.0.1-security",
     "fs-extra": "^11.1.0",

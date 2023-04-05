@@ -11,19 +11,14 @@
     fxLayout="row"
     fxLayoutAlign="space-between"
   >
-    <button
-      routerLink="/app/auctions"
-      class="btn-small"
-      mat-mini-fab
-      color="warn"
-    >
+    <button routerlink="aukcije" class="btn-small" mat-mini-fab color="warn">
       <mat-icon>arrow_back</mat-icon>
       <!-- Natrag -->
     </button>
 
     <button
       *ngIf="userTrackedItems?.size > 0"
-      routerLink="/app/my-items"
+      routerlink="/aukcije/my-items"
       gaEvent="my_items_click"
       gaCategory="items_tracking"
       class="btn-small"

@@ -12,16 +12,16 @@ export class AuctionFormGuard implements CanActivate {
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
-    let data = this.router.getCurrentNavigation().extras.state; 
+    let data = this.router.getCurrentNavigation().extras.state;
 
-    if(!data) {
-      return this.router.navigate(['/app'])
+    if (!data) {
+      return this.router.navigate(['/aukcije'])
     }
 
-    if(!data.auction || !data.items || !data.action) {
-      return this.router.navigate(['/app'])
+    if (!data.auction || !data.items || !data.action) {
+      return this.router.navigate(['/aukcije'])
     }
-    
+
     return of(true);
   }
 

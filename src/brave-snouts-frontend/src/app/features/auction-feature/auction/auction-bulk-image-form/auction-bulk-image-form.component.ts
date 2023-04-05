@@ -77,7 +77,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     // route back to home if use is not admin
     this._subsink.add(
       this.authSvc.isAdmin$.subscribe(
-        isAdmin => isAdmin ? noop() : this.router.navigate(['/app']),
+        isAdmin => isAdmin ? noop() : this.router.navigate(['/aukcije']),
         err => console.log(err)
       )
     )

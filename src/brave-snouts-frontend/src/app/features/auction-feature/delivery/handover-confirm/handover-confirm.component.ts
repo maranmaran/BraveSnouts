@@ -41,8 +41,8 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     this._auctionIds = this.route.snapshot.paramMap.get('auctionIds').split(',');
     this._userId = this.route.snapshot.paramMap.get('userId');
 
-    if(!this._auctionIds || !this._userId) {
-      this.router.navigate(['/app']);
+    if (!this._auctionIds || !this._userId) {
+      this.router.navigate(['/aukcije']);
       return null;
     }
 
@@ -53,13 +53,13 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
 
   getHnadoverOptions() {
     this.auctionRepo.getOne(this._auctionIds[0])
-    .pipe(
-      take(1),
-      map(a => a.handoverDetails)
-    )
-    .subscribe(details => {
-      this.handoverDetails = details;
-    });
+      .pipe(
+        take(1),
+        map(a => a.handoverDetails)
+      )
+      .subscribe(details => {
+        this.handoverDetails = details;
+      });
   }
 
   ngOnDestroy() {
@@ -71,7 +71,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     let query = ref => ref.where('winner.userId', '==', this._userId);
 
     let updateJobs = [];
-    for(const auctionId of this._auctionIds) {
+    for (const auctionId of this._auctionIds) {
 
       let items$ = this.itemsRepo.getAll(auctionId, query);
 
@@ -91,23 +91,23 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
 
           await this.winnerRepo.setAuctionWinner(winner.auctionId, winnerOnAuction);
         }),
-        map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option }) ]),
+        map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: null, deliveryChoice: 'handover', handoverOption: option })]),
         mergeMap(([id, data]) => {
 
           var partialData = { winner: data } as AuctionItem;
 
-          return this.itemsRepo.getDocument(auctionId, id as string).set(partialData, {merge: true})
+          return this.itemsRepo.getDocument(auctionId, id as string).set(partialData, { merge: true })
         }),
-        catchError(err => (console.log(err), throwError(err) ) ),
+        catchError(err => (console.log(err), throwError(err))),
       );
 
       updateJobs.push(updateJob.toPromise());
     }
 
     Promise.all(updateJobs)
-    .then(() => (this.sendConfirmation(option), this.success = true))
-    .catch(err => (console.log(err), this.success = false))
-    .finally(() => this.bootstrap = true);
+      .then(() => (this.sendConfirmation(option), this.success = true))
+      .catch(err => (console.log(err), this.success = false))
+      .finally(() => this.bootstrap = true);
   }
 
   sendConfirmation(option) {

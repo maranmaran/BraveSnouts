@@ -16,7 +16,7 @@
         <mat-icon matPrefix> add </mat-icon>
         <span class="mat-small">Napravi aukciju</span>
       </button>
-      <button mat-menu-item routerLink="/app/admin-auctions-page">
+      <button mat-menu-item routerlink="/aukcije/admin-auctions-page">
         <mat-icon matPrefix> admin_panel_settings </mat-icon>
         <span class="mat-small">Admin sučelje</span>
       </button>
@@ -27,7 +27,7 @@
         mat-icon-button
         class="elevate hover default"
         matTooltip="Polica privatnosti"
-        routerLink="/app/privacy-policy"
+        routerlink="/aukcije/privacy-policy"
       >
         <mat-icon>policy</mat-icon>
       </button>
@@ -36,7 +36,7 @@
         mat-icon-button
         class="elevate hover default"
         matTooltip="Pravila aukcije"
-        routerLink="/app/rules"
+        routerlink="/aukcije/rules"
       >
         <mat-icon>info</mat-icon>
       </button>
@@ -110,7 +110,7 @@
       <mat-menu #profileMenu="matMenu">
         <button
           mat-menu-item
-          routerLink="/app/my-items"
+          routerlink="/aukcije/my-items"
           gaEvent="my_items_click"
           gaCategory="items_tracking"
         >

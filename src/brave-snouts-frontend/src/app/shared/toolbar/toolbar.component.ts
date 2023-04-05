@@ -75,7 +75,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     this.clickFlag = true;
 
     this.router
-      .navigate(['/app'])
+      .navigate(['/aukcije'])
       .then((_) => setTimeout((_) => (this.clickFlag = false), 1000));
   }
 
@@ -90,13 +90,13 @@ export class ToolbarComponent implements OnInit, OnDestroy {
       endDate: moment(new Date()).add(1, 'day').toDate(),
     };
 
-    this.router.navigate(['/app/create-auction'], {
+    this.router.navigate(['/aukcije/create-auction'], {
       state: { auction, items: [], action: 'create' },
     });
   }
 
   onCreateAuctionThroughImages() {
-    this.router.navigate(['/app/create-auction-bulk-image-upload']);
+    this.router.navigate(['/aukcije/create-auction-bulk-image-upload']);
   }
 
   onShowContactHelp() {

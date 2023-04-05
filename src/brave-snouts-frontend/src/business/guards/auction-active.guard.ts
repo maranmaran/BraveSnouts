@@ -29,7 +29,7 @@ export class AuctionActiveGuard implements CanActivate {
     let auctionId = next.paramMap.get('id') || next.paramMap.get('auctionId');
 
     if (!auction && !auctionId) {
-      return this.router.navigate(['/app'])
+      return this.router.navigate(['/aukcije'])
     }
 
     return this.authSvc.isAdmin$.pipe(
@@ -51,7 +51,7 @@ export class AuctionActiveGuard implements CanActivate {
       switchMap(canNavigate => {
         if (canNavigate) return of(true);
 
-        return this.router.navigate(['/app']);
+        return this.router.navigate(['/aukcije']);
       })
     );
   }
