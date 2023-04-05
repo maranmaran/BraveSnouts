@@ -6,8 +6,8 @@
     "config": "ts-node ./src/environments/set-env.script.ts",
     "start": "npm run config -- --environment=dev && ng serve -c development",
     "start-ssl": "npm run config -- --environment=dev && ng serve -c development --ssl --ssl-key ./src/environments/https/localhost.key --ssl-cert ./src/environments/https/localhost.crt",
-    "build-dev": "npm run config -- --environment=dev && ng build -c development",
-    "build-prod": "npm run config -- --environment=prod && ng build -c production",
+    "build-dev": "npm run config -- --environment=dev && ng build -c development --output-hashing=all",
+    "build-prod": "npm run config -- --environment=prod && ng build -c production --output-hashing=all",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
