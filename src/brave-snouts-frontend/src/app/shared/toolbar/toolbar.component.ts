@@ -6,7 +6,7 @@ import 'firebase/auth';
 import firebase from 'firebase/compat/app';
 import * as moment from 'moment';
 import { MediaObserver } from 'ngx-flexible-layout';
-import { noop, Observable } from 'rxjs';
+import { Observable, noop } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { SupportComponent } from 'src/app/shared/support/support.component';
 import { User } from 'src/business/models/user.model';
@@ -90,13 +90,13 @@ export class ToolbarComponent implements OnInit, OnDestroy {
       endDate: moment(new Date()).add(1, 'day').toDate(),
     };
 
-    this.router.navigate(['/aukcije/create-auction'], {
+    this.router.navigate(['/aukcije/kreiranje-aukcije'], {
       state: { auction, items: [], action: 'create' },
     });
   }
 
   onCreateAuctionThroughImages() {
-    this.router.navigate(['/aukcije/create-auction-bulk-image-upload']);
+    this.router.navigate(['/aukcije/kreiranje-aukcije-sa-ucitavanjem-slika']);
   }
 
   onShowContactHelp() {

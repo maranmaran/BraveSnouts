@@ -10,7 +10,7 @@
         </mat-form-field>
 
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
-          <div id="privacy" class="text-center foreground primary lighter link" routerlink="/aukcije/privacy-policy" (click)="onClose()">Polica privatnosti</div>
+          <div id="privacy" class="text-center foreground primary lighter link" routerLink="/aukcije/polica-privatnosti" (click)="onClose()">Polica privatnosti</div>
           <button fxFlexAlign="end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">Prijava</button>
         </div>
 
@@ -45,7 +45,7 @@
   <div
     id="privacy"
     class="foreground primary lighter link"
-    routerlink="/aukcije/privacy-policy"
+    routerLink="/aukcije/privacy-policy"
     (click)="onClose()"
   >
     Polica privatnosti

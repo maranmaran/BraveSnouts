@@ -11,14 +11,14 @@
     fxLayout="row"
     fxLayoutAlign="space-between"
   >
-    <button routerlink="aukcije" class="btn-small" mat-mini-fab color="warn">
+    <button routerLink="/aukcije" class="btn-small" mat-mini-fab color="warn">
       <mat-icon>arrow_back</mat-icon>
       <!-- Natrag -->
     </button>
 
     <button
       *ngIf="userTrackedItems?.size > 0"
-      routerlink="/aukcije/my-items"
+      routerLink="/aukcije/moji-predmeti"
       gaEvent="my_items_click"
       gaCategory="items_tracking"
       class="btn-small"

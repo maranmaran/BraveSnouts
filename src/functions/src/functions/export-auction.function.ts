@@ -85,7 +85,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
           for (const item of winner.items) {
             itemsSheetData.push([
               `${item.name.toUpperCase()}, ${itemsMap.get(item.id).description}`,
-              `${config.base.url}/item;auctionId=${item.auctionId};itemId=${item.id}`,
+              `${config.base.url}/predmet;auctionId=${item.auctionId};itemId=${item.id}`,
               winner.userInfo?.name,
               item.bid,
             ]);

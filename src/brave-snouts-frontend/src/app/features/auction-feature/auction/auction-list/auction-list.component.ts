@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { MediaObserver } from 'ngx-flexible-layout';
-import { from, noop, Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, from, noop, of } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
@@ -156,7 +156,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
   /**Navigate to selected auction */
   onClick(auction: Auction) {
-    this.router.navigate(['/aukcije/auction', { id: auction.id }], { state: { auction } });
+    this.router.navigate(['/aukcije/aukcija', { id: auction.id }], { state: { auction } });
   }
 
   onEdit(auctionObj: Auction, event: Event) {
@@ -173,7 +173,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
     this.itemsRepo.getAll(auctionObj.id).pipe(take(1))
       .subscribe(items => this.router.navigate(
-        ['/app/edit-auction'],
+        ['/app/izmjena-aukcije'],
         { state: { auction, items, action: 'edit' } }
       ), err => console.log(err));
 
@@ -218,7 +218,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['/aukcije/admin-page', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
+    this.router.navigate(['/aukcije/aukcija-administracija', { id: auctionObj.id, state: this.getAuctionState(auctionObj) }])
   }
 
   onViewDescription(auction: Auction, event: Event) {

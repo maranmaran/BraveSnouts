@@ -224,7 +224,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
         tap(console.log),
         concatMap(auction => this.itemsRepo.getAll(this.auctionId).pipe(take(1), map(items => [auction, items]))),
         concatMap(([auction, items]) => this.router.navigate(
-          ['/app/edit-auction'],
+          ['/app/izmjena-aukcije'],
           { state: { auction, items, action: 'edit' } }
         ))
       ).subscribe(noop, err => console.log(err));

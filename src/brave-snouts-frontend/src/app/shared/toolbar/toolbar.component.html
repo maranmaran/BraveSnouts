@@ -16,7 +16,7 @@
         <mat-icon matPrefix> add </mat-icon>
         <span class="mat-small">Napravi aukciju</span>
       </button>
-      <button mat-menu-item routerlink="/aukcije/admin-auctions-page">
+      <button mat-menu-item routerLink="/aukcije/administracija">
         <mat-icon matPrefix> admin_panel_settings </mat-icon>
         <span class="mat-small">Admin sučelje</span>
       </button>
@@ -27,7 +27,7 @@
         mat-icon-button
         class="elevate hover default"
         matTooltip="Polica privatnosti"
-        routerlink="/aukcije/privacy-policy"
+        routerLink="/aukcije/polica-privatnosti"
       >
         <mat-icon>policy</mat-icon>
       </button>
@@ -36,7 +36,7 @@
         mat-icon-button
         class="elevate hover default"
         matTooltip="Pravila aukcije"
-        routerlink="/aukcije/rules"
+        routerLink="/aukcije/pravila"
       >
         <mat-icon>info</mat-icon>
       </button>
@@ -110,7 +110,7 @@
       <mat-menu #profileMenu="matMenu">
         <button
           mat-menu-item
-          routerlink="/aukcije/my-items"
+          routerLink="/aukcije/moji-predmeti"
           gaEvent="my_items_click"
           gaCategory="items_tracking"
         >
@@ -125,7 +125,7 @@
           <mat-icon>mail</mat-icon>
           Promijeni e-mail
         </button>
-        <button mat-menu-item [routerLink]="['email-optout']">
+        <button mat-menu-item [routerLink]="['email-iskljucenje']">
           <mat-icon>notifications_active</mat-icon>
           Postavke notifikacija
         </button>

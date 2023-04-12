@@ -26,24 +26,24 @@ const routes: Routes = [
         path: '', component: AuctionsHomeComponent, children: [
             { path: '', component: AuctionListComponent },
 
-            { path: 'post-confirm', component: PostConfirmComponent },
-            { path: 'handover-confirm', component: HandoverConfirmComponent },
+            { path: 'potvrda-posta', component: PostConfirmComponent },
+            { path: 'potvrda-primopredaja', component: HandoverConfirmComponent },
 
-            { path: 'create-auction', canActivate: [AdminGuard, AuctionFormGuard], component: AuctionFormComponent },
-            { path: 'edit-auction', canActivate: [AdminGuard, AuctionFormGuard], component: AuctionFormComponent },
-            { path: 'create-auction-bulk-image-upload', canActivate: [AdminGuard], component: AuctionBulkImageFormComponent },
+            { path: 'kreiranje-aukcije', canActivate: [AdminGuard, AuctionFormGuard], component: AuctionFormComponent },
+            { path: 'izmjena-aukcije', canActivate: [AdminGuard, AuctionFormGuard], component: AuctionFormComponent },
+            { path: 'kreiranje-aukcije-sa-ucitavanjem-slika', canActivate: [AdminGuard], component: AuctionBulkImageFormComponent },
 
-            { path: 'auction', canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
-            { path: 'item', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
+            { path: 'aukcija', canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
+            { path: 'predmet', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
 
-            { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
-            { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
-            { path: 'admin-auctions-page', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
+            { path: 'moji-predmeti', canActivate: [AuthGuard], component: UserItemsComponent },
+            { path: 'aukcija-administracija', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
+            { path: 'administracija', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
 
-            { path: 'email-login', component: EmailLoginComponent },
-            { path: 'email-optout', component: EmailOptoutComponent },
+            { path: 'email-prijava', component: EmailLoginComponent },
+            { path: 'email-iskljucenje', component: EmailOptoutComponent },
 
-            { path: 'privacy-policy', component: PrivacyPolicyComponent },
+            { path: 'polica-privatnosti', component: PrivacyPolicyComponent },
             { path: 'rules', component: AuctionRulesComponent },
         ]
     },

@@ -132,4 +132,4 @@ function deleteFolderRecursive(directoryPath) {
 };
 
 export const getEmailOptoutLink = () =>
-  `${config.base.url}/email-optout;`;
+  `${config.base.url}/email-iskljucenje;`;

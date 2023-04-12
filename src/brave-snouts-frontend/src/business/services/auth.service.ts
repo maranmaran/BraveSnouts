@@ -240,7 +240,7 @@ export class AuthService {
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (bravesnoutsdev.firebaseapp.com) for this
       // URL must be in the authorized domains list in the Firebase Console.
-      url: `${environment.baseUrl}/app/email-login`,
+      url: `${environment.baseUrl}/aukcije/email-prijava`, // TODO: Change to global route
       // url: 'https://bravesnoutsdev.firebaseapp.com/email-login',
       // This must be true.
       handleCodeInApp: true,
