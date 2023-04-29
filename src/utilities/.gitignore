@@ -13,6 +13,8 @@ node_modules/
 
 dist/
 
+lib/
+
 **/*.xlsx
 **/key.json
 **/keydev.json

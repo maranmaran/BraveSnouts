@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { noop, throwError } from 'rxjs';
 import { catchError, map, mergeMap, startWith, take, tap } from 'rxjs/operators';
@@ -8,6 +8,22 @@ import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { SettingsService } from 'src/business/services/settings.service';
 import { WinnersRepository } from './../../../../../business/services/repositories/winners.repository';
+
+export interface PostConfirmFormData {
+  fullName: string;
+  city: string;
+  address: string;
+  zipNumber: string;
+  phoneNumber: string;
+}
+
+export interface PostConfirmForm {
+  fullName: FormControl<string>;
+  city: FormControl<string>;
+  address: FormControl<string>;
+  zipNumber: FormControl<string>;
+  phoneNumber: FormControl<string>;
+}
 
 @Component({
   selector: 'app-post-confirm',
@@ -18,7 +34,7 @@ import { WinnersRepository } from './../../../../../business/services/repositori
 })
 export class PostConfirmComponent implements OnInit {
 
-  postDeliveryInfoForm: FormGroup;
+  postDeliveryInfoForm: FormGroup<PostConfirmForm>;
 
   submitted: boolean = false;
   success: boolean;
@@ -62,7 +78,7 @@ export class PostConfirmComponent implements OnInit {
 
     this.totalDonation = this.originalDonation + this.postageFee;
 
-    this.postDeliveryInfoForm = this.fb.group({
+    this.postDeliveryInfoForm = this.fb.group<PostConfirmForm>({
       fullName: this.fb.control('', Validators.required),
       city: this.fb.control('', Validators.required),
       address: this.fb.control('', Validators.required),
@@ -126,7 +142,7 @@ export class PostConfirmComponent implements OnInit {
     this.functionSvc.sendPostConfirm(
       this._userId,
       this._auctionIds,
-      this.postDeliveryInfoForm.value,
+      this.postDeliveryInfoForm.getRawValue(),
       this.originalDonation,
       this.paymentDetail,
       this.postageFee)

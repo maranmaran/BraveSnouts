@@ -5,16 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Debug Utility Script",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\utilities\\src\\import-test-auctions.script.ts",
+            "preLaunchTask": "compile",
+            "program": "${workspaceFolder}\\src\\utilities\\src\\scripts\\${input:scriptName}.script.ts",
             "outFiles": [
-                "${workspaceFolder}/**/*.js"
+                "${workspaceFolder}/src/utilities/dist/**/*.js"
             ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "scriptName",
+            "type": "promptString",
+            "description": "Enter the script name to debug (e.g., generate-auction)",
+            "default": "generate-auction"
         }
     ]
 }

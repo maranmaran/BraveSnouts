@@ -5,6 +5,10 @@
 @import "~quill/dist/quill.core.css";
 @import "~quill/dist/quill.snow.css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   height: 100%;
@@ -119,7 +123,6 @@ label {
   padding-top: 1rem;
   margin-bottom: 10px;
   height: calc(100% - 56px - 1rem) !important; // because of toolbar height
-  // height: calc(100%) !important; // because of toolbar height
 }
 
 .email-auth-hot-toast {

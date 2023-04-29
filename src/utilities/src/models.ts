@@ -1,3 +1,4 @@
+import { firestore } from 'firebase-admin';
 
 export class Auction {
 
@@ -8,8 +9,8 @@ export class Auction {
     id: string;
     name: string;
     description: string;
-    startDate: any;
-    endDate: any;
+    startDate: firestore.Timestamp;
+    endDate: firestore.Timestamp;
     items: AuctionItem[];
 
     raisedMoney: 0
@@ -40,7 +41,6 @@ export class AuctionItem {
     bid: number = 0;
     user: string;
 
-
     winner: Winner;
 }
 
@@ -70,11 +70,14 @@ export class PostalInformation {
 }
 
 export interface FirebaseFile {
-    path: string,
-    type: string,
-    name: string,
-    thumb: string;
-    url: string,
+    name: string;
+    type: string;
+
+    path: string; // auction-bucket/auctionId
+
+    urlOrig: string;
+    urlComp?: string;
+    urlThumb?: string;
 }
 
 export class User {

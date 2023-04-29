@@ -15,7 +15,7 @@ import { AuthService } from 'src/business/services/auth.service';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
-import { SettingsService } from 'src/business/services/settings.service';
+import { ImageProcessingSettings, SettingsService } from 'src/business/services/settings.service';
 import { StorageService } from 'src/business/services/storage.service';
 import { SubSink } from 'subsink';
 import { v4 as uuidv4 } from 'uuid';
@@ -58,6 +58,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly settingsSvc: SettingsService
   ) { }
 
+  private imgProcessingSettings: ImageProcessingSettings;
+  private imageBucketPath: string;
 
   ngOnInit(): void {
 
@@ -82,6 +84,12 @@ export class AuctionBulkImageFormComponent implements OnInit {
       )
     )
 
+    this.settingsSvc.imageProcessingSettings$
+      .pipe(first())
+      .subscribe(settings => {
+        this.imgProcessingSettings = settings;
+        this.imageBucketPath = this.getImageBucket(auction.id);
+      });
   }
 
   ngOnDestroy() {
@@ -120,19 +128,21 @@ export class AuctionBulkImageFormComponent implements OnInit {
     setTimeout(_ => this.dragActive = false, 100);
   }
 
+  private getImageBucket(auctionId: string) {
+    return `${this.imgProcessingSettings.compress ? 'temp' : 'auction-items'}/${auctionId}`;
+  }
+
   /**Upload selected files onto firebase storage*/
   async uploadFiles(event) {
 
     this.uploadState$.next(true);
-
-    const useCompression = (await this.settingsSvc.imageProcessingSettings$.pipe(first()).toPromise()).compress;
 
     this._subsink.add(from(event.addedFiles).pipe(
 
       mergeMap((file: File) => {
 
         const name = `${Guid.create()}`;
-        const path = `${useCompression ? 'temp' : 'auction-items'}/${this.auctionId}/${name}`;
+        const path = `${this.imageBucketPath}/${name}`;
         const type = this.getFirebaseFileType(file.type);
 
         let { ref, task } = this.storage.uploadFile(file, path);
@@ -191,14 +201,12 @@ export class AuctionBulkImageFormComponent implements OnInit {
       description: this.auction.value.description,
     });
 
-    const useCompression = (await this.settingsSvc.imageProcessingSettings$.pipe(first()).toPromise()).compress;
-
     from(this.auctionRepo.set(this.auctionId, auction))
       .pipe(
         take(1),
         concatMap(() =>
           this.functionSvc
-            .processAuctionImages(this.auctionId, `${useCompression ? 'temp' : 'auction-items'}/${this.auctionId}`)
+            .processAuctionImages(this.auctionId, `${this.imageBucketPath}/${this.auctionId}`)
             .pipe(
               take(1),
               this.toastSvc.observe(

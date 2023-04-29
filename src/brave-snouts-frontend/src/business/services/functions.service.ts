@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { PostConfirmFormData } from 'src/app/features/auction-feature/delivery/post-confirm/post-confirm.component';
 
 @Injectable()
 export class FunctionsService {
   constructor(private functions: AngularFireFunctions) { }
-
-  /** @deprecated */
-  compressImage(file: File) {
-    const callable = this.functions.httpsCallable('compressImage');
-
-    return callable({ file });
-  }
 
   /** Calls cloud function to process auction end */
   endAuction(auctionId: string, handoverDetails: string[]) {
@@ -60,12 +54,12 @@ export class FunctionsService {
   }
 
   sendPostConfirm(
-    userId,
-    auctionIds,
-    formData,
-    totalDonation,
-    paymentDetail,
-    postageFee
+    userId: string,
+    auctionIds: string[],
+    formData: PostConfirmFormData,
+    totalDonation: number,
+    paymentDetail: string,
+    postageFee: number
   ) {
     const callable = this.functions.httpsCallable(
       'handoverConfirm-handoverConfirmFn'
@@ -82,7 +76,7 @@ export class FunctionsService {
     });
   }
 
-  sendHandoverConfirm(userId, auctionIds, chosenOptionData) {
+  sendHandoverConfirm(userId: string, auctionIds: string[], chosenOptionData: string) {
     const callable = this.functions.httpsCallable(
       'handoverConfirm-handoverConfirmFn'
     );
@@ -95,7 +89,7 @@ export class FunctionsService {
     });
   }
 
-  sendNewItemsAddedMail(auctionId) {
+  sendNewItemsAddedMail(auctionId: string) {
     const callable = this.functions.httpsCallable(
       'newItemsAdded-newItemsAddedFn'
     );

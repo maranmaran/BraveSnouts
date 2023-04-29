@@ -20,12 +20,9 @@
   @include timepicker-theme($theme);
 }
 
-@import "./mixins/spacing.mixin.scss";
-
 // ======================================= THEME ==========================================
 @import "@angular/material/theming";
 @include mat.core();
-// @include mat.legacy-core();
 
 $primary: mat.$cyan-palette;
 $accent: mat.$cyan-palette;

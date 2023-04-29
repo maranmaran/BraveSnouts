@@ -3,11 +3,9 @@ export interface FirebaseFile {
   name: string;
   type: string;
 
-  path: string; // auction-bucket/auctionId
-  fullPath?: string; // auction-bucket/auctionId/imageName
-  tempPath?: string; // temp-bucket/auctionId/imageName
+  path: string;
 
-  url: string;
-  thumb: string;
-  tempUrl?: string;
+  urlOrig: string;
+  urlComp: string;
+  urlThumb: string;
 }

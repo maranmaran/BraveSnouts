@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { noop, Subscription, throwError } from 'rxjs';
+import { Subscription, noop, throwError } from 'rxjs';
 import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
@@ -19,7 +19,6 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
 
   success: boolean;
   bootstrap: boolean = false;
-
 
   private _auctionIds: string[];
   private _userId: string;
