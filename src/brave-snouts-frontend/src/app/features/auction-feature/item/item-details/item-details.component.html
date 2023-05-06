@@ -2,7 +2,7 @@
   appearance="outlined"
   *ngIf="bootstrapped"
   @skipInitAnimation
-  class="auction-item m-2 mat-elevation-z5 elevate hover-large primary h-100"
+  class="auction-item m-2 mat-elevation-z5 elevate hover-large primary h-min"
   fxLayout="column"
   fxLayoutGap="1rem"
 >
@@ -86,7 +86,7 @@
     </div>
 
     <ng-template #noDescription>
-      <div class="center w-100">
+      <div class="center w-full">
         <i>Nema opisa predmeta</i>
       </div>
     </ng-template>
@@ -99,7 +99,7 @@
   >
     <div
       id="bit-action-row"
-      class="w-100 mb-3"
+      class="w-full mb-3"
       fxLayout="row"
       fxLayoutAlign="center center"
     >
@@ -131,7 +131,7 @@
     </div>
 
     <button
-      class="w-100"
+      class="w-full"
       mat-flat-button
       [disabled]="bidDisabled || currentBid <= item.bid"
       type="button"

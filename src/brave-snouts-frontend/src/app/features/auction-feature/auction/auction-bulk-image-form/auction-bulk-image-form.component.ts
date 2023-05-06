@@ -7,7 +7,7 @@ import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { MediaObserver } from 'ngx-flexible-layout';
-import { BehaviorSubject, from, noop } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
 import { concatMap, finalize, first, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
@@ -129,7 +129,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
   }
 
   private getImageBucket(auctionId: string) {
-    return `${this.imgProcessingSettings.compress ? 'temp' : 'auction-items'}/${auctionId}`;
+    // return `${this.imgProcessingSettings.compress ? 'temp' : 'auction-items'}/${auctionId}`;
+    return `auction-items/${auctionId}`;
   }
 
   /**Upload selected files onto firebase storage*/
@@ -149,8 +150,19 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
         return task.snapshotChanges().pipe(
           finalize(async () => {
-            let url = await ref.getDownloadURL().toPromise();
-            this.files.push({ name, type, path, url } as FirebaseFile)
+            const url = await firstValueFrom(ref.getDownloadURL());
+            const finalFile = <FirebaseFile>{
+              name,
+              type,
+              path,
+              // these will be modified by backend 
+              // in case of compression and resize
+              urlOrig: url,
+              urlComp: url,
+              urlThumb: url
+            };
+
+            this.files.push(finalFile)
           }));
       }),
 
@@ -242,7 +254,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
     if (!this.filesToDeleteQueue) return;
 
     for (const file of this.filesToDeleteQueue) {
-      this.storage.deleteFile(file.url).catch(err => console.log(err))
+      this.storage.deleteFile(file.urlOrig).catch(err => console.log(err))
     }
   }
 

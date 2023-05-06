@@ -71,7 +71,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   // bid step size
   bidStepSize = environment.itemCardConfig.bidStepSize;
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.item.bid ??= this.item.startBid
 
     if (!this.auction) {
       this.auctionRepo.getOne(this.item.auctionId)

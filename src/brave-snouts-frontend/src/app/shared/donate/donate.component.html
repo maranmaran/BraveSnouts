@@ -1,6 +1,6 @@
 <div
   @fadeIn
-  class="h-100"
+  class="h-full"
   fxLayout="column"
   fxLayoutGap="2.5rem"
   fxLayoutAlign="space-between center"
@@ -12,7 +12,7 @@
     fxLayout="column"
     fxLayoutAlign="center center"
   >
-    <div class="mb-3 mr-0 w-100">
+    <div class="mb-3 mr-0 w-full">
       <b>Pomoći možete i na druge načine:</b>
       <ul class="primary-list">
         <li>Donacijom potrepština za životinje</li>
@@ -42,8 +42,8 @@
     fxLayout="column"
     fxLayoutGap="0.5rem"
     [ngClass]="{
-      'w-80': mediaObs.isActive('gt-sm'),
-      'w-100': mediaObs.isActive('lt-md')
+      'w-[80%]': mediaObs.isActive('gt-sm'),
+      'w-full': mediaObs.isActive('lt-md')
     }"
   >
     <div

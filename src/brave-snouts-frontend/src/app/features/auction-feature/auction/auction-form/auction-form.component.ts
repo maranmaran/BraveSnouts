@@ -6,7 +6,7 @@ import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 import { MediaObserver } from 'ngx-flexible-layout';
-import { BehaviorSubject, from, noop } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
 import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -205,14 +205,25 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
           mergeMap(async (file: File) => {
 
             const name = `${Guid.create()}`;
-            const path = `auction-items/${this.auction.value.id}/${name}`;
+            const path = `auction-items/${this.auction.value.id}`;
             const type = this.getFirebaseFileType(file.type);
 
             let { ref, task } = this.storage.uploadFile(file, path);
             await task;
-            let url = await ref.getDownloadURL().pipe(take(1)).toPromise();
 
-            let finalFile = { name, type, path, fulLPath: path, tempPath: path, url, tempUrl: url, thumb: url } as FirebaseFile;
+            const url = await firstValueFrom(ref.getDownloadURL());
+
+            const finalFile = <FirebaseFile>{
+              name,
+              type,
+              path,
+              // these will be modified by backend 
+              // in case of compression and resize
+              urlOrig: url,
+              urlComp: url,
+              urlThumb: url
+            };
+
             this.files[index].push(finalFile);
           }),
           // tap(res => console.log(res)),
@@ -368,7 +379,13 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     if (!this.filesToDeleteQueue) return;
 
     for (const file of this.filesToDeleteQueue) {
-      this.storage.deleteFile(file.url).catch(err => console.log(err))
+      this.storage.deleteFile(file.urlOrig).catch(err => console.log(err))
+
+      file.urlThumb != file.urlOrig
+        && this.storage.deleteFile(file.urlThumb).catch(err => console.log(err))
+
+      file.urlComp != file.urlOrig
+        && this.storage.deleteFile(file.urlComp).catch(err => console.log(err))
     }
   }
 

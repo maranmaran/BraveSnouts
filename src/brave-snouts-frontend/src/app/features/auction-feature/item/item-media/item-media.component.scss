@@ -1,10 +1,15 @@
-img, video {
-    width: 100%;
+:host {
+  @apply flex justify-center items-center;
+}
+
+img,
+video {
+  width: 100%;
 }
 
 .img-fluid {
-    width: 100% !important;
-    height: auto !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
 .single-gallery-image {
@@ -18,7 +23,7 @@ img, video {
   width: 100% !important;
 }
 
-@media(max-width: 900px) {
+@media (max-width: 900px) {
   #placeholder {
     max-height: 150px !important;
     max-width: 150px !important;

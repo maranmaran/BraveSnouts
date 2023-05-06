@@ -13,7 +13,7 @@
               color="primary"
               *ngIf="userTracksItems$ | async"
               routerLink="/aukcije/moji-predmeti"
-              class="w-100 mb-3 elevate hover-big"
+              class="w-full mb-3 elevate hover-big"
               [ngClass]="{}"
               gaEvent="my_items_click"
               gaCategory="items_tracking"
@@ -24,7 +24,7 @@
             <button
               mat-raised-button
               color="warn"
-              class="w-100 mb-3 elevate hover-big"
+              class="w-full mb-3 elevate hover-big"
               routerLink="/aukcije/pravila"
             >
               Pravila aukcije

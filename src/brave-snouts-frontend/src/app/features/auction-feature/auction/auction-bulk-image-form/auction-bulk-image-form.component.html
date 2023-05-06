@@ -60,7 +60,7 @@
         </mat-form-field>
 
         <div
-          class="w-100"
+          class="w-full"
           fxLayout="row"
           fxLayoutGap="3rem"
           fxLayout.lt-lg="column"
@@ -91,14 +91,14 @@
     <div id="description" fxFlex fxLayout="column" fxLayoutGap="1rem">
       <div class="mat-h2 bold">Opis aukcije</div>
       <quill-editor
-        class="editor w-100"
+        class="editor w-full"
         [placeholder]="'Opis predmeta'"
         formControlName="description"
       ></quill-editor>
     </div>
   </form>
 
-  <div class="items-form h-100" fxLayout="column" fxLayoutGap="1rem">
+  <div class="items-form h-full" fxLayout="column" fxLayoutGap="1rem">
     <div class="items-header" fxLayout="row">
       <div
         class="section"
@@ -113,7 +113,7 @@
     </div>
 
     <div id="dropzone" fxLayout="row">
-      <div class="media w-100" fxFlex="100%" fxFlex.lt-md="100%">
+      <div class="media w-full" fxFlex="100%" fxFlex.lt-md="100%">
         <mat-progress-bar
           *ngIf="uploadState$ | async"
           mode="indeterminate"
@@ -133,7 +133,7 @@
             [snap-disabled]="true" (dragStart)="dragActive=true" (dragEnd)="dragEnd()" fxLayout="row"> -->
 
           <div class="item-image" drag-scroll-item *ngFor="let file of files">
-            <ng-container *ngIf="file.url as url">
+            <ng-container *ngIf="file.urlOrig as url">
               <img *ngIf="file.type == 'image'" [src]="url" />
               <video *ngIf="file.type == 'video'" [src]="url"></video>
               <button

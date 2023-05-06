@@ -5,4 +5,10 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  corePlugins: {
+    container: false,
+    listStyleType: false,
+    listStylePosition: false,
+    preflight: false,
+  },
 };

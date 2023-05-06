@@ -51,10 +51,10 @@ $theme-light: mat.define-light-theme(
   )
 );
 
-.theme-light {
-  @include mat.core-theme($theme-light);
-  @include mat.all-component-themes($theme-light);
-  @include mat.typography-hierarchy($custom-typography);
+@include mat.core-theme($theme-light);
+@include mat.all-component-themes($theme-light);
 
-  @include custom-components-theme($theme-light);
-}
+@include mat.typography-hierarchy($custom-typography);
+@include mat.all-component-typographies($custom-typography);
+
+@include custom-components-theme($theme-light);

@@ -55,7 +55,7 @@
           </mat-form-field>
 
           <div
-            class="w-100"
+            class="w-full"
             fxLayout="row"
             fxLayoutGap="3rem"
             fxLayout.lt-lg="column"
@@ -83,7 +83,7 @@
     </div>
   </div>
 
-  <div class="items-form h-100" fxLayout="column" fxLayoutGap="1rem">
+  <div class="items-form h-full" fxLayout="column" fxLayoutGap="1rem">
     <div class="items-header" fxLayout="row">
       <div
         class="section"
@@ -223,7 +223,7 @@
                           let file of files[scroll.viewPortInfo.startIndex + i]
                         "
                       >
-                        <ng-container *ngIf="file.url as url">
+                        <ng-container *ngIf="file.urlOrig as url">
                           <img *ngIf="file.type == 'image'" [src]="url" />
                           <video
                             *ngIf="file.type == 'video'"
@@ -263,7 +263,7 @@
         </form>
         <div *ngIf="isMobile" class="form-actions mt-2">
           <button
-            class="w-100"
+            class="w-full"
             mat-flat-button
             color="primary"
             (click)="addItem()"

@@ -8,10 +8,6 @@
       <mat-icon>menu</mat-icon>
     </button>
     <mat-menu #adminMenu="matMenu">
-      <!-- <button mat-menu-item (click)="onCreateAuction()">
-        <mat-icon matPrefix> add </mat-icon>
-        <span class="mat-small">Napravi aukciju</span>
-      </button> -->
       <button mat-menu-item (click)="onCreateAuctionThroughImages()">
         <mat-icon matPrefix> add </mat-icon>
         <span class="mat-small">Napravi aukciju</span>
@@ -35,7 +31,6 @@
       <button
         mat-icon-button
         class="elevate hover default"
-        matTooltip="Pravila aukcije"
         routerLink="/aukcije/pravila"
       >
         <mat-icon>info</mat-icon>
@@ -66,7 +61,7 @@
 
   <div
     fxFlex="30"
-    class="user-auth h-100 relative"
+    class="user-auth h-full relative"
     fxLayout="row"
     fxLayoutAlign="end center"
   >
