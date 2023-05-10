@@ -12,8 +12,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotToastModule } from '@ngneat/hot-toast';
-import { GalleryModule, GALLERY_CONFIG } from 'ng-gallery';
-import { LightboxModule, LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
+import { GALLERY_CONFIG, GalleryModule } from 'ng-gallery';
+import { LIGHTBOX_CONFIG, LightboxModule } from 'ng-gallery/lightbox';
 import { CountdownModule } from 'ngx-countdown';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { NgxDropzoneModule } from 'ngx-dropzone';
@@ -51,6 +51,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppContainerComponent } from './core/app-container/app-container.component';
+import { BirthdayComponent } from './core/birthday/birthday.component';
 import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
 import { HandoverDialogComponent } from './features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from './features/auction-feature/delivery/post-details/post-details.component';
@@ -110,6 +111,7 @@ registerLocaleData(hrLocale);
     // core
     AppComponent,
     ToolbarComponent,
+    BirthdayComponent,
 
     // Auction feature
     AuctionListComponent,

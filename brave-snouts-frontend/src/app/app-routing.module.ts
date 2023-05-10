@@ -18,41 +18,44 @@ import { AuctionActiveGuard } from 'src/business/guards/auction-active.guard';
 import { AuctionFormGuard } from 'src/business/guards/auction-form.guard';
 import { AuctionIdGuard } from 'src/business/guards/auction-id.guard';
 import { AuthGuard } from 'src/business/guards/auth.guard';
+import { BirthdayComponent } from './core/birthday/birthday.component';
 import { AuctionBulkImageFormComponent } from './features/auction-feature/auction/auction-bulk-image-form/auction-bulk-image-form.component';
 import { AdminAuctionsPageComponent } from './features/auction-feature/user/admin-auctions-page/admin-auctions-page.component';
 
 const routes: Routes = [
   // root
-  // { path: '', component: MaintenanceComponent},
+  { path: 'proslava', component: BirthdayComponent },
   { path: '', redirectTo: 'app', pathMatch: 'full' },
 
-  { path: 'app', component: AppContainerComponent, children: [
+  {
+    path: 'app', component: AppContainerComponent, children: [
 
-    { path: '', redirectTo: 'auctions', pathMatch: 'full'},
+      { path: '', redirectTo: 'auctions', pathMatch: 'full' },
 
-    { path: 'auctions', component: AuctionListComponent },
+      { path: 'auctions', component: AuctionListComponent },
 
-    { path: 'post-confirm', component: PostConfirmComponent },
-    { path: 'handover-confirm', component: HandoverConfirmComponent },
+      { path: 'post-confirm', component: PostConfirmComponent },
+      { path: 'handover-confirm', component: HandoverConfirmComponent },
 
-    { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
-    { path: 'create-auction-bulk-image-upload', component: AuctionBulkImageFormComponent },
-    { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
+      { path: 'create-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
+      { path: 'create-auction-bulk-image-upload', component: AuctionBulkImageFormComponent },
+      { path: 'edit-auction', canActivate: [AuthGuard, AuctionFormGuard], component: AuctionFormComponent },
 
-    { path: 'auction',  canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
-    { path: 'item', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
+      { path: 'auction', canActivate: [AuctionIdGuard, AuctionActiveGuard], component: AuctionDetailsComponent },
+      { path: 'item', canActivate: [AuctionActiveGuard], component: SingleItemComponent },
 
-    { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
-    { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
-    { path: 'admin-auctions-page', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
+      { path: 'my-items', canActivate: [AuthGuard], component: UserItemsComponent },
+      { path: 'admin-page', canActivate: [AdminGuard, AuctionIdGuard], component: AdminPageComponent },
+      { path: 'admin-auctions-page', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
 
-    { path: 'email-login', component: EmailLoginComponent },
-    { path: 'email-optout', component: EmailOptoutComponent },
+      { path: 'email-login', component: EmailLoginComponent },
+      { path: 'email-optout', component: EmailOptoutComponent },
 
-    { path: 'privacy-policy', component: PrivacyPolicyComponent },
-    { path: 'rules', component: AuctionRulesComponent },
+      { path: 'privacy-policy', component: PrivacyPolicyComponent },
+      { path: 'rules', component: AuctionRulesComponent },
 
-  ]},
+    ]
+  },
 
   // non matched routes
   { path: '**', redirectTo: '/' }
