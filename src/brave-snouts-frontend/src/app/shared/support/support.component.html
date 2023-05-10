@@ -1,5 +1,5 @@
-<div fxLayout="column" fxLayoutAlign="center start">
-  <div class="w-full" fxLayout="row" fxLayoutAlign="space-between">
+<div class="flex flex-col justify-center items-start">
+  <div class="w-full flex flex-row justify-between">
     <div class="mat-h2 ml-3 mt-3 bold">Pomoć</div>
 
     <button mat-icon-button (click)="onClose()">
@@ -7,12 +7,7 @@
     </button>
   </div>
 
-  <div
-    class="dialog-body p-3 mb-5"
-    fxFlexAlign="center"
-    fxLayout="column"
-    fxLayoutGap="1rem"
-  >
+  <div class="flex flex-col justify-self-center gap-4 dialog-body p-3 mb-5">
     <app-email-copy></app-email-copy>
   </div>
 </div>

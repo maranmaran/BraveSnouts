@@ -1,14 +1,12 @@
-<div class="w-full" fxLayout="column">
+<div class="w-full flex flex-col">
   <button fxFlex fxFlexAlign="end" mat-icon-button (click)="onClose()">
     <mat-icon> close </mat-icon>
   </button>
 </div>
 
 <div
-  class="p-2 overflow-auto"
+  class="p-2 overflow-auto flex flex-col gap-2"
   style="max-height: 800px !important"
-  fxLayout="column"
-  fxLayoutGap="0.5rem"
 >
   <virtual-scroller
     #itemsScroller
@@ -23,7 +21,7 @@
       class="mat-elevation-z8 elevate hover-large mt-2"
     >
       <mat-card-header>
-        <mat-card-title fxLayout="row" fxLayoutAlign="start center">
+        <mat-card-title class="flex flex-row justify-start items-center">
           <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon>
           {{ winner.userInfo.name }}
         </mat-card-title>
@@ -31,25 +29,15 @@
         <mat-card-subtitle>{{ winner.userInfo.phoneNumber }}</mat-card-subtitle>
       </mat-card-header>
 
-      <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
-        <div
-          id="delivery"
-          class="mat-small"
-          fxLayout="row"
-          fxLayoutGap="0.5rem"
-        >
+      <mat-card-content class="flex flex-col gap-2">
+        <div id="delivery" class="mat-small flex flex-row gap-2">
           <label class="pb-0 bold center">Ukupna donacija</label>
           <label class="foreground primary lighter">
             {{ getTotalDonations(winner) | moneyAsync | async }}</label
           >
         </div>
 
-        <div
-          id="delivery"
-          class="mat-small"
-          fxLayout="row"
-          fxLayoutGap="0.5rem"
-        >
+        <div id="delivery" class="mat-small flex flex-row gap-2">
           <label class="pb-0 bold center">Odabir dostave:</label>
           <ng-container [ngSwitch]="winner.deliveryChoice">
             <label *ngSwitchCase="'handover'" class="foreground warn default">
@@ -82,7 +70,7 @@
           </ng-container>
         </div>
 
-        <div id="items" class="mat-small" fxLayout="row" fxLayoutGap="0.5rem">
+        <div id="items" class="mat-small flex flex-row gap-2">
           <label class="pb-0 bold center">Osvojeni predmeti:</label>
           <button
             mat-icon-button
@@ -94,12 +82,7 @@
           </button>
         </div>
 
-        <div
-          id="pack-status"
-          class="mat-small pb-0"
-          fxLayout="row"
-          fxLayoutGap="0.5rem"
-        >
+        <div id="pack-status" class="mat-small pb-0 flex flex-row gap-2">
           <label class="pb-0 bold center">Spakirano:</label>
           <mat-button-toggle-group
             [value]="winner.packed ? winner.packed : 'no'"
@@ -114,12 +97,7 @@
           </mat-button-toggle-group>
         </div>
 
-        <div
-          id="payment"
-          class="mat-small pb-0"
-          fxLayout="row"
-          fxLayoutGap="0.5rem"
-        >
+        <div id="payment" class="mat-small pb-0 flex flex-row gap-2">
           <label class="pb-0 bold center">Status plaćanja:</label>
           <mat-button-toggle-group
             [value]="winner.paymentStatus"

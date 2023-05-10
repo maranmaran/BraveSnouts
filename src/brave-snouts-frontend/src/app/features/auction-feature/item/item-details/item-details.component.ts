@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, Simp
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -35,7 +34,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     private readonly bidsRepo: BidsRepository,
     private readonly dialog: MatDialog,
     private readonly toastSvc: HotToastService,
-    public readonly mediaObs: MediaObserver,
     private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly router: Router,
     private readonly gaService: GoogleAnalyticsService

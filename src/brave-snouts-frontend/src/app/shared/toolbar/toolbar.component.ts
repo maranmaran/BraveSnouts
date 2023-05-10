@@ -2,10 +2,9 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { addDays } from 'date-fns';
 import 'firebase/auth';
 import firebase from 'firebase/compat/app';
-import * as moment from 'moment';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { Observable, noop } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { SupportComponent } from 'src/app/shared/support/support.component';
@@ -24,7 +23,6 @@ import { ItemScrollViewService } from './../../features/auction-feature/item/ite
 export class ToolbarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authSvc: AuthService,
-    public readonly mediaObs: MediaObserver,
     private readonly router: Router,
     private readonly loadingSvc: ProgressBarService,
     private readonly dialog: MatDialog,
@@ -87,7 +85,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     let auction = {
       name: 'Aukcija',
       startDate: new Date(),
-      endDate: moment(new Date()).add(1, 'day').toDate(),
+      endDate: addDays(new Date(), 1).getDate(),
     };
 
     this.router.navigate(['/aukcije/kreiranje-aukcije'], {

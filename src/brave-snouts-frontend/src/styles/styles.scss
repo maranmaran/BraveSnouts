@@ -2,9 +2,6 @@
 @use "node_modules/@ngneat/hot-toast/src/styles/styles.scss";
 @import "./material/material.styles.scss";
 
-@import "~quill/dist/quill.core.css";
-@import "~quill/dist/quill.snow.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -198,4 +195,8 @@ label {
 }
 .overflow-auto {
   overflow: auto;
+}
+
+.all-initial {
+  all: initial;
 }

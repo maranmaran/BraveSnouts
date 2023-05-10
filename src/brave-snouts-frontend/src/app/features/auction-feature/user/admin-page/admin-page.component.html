@@ -1,30 +1,14 @@
 <div
   id="admin-page"
-  class="container"
-  fxLayout="column"
-  fxLayoutGap="1rem"
+  class="container flex flex-col gap-4"
   *ngIf="auction$ | async as auction"
 >
-  <div
-    id="auction-details"
-    [ngClass]="{ 'mt-4': mediaObs.isActive('lt-sm') }"
-    fxLayout="column"
-    fxLayoutGap="1rem"
-  >
-    <div fxLayout="row">
-      <div
-        class="section"
-        fxLayout="row"
-        fxLayoutAlign="space-between center"
-        fxLayoutGap="1rem"
-        fxFlex="100%"
-        fxFlex.lt-md="100%"
-      >
+  <div id="auction-details mt-4 sm:mt-0" class="flex flex-col gap-4">
+    <div class="flex flex-row">
+      <div class="section flex flex-row justify-between items-center gap-4">
         <div class="mat-h2 mb-0 bold">{{ auction.name }}</div>
         <div
-          fxLayout="row"
-          fxLayoutGap="1rem"
-          class="foreground"
+          class="foreground flex flex-row gap-4"
           [ngClass]="{
             'warn default': state == 'expired',
             'primary lighter': state == 'future'
@@ -57,21 +41,9 @@
     </div>
   </div>
 
-  <div
-    id="auction-details"
-    [ngClass]="{ 'mt-4': mediaObs.isActive('lt-sm') }"
-    fxLayout="column"
-    fxLayoutGap="1rem"
-  >
-    <div fxLayout="row">
-      <div
-        class="section"
-        fxLayout="row"
-        fxLayoutAlign="space-between center"
-        fxLayoutGap="1rem"
-        fxFlex="100%"
-        fxFlex.lt-md="100%"
-      >
+  <div id="auction-details mt-4 sm:mt-0" class="flex flex-col gap-4">
+    <div class="flex flex-row">
+      <div class="section flex flex-row justify-between items-center gap-4">
         <div class="mat-h2 mb-0 bold">
           Ukupno donirano {{ auction.raisedMoney | moneyAsync | async }}
         </div>
@@ -79,13 +51,7 @@
     </div>
   </div>
 
-  <div
-    id="admin-actions"
-    fxLayout="row"
-    fxLayout.lt-sm="column"
-    fxLayoutGap="1rem"
-    class="section"
-  >
+  <div id="admin-actions" class="section flex gap-4 flex-col sm:flex-row">
     <button
       [disabled]="!(state == 'expired')"
       mat-flat-button
@@ -149,11 +115,10 @@
     [horizontal]="true"
     (vsEnd)="onLoadMore($event)"
   >
-    <div #container fxLayout="row" fxLayoutGap="0.5rem">
+    <div #container class="flex flex-row gap-2">
       <div
         *ngFor="let item of scroll.viewPortItems"
-        fxLayout="column"
-        fxLayoutGap="0.5rem"
+        class="flex flex-col gap-2"
       >
         <mat-card
           appearance="raised"
@@ -196,7 +161,7 @@
           [ngClass]="{ selected: activeItemId == winner.itemId }"
         >
           <mat-card-header>
-            <mat-card-title fxLayout="row" fxLayoutAlign="start center">
+            <mat-card-title class="flex flex-row justify-start items-center">
               <mat-icon class="mr-2" style="color: #f9d935"
                 >emoji_events</mat-icon
               >
@@ -208,13 +173,8 @@
             }}</mat-card-subtitle>
           </mat-card-header>
 
-          <mat-card-content fxLayout="column" fxLayoutGap="0.5rem">
-            <div
-              id="delivery"
-              class="mat-small"
-              fxLayout="row"
-              fxLayoutGap="0.5rem"
-            >
+          <mat-card-content class="flex flex-col gap-2">
+            <div id="delivery" class="mat-small flex flex-row gap-2">
               <label class="pb-0 bold center">Odabir dostave:</label>
               <ng-container [ngSwitch]="winner.deliveryChoice">
                 <label
@@ -250,12 +210,7 @@
               </ng-container>
             </div>
 
-            <div
-              id="pack-status"
-              class="mat-small pb-0"
-              fxLayout="row"
-              fxLayoutGap="0.5rem"
-            >
+            <div id="pack-status" class="mat-small pb-0 flex flex-row gap-2">
               <label class="pb-0 bold center">Spakirano:</label>
               <mat-button-toggle-group
                 [value]="winner.packed ? winner.packed : 'no'"
@@ -272,12 +227,7 @@
               </mat-button-toggle-group>
             </div>
 
-            <div
-              id="payment"
-              class="mat-small pb-0"
-              fxLayout="row"
-              fxLayoutGap="0.5rem"
-            >
+            <div id="payment" class="mat-small pb-0 flex flex-row gap-2">
               <label class="pb-0 bold center">Status plaćanja:</label>
               <mat-button-toggle-group
                 [value]="winner.paymentStatus"

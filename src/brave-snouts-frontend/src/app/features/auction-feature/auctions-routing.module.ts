@@ -44,11 +44,11 @@ const routes: Routes = [
             { path: 'email-iskljucenje', component: EmailOptoutComponent },
 
             { path: 'polica-privatnosti', component: PrivacyPolicyComponent },
-            { path: 'rules', component: AuctionRulesComponent },
+            { path: 'pravila', component: AuctionRulesComponent },
         ]
     },
     // non matched routes
-    // { path: '**', redirectTo: '/' }
+    { path: '**', redirectTo: '/' }
 ];
 
 @NgModule({

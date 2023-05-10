@@ -8,8 +8,6 @@ import { LightboxModule } from "ng-gallery/lightbox";
 import { CountdownModule } from "ngx-countdown";
 import { DragScrollModule } from "ngx-drag-scroll";
 import { NgxDropzoneModule } from "ngx-dropzone";
-import { FlexLayoutModule } from "ngx-flexible-layout";
-import { NgxMaterialTimepickerModule } from "ngx-material-timepicker";
 import { QuillModule } from "ngx-quill";
 import { AuctionRulesComponent } from "src/app/shared/auction-rules/auction-rules.component";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
@@ -60,7 +58,6 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         AuctionsRoutingModule,
 
         // Auction
-        NgxMaterialTimepickerModule,
         NgxDropzoneModule,
         GalleryModule,
         LightboxModule,
@@ -76,7 +73,6 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
 
         // Custom shared
         VirtualScrollerModule,
-        FlexLayoutModule,
         HotToastModule.forRoot(),
     ],
 

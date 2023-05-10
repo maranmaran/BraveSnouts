@@ -2,32 +2,23 @@
   appearance="outlined"
   *ngIf="bootstrapped"
   @skipInitAnimation
-  class="auction-item m-2 mat-elevation-z5 elevate hover-large primary h-min"
-  fxLayout="column"
-  fxLayoutGap="1rem"
+  class="flex flex-col gap-4 auction-item m-2 mat-elevation-z5 elevate hover-large primary h-min"
 >
   <mat-card-title
-    class="relative"
+    class="relative flex flex-row justify-between items-center gap-4"
     style="height: 64px"
-    fxLayout="row"
-    fxLayoutAlign="space-between center"
-    fxLayoutGap="1rem"
   >
-    <label
-      class="mb-0 mat-h2 bold"
-      [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
-    >
+    <label class="mb-0 bold mat-body sm:mat-h2">
       {{ item.name }}
     </label>
 
-    <div fxLayout="column" class="mr-0 relative">
+    <div class="flex flex-col mr-0 relative">
       <div class="mat-small text-center no-wrap" style="background: whitesmoke">
         Trenutna ponuda
       </div>
 
       <label
-        class="mat-h2 absolute"
-        [ngClass]="{ 'mat-body': mediaObs.isActive('lt-sm') }"
+        class="absolute mat-body sm:mat-h2"
         [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
         class="no-wrap mb-0 mat-h2 bold center"
       >
@@ -63,10 +54,7 @@
   <mat-card-content id="description" class="m-0 overflow-hidden">
     <div
       *ngIf="item.description; else noDescription"
-      fxLayout="row"
-      fxLayoutGap="0.5rem"
-      fxLayoutAlign="start center"
-      class="overflow-hidden"
+      class="overflow-hidden flex flex-row gap-2 justify-start items-center"
     >
       <span
         #description
@@ -92,16 +80,10 @@
     </ng-template>
   </mat-card-content>
 
-  <mat-card-actions
-    id="actions"
-    fxLayout="column"
-    fxLayoutAlign="center center"
-  >
+  <mat-card-actions id="actions" class="flex-col items-center justify-center">
     <div
       id="bit-action-row"
-      class="w-full mb-3"
-      fxLayout="row"
-      fxLayoutAlign="center center"
+      class="w-full mb-3 flex flex-row justify-center items-center"
     >
       <button
         class="mr-5 offer-button"
@@ -138,7 +120,7 @@
       (click)="onBid(item)"
       color="primary"
     >
-      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.5rem">
+      <div class="flex flex-row justify-center items-center gap-2">
         <mat-icon> pets </mat-icon> <span>Ponudi</span>
         <mat-icon> pets </mat-icon>
       </div>

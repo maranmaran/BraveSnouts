@@ -1,8 +1,7 @@
-<div fxLayout="column" fxLayoutAlign="start center" style="margin-top: 3rem">
+<div class="flex flex-col justify-start items-center mt-12">
   <div
     *ngIf="handoverDetails && handoverDetails.length > 0 && !bootstrap"
-    fxLayout="column"
-    fxLayoutGap="1rem"
+    class="flex flex-col gap-4"
   >
     <h3 class="mb-2 p-3 bold">Odaberite lokaciju:</h3>
     <div
@@ -20,10 +19,7 @@
 
   <div
     *ngIf="bootstrap && success"
-    class="container"
-    fxLayout="column"
-    fxLayoutGap="1rem"
-    fxLayoutAlign="start center"
+    class="container flex flex-col gap-4 justify-start items-center"
   >
     <div class="animation-ctn">
       <div class="icon icon--order-success svg">

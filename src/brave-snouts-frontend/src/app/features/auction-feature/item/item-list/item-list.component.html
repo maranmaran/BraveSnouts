@@ -1,7 +1,7 @@
 <virtual-scroller
   #itemsScroller
   class="full-items-grid"
-  *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery"
+  *ngIf="!isMobile || !useGallery; else gallery"
   #scroll
   [items]="items"
   [parentScroll]="parentScroll"

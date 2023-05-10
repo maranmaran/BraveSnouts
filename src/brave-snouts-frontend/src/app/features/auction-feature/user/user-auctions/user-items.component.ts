@@ -1,6 +1,6 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
@@ -34,13 +34,16 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _subsink = new SubSink();
 
+  // TODO: merge all of these into pipe, service or smth central
+  get isMobile() { return this.breakpointObs.isMatched(Breakpoints.Handset); }
+
   constructor(
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
-    public readonly mediaObs: MediaObserver,
     private readonly loadingSvc: ProgressBarService,
     private readonly dialog: MatDialog,
-    private readonly itemDialogSvc: ItemDialogService
+    private readonly itemDialogSvc: ItemDialogService,
+    private readonly breakpointObs: BreakpointObserver
   ) { }
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import { isAfter, isBefore } from "date-fns";
 import { Auction } from "src/business/models/auction.model";
 
 export function getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
@@ -18,11 +18,11 @@ export function getAuctionState(auction: Auction): 'future' | 'active' | 'expire
 
 /**Auction that is set in future and is yet to come */
 function isFutureAuction(auction: Auction) {
-    return moment(auction.startDate.toDate()).isAfter(new Date());
+    return isAfter(auction.startDate.toDate(), new Date());
 }
 
 /**Auction that has ended and/or is processed by firebase function*/
 function isExpiredAuction(auction: Auction) {
-    return (moment(auction.endDate.toDate()).isBefore(new Date()) || auction.processed) && !isFutureAuction(auction);
+    return isBefore(auction.endDate.toDate(), new Date()) || auction.processed && !isFutureAuction(auction)
 }
 

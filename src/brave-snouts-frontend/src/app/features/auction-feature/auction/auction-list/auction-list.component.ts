@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { Observable, Subscription, from, noop, of } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -32,7 +31,6 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly router: Router,
     private readonly loadingSvc: ProgressBarService,
-    protected readonly mediaObs: MediaObserver,
     private readonly dialog: MatDialog,
   ) { }
 

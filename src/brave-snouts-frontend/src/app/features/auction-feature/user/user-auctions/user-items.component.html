@@ -9,15 +9,7 @@
     <mat-expansion-panel [expanded]="winningItems.length > 0">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <div
-            class="bold m-0"
-            [ngClass]="{
-              'mat-h2': mediaObs.isActive('gt-md'),
-              'mat-body': mediaObs.isActive('lt-lg')
-            }"
-          >
-            Moji predmeti
-          </div>
+          <div class="bold m-0 mat-body md:mat-h2">Moji predmeti</div>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
@@ -26,7 +18,7 @@
           id="won-items"
           class="custom-height"
           [horizontal]="true"
-          *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery"
+          *ngIf="!isMobile || !useGallery; else gallery"
           #scroll
           [items]="winningItems"
         >
@@ -80,15 +72,7 @@
     <mat-expansion-panel [expanded]="winningItems.length == 0">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <div
-            class="bold m-0"
-            [ngClass]="{
-              'mat-h2': mediaObs.isActive('gt-md'),
-              'mat-body': mediaObs.isActive('lt-lg')
-            }"
-          >
-            Nadmašeni predmeti
-          </div>
+          <div class="bold m-0 mat-body md:mat-h2">Nadmašeni predmeti</div>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
@@ -97,7 +81,7 @@
           id="outbidded-items"
           class="custom-height"
           [horizontal]="true"
-          *ngIf="mediaObs.isActive('gt-xs') || !useGallery; else gallery"
+          *ngIf="!isMobile || !useGallery; else gallery"
           #scroll
           [items]="outbiddedItems"
         >

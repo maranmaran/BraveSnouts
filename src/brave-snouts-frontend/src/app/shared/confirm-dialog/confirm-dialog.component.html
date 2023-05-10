@@ -1,4 +1,4 @@
-<div class="container" fxLayout="column" fxLayoutAlign="center center">
+<div class="container flex flex-col justify-center items-center">
   <button mat-icon-button fxFlexAlign="end" (click)="onClose(false)">
     <mat-icon> close </mat-icon>
   </button>
@@ -7,12 +7,7 @@
     {{ data.text }}
   </div>
 
-  <div
-    class="mb-3 w-[80%]"
-    fxLayout="row"
-    fxLayoutGap="1rem"
-    fxLayoutAlign="space-between center"
-  >
+  <div class="mb-3 w-[80%] flex flex-row gap-4 justify-between items-center">
     <button mat-stroked-button color="warn" (click)="onClose(false)">
       {{ data.no }}
     </button>

@@ -1,19 +1,12 @@
 <div
   id="admin-page"
-  class="container mt-5"
-  fxLayout="column"
-  fxLayoutGap="1rem"
-  fxLayoutAlign="start center"
+  class="container mt-5 flex flex-col gap-4 justify-start items-center"
 >
   <div
     id="admin-actions"
-    class="section mb-3"
-    fxLayout="row wrap"
-    fxLayout.lt-md="column"
-    fxLayoutAlign="space-between center"
-    fxLayoutGap="20px grid"
+    class="section mb-3 flex md:flex-row md:flex-wrap flex-col justify-between gap-5"
   >
-    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem">
+    <div class="flex flex-col md:flex-row gap-4">
       <button
         mat-flat-button
         color="warn"
@@ -48,7 +41,7 @@
       </button>
     </div>
 
-    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem">
+    <div class="flex flex-col md:flex-row gap-4">
       <button mat-flat-button color="primary" (click)="onDownloadMails()">
         Ispis mailova
       </button>

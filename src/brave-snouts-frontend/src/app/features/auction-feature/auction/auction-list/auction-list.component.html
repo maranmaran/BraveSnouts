@@ -2,11 +2,11 @@
   <div class="auctions-grid">
     <ng-container *ngIf="auctions$ | async as auctions; else noAuctions">
       <ng-container *ngIf="auctions.length > 0; else noAuctions">
-        <div @fadeIn id="auctions" fxLayout="column" fxLayoutGap="0.5rem">
+        <div @fadeIn id="auctions" class="flex flex-col gap-2">
           <div class="mat-h2 bold text-center" *ngIf="totalDonated">
             Trenutno sakupljeno {{ totalDonated | moneyAsync | async }}
           </div>
-          <div fxLayout="row" fxLayoutGap="0.5rem">
+          <div class="flex flex-row gap-2">
             <button
               id="tracked-items-btn"
               mat-raised-button
@@ -42,7 +42,7 @@
               pointer: getAuctionState(auction) == 'active'
             }"
           >
-            <mat-card-header fxLayout="row" fxLayoutAlign="space-between">
+            <mat-card-header class="flex flex-row justify-between">
               <mat-card-title>
                 {{ auction.name }}
 
@@ -59,7 +59,7 @@
                 </ng-container>
               </mat-card-title>
 
-              <div fxLayout="row">
+              <div class="flex flex-row">
                 <button
                   mat-raised-button
                   *ngIf="!(admin$ | async) && auction.description"

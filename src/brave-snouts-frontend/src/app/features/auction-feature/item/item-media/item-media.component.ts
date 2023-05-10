@@ -1,7 +1,6 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { firstValueFrom } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
@@ -33,7 +32,6 @@ export class ItemMediaComponent implements OnInit {
   constructor(
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox,
-    protected readonly mediaObs: MediaObserver,
     private readonly itemScrollSvc: ItemScrollViewService
   ) {
   }

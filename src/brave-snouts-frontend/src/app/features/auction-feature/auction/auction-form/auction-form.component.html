@@ -1,17 +1,7 @@
-<div class="container" fxLayout="column" fxLayoutGap="1rem" #scrollingBlock>
+<div class="container flex flex-col gap-4" #scrollingBlock>
   <div class="auction-form" flexLayout="row">
-    <div
-      class="section"
-      fxFlex="45%"
-      fxFlex.lt-md="100%"
-      fxLayout="column"
-      fxLayoutGap="1rem"
-    >
-      <div
-        fxLayout="row"
-        fxLayoutGap="1rem"
-        fxLayoutAlign="space-between center"
-      >
+    <div class="section flex flex-col gap-4">
+      <div class="flex flex-row gap-4 justify-between items-center">
         <h1>Aukcija</h1>
         <button
           mat-flat-button
@@ -24,7 +14,7 @@
       </div>
 
       <form [formGroup]="auction">
-        <div fxLayout="row wrap" fxLayoutGap="1rem">
+        <div class="flex flex-row flex-wrap gap-4">
           <mat-form-field fxFlex="2 1 100%">
             <mat-label>Naziv</mat-label>
             <input matInput formControlName="name" />
@@ -54,28 +44,22 @@
             </mat-date-range-picker>
           </mat-form-field>
 
-          <div
-            class="w-full"
-            fxLayout="row"
-            fxLayoutGap="3rem"
-            fxLayout.lt-lg="column"
-            fxLayoutGap.lt-lg="2rem"
-          >
-            <div id="start-time" fxLayout="row" fxLayoutGap="0.5rem">
+          <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-12">
+            <div id="start-time" class="flex flex-row gap-2">
               <label class="center pb-0 mb-0" for="startTime">Početak:</label>
-              <ngx-timepicker-field
+              <ngx-mat-timepicker
                 [defaultTime]="'12:00 pm'"
                 [format]="24"
                 formControlName="startTime"
-              ></ngx-timepicker-field>
+              ></ngx-mat-timepicker>
             </div>
-            <div id="end-time" fxLayout="row" fxLayoutGap="0.5rem">
+            <div id="end-time" class="flex flex-row gap-2">
               <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
-              <ngx-timepicker-field
+              <ngx-mat-timepicker
                 [defaultTime]="'12:00 pm'"
                 [format]="24"
                 formControlName="endTime"
-              ></ngx-timepicker-field>
+              ></ngx-mat-timepicker>
             </div>
           </div>
         </div>
@@ -83,16 +67,9 @@
     </div>
   </div>
 
-  <div class="items-form h-full" fxLayout="column" fxLayoutGap="1rem">
-    <div class="items-header" fxLayout="row">
-      <div
-        class="section"
-        fxFlex="45%"
-        fxFlex.lt-md="100%"
-        fxLayout="row"
-        fxLayoutGap="1rem"
-        fxLayoutAlign="space-between center"
-      >
+  <div class="items-form h-full flex flex-col gap-4">
+    <div class="items-header flex flex-row">
+      <div class="section flex flex-row gap-4 justify-between items-center">
         <h1>Predmeti</h1>
         <button
           *ngIf="!isMobile"
@@ -129,17 +106,11 @@
         >
           <mat-card
             appearance="raised"
-            class="mat-elevation-z5"
-            fxLayout="column"
-            fxLayoutGap="1rem"
+            class="mat-elevation-z5 flex flex-col gap-4"
           >
-            <mat-card-header fxLayout="column">
-              <mat-card-title class="header" fxLayout="column">
-                <div
-                  fxLayout="row"
-                  fxLayoutAlign="start center"
-                  fxLayoutGap="0.5rem"
-                >
+            <mat-card-header class="flex flex-col">
+              <mat-card-title class="header flex flex-col">
+                <div class="flex flex-row gap-2 justify-start items-center">
                   <mat-form-field>
                     <mat-label>Naziv</mat-label>
                     <input
@@ -179,7 +150,7 @@
             </mat-card-header>
 
             <mat-card-content>
-              <div fxLayout="column" fxLayoutGap="1rem">
+              <div class="flex flex-col gap-4">
                 <div class="media">
                   <mat-progress-bar
                     *ngIf="
@@ -206,7 +177,7 @@
                     </ngx-dropzone-label>
 
                     <drag-scroll
-                      class="form-drag-scroll"
+                      class="form-drag-scroll flex flex-row"
                       *ngIf="
                         files[scroll.viewPortInfo.startIndex + i]?.length > 0
                       "
@@ -214,7 +185,6 @@
                       [snap-disabled]="true"
                       (dragStart)="dragActive = true"
                       (dragEnd)="dragEnd()"
-                      fxLayout="row"
                     >
                       <div
                         class="item mr-2"

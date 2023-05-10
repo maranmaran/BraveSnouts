@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MediaObserver } from 'ngx-flexible-layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -14,26 +14,20 @@ export class TruncatedTextComponent implements OnInit, OnDestroy {
   @Input() fallbackText: string;
 
   showAll = false;
-
-  constructor(
-    private mediaObserver: MediaObserver
-  ) { }
-
   subscription: Subscription;
+
+  private readonly breakpointObs = inject(BreakpointObserver);
 
   ngOnInit(): void {
     this.text = this.text?.trim() == '' ? null : this.text;
 
     // on mobile we probably want to display less text.. (about 70% till further changes)
-    this.subscription = this.mediaObserver.asObservable().subscribe(
-      media => {
-        media.forEach(change => {
-          if (change.mqAlias == 'xs')
-            this.characters = this.characters * 0.3;
-        })
-      }
-    ),
-      err => console.log(err)
+    this.subscription = this.breakpointObs
+      .observe(Breakpoints.XSmall)
+      .subscribe({
+        complete: () => this.characters = this.characters * 0.3,
+        error: console.log
+      })
   }
 
   ngOnDestroy() {

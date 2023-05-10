@@ -1,23 +1,10 @@
-<div
-  id="bulk-image-form"
-  class="container"
-  fxLayout="column"
-  fxLayoutGap="1rem"
-  #scrollingBlock
->
+<div id="bulk-image-form" class="container flex flex-col gap-4" #scrollingBlock>
   <form
     [formGroup]="auction"
-    class="mt-5 auction-form section"
-    fxLayout="row"
-    fxLayoutGap="2rem"
-    fxLayout.lt-md="column"
+    class="mt-5 auction-form section flex flex-col md:flex-row gap-8"
   >
-    <div id="basic-data" fxFlex fxLayout="column" fxLayoutGap="1rem">
-      <div
-        fxLayout="row"
-        fxLayoutGap="1rem"
-        fxLayoutAlign="space-between center"
-      >
+    <div id="basic-data" class="flex flex-col gap-4">
+      <div class="flex flex-row gap-4 justify-between items-center">
         <h1>Aukcija</h1>
         <button
           mat-flat-button
@@ -29,7 +16,7 @@
         </button>
       </div>
 
-      <div fxLayout="row wrap" fxLayoutGap="1rem">
+      <div class="flex flex-row flex-wrap gap-4">
         <mat-form-field fxFlex="2 1 100%">
           <mat-label>Naziv</mat-label>
           <input matInput formControlName="name" />
@@ -59,36 +46,30 @@
           </mat-date-range-picker>
         </mat-form-field>
 
-        <div
-          class="w-full"
-          fxLayout="row"
-          fxLayoutGap="3rem"
-          fxLayout.lt-lg="column"
-          fxLayoutGap.lt-lg="2rem"
-        >
-          <div id="start-time" fxLayout="row" fxLayoutGap="0.5rem">
+        <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-12">
+          <div id="start-time" class="flex flex-row gap-2">
             <label class="center pb-0 mb-0" for="startTime">Početak:</label>
-            <ngx-timepicker-field
+            <ngx-mat-timepicker
               [defaultTime]="'12:00 pm'"
               [format]="24"
               formControlName="startTime"
             >
-            </ngx-timepicker-field>
+            </ngx-mat-timepicker>
           </div>
-          <div id="end-time" fxLayout="row" fxLayoutGap="0.5rem">
+          <div id="end-time" class="flex flex-row gap-2">
             <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
-            <ngx-timepicker-field
+            <ngx-mat-timepicker
               [defaultTime]="'12:00 pm'"
               [format]="24"
               formControlName="endTime"
             >
-            </ngx-timepicker-field>
+            </ngx-mat-timepicker>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="description" fxFlex fxLayout="column" fxLayoutGap="1rem">
+    <div id="description" class="flex flex-col gap-4">
       <div class="mat-h2 bold">Opis aukcije</div>
       <quill-editor
         class="editor w-full"
@@ -98,21 +79,14 @@
     </div>
   </form>
 
-  <div class="items-form h-full" fxLayout="column" fxLayoutGap="1rem">
-    <div class="items-header" fxLayout="row">
-      <div
-        class="section"
-        fxFlex="50%"
-        fxFlex.lt-md="100%"
-        fxLayout="row"
-        fxLayoutGap="1rem"
-        fxLayoutAlign="space-between center"
-      >
+  <div class="items-form h-full flex flex-col gap-4">
+    <div class="items-header flex flex-row">
+      <div class="section flex flex-row gap-4 justify-between">
         <h1>Slike</h1>
       </div>
     </div>
 
-    <div id="dropzone" fxLayout="row">
+    <div id="dropzone" class="flex flex-row">
       <div class="media w-full" fxFlex="100%" fxFlex.lt-md="100%">
         <mat-progress-bar
           *ngIf="uploadState$ | async"
@@ -128,9 +102,6 @@
           <ngx-dropzone-label *ngIf="files?.length == 0">
             <button mat-stroked-button type="button">Učitaj</button>
           </ngx-dropzone-label>
-
-          <!-- <drag-scroll class="form-drag-scroll" *ngIf="files?.length > 0" [drag-scroll-x-disabled]="true"
-            [snap-disabled]="true" (dragStart)="dragActive=true" (dragEnd)="dragEnd()" fxLayout="row"> -->
 
           <div class="item-image" drag-scroll-item *ngFor="let file of files">
             <ng-container *ngIf="file.urlOrig as url">

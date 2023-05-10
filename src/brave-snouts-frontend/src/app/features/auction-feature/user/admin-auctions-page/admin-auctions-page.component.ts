@@ -3,7 +3,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { combineLatest, from, noop } from 'rxjs';
 import { first, map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
@@ -39,7 +38,6 @@ export class AdminAuctionsPageComponent implements OnInit {
   @ViewChild('table', { static: false }) table: MatTable<Auction>;
 
   constructor(
-    public readonly mediaObs: MediaObserver,
     private readonly authSvc: AuthService,
     private readonly auctionRepo: AuctionRepository,
     private readonly winnersRepo: WinnersRepository,

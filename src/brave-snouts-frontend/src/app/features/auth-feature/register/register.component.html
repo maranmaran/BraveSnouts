@@ -1,7 +1,7 @@
-<div class="container" fxLayout="column">
+<div class="container flex flex-col">
   <div class="mat-h2 bold">Registracija novog korisnika</div>
 
-  <div class="mb-2 w-full" fxLayout="column" fxLayoutGap="0.5rem">
+  <div class="mb-2 w-full flex flex-col gap-2">
     <form [formGroup]="registerForm">
       <mat-form-field>
         <mat-label>Email</mat-label>
@@ -18,11 +18,7 @@
         <input matInput formControlName="phone" />
       </mat-form-field>
 
-      <div
-        fxLayout="row"
-        fxLayoutGap="1rem"
-        fxLayoutAlign="space-between center"
-      >
+      <div class="flex flex-row gap-4 justify-between items-center">
         <button
           fxFlexAlign="end"
           mat-flat-button

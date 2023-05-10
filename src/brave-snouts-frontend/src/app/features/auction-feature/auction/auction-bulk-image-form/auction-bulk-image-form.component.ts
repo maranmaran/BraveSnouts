@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { addDays, format, parse } from 'date-fns';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
-import * as moment from 'moment';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
 import { concatMap, finalize, first, map, mergeMap, take, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
@@ -38,10 +38,9 @@ export class AuctionBulkImageFormComponent implements OnInit {
   uploadState$ = new BehaviorSubject<boolean>(false);
   dragActive = false;
 
-  /**Check if current view is mobile phone */
-  public get isMobile(): boolean {
-    return this.mediaObserver.isActive('lt-sm')
-  }
+  // TODO: merge all of these into pipe, service or smth central
+  private readonly breakpointObs = inject(BreakpointObserver);
+  get isMobile() { return this.breakpointObs.isMatched(Breakpoints.Handset); }
 
   private _subsink = new SubSink();
 
@@ -50,7 +49,6 @@ export class AuctionBulkImageFormComponent implements OnInit {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly storage: StorageService,
     private readonly authSvc: AuthService,
-    public readonly mediaObserver: MediaObserver,
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly toastSvc: HotToastService,
@@ -67,7 +65,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
       id: uuidv4(),
       name: 'Aukcija',
       startDate: new Date(),
-      endDate: moment(new Date()).add(1, 'day').toDate()
+      endDate: addDays(new Date(), 1).getDate()
     };
 
     this.auctionId = auction.id;
@@ -100,8 +98,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
-    const startTime = moment(auction.startDate).format('HH:mm');
-    const endTime = moment(auction.endDate).format('HH:mm');
+    const startTime = format(auction.startDate.toDate(), 'HH:mm');
+    const endTime = format(auction.endDate.toDate(), 'HH:mm');
 
     this.auction = this.formBuilder.group({
       id: [auction.id], // hidden
@@ -201,8 +199,16 @@ export class AuctionBulkImageFormComponent implements OnInit {
     if (!this.isValid)
       return;
 
-    const startDate = moment(moment(this.auction.value.startDate).format('L') + ' ' + this.auction.value.startTime, 'L HH:mm').toDate();
-    const endDate = moment(moment(this.auction.value.endDate).format('L') + ' ' + this.auction.value.endTime, 'L HH:mm').toDate();
+    const startDate = parse(
+      `${format(this.auction.value.startDate, 'MM/dd/yyyy')} ${this.auction.value.startTime}`,
+      'MM/dd/yyyy HH:mm',
+      new Date()
+    );
+    const endDate = parse(
+      `${format(this.auction.value.endDate, 'MM/dd/yyyy')} ${this.auction.value.endTime}`,
+      'MM/dd/yyyy HH:mm',
+      new Date()
+    );
 
     const auction = new Auction({
       id: this.auctionId,

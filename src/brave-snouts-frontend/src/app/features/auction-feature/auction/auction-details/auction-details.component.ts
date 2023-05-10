@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import { differenceInSeconds } from 'date-fns';
 import { CountdownConfig } from 'ngx-countdown';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { Observable, of } from 'rxjs';
 import { concatMap, map, take, tap } from 'rxjs/operators';
 import { itemAnimations } from 'src/business/animations/item.animations';
@@ -26,7 +25,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly auctionsRepo: AuctionRepository,
-    public readonly mediaObs: MediaObserver,
     private readonly changeDetectionRef: ChangeDetectorRef,
     private readonly authSvc: AuthService,
     private itemsRepo: AuctionItemRepository
@@ -73,13 +71,12 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
 
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown(auction: Auction) {
-    const today = moment(new Date(), "DD/MM/YYYY HH:mm:ss");
-    const auctionEnd = moment(auction.endDate.toDate(), "DD/MM/YYYY HH:mm:ss");
-    const dateDiff = auctionEnd.diff(today);
-    const duration = moment.duration(dateDiff);
-    const leftTime = duration.asSeconds();
+    const dateDiff = differenceInSeconds(
+      auction.endDate.toDate(),
+      new Date()
+    );
 
-    this.config = { leftTime, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
+    this.config = { leftTime: dateDiff, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
   }
 
   userTrackedItems: Set<string>;

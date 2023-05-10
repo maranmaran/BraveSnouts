@@ -1,5 +1,5 @@
-<mat-toolbar class="toolbar" color="primary" fxLayout="row">
-  <div fxFlex="30" fxLayout="row">
+<mat-toolbar class="toolbar flex flex-row" color="primary">
+  <div class="flex flex-row w-32">
     <button
       mat-icon-button
       *ngIf="admin$ | async; privacyPolicy"
@@ -38,7 +38,7 @@
     </ng-container>
   </div>
 
-  <div fxFlex fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+  <div class="flex flex-row gap-4 justify-center items-center">
     <div
       #logo
       class="logo elevate hover"
@@ -61,9 +61,7 @@
 
   <div
     fxFlex="30"
-    class="user-auth h-full relative"
-    fxLayout="row"
-    fxLayoutAlign="end center"
+    class="user-auth h-full relative flex flex-row justify-end items-center"
   >
     <button
       mat-icon-button

@@ -1,9 +1,9 @@
-<div class="container" fxLayout="column" fxLayoutAlign="center start">
+<div class="container flex flex-col justify-center items-start">
   <button mat-icon-button fxFlexAlign="end" (click)="onClose()">
     <mat-icon> close </mat-icon>
   </button>
 
-  <div fxLayout="column" fxLayoutGap="0.5rem" class="w-full mb-4">
+  <div class="flex flex-col gap-2 w-full mb-4">
     <mat-form-field
       *ngFor="let control of handoverDetails.controls; index as i"
       fxFlex="2 1 100%"

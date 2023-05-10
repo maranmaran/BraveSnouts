@@ -1,16 +1,9 @@
 <div
-  class="container"
+  class="container flex flex-col gap-4 mt-2 sm:mt-0"
   #scrollingBlock
-  [ngClass]="{ 'mt-2': mediaObs.isActive('lt-sm') }"
   *ngIf="auction$ | async as auction"
-  fxLayout="column"
-  fxLayoutGap="1rem"
 >
-  <div
-    class="auction-toolbar mt-2"
-    fxLayout="row"
-    fxLayoutAlign="space-between"
-  >
+  <div class="auction-toolbar mt-2 flex flex-row justify-between">
     <button routerLink="/aukcije" class="btn-small" mat-mini-fab color="warn">
       <mat-icon>arrow_back</mat-icon>
       <!-- Natrag -->
@@ -30,52 +23,22 @@
   </div>
 
   <div
-    class="auction-toolbar"
-    fxLayout="row"
-    fxLayoutAlign="space-between center"
-    fxLayout.lt-md="column"
+    class="auction-toolbar flex flex-col md:flex-row justify-between items-center"
   >
-    <div
-      class="section"
-      fxLayout="row"
-      fxLayoutAlign="space-between center"
-      fxLayoutGap="1rem"
-      fxFlex="45%"
-    >
-      <div
-        class="mb-0 bold"
-        [ngClass]="{
-          'mat-h1': mediaObs.isActive('gt-md'),
-          'mat-h2': mediaObs.isActive('lt-lg'),
-          'mat-body': mediaObs.isActive('lt-sm')
-        }"
-      >
+    <div class="section flex flex-row justify-between items-center gap-4">
+      <div class="mb-0 bold mat-body sm:mat-h2 md:mat-h1">
         {{ auction.name }}
       </div>
       <countdown
         *ngIf="config"
         #cd
         [config]="config"
-        class="m-0 bold"
-        [ngClass]="{
-          'mat-h1': mediaObs.isActive('gt-md'),
-          'mat-h2': mediaObs.isActive('lt-lg'),
-          'mat-body': mediaObs.isActive('lt-sm')
-        }"
+        class="m-0 bold mat-body sm:mat-h2 md:mat-h1"
       ></countdown>
     </div>
 
-    <div class="section" fxLayout="row">
-      <div
-        class="mb-0 bold"
-        [ngClass]="{
-          'mat-h1': mediaObs.isActive('gt-md'),
-          'mat-h2': mediaObs.isActive('lt-lg'),
-          'mat-body': mediaObs.isActive('lt-sm')
-        }"
-        fxLayout="row"
-        fxLayoutGap="1.5rem"
-      >
+    <div class="section flex flex-row">
+      <div class="mb-0 bold flex flex-row gap-6 mat-body sm:mat-h2 md:mat-h1">
         <label>Ukupno donirano:</label>
         <div
           class="foreground primary lighter"

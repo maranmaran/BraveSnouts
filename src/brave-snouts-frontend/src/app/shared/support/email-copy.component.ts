@@ -4,7 +4,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 @Component({
   selector: 'app-email-copy',
   template: `
-    <div class="container" fxLayout="row" fxLayoutAlign="center center">
+    <div class="container flex flex-row justify-center items-center">
             <div class="section" id="email_clipboard">
                 app.hrabrenjuske@gmail.com
             </div>

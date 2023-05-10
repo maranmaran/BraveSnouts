@@ -1,16 +1,7 @@
-<div
-  @fadeIn
-  class="h-full"
-  fxLayout="column"
-  fxLayoutGap="2.5rem"
-  fxLayoutAlign="space-between center"
->
+<div @fadeIn class="h-full flex flex-col gap-10 justify-between items-center">
   <div
     *ngIf="text"
-    fxFlex
-    fxFlexAlign="start"
-    fxLayout="column"
-    fxLayoutAlign="center center"
+    class="flex flex-col self-start justify-center items-center"
   >
     <div class="mb-3 mr-0 w-full">
       <b>Pomoći možete i na druge načine:</b>
@@ -22,7 +13,7 @@
             <li>Javite nam se putem društvenih mreža</li>
 
             <li>
-              <div fxLayout="row wrap" fxLayoutAlign="start center">
+              <div class="flex flex-row flex-wrap justify-start items-center">
                 Ili na mail:
                 <app-email-copy></app-email-copy>
               </div>
@@ -37,21 +28,10 @@
     </div>
   </div>
 
-  <div
-    class="pb-1 payment"
-    fxLayout="column"
-    fxLayoutGap="0.5rem"
-    [ngClass]="{
-      'w-[80%]': mediaObs.isActive('gt-sm'),
-      'w-full': mediaObs.isActive('lt-md')
-    }"
-  >
+  <div class="pb-1 payment flex flex-col gap-2 w-full md:w-[80%]">
     <div
       *ngFor="let account of accounts$ | async"
-      class="section"
-      fxLayout="row"
-      fxLayoutGap="10px"
-      fxLayoutAlign="start center"
+      class="section flex flex-row gap-2 justify-start items-center"
     >
       <div [ngSwitch]="account.type">
         <img
@@ -81,7 +61,7 @@
         />
         <img class="img-fluid" [src]="account.image" *ngSwitchDefault />
       </div>
-      <div class="m-0" [ngClass]="{ 'mat-h2': mediaObs.isActive('gt-sm') }">
+      <div class="m-0 sm:mat-h2">
         {{ account.account }}
       </div>
     </div>

@@ -1,11 +1,11 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { format, parse } from 'date-fns';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Guid } from 'guid-typescript';
-import * as moment from 'moment';
-import { MediaObserver } from 'ngx-flexible-layout';
 import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
 import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -38,7 +38,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
   /**Check if current view is mobile phone */
   public get isMobile(): boolean {
-    return this.mediaObserver.isActive('lt-sm')
+    return this.breakpointObs.isMatched(Breakpoints.Handset)
   }
 
   private _subsink = new SubSink();
@@ -48,9 +48,9 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     private readonly auctionItemRepo: AuctionItemRepository,
     private readonly storage: StorageService,
     private readonly authSvc: AuthService,
-    public readonly mediaObserver: MediaObserver,
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
+    private readonly breakpointObs: BreakpointObserver
   ) { }
 
   ngOnInit(): void {
@@ -94,8 +94,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       endDate = new firebase.firestore.Timestamp(auction.endDate.seconds, auction.endDate.nanoseconds).toDate();
     }
 
-    const startTime = moment(startDate).format('HH:mm');
-    const endTime = moment(endDate).format('HH:mm');
+    const startTime = format(startDate, 'HH:mm');
+    const endTime = format(endDate, 'HH:mm');
 
     this.auction = this.formBuilder.group({
       id: [auction.id ?? uuidv4()], // hidden
@@ -274,8 +274,16 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     if (!this.isValid)
       return;
 
-    const startDate = moment(moment(this.auction.value.startDate).format('L') + ' ' + this.auction.value.startTime, 'L HH:mm').toDate();
-    const endDate = moment(moment(this.auction.value.endDate).format('L') + ' ' + this.auction.value.endTime, 'L HH:mm').toDate();
+    const startDate = parse(
+      `${format(this.auction.value.startDate, 'MM/dd/yyyy')} ${this.auction.value.startTime}`,
+      'MM/dd/yyyy HH:mm',
+      new Date()
+    );
+    const endDate = parse(
+      `${format(this.auction.value.endDate, 'MM/dd/yyyy')} ${this.auction.value.endTime}`,
+      'MM/dd/yyyy HH:mm',
+      new Date()
+    );
 
     const auction = new Auction({
       name: this.auction.value.name,

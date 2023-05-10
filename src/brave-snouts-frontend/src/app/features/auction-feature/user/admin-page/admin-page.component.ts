@@ -3,10 +3,9 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import * as moment from 'moment';
+import { differenceInSeconds } from 'date-fns';
 import { CountdownConfig } from 'ngx-countdown';
-import { MediaObserver } from 'ngx-flexible-layout';
-import { noop, Observable } from 'rxjs';
+import { Observable, noop } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { HandoverDialogComponent } from 'src/app/features/auction-feature/delivery/handover-dialog/handover-dialog.component';
 import { PostDetailsComponent } from 'src/app/features/auction-feature/delivery/post-details/post-details.component';
@@ -48,7 +47,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private readonly itemsRepo: AuctionItemRepository,
     private readonly winnersRepo: WinnersRepository,
     private readonly route: ActivatedRoute,
-    public readonly mediaObs: MediaObserver,
     private readonly functionsSvc: FunctionsService,
     private readonly dialog: MatDialog,
     private readonly loadingSvc: ProgressBarService,
@@ -169,17 +167,13 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   /**Sets up countdown component to coundown to the end date time*/
   setupCountdown(auction: Auction) {
-    const today = moment(new Date(), 'DD/MM/YYYY HH:mm:ss');
-    const auctionEnd = moment(auction.endDate.toDate(), 'DD/MM/YYYY HH:mm:ss');
-    const dateDiff = auctionEnd.diff(today);
-    const duration = moment.duration(dateDiff);
-    const leftTime = duration.asSeconds();
+    const dateDiff = differenceInSeconds(
+      auction.endDate.toDate(),
+      new Date()
+    );
 
-    this.config = {
-      leftTime,
-      format: 'HHh mmm sss',
-      formatDate: formatDateToHoursOnlyNgxCountdown,
-    };
+    this.config = { leftTime: dateDiff, format: "HHh mmm sss", formatDate: formatDateToHoursOnlyNgxCountdown }
+
   }
 
   openAuctionWinnersDetails() {

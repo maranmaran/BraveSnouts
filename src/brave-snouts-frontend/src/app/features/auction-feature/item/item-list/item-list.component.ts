@@ -1,3 +1,4 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,9 +7,9 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
-import { MediaObserver } from 'ngx-flexible-layout';
 import {
   IPageInfo,
   VirtualScrollerComponent
@@ -50,7 +51,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private readonly authSvc: AuthService,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
-    public readonly mediaObs: MediaObserver,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this.manualChangeDetection = new ManualChangeDetection(changeDetectorRef);
@@ -61,6 +61,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @Input() parentScroll: Element;
 
   private _subsink = new SubSink();
+
+  // TODO: merge all of these into pipe, service or smth central
+  private readonly breakpointObs = inject(BreakpointObserver);
+  get isMobile() { return this.breakpointObs.isMatched(Breakpoints.Handset); }
 
   async ngOnInit() {
     if (this.fromDialog) {
