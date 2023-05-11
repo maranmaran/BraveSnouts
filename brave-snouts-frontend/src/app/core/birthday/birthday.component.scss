@@ -1,12 +1,12 @@
 :host {
   @apply tw-bg-teal-300;
-  @apply tw-block tw-h-auto tw-relative -tw-top-[40px];
+  @apply tw-block tw-h-auto;
   @apply tw-my-0 tw-py-0;
   @apply tw-transition-all tw-ease-in-out tw-duration-200 #{!important};
 }
 
-article {
-  @apply tw-pt-[10rem];
+div.birthday-container {
+  @apply tw-py-[1rem] md:tw-py-[10rem];
   @apply tw-font-sans tw-h-full tw-bg-stone-50;
   @apply tw-mx-[0.25rem] sm:tw-mx-[4rem] md:tw-mx-[8rem] lg:tw-mx-[13rem];
   @apply tw-px-[0.75rem] sm:tw-px-[1rem] md:tw-px-[2rem];
@@ -23,7 +23,13 @@ h4 {
   @apply tw-mb-2 #{!important};
 }
 
-a {
+a,
+.link {
   @apply tw-transition-all  tw-ease-in-out tw-duration-1000;
-  @apply tw-cursor-pointer tw-no-underline tw-text-teal-500 hover:tw-underline hover:tw-decoration-teal-700 #{!important};
+  @apply tw-cursor-pointer tw-no-underline tw-text-teal-500 tw-transition-all tw-duration-200 hover:tw-underline hover:tw-decoration-teal-700 #{!important};
+}
+
+canvas {
+  height: 100%; /* we need these for full-screen effect */
+  width: 100%;
 }

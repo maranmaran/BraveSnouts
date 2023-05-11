@@ -1,4 +1,4 @@
-<article>
+<div class="birthday-container">
   <section class="tw-text-center tw-mb-4">
     <h1>Proslava 5. rođendana Hrabrih njuški</h1>
     <h3 class="tw-mb-0">
@@ -13,7 +13,14 @@
       ></div>
     </div>
 
-    <h3>Bikers Beer Factory, Savska cesta 150, Zagreb</h3>
+    <h3>
+      <a
+        href="https://www.google.com/maps/place/Bikers+Beer+Factory/@45.791081,15.955455,15z/data=!4m6!3m5!1s0x4765d691addd794d:0xafdaa054f66d6723!8m2!3d45.7910811!4d15.9554553!16s%2Fg%2F1tcw2d9h?hl=en"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Bikers Beer Factory, Savska cesta 150, Zagreb</a
+      >
+    </h3>
     <h3>Nedjelja, 21. svibnja od 18h</h3>
     <div class="tw-mt-4 tw-flex tw-justify-center tw-items-center">
       <iframe
@@ -38,39 +45,62 @@
     <div class="tw-flex tw-flex-col tw-gap-3">
       <div>
         <b>18:00</b> - Mađioničarska predstava za djecu by
-        <span class="tw-underline tw-decoration-teal-300">Luka Vidović</span>
+        <span class="tw-underline tw-decoration-teal-700">Luka Vidović</span>
       </div>
       <div>
         <b>19:00</b> - Pub kviz o mačkama by
-        <span class="tw-underline tw-decoration-teal-300">Morana Zibar</span>
+        <span class="tw-underline tw-decoration-teal-700">Morana Zibar</span>
       </div>
       <div>
         <b>21:00</b> - Live glazba by
-        <span class="tw-underline tw-decoration-teal-300">Noa Rupčić</span>
+        <span class="tw-underline tw-decoration-teal-700">Noa Rupčić</span>
       </div>
     </div>
   </section>
 
   <section>
     <h2>Prijave i ulaznice:</h2>
-    <div class="tw-flex tw-flex-col tw-gap-3">
+    <div class="tw-mt-3 tw-flex tw-flex-col tw-gap-3">
       <h3 class="tw-m-0 tw-mt-2">Mađioničarska predstava:</h3>
       <div>
         Za mađioničarsku predstavu: preporučena donacija 2 € po djetetu, prijave
         putem
-        <a href="https://forms.gle/AtN3LURF1HoBaN8m8">Google obrasca</a>
+        <a
+          href="https://forms.gle/AtN3LURF1HoBaN8m8"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Google obrasca</a
+        >
       </div>
       <h3 class="tw-m-0">Pub kviz:</h3>
       <div>
         Preporučena kotizacija 10 € po timu (maksimalno 5 osoba u timu), prijave
-        putem <a href="https://forms.gle/AtN3LURF1HoBaN8m8">Google obrasca</a>
+        putem
+        <a
+          href="https://forms.gle/AtN3LURF1HoBaN8m8"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Google obrasca</a
+        >
       </div>
     </div>
   </section>
 
   <section>
     <h2>
-      Kviz sponzoriraju <a>Amazinga</a>, <a>Gruntek</a>, <a>Biljkoborci</a>
+      Kviz sponzoriraju
+      <a href="https://amazinga.fun/" target="_blank" rel="noopener noreferrer"
+        >Amazinga</a
+      >,
+      <a href="https://mojgruntek.hr/" target="_blank" rel="noopener noreferrer"
+        >Gruntek</a
+      >,
+      <a
+        href="https://biljkoborci.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Biljkoborci</a
+      >
     </h2>
   </section>
 
@@ -110,14 +140,39 @@
   </section>
 
   <section>
-    <h2>
-      Pratite nas i podržite na društvenim mrežama
-      <div>Facebook, instagram</div>
-    </h2>
+    <h2>Pratite nas i podržite na društvenim mrežama</h2>
+    <div class="tw-flex tw-flex-row tw-gap-10">
+      <a
+        href="https://www.facebook.com/hrabrenjuske/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="assets/social-logo/facebook.svg"
+          class="tw-aspect-square tw-h-[100px] tw-rounded-3xl tw-p-2 tw-cursor-pointer tw-transition-all tw-duration-200 hover:tw-shadow-xl hover:tw-scale-110"
+        />
+      </a>
+      <a
+        href="https://www.instagram.com/hrabrenjuske"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="assets/social-logo/instagram.svg"
+          class="tw-aspect-square tw-h-[100px] tw-rounded-3xl tw-p-2 tw-cursor-pointer tw-transition-all tw-duration-200 hover:tw-shadow-xl hover:tw-scale-110"
+        />
+      </a>
+    </div>
 
     <div>
-      Za dodatne informacije javite se na e-mail: hrabre.njuske@gmail.com ili
-      putem društvenih mreža.
+      Za dodatne informacije javite se na e-mail
+      <span
+        matTooltip="Kopiraj"
+        cdkCopyToClipboard="hrabre.njuske@gmail.com"
+        (cdkCopyToClipboardCopied)="onCopyFinished($event)"
+        class="link"
+        >hrabre.njuske@gmail.com</span
+      >
     </div>
   </section>
-</article>
+</div>

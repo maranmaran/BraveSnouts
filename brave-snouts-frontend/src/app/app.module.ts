@@ -9,6 +9,7 @@ import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functio
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotToastModule } from '@ngneat/hot-toast';
@@ -105,6 +106,7 @@ registerLocaleData(hrLocale);
 
     FlexLayoutModule,
     HotToastModule.forRoot(),
+    MatTooltipModule,
   ],
 
   declarations: [
