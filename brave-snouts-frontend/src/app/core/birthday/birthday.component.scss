@@ -1,5 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+$color1: #38556a;
+$color2: #86949d;
+$color3: #df0c15;
+$color4: #1f2024;
+$heading-font: "League Spartan", sans-serif;
+$body-font: "Raleway", sans-serif;
+
 :host {
-  @apply tw-bg-teal-300;
+  font-family: $body-font;
+  background-color: $color1;
   @apply tw-block tw-h-auto;
   @apply tw-my-0 tw-py-0;
   @apply tw-transition-all tw-ease-in-out tw-duration-200 #{!important};
@@ -7,7 +18,7 @@
 
 div.birthday-container {
   @apply tw-py-[1rem] md:tw-py-[10rem];
-  @apply tw-font-sans tw-h-full tw-bg-stone-50;
+  @apply tw-h-full tw-bg-stone-50;
   @apply tw-mx-[0.25rem] sm:tw-mx-[4rem] md:tw-mx-[8rem] lg:tw-mx-[13rem];
   @apply tw-px-[0.75rem] sm:tw-px-[1rem] md:tw-px-[2rem];
 }
@@ -20,16 +31,43 @@ h1,
 h2,
 h3,
 h4 {
+  font-family: $heading-font;
   @apply tw-mb-2 #{!important};
 }
 
 a,
 .link {
   @apply tw-transition-all  tw-ease-in-out tw-duration-1000;
-  @apply tw-cursor-pointer tw-no-underline tw-text-teal-500 tw-transition-all tw-duration-200 hover:tw-underline hover:tw-decoration-teal-700 #{!important};
+  @apply tw-cursor-pointer tw-no-underline tw-text-slate-500 tw-transition-all tw-duration-200 hover:tw-underline hover:tw-decoration-slate-700 #{!important};
 }
 
 canvas {
   height: 100%; /* we need these for full-screen effect */
   width: 100%;
+}
+
+.logo-base {
+  cursor: pointer;
+  z-index: 100;
+  position: relative;
+  top: 35px;
+  max-height: 90px;
+  border-radius: 50%;
+  border: 5px solid white;
+  height: 90px;
+  width: 90px;
+
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -o-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  -webkit-tap-highlight-color: none !important;
+}
+.logo {
+  @extend .logo-base;
+  background-image: url("/assets/snouts-logo/njuske-transparent.png");
+  background-size: contain;
+  background-color: $color1;
 }

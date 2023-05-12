@@ -8,7 +8,6 @@ import confetti from 'canvas-confetti';
   templateUrl: './birthday.component.html',
   styleUrls: [
     './birthday.component.scss',
-    './../../shared/toolbar/toolbar.component.scss',
   ]
 })
 export class BirthdayComponent implements OnInit {
@@ -26,9 +25,9 @@ export class BirthdayComponent implements OnInit {
 
     this.metaSvc.updateTag({ name: 'author', content: 'Hrabre Njuške' });
     this.metaSvc.updateTag({ name: 'keywords', content: 'proslava, rođendan, hrabre, njuške' });
-    this.metaSvc.updateTag({ name: 'description', content: 'Proslava 5. rođendana hrabrih njuški!' });
-    this.metaSvc.updateTag({ name: 'og:title', content: 'Proslava rođendana' });
-    this.metaSvc.updateTag({ name: 'og:description', content: 'Proslava 5. rođendana hrabrih njuški!' });
+    this.metaSvc.updateTag({ name: 'description', content: 'Hrabre njuške slave 5. rođendan i svi ste pozvani da proslavite s nama!' });
+    this.metaSvc.updateTag({ name: 'og:title', content: 'Rođendanski pawty Hrabrih njuški' });
+    this.metaSvc.updateTag({ name: 'og:description', content: 'Hrabre njuške slave 5. rođendan i svi ste pozvani da proslavite s nama!' });
 
     setTimeout(() => this.surprise(), 500);
   }

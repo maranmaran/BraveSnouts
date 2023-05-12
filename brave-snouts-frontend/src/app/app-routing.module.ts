@@ -24,7 +24,7 @@ import { AdminAuctionsPageComponent } from './features/auction-feature/user/admi
 
 const routes: Routes = [
   // root
-  { path: 'proslava', component: BirthdayComponent },
+  { path: 'rodendan', component: BirthdayComponent },
   { path: '', redirectTo: 'app', pathMatch: 'full' },
 
   {
