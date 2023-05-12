@@ -33,9 +33,6 @@ export class BirthdayComponent implements OnInit {
   }
 
   surprise(): void {
-    const canvas = this.renderer.createElement('canvas');
-    this.renderer.appendChild(this.elementRef.nativeElement, canvas);
-
     confetti({
       particleCount: 350,
       spread: 180
