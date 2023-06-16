@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 export class AuctionDatePipe implements PipeTransform {
     transform(value: Date, prepend: string = "", append: string = "") {
 
-        let translatedDate = format(value, "dddd, DD.MM u HH:mm");
+        let translatedDate = format(value, "iiii, dd.MM u HH:mm");
 
         let day: string, dateAndTimeStr: string;
         [day, dateAndTimeStr] = translatedDate.split(',');
