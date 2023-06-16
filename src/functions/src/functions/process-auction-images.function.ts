@@ -48,8 +48,11 @@ export const processAuctionImagesFn = europeFunctions
             const bufferSize = 20;
 
             try {
-                const auctionId = data.auctionId;
-                const imagesTempStoragePath = data.imageBucketPath;
+                let auctionId = data.auctionId;
+                let imagesTempStoragePath = data.imageBucketPath;
+
+                // auctionId = "962b0bf2-08f8-49ae-92d9-cdacc5c5ed79"
+                // imagesTempStoragePath = "auction-items/962b0bf2-08f8-49ae-92d9-cdacc5c5ed79/962b0bf2-08f8-49ae-92d9-cdacc5c5ed79"
 
                 logger.info(`Processing auction: ${auctionId} and path ${imagesTempStoragePath}`);
 
