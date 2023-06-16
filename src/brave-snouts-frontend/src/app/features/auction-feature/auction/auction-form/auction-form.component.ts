@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { format, parse } from 'date-fns';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
-import { Guid } from 'guid-typescript';
 import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
 import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -204,7 +203,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
         .pipe(
           mergeMap(async (file: File) => {
 
-            const name = `${Guid.create()}`;
+            const name = uuidv4();
             const path = `auction-items/${this.auction.value.id}`;
             const type = this.getFirebaseFileType(file.type);
 

@@ -6,9 +6,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { addDays, format, parse } from 'date-fns';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
-import { Guid } from 'guid-typescript';
+import { Timestamp } from 'firebase/firestore';
 import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
-import { concatMap, finalize, first, map, mergeMap, take, tap } from 'rxjs/operators';
+import { concatMap, filter, finalize, first, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -59,27 +59,27 @@ export class AuctionBulkImageFormComponent implements OnInit {
   private imgProcessingSettings: ImageProcessingSettings;
   private imageBucketPath: string;
 
-  ngOnInit(): void {
+  ngOnInit() {
 
-    let auction = {
+    const auction = new Auction({
       id: uuidv4(),
-      name: 'Aukcija',
-      startDate: new Date(),
-      endDate: addDays(new Date(), 1).getDate()
-    };
+      name: null,
+      startDate: Timestamp.fromDate(new Date()),
+      endDate: Timestamp.fromDate(addDays(new Date(), 1))
+    });
 
     this.auctionId = auction.id;
-    console.log(this.auctionId);
 
     // create auction form
-    this.createAuctionForm(auction as unknown as Auction);
+    this.createAuctionForm(auction);
 
     // route back to home if use is not admin
     this._subsink.add(
-      this.authSvc.isAdmin$.subscribe(
-        isAdmin => isAdmin ? noop() : this.router.navigate(['/aukcije']),
-        err => console.log(err)
-      )
+      this.authSvc.isAdmin$
+        .pipe(
+          filter(isAdmin => !isAdmin),
+          switchMap(() => this.router.navigate(['/aukcije'])),
+        ).subscribe()
     )
 
     this.settingsSvc.imageProcessingSettings$
@@ -98,24 +98,23 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
-    const startTime = format(auction.startDate.toDate(), 'HH:mm');
-    const endTime = format(auction.endDate.toDate(), 'HH:mm');
 
     this.auction = this.formBuilder.group({
       id: [auction.id], // hidden
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      startDate: [auction.startDate, [Validators.required]],
-      endDate: [auction.endDate, [Validators.required]],
-      startTime: [startTime, [Validators.required]],
-      endTime: [endTime, [Validators.required]],
+      startDate: [auction.startDate.toDate(), [Validators.required]],
+      endDate: [auction.endDate.toDate(), [Validators.required]],
+      startTime: [format(auction.startDate.toDate(), 'HH:mm'), [Validators.required]],
+      endTime: [format(auction.endDate.toDate(), 'HH:mm'), [Validators.required]],
       description: ['']
     });
+
+    console.debug(this.auction.value);
+    console.debug(this.auction.valid);
   }
 
   /**Check if whole form is valid */
-  public get isValid() {
-    return this.auction.valid
-  }
+  get isValid() { return this.auction.valid }
 
   //#endregion
 
@@ -140,7 +139,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
       mergeMap((file: File) => {
 
-        const name = `${Guid.create()}`;
+        const name = uuidv4();
         const path = `${this.imageBucketPath}/${name}`;
         const type = this.getFirebaseFileType(file.type);
 

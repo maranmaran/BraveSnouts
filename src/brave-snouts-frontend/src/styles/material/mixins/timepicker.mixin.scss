@@ -50,162 +50,24 @@
   $theme-background: map-get($background-palette, background);
   $theme-card: map-get($background-palette, card);
 
-  // component with manual inputs -- this actually wraps everything
-  .ngx-timepicker {
-    border-bottom: none !important;
+  ngx-mat-timepicker-field {
+    mat-form-field {
+      max-width: 16px !important;
 
-    .ngx-timepicker-control--active:after,
-    *:focus:after,
-    button:focus:active:after,
-    .period-control__button:not(.period-control__button--disabled):focus:after {
-      border-bottom: none !important;
-      background-color: unset !important;
-    }
-
-    path {
-      fill: $theme-text !important; // svg color
-    }
-
-    .ngx-timepicker-control {
-      padding-left: 0px !important;
-    }
-
-    .period-selector {
-      background: $theme-dialog !important;
-      border-radius: 5% !important;
-      width: calc(100% + 10px) !important;
-      right: calc(-110%) !important;
-
-      &__button {
-        color: $theme-text !important;
-
-        &:focus {
-          background-color: lighten($theme-dialog, 5%) !important;
-        }
-
-        &--active {
-          color: mat.get-color-from-palette($accent) !important;
-        }
-      }
-    }
-
-    .ngx-timepicker-control__input {
-      background: $theme-dialog;
-    }
-
-    .ngx-timepicker-control__arrow,
-    .period-control__arrow {
-      color: $theme-text !important;
-    }
-  }
-
-  // backdrop behind clock component
-  .timepicker-overlay {
-    z-index: 1000 !important;
-  }
-
-  // clock component
-  .timepicker {
-    // --clock-hand-color: mat.get-color-from-palette($accent) !important;
-    $accentColor: mat.get-color-from-palette($accent);
-    --clock-hand-color: #{$accentColor};
-
-    // UPPER DIAL
-    .timepicker-dial {
-      &__period--hidden {
+      .mat-mdc-form-field-bottom-align {
         display: none !important;
       }
-
-      &__time {
-        // color: $theme-text !important;
-        color: get-conditioned-text-color(
-          mat.get-color-from-palette($primary)
-        ) !important;
-      }
-
-      &__container {
-        justify-content: center !important;
-      }
     }
 
-    .timepicker-period__btn {
-      // color: $theme-text !important;
-      color: get-conditioned-text-color(
-        mat.get-color-from-palette($primary)
-      ) !important;
-
-      &:focus {
-        background-color: enchance-brightness(
-          mat.get-color-from-palette($primary),
-          30%
-        ) !important;
-      }
-    }
-
-    // Bottom - CANCEL OK buttons
-    .timepicker-button {
-      color: mat.get-color-from-palette($accent) !important;
-    }
-
-    .clock-face {
-      background-color: get-darker-color($theme-card) !important;
-
-      &__number {
-        &--outer > span,
-        > span {
-          cursor: pointer !important;
-          // color: white !important;
-          color: get-conditioned-text-color(
-            get-darker-color($theme-card)
-          ) !important;
-        }
-
-        > span.active {
-          background-color: mat.get-color-from-palette($accent) !important;
-          color: get-conditioned-text-color(
-            mat.get-color-from-palette($accent)
-          ) !important;
-        }
-      }
-    }
-
-    &__header {
-      background-color: mat.get-color-from-palette($primary) !important;
-    }
-    &__body {
-      background-color: $theme-background !important;
-    }
-    &__actions {
-      background-color: $theme-background !important;
-    }
-  }
-
-  // placement of controls
-  .ngx-timepicker {
-    justify-content: center !important;
-
-    .ngx-timepicker-control {
-      position: unset !important;
+    ngx-mat-timepicker-toggle {
       display: flex !important;
-      flex-direction: row !important;
+      justify-content: center !important;
       align-items: center !important;
+      margin: 0 !important;
+      padding-left: 0.5rem !important;
 
-      &__arrows {
-        position: unset !important;
-      }
-      &__input {
-        padding: 0 !important;
-      }
-      &__time-colon {
-        margin: 0 !important;
-      }
-    }
-
-    .ngx-material-timepicker-toggle {
-      position: unset !important;
-      margin-left: 1rem;
-      > span {
-        display: flex !important;
+      mat-icon {
+        color: black !important;
       }
     }
   }

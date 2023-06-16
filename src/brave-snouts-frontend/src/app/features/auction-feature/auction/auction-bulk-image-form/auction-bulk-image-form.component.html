@@ -1,7 +1,7 @@
 <div id="bulk-image-form" class="container flex flex-col gap-4" #scrollingBlock>
   <form
     [formGroup]="auction"
-    class="mt-5 auction-form section flex flex-col md:flex-row gap-8"
+    class="mt-5 auction-form section grid grid-cols-1 md:grid-cols-2 gap-8"
   >
     <div id="basic-data" class="flex flex-col gap-4">
       <div class="flex flex-row gap-4 justify-between items-center">
@@ -46,24 +46,24 @@
           </mat-date-range-picker>
         </mat-form-field>
 
-        <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div
+          class="w-full flex flex-row flex-wrap gap-2 sm:gap-4 md:gap-8 lg:gap-12"
+        >
           <div id="start-time" class="flex flex-row gap-2">
             <label class="center pb-0 mb-0" for="startTime">Početak:</label>
-            <ngx-mat-timepicker
-              [defaultTime]="'12:00 pm'"
+            <ngx-mat-timepicker-field
+              [defaultTime]="'12:00 PM'"
               [format]="24"
               formControlName="startTime"
-            >
-            </ngx-mat-timepicker>
+            ></ngx-mat-timepicker-field>
           </div>
           <div id="end-time" class="flex flex-row gap-2">
             <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
-            <ngx-mat-timepicker
-              [defaultTime]="'12:00 pm'"
+            <ngx-mat-timepicker-field
+              [defaultTime]="'12:00 PM'"
               [format]="24"
               formControlName="endTime"
-            >
-            </ngx-mat-timepicker>
+            ></ngx-mat-timepicker-field>
           </div>
         </div>
       </div>
@@ -71,11 +71,11 @@
 
     <div id="description" class="flex flex-col gap-4">
       <div class="mat-h2 bold">Opis aukcije</div>
-      <quill-editor
-        class="editor w-full"
+      <textarea
+        class="editor w-full p-1 mat-typography"
         [placeholder]="'Opis predmeta'"
         formControlName="description"
-      ></quill-editor>
+      ></textarea>
     </div>
   </form>
 

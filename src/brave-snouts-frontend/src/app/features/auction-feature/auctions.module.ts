@@ -8,7 +8,6 @@ import { LightboxModule } from "ng-gallery/lightbox";
 import { CountdownModule } from "ngx-countdown";
 import { DragScrollModule } from "ngx-drag-scroll";
 import { NgxDropzoneModule } from "ngx-dropzone";
-import { QuillModule } from "ngx-quill";
 import { AuctionRulesComponent } from "src/app/shared/auction-rules/auction-rules.component";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { DonateComponent } from "src/app/shared/donate/donate.component";
@@ -21,7 +20,6 @@ import { SupportComponent } from "src/app/shared/support/support.component";
 import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
 import { TruncatedTextComponent } from "src/app/shared/truncated-text/truncated-text.component";
 import { VirtualScrollerModule } from "src/app/shared/virtual-scroll/virtual-scroll.module";
-import { modules } from "src/business/models/editor.config";
 import { AuctionDatePipe } from "src/business/pipes/custom-date.pipe";
 import { MoneyPipe } from "src/business/pipes/money.pipe";
 import { TruncatePipe } from "src/business/pipes/truncate.pipe";
@@ -63,7 +61,6 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         LightboxModule,
         CountdownModule,
         DragScrollModule,
-        QuillModule.forRoot({ modules }),
 
         // Shared
         MaterialModule,
