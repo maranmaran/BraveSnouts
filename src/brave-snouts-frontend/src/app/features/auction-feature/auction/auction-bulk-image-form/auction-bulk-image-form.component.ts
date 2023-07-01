@@ -7,8 +7,8 @@ import { addDays, format, parse } from 'date-fns';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
-import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
-import { concatMap, filter, finalize, first, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, from, noop, of } from 'rxjs';
+import { concatMap, filter, finalize, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -220,21 +220,26 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
     from(this.auctionRepo.set(this.auctionId, auction))
       .pipe(
-        take(1),
-        concatMap(() =>
-          this.functionSvc
-            .processAuctionImages(this.auctionId, `${this.imageBucketPath}/original`)
-            .pipe(
-              take(1),
-              this.toastSvc.observe(
-                {
-                  loading: 'Stvaranje aukcije..',
-                  success: "Aukcija uspješno stvorena",
-                  error: "Nešto je pošlo po zlu",
-                }
-              ))
-        ),
+        first(),
+        concatMap(() => this.processImages()),
+        this.toastSvc.observe(
+          {
+            loading: 'Stvaranje aukcije..',
+            success: "Aukcija uspješno stvorena",
+            error: "Nešto je pošlo po zlu",
+          }
+        )
       ).subscribe(() => this.postCreate(), err => console.log(err));
+  }
+
+  private processImages() {
+    if (this.files?.length == 0) {
+      return of();
+    }
+
+    return this.functionSvc
+      .processAuctionImages(this.auctionId, `${this.imageBucketPath}/original`)
+      .pipe(first())
   }
 
   /* Post create actions
@@ -245,11 +250,15 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
     this.auctionRepo.getOne(this.auctionId)
       .pipe(
-        take(1),
-        tap(console.log),
-        concatMap(auction => this.itemsRepo.getAll(this.auctionId).pipe(take(1), map(items => [auction, items]))),
+        first(),
+        concatMap(auction => this.itemsRepo.getAll(this.auctionId)
+          .pipe(
+            first(),
+            map(items => [auction, items])
+          )
+        ),
         concatMap(([auction, items]) => this.router.navigate(
-          ['/app/izmjena-aukcije'],
+          ['/aukcije/izmjena-aukcije'],
           { state: { auction, items, action: 'edit' } }
         ))
       ).subscribe(noop, err => console.log(err));

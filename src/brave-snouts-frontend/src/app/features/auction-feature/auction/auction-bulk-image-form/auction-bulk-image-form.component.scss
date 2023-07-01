@@ -23,23 +23,35 @@ ngx-dropzone {
   .drag-scroll-content {
     width: 100% !important;
   }
+}
 
-  .item {
-    height: 100% !important;
-    width: auto !important;
-    position: relative;
+.item-image {
+  height: 150px;
+  width: 150px;
+  margin: 5px;
+  padding: 5px;
 
-    img,
-    video {
-      height: 100% !important;
-    }
+  position: relative;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 
-    #remove-file-btn {
-      position: absolute;
-      z-index: 1;
-      right: 0;
-      top: -3px;
-    }
+  img,
+  video {
+    max-height: 150px !important;
+    width: 150px !important;
+  }
+
+  #remove-file-btn {
+    border-radius: 100%;
+    padding: 1px;
+    background: #ff0;
+    margin: 5px;
+    color: red !important;
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    top: -3px;
   }
 }
 

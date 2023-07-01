@@ -171,7 +171,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
     this.itemsRepo.getAll(auctionObj.id).pipe(take(1))
       .subscribe(items => this.router.navigate(
-        ['/app/izmjena-aukcije'],
+        ['/aukcije/izmjena-aukcije'],
         { state: { auction, items, action: 'edit' } }
       ), err => console.log(err));
 

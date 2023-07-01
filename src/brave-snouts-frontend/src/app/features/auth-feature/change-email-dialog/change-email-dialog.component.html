@@ -2,7 +2,7 @@
   <div class="w-full flex flex-row justify-between items-center">
     <div class="mat-h2 m-0 bold">Izmjena e-maila</div>
 
-    <button mat-icon-button fxFlexAlign="end" (click)="onClose()">
+    <button mat-icon-button class="self-end" (click)="onClose()">
       <mat-icon> close </mat-icon>
     </button>
   </div>
@@ -16,7 +16,7 @@
     </mat-form-field>
 
     <button
-      fxFlexAlign="end"
+      class="self-end"
       mat-flat-button
       color="primary"
       (click)="onSubmit()"

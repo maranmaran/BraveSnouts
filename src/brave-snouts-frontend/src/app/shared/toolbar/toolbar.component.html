@@ -38,7 +38,9 @@
     </ng-container>
   </div>
 
-  <div class="flex flex-row gap-4 justify-center items-center">
+  <div
+    class="flex flex-row gap-4 justify-center items-center flex-auto self-center"
+  >
     <div
       #logo
       class="logo elevate hover"
@@ -59,10 +61,7 @@
     <div class="logo-animated" [hidden]="!clickFlag"></div>
   </div>
 
-  <div
-    fxFlex="30"
-    class="user-auth h-full relative flex flex-row justify-end items-center"
-  >
+  <div class="user-auth h-full relative flex flex-row justify-end items-center">
     <button
       mat-icon-button
       class="elevate hover default"

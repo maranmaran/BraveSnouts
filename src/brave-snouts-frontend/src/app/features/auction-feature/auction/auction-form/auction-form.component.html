@@ -15,12 +15,12 @@
 
       <form [formGroup]="auction">
         <div class="flex flex-row flex-wrap gap-4">
-          <mat-form-field fxFlex="2 1 100%">
+          <mat-form-field class="flex-[2_1_100%]">
             <mat-label>Naziv</mat-label>
             <input matInput formControlName="name" />
           </mat-form-field>
 
-          <mat-form-field fxFlex="1 2 100%">
+          <mat-form-field class="flex-[1_2_100%]">
             <mat-label>Trajanje aukcije</mat-label>
             <mat-date-range-input [rangePicker]="picker">
               <input
