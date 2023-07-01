@@ -2,6 +2,7 @@
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import * as fs from 'fs';
+import { mkdirp } from 'mkdirp';
 import * as sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import { europeFunctions, store } from '..';
@@ -10,7 +11,6 @@ import { getAuctionItems } from './end-auction.function';
 
 const path = require('path');
 const os = require('os');
-const mkdirp = require('mkdirp');
 
 // TODO: Deprecate some settings
 interface ImageProcessingSettings {
@@ -72,7 +72,9 @@ export const processAuctionImagesFn = europeFunctions
                 }
 
                 downloadJobs.push(new Promise<void>(async (res, err) => {
-                    const fileName = path.basename(file.name, path.extname(file.name));
+                    let fileName = path.basename(file.name, path.extname(file.name)) as string;
+                    fileName = fileName.replace('_original', '');
+
                     const destination = `${originalFolder}/${fileName}`;
                     await mkdirp(path.dirname(destination));
 
@@ -108,7 +110,12 @@ export const processAuctionImagesFn = europeFunctions
                     logger.log(`Transforming to ${compressedPath}`);
 
                     await sharp(originalPath)
-                        .resize(settings.compressResizeWidth ?? 500, settings.compressResizeHeight ?? 500)
+                        .resize({
+                            width: settings.compressResizeWidth ?? 500,
+                            height: settings.compressResizeHeight ?? 500,
+                            fit: 'inside',
+                            background: { r: 255, g: 255, b: 255, alpha: 1 }
+                        })
                         .jpeg({ quality: settings.compressQuality ?? 50, progressive: true })
                         .toFile(compressedPath);
 
@@ -117,7 +124,12 @@ export const processAuctionImagesFn = europeFunctions
                     logger.log(`Transforming to ${thumbPath}`);
 
                     await sharp(originalPath)
-                        .resize(50, 50)
+                        .resize({
+                            width: 80,
+                            height: 80,
+                            fit: 'inside',
+                            background: { r: 255, g: 255, b: 255, alpha: 1 }
+                        })
                         .jpeg({ quality: 85, progressive: true })
                         .toFile(thumbPath);
 

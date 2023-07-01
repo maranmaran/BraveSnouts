@@ -139,8 +139,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
       mergeMap((file: File) => {
 
-        const name = uuidv4();
-        const path = `${this.imageBucketPath}/original/${name}_original`;
+        const name = uuidv4() + "_original.jpg";
+        const path = `${this.imageBucketPath}/original/${name}`;
         const type = this.getFirebaseFileType(file.type);
 
         let { ref, task } = this.storage.uploadFile(file, path);
