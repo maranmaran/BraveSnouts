@@ -9,6 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { storage } from '../base-setup';
 import { FirebaseFile } from '../models';
 
+// https://cloud.google.com/functions/docs/reference/system-packages
 // choco install imagemagick.app
 // this is available as pre-installed binary in cloud functions
 const magick = GM.subClass({ imageMagick: true });

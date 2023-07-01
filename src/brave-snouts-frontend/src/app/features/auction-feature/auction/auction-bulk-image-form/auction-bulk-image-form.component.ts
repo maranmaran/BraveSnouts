@@ -140,7 +140,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
       mergeMap((file: File) => {
 
         const name = uuidv4();
-        const path = `${this.imageBucketPath}/${name}`;
+        const path = `${this.imageBucketPath}/original/${name}_original`;
         const type = this.getFirebaseFileType(file.type);
 
         let { ref, task } = this.storage.uploadFile(file, path);
@@ -223,7 +223,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
         take(1),
         concatMap(() =>
           this.functionSvc
-            .processAuctionImages(this.auctionId, `${this.imageBucketPath}/${this.auctionId}`)
+            .processAuctionImages(this.auctionId, `${this.imageBucketPath}/original`)
             .pipe(
               take(1),
               this.toastSvc.observe(

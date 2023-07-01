@@ -1,30 +1,62 @@
+// firebase target:apply hosting TARGET_NAME RESOURCE_IDENTIFIER
+// https://firebase.google.com/docs/hosting/multisites
 {
-  "hosting": {
-    "site": "bravesnoutsdev",
-    "public": "src/brave-snouts-frontend/dist/brave-snouts-frontend",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=1210000"
-          }
-        ]
-      }
-    ]
-  },
+  "hosting": [
+    {
+      "target": "dev",
+      "site": "bravesnoutsdev",
+      "public": "src/brave-snouts-frontend/dist/brave-snouts-frontend",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=1210000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "prod",
+      "site": "bravesnoutsprod",
+      "public": "src/brave-snouts-frontend/dist/brave-snouts-frontend",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=1210000"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "functions": {
     "predeploy": [
       "npm --prefix \"$PROJECT_PATH\" ci",

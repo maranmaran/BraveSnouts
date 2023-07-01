@@ -8,10 +8,6 @@ export class StorageService {
     constructor(private storage: AngularFireStorage) { }
 
     uploadFile(file, filePath = null) {
-        if (!filePath) {
-            filePath = `images/${file.name}`;
-        }
-
         const ref = this.storage.ref(filePath);
 
         return { ref, task: this.storage.upload(filePath, file, { cacheControl: 'public,max-age=1210000' }) };

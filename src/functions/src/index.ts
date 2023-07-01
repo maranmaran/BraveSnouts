@@ -6,9 +6,9 @@ import { MailSettingsService } from './services/mail-settings.service';
 admin.initializeApp();
 
 export const store = admin.firestore();
-export const europeFunctions = functions.region('europe-west1');
 export const config = functions.config();
 export const settingsSvc = new MailSettingsService(store);
+export const europeFunctions = functions.region('europe-west1');
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 // settingsSvc.initialize();

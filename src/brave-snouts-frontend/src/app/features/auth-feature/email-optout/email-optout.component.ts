@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { from, noop, Subject } from 'rxjs';
+import { Subject, firstValueFrom, from, noop } from 'rxjs';
 import { first, map, skip, take, takeUntil } from 'rxjs/operators';
 import { EmailSettings, User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -29,7 +28,6 @@ export class EmailOptoutComponent implements OnInit, OnDestroy {
   bidUpdates = new FormControl(false);
 
   constructor(
-    private route: ActivatedRoute,
     private store: AngularFirestore,
     private authSvc: AuthService,
     private toastSvc: HotToastService
@@ -37,21 +35,13 @@ export class EmailOptoutComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     // verify login
-    const isAuth = await this.authSvc.isAuthenticated$
-      .pipe(take(1))
-      .toPromise();
+    const isAuth = await firstValueFrom(this.authSvc.isAuthenticated$);
 
     let user = null;
     if (!isAuth) {
-      user = await this.authSvc
-        .login()
-        .pipe(
-          take(1),
-          map((cred) => (cred as any).user)
-        )
-        .toPromise();
+      user = await firstValueFrom(this.authSvc.login().pipe(map((cred) => (cred as any).user)));
     } else {
-      user = await this.authSvc.getUserInformation().pipe(take(1)).toPromise();
+      user = await firstValueFrom(this.authSvc.getUserInformation());
     }
 
     // verify wanted data
@@ -77,7 +67,7 @@ export class EmailOptoutComponent implements OnInit, OnDestroy {
     ).subscribe(async () => await this.updateSettings())
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.ngUnsubscribeSubject.next();
     this.ngUnsubscribeSubject.complete();
   }
@@ -105,7 +95,6 @@ export class EmailOptoutComponent implements OnInit, OnDestroy {
   }
 
   async updateSettings() {
-
     this.emailSettings = {
       auctionAnnouncements: this.auctionAnnouncements.value,
       bidUpdates: this.bidUpdates.value

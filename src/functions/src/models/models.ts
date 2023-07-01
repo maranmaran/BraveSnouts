@@ -1,9 +1,14 @@
 import * as firebase from 'firebase-admin';
 
 export interface FirebaseFile {
-    path: string,
-    type: string,
-    name: string
+    name: string;
+    type: string;
+
+    path: string; // auction-bucket/auctionId
+
+    urlOrig: string;
+    urlComp?: string;
+    urlThumb?: string;
 }
 
 export class Auction {

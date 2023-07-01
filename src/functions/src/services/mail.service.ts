@@ -1,8 +1,6 @@
-import { storage } from "firebase-admin";
 import { logger } from 'firebase-functions';
 import * as fs from 'fs';
 import * as nodemailer from "nodemailer";
-import * as os from 'os';
 import * as path from 'path';
 import { config } from "..";
 import handlebars = require("handlebars");
@@ -91,45 +89,8 @@ async function getMjmlTemplate(name: string) {
   const fsPath = path.join(process.cwd(), "mail-templates");
   const fsPathFull = path.join(fsPath, name);
 
-  const storagePath = path.join(os.tmpdir(), "storage-templates");
-  const storagePathFull = path.join(storagePath, name);
-
-  try {
-    deleteFolderRecursive(storagePath);
-    fs.mkdirSync(storagePath);
-
-    const bucket = storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
-
-    logger.log("Retrieving template from storage")
-
-    const downloadRes = await bucket.file(`mail-templates/${name}`).download({ destination: storagePathFull });
-
-    console.log(downloadRes);
-
-    return downloadRes ? fs.readFileSync(storagePathFull, "utf8") : fs.readFileSync(fsPathFull, "utf8");
-  } catch (err) {
-    logger.error(err);
-    logger.log("Retrieving template from file system");
-    return fs.readFileSync(fsPathFull, "utf8");
-  }
-
+  return fs.readFileSync(fsPathFull, "utf8");;
 }
 
-function deleteFolderRecursive(directoryPath) {
-  if (fs.existsSync(directoryPath)) {
-    fs.readdirSync(directoryPath).forEach((file, index) => {
-      const curPath = path.join(directoryPath, file);
-      if (fs.lstatSync(curPath).isDirectory()) {
-        // recurse
-        deleteFolderRecursive(curPath);
-      } else {
-        // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(directoryPath);
-  }
-};
-
 export const getEmailOptoutLink = () =>
-  `${config.base.url}/email-iskljucenje;`;
+  `${config.base.url}/email-postavke`;

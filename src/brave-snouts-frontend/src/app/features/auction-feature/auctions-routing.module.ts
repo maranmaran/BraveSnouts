@@ -41,7 +41,7 @@ const routes: Routes = [
             { path: 'administracija', canActivate: [AdminGuard], component: AdminAuctionsPageComponent },
 
             { path: 'email-prijava', component: EmailLoginComponent },
-            { path: 'email-iskljucenje', component: EmailOptoutComponent },
+            { path: 'email-postavke', component: EmailOptoutComponent },
 
             { path: 'polica-privatnosti', component: PrivacyPolicyComponent },
             { path: 'pravila', component: AuctionRulesComponent },

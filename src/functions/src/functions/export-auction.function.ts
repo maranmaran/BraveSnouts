@@ -1,10 +1,10 @@
+import { format } from "date-fns";
 import * as admin from "firebase-admin";
 import { logger } from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
 import { config, europeFunctions, store } from "..";
 import { AuctionItem, User, WinnerOnAuction } from "../models/models";
-import moment = require("moment");
 const os = require("os");
 const path = require("path");
 
@@ -34,7 +34,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
 
       const sheetTitle =
         !filename || filename === ""
-          ? `Export-${moment(new Date()).format("dd/MM/YY")}`
+          ? `Export-${format(new Date(), "dd/MM/yy")}`
           : filename;
 
       const usersMap: Map<string, User> = new Map<string, User>();
