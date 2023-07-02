@@ -47,19 +47,19 @@
           <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-12">
             <div id="start-time" class="flex flex-row gap-2">
               <label class="center pb-0 mb-0" for="startTime">Početak:</label>
-              <ngx-mat-timepicker
-                [defaultTime]="'12:00 pm'"
+              <ngx-mat-timepicker-field
+                [defaultTime]="'12:00 PM'"
                 [format]="24"
                 formControlName="startTime"
-              ></ngx-mat-timepicker>
+              ></ngx-mat-timepicker-field>
             </div>
             <div id="end-time" class="flex flex-row gap-2">
               <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
-              <ngx-mat-timepicker
+              <ngx-mat-timepicker-field
                 [defaultTime]="'12:00 pm'"
                 [format]="24"
                 formControlName="endTime"
-              ></ngx-mat-timepicker>
+              ></ngx-mat-timepicker-field>
             </div>
           </div>
         </div>

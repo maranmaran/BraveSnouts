@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
 import { Observable, Subscription, from, noop, of } from 'rxjs';
-import { concatMap, distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, finalize, first, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { fadeIn } from 'src/business/animations/fade-in.animation';
@@ -161,7 +161,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     event.preventDefault();
 
-    let auction = {
+    const auction: Partial<Auction> = {
       id: auctionObj.id,
       name: auctionObj.name,
       startDate: auctionObj.startDate,
@@ -169,11 +169,11 @@ export class AuctionListComponent implements OnInit, OnDestroy {
       raisedMoney: auctionObj.raisedMoney,
     }
 
-    this.itemsRepo.getAll(auctionObj.id).pipe(take(1))
+    this.itemsRepo.getAll(auctionObj.id).pipe(first())
       .subscribe(items => this.router.navigate(
         ['/aukcije/izmjena-aukcije'],
         { state: { auction, items, action: 'edit' } }
-      ), err => console.log(err));
+      ));
 
   }
 

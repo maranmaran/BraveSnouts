@@ -34,7 +34,7 @@ export const sendPostConfirmationMail = async (
     const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "[Preuzimanje poštom] Potvrda", template);
     const res = await sendMail(composer);
-    console.debug(res);
+    logger.debug(res);
 };
 
 export const getPostConfirmUrl = (

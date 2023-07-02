@@ -4,7 +4,7 @@
 @mixin scrollbar-theme($theme) {
   $primary: map-get($theme, primary);
   $primary-lighter: mat.get-color-from-palette($primary, lighter);
-  $radius: 5px;
+  $radius: 0px;
 
   *::-webkit-scrollbar {
     width: 0.75rem;

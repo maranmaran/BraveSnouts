@@ -56,6 +56,6 @@ export const sendWinnerMail = async (
     const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "Čestitamo na osvojenim predmetima!", template);
     const res = await sendMail(composer);
-    console.debug(res);
+    logger.debug(res);
 };
 

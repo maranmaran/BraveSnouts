@@ -14,41 +14,6 @@
   width: auto;
 }
 
-.logo-base {
-  cursor: pointer;
-  z-index: 100;
-  position: relative;
-  top: 35px;
-  max-height: 90px;
-  border-radius: 50%;
-  border: 5px solid white;
-  height: 90px;
-  width: 90px;
-
-  -webkit-user-select: none !important;
-  -khtml-user-select: none !important;
-  -moz-user-select: none !important;
-  -o-user-select: none !important;
-  user-select: none !important;
-  -webkit-user-drag: none !important;
-  -webkit-tap-highlight-color: none !important;
-}
-.logo {
-  @extend .logo-base;
-  background-image: url("/assets/snouts-logo/njuske-original-krug-compressed.jpg");
-  background-size: contain;
-
-  &:hover {
-    background-image: url("/assets/snouts-logo/njuske-original-animated-compressed.gif");
-    background-size: contain;
-  }
-}
-.logo-animated {
-  @extend .logo-base;
-  background-image: url("/assets/snouts-logo/njuske-original-animated-compressed.gif");
-  background-size: contain;
-}
-
 .help-btn {
   font-size: 40px;
   height: 40px;

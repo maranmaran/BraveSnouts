@@ -24,7 +24,7 @@ export const sendHandoverDetailsUpdateMail = async (
     const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "Promjena informacija za osobno preuzimanje!", template);
     const res = await sendMail(composer);
-    console.debug(res);
+    logger.debug(res);
 };
 
 /**Sends new handover details mail */
@@ -50,7 +50,7 @@ export const sendHandoverConfirmationMail = async (
     const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, "[Osobno preuzimanje] Potvrda", template);
     const res = await sendMail(composer);
-    console.debug(res);
+    logger.debug(res);
 };
 
 export const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {

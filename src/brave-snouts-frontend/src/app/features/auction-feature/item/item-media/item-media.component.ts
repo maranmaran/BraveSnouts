@@ -9,10 +9,10 @@ import { environment } from 'src/environments/environment';
 import { ItemScrollViewService } from './../item-gallery/item-scroll-view.service';
 
 interface ItemMedia {
-  type: string;
-  thumbUrl: string;
-  compressedUrl: string;
-  originalUrl: string;
+  type: 'image' | 'video'
+  urlThumb: string;
+  urlComp: string;
+  urlOrig: string;
 }
 
 @Component({
@@ -62,9 +62,9 @@ export class ItemMediaComponent implements OnInit {
   private getItemImages() {
     return this.dbMedia.map(x => ({
       type: x.type,
-      originalUrl: this.getCachedImageUrl(x.urlOrig),
-      compressedUrl: this.getCachedImageUrl(x.urlComp),
-      thumbUrl: this.getCachedImageUrl(x.urlThumb),
+      urlOrig: this.getCachedImageUrl(x.urlOrig),
+      urlComp: this.getCachedImageUrl(x.urlComp),
+      urlThumb: this.getCachedImageUrl(x.urlThumb),
     } as ItemMedia));
   }
 
@@ -81,7 +81,7 @@ export class ItemMediaComponent implements OnInit {
 
     const loadGradually = await firstValueFrom(this.loadGradually$);
 
-    for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
+    for (const { type, urlThumb: thumbUrl, urlComp: compressedUrl, urlOrig: originalUrl } of this.media) {
 
       const galleryItem = {
         src: loadGradually ? originalUrl : compressedUrl ?? originalUrl,
@@ -102,7 +102,7 @@ export class ItemMediaComponent implements OnInit {
   openLightbox(imageIdx: number = 0) {
 
     let lightboxData = [];
-    for (const { type, thumbUrl, compressedUrl, originalUrl } of this.media) {
+    for (const { type, urlThumb: thumbUrl, urlComp: compressedUrl, urlOrig: originalUrl } of this.media) {
 
       const galleryItem = { src: originalUrl ?? compressedUrl, thumb: thumbUrl ?? compressedUrl, type };
 

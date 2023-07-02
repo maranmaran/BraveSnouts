@@ -25,10 +25,7 @@ interface ImageProcessingSettings {
 // TODO: make it react on event of image 
 // do single transformation with multiple function invocations
 
-/** Processes auctions end
- * Picks up item winners and sends email notification templates for won items
- * Marks auction as processed
- */
+/** Compresses image */
 export const processAuctionImagesFn = europeFunctions
     // .runWith(runtimeOpts)
     .https
@@ -187,7 +184,7 @@ export const processAuctionImagesFn = europeFunctions
                     imagesArr.push({
                         name: image,
                         path: auctionDest,
-                        type: 'image/jpeg',
+                        type: 'image',
                         urlOrig, urlThumb, urlComp
                     });
 

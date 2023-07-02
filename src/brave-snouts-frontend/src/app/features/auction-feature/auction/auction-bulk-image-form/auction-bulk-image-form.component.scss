@@ -25,36 +25,54 @@ ngx-dropzone {
   }
 }
 
-.item-image {
-  height: 150px;
-  width: 150px;
-  margin: 5px;
-  padding: 5px;
+.container {
+  height: calc(100% - 56px) !important;
+}
 
-  position: relative;
+.auction-item-media-dropzone {
+  @apply grid grid-cols-5 gap-8 border-2 border-solid border-gray-400 rounded-lg;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
+    @apply border-teal-400;
+  }
+}
+
+#uploadBtn {
+  @apply absolute justify-self-center self-center;
+}
+
+.item-image {
+  @apply relative shadow-md;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
+  height: 100%;
+  width: 100%;
+
+  &:hover {
+    @apply shadow-xl;
+  }
 
   img,
   video {
-    max-height: 150px !important;
-    width: 150px !important;
+    @apply w-40 h-auto;
   }
 
   #remove-file-btn {
     border-radius: 100%;
-    padding: 1px;
     background: #ff0;
     margin: 5px;
     color: red !important;
     position: absolute;
     z-index: 1;
-    right: 0;
-    top: -3px;
-  }
-}
+    right: 1px;
+    top: 1px;
 
-.container {
-  height: calc(100% - 56px) !important;
+    &:hover {
+      @apply shadow-md;
+    }
+  }
 }

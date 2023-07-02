@@ -2,7 +2,7 @@ import * as firebase from 'firebase-admin';
 
 export interface FirebaseFile {
     name: string;
-    type: string;
+    type: 'image' | 'video'
 
     path: string; // auction-bucket/auctionId
 

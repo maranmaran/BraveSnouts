@@ -71,7 +71,7 @@ export class PostalInformation {
 
 export interface FirebaseFile {
     name: string;
-    type: string;
+    type: 'image' | 'video';
 
     path: string; // auction-bucket/auctionId
 

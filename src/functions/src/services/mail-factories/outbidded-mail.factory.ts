@@ -31,5 +31,5 @@ export const sendOutbiddedMail = async (
     const template = await getTemplate(templateRaw, emailVariables);
     const composer = getComposer(user.email, `Tvoja ponuda za predmet "${itemBefore.name}" je nadmašena!`, template);
     const res = await sendMail(composer);
-    console.debug(res);
+    logger.debug(res);
 };

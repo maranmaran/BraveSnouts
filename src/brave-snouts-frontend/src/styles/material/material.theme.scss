@@ -8,6 +8,7 @@
 @import "./mixins/colors.mixin.scss";
 @import "./mixins/timepicker.mixin.scss";
 @import "./mixins/grids.mixin.scss";
+@import "./mixins/logo.mixin.scss";
 
 @mixin custom-components-theme($theme) {
   @include scrollbar-theme($theme);
@@ -18,6 +19,7 @@
   @include colors-theme($theme);
   @include grids-theme($theme);
   @include timepicker-theme($theme);
+  @include logo-theme($theme);
 }
 
 // ======================================= THEME ==========================================

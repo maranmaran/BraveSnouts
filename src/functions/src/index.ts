@@ -19,7 +19,8 @@ const endAuctionFn = require('./functions/end-auction.function');
 const changeHandoverFn = require('./functions/change-handover.function');
 const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
 const exportAuctionFn = require('./functions/export-auction.function');
-const processAuctionImagesFn = require('./functions/process-auction-images.function');
+// const processAuctionImagesFn = require('./functions/process-auction-images.function');
+const processAuctionImageFn = require('./functions/process-auction-image.function');
 const handoverConfirmFn = require('./functions/handover-confirm.function');
 const sendWinnerMailFn = require('./functions/send-winner-mail.function');
 const testSendWinnerMailFn = require('./functions/test-send-winner-mail.function');
@@ -62,7 +63,8 @@ export const handoverConfirm = handoverConfirmFn;
 // NOTE: This one is memory, cpu and time intensive
 // Further optimizations can be made if everything was processed 
 // beforehand with script and just saved in storage...
-export const processAuctionImages = processAuctionImagesFn;
+// export const processAuctionImages = processAuctionImagesFn;
+export const processAuctionImage = processAuctionImageFn;
 
 // downloads all users emails whoa re subscribed to announcements 
 export const downloadMails = downloadMailsFn;

@@ -13,14 +13,14 @@
       [ngStyle]="{
         background:
           'url(' +
-          (media[0].compressedUrl ?? media[0].thumbUrl) +
+          (media[0].urlComp ?? media[0].urlThumb) +
           ') 50% 50% no-repeat',
         'background-size': 'contain'
       }"
       [src]="
         (loadGradually$ | async)
-          ? media[0].originalUrl ?? media[0].compressedUrl
-          : media[0].compressedUrl
+          ? media[0].urlOrig ?? media[0].urlComp
+          : media[0].urlComp
       "
     />
   </ng-container>
@@ -31,13 +31,13 @@
         id="single-image"
         class="img-fluid"
         [ngStyle]="{
-          background: 'url(' + media[0].thumbUrl + ') 50% 50% no-repeat',
+          background: 'url(' + media[0].urlThumb + ') 50% 50% no-repeat',
           'background-size': 'cover'
         }"
         [src]="
           (loadGradually$ | async)
-            ? media[0].compressedUrl ?? media[0].thumbUrl
-            : media[0].thumbUrl
+            ? media[0].urlComp ?? media[0].urlThumb
+            : media[0].urlThumb
         "
       />
       <ng-content></ng-content>

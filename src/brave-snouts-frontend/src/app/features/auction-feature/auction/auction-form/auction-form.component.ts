@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { format, parse } from 'date-fns';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
-import { BehaviorSubject, firstValueFrom, from, noop } from 'rxjs';
+import { Timestamp } from 'firebase/firestore';
+import { BehaviorSubject, from, noop } from 'rxjs';
 import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
@@ -84,25 +85,16 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
   /* Creates auction form group */
   createAuctionForm(auction: Auction) {
-
-    let startDate = auction.startDate as unknown as Date;
-    let endDate = auction.endDate as unknown as Date;
-    if (!this.createMode) {
-      // received timestamp convert to date
-      startDate = new firebase.firestore.Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds).toDate();
-      endDate = new firebase.firestore.Timestamp(auction.endDate.seconds, auction.endDate.nanoseconds).toDate();
-    }
-
-    const startTime = format(startDate, 'HH:mm');
-    const endTime = format(endDate, 'HH:mm');
+    const startDate = new Timestamp(auction.startDate.seconds, auction.startDate.nanoseconds);
+    const endDate = new Timestamp(auction.endDate.seconds, auction.endDate.nanoseconds);
 
     this.auction = this.formBuilder.group({
       id: [auction.id ?? uuidv4()], // hidden
       name: [auction.name, [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      startDate: [startDate, [Validators.required]],
-      endDate: [endDate, [Validators.required]],
-      startTime: [startTime, [Validators.required]],
-      endTime: [endTime, [Validators.required]],
+      startDate: [startDate.toDate(), [Validators.required]],
+      endDate: [endDate.toDate(), [Validators.required]],
+      startTime: [format(startDate.toDate(), 'HH:mm'), [Validators.required]],
+      endTime: [format(endDate.toDate(), 'HH:mm'), [Validators.required]],
       raisedMoney: [auction.raisedMoney]
     });
   }
@@ -201,42 +193,10 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     this._subsink.add(
       from(event.addedFiles)
         .pipe(
-          mergeMap(async (file: File) => {
-
-            const name = uuidv4();
-            const path = `auction-items/${this.auction.value.id}`;
-            const type = this.getFirebaseFileType(file.type);
-
-            let { ref, task } = this.storage.uploadFile(file, path);
-            await task;
-
-            const url = await firstValueFrom(ref.getDownloadURL());
-
-            const finalFile = <FirebaseFile>{
-              name,
-              type,
-              path,
-              // these will be modified by backend 
-              // in case of compression and resize
-              urlOrig: url,
-              urlComp: url,
-              urlThumb: url
-            };
-
-            this.files[index].push(finalFile);
-          }),
-          // tap(res => console.log(res)),
+          mergeMap((file: File) => this.storage.uploadAuctionImage(this.auction.value.id, file, this.files[index])),
           finalize(() => this.uploadStates$[index].next(false))
-        ).subscribe(noop, err => console.log(err))
+        ).subscribe(noop)
     )
-  }
-
-  /**Check file type */
-  getFirebaseFileType(type): 'file' | 'image' | 'video' {
-    if (type.indexOf('image') != -1)
-      return 'image';
-
-    return 'video';
   }
 
   filesToDeleteQueue: FirebaseFile[] = [];

@@ -69,7 +69,7 @@ export function getComposer(to: string, subject: string, html: string) {
 export async function getTemplateRaw(name: string) {
   logger.log('Getting template ' + name);
   const mjmlFile = await getMjmlTemplate(name);
-  console.log('fetched raw template');
+  logger.log('fetched raw template');
   return mjmlFile;
 }
 
