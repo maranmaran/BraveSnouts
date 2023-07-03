@@ -31,7 +31,7 @@ import { WinnerDetailsDialogComponent } from '../winner-details-dialog/winner-de
   ],
 })
 export class AdminAuctionsPageComponent implements OnInit {
-  displayedColumns: string[] = ['select', 'name', 'processed', 'handover'];
+  displayedColumns: string[] = ['select', 'name', 'processed', 'handover', 'lastWinningMails'];
   dataSource = new MatTableDataSource<Auction>([]);
   selection = new SelectionModel<Auction>(true, []);
 
@@ -62,8 +62,7 @@ export class AdminAuctionsPageComponent implements OnInit {
         this.dataSource.data = auctions;
         this.table.renderRows();
         this.updateSelectionModel(this.dataSource.data);
-      },
-      (err) => console.log(err)
+      }
     );
   }
 
@@ -135,7 +134,7 @@ export class AdminAuctionsPageComponent implements OnInit {
           error: 'Nešto je pošlo po zlu',
         })
       )
-      .subscribe(noop, (err) => console.log(err));
+      .subscribe(noop);
   }
 
   async onChangeHandoverDetails() {
@@ -271,8 +270,7 @@ export class AdminAuctionsPageComponent implements OnInit {
         console.log(data);
 
         return this.functionsSvc.testSendWinnerMail(data.email, data.itemsCount)
-      }
-      ))
+      }))
     ).subscribe(noop);
   }
 

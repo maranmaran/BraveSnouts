@@ -26,6 +26,8 @@ export class Auction {
     archived: boolean = false;
     // Describes handover details sent to winners
     handoverDetails: string[] = [];
+    // Describes last point in time the winning mails were sent
+    lastTimeWinningMailsSent?: Timestamp = null;
 
     // total raised money
     raisedMoney: number = 0;

@@ -31,6 +31,9 @@ export class Auction {
     archived: boolean;
     // Handover details for auction winners
     handoverDetails: string[];
+
+    // Describes last point in time the winning mails were sent
+    lastTimeWinningMailsSent?: Date = null;
 }
 
 export class Winner {

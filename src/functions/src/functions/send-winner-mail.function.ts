@@ -29,8 +29,14 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
             // logger.error("Uncomment send mails to actually send mails");
             await sendMails(auctions, userBidsTransformed, handoverDetails);
 
-            return null;
+            for (const auction of auctions) {
+                auction.lastTimeWinningMailsSent = new Date();
+                await store.doc(`auctions/${auction.id}`).update({
+                    lastTimeWinningMailsSent: new Date()
+                });
+            }
 
+            return null;
         } catch (e) {
             logger.error(e);
             throw e;
