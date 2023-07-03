@@ -29,7 +29,7 @@
         [disabled]="!selection.hasValue() || !onlyProcessedAuctionsSelected"
         (click)="onChangeHandoverDetails()"
       >
-        Promjeni mjesto preuzimanje
+        Pošalji mail za promjenu mjesta preuzimanja
       </button>
       <button
         mat-flat-button
@@ -96,6 +96,15 @@
       <th mat-header-cell *matHeaderCellDef>Stanje</th>
       <td mat-cell *matCellDef="let element">
         {{ element.processed ? "Zatvorena" : "Nije zatvorena" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="handover">
+      <th mat-header-cell *matHeaderCellDef>Mjesto preuzimanja</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngFor="let handover of element.handoverDetails; let i = index">
+          {{ i + 1 }}. {{ handover }}
+        </p>
       </td>
     </ng-container>
 

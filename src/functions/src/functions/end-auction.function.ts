@@ -58,12 +58,6 @@ const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
   logger.info("Deleting tracked items")
   await clearTrackedItems(auctionId);
 
-  // Separated sending mails and ending auction
-  // // Inform users
-  // logger.info("Sending emails")
-  // // logger.error("Uncomment send mails to actually send mails");
-  // await sendMails(auction, userBids, handoverDetails);
-
   // Mark processed auctions
   logger.info("Update auction as processed")
   await updateAuction(auction, handoverDetails);
@@ -105,13 +99,12 @@ export const getBids = (items: AuctionItem[]) => {
     .filter(item => item.bid > 0 && item.user)
     .map(item => ({ value: item.bid, user: item.user, item }) as Bid);
 
-  if (bids.length === 0) {
+  if (bids?.length === 0) {
     const message = 'No bids found';
     logger.warn(message);
-    throw new Error(message);
   }
 
-  return bids;
+  return bids ?? [];
 };
 
 /** Retrieves authenticated users information (Email, Name ..etc) */

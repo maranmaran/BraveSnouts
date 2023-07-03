@@ -1,17 +1,25 @@
 import { logger } from 'firebase-functions';
+import { config } from "..";
+
 import * as fs from 'fs';
 import * as nodemailer from "nodemailer";
 import * as path from 'path';
-import { config } from "..";
+
 import handlebars = require("handlebars");
 import mjml2html = require("mjml");
-const mailgun = require("mailgun-js");
-const MailComposer = require("nodemailer/lib/mail-composer");
 
-const getService = () => {
+const mailgun = require('mailgun.js');
+const formData = require('form-data');
+const mailComposer = require("nodemailer/lib/mail-composer");
+
+const client = (() => {
   switch (config.mail.provider) {
     case 'mailgun':
-      return mailgun({ apiKey: config.mailgun?.apikey, domain: config.mailgun?.domain, host: "api.eu.mailgun.net" });
+      return new mailgun(formData).client({
+        username: 'api',
+        key: config.mailgun?.apikey,
+        url: "https://api.eu.mailgun.net"
+      }) as any;
     case 'gmail':
       return nodemailer.createTransport({
         service: "Gmail",
@@ -20,7 +28,7 @@ const getService = () => {
           user: config.gmail?.user,
           pass: config.gmail?.password,
         },
-      });
+      }) as any;
     case 'ethereal':
       return nodemailer.createTransport({
         host: "smtp.ethereal.email",
@@ -30,24 +38,35 @@ const getService = () => {
           user: config.ethereal?.user,
           pass: config.ethereal?.password,
         },
-      });
+      }) as any;
+    default:
+      throw new Error("No configured mail provider, check your firebase functions:config:get");
   }
-};
+})();
 
 export const sendMail = async composer => {
-  const message = (await composer.compile().build()).toString('ascii');
 
-  switch (config.mail.provider) {
-    case 'mailgun':
-      return await getService().messages().sendMime({ to: composer.mail.to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message })
-    case 'gmail':
-    case 'ethereal':
-      return await getService().sendMail(message)
+  try {
+    const message = (await composer.compile().build()).toString('ascii');
+
+    switch (config.mail.provider) {
+      case 'mailgun':
+        return await client.messages
+          .create(
+            config.mailgun?.domain, // domain
+            { to: composer.mail.to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message } // message data
+          )
+      case 'gmail':
+      case 'ethereal':
+        return await client.sendMail(message)
+    }
+  } catch (err) {
+    logger.error(JSON.stringify(err), { err });
   }
 }
 
 export function getComposer(to: string, subject: string, html: string) {
-  return new MailComposer({
+  return new mailComposer({
     from: 'Hrabre Njuške <aukcija@hrabrenjuske.hr>',
     to,
     subject,
@@ -72,7 +91,6 @@ export async function getTemplateRaw(name: string) {
   logger.log('fetched raw template');
   return mjmlFile;
 }
-
 
 export async function getTemplate(mjml: any, variables: any) {
 

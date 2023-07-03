@@ -49,7 +49,7 @@ export class MailSettingsService {
             bank_accounts: this.formatBankAccounts(bank_accounts)
         };
 
-        logger.log(this._mailVariables);
+        logger.log('Active mail variables (check your firestore for show: boolean field)', { mailVariables: this._mailVariables });
 
         return this._mailVariables;
     }

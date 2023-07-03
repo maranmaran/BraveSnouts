@@ -274,6 +274,9 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   changeHandoverDetails(auctionId) {
+    const confirmMsg = 'Sljedeći dijalog će sudionicima poslati mail s promjenama. Nastaviti?';
+    if (!window.confirm(confirmMsg)) return;
+
     const dialogRef = this.dialog.open(HandoverDialogComponent, {
       height: 'auto',
       width: '98%',

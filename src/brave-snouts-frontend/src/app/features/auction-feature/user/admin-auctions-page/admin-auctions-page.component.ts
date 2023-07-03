@@ -31,7 +31,7 @@ import { WinnerDetailsDialogComponent } from '../winner-details-dialog/winner-de
   ],
 })
 export class AdminAuctionsPageComponent implements OnInit {
-  displayedColumns: string[] = ['select', 'name', 'processed'];
+  displayedColumns: string[] = ['select', 'name', 'processed', 'handover'];
   dataSource = new MatTableDataSource<Auction>([]);
   selection = new SelectionModel<Auction>(true, []);
 
@@ -139,6 +139,9 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   async onChangeHandoverDetails() {
+    const confirmMsg = 'Sljedeći dijalog će sudionicima poslati mail s promjenama. Nastaviti?';
+    if (!window.confirm(confirmMsg)) return;
+
     const handoverDetails = await this.getHandoverDetails();
     if (!handoverDetails) return;
 

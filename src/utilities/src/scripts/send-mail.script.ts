@@ -1,7 +1,7 @@
 // const mjml2html = require("mjml");
 // const fs = require("fs");
 // const handlebars = require("handlebars");
-// const mailgun = require("mailgun-js");
+// const mailgun = require("mailgun.js");
 // const MailComposer = require("nodemailer/lib/mail-composer");
 // const path = require("path");
 
