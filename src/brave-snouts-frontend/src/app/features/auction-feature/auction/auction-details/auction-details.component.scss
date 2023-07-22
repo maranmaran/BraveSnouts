@@ -1,7 +1,3 @@
-.container {
-  height: calc(100% - 56px) !important;
-}
-
 .auction-toolbar {
   width: 100%;
   margin-bottom: 0.5rem !important;
@@ -9,8 +5,4 @@
   bottom: 10px;
 }
 
-@media (max-width: 600px) {
-  .container {
-    height: calc(100% - 56px - 1.5rem) !important;
-  }
-}
+@media (max-width: 600px) {}

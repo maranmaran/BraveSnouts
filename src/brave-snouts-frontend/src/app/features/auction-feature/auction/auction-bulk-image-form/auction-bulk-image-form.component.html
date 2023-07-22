@@ -1,4 +1,4 @@
-<div id="bulk-image-form" class="container flex flex-col gap-4" #scrollingBlock>
+<div id="bulk-image-form" class="container flex flex-col gap-4">
   <form
     [formGroup]="auction"
     class="mt-5 auction-form section grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -79,49 +79,47 @@
     </div>
   </form>
 
-  <div class="items-form h-full flex flex-col gap-4">
-    <div class="items-header flex flex-row">
-      <div class="section flex flex-row gap-4 justify-between">
-        <h1>Slike</h1>
-      </div>
-    </div>
+  <div class="px-16 pb-16 items-form h-full flex flex-col gap-4">
+    <h1 class="section">Slike</h1>
 
-    <div id="dropzone" class="flex flex-row">
-      <div class="media w-full flex-[1_1_100%]">
-        <mat-progress-bar
-          *ngIf="uploadState$ | async"
-          mode="indeterminate"
-        ></mat-progress-bar>
-
-        <ngx-dropzone
-          class="auction-item-media-dropzone pb-0"
-          (change)="uploadFiles($event)"
-          [disableClick]="dragActive"
-          [expandable]="true"
+    <div>
+      <mat-progress-bar
+        *ngIf="uploadState$ | async"
+        class="dropzone-loader"
+        mode="indeterminate"
+      ></mat-progress-bar>
+      
+      <ngx-dropzone
+        class="dropzone"
+        (change)="uploadFiles($event)"
+        [disableClick]="dragActive"
+        [expandable]="false"
+      >
+        <ngx-dropzone-label
+          class="dropzone-upload-btn"
+          *ngIf="files?.length == 0"
         >
-          <ngx-dropzone-label id="uploadBtn" *ngIf="files?.length == 0">
-            <button mat-stroked-button type="button">Učitaj</button>
-          </ngx-dropzone-label>
-
-          <div class="item-image" drag-scroll-item *ngFor="let file of files">
-            <ng-container *ngIf="file.urlOrig as url">
-              <img *ngIf="file.type == 'image'" [src]="url" />
-              <video *ngIf="file.type == 'video'" [src]="url"></video>
+          <button mat-stroked-button type="button">Učitaj</button>
+        </ngx-dropzone-label>
+  
+        <virtual-scroller #scroll class="dropzone-scroller" [items]="files" [childHeight]="160">
+          <div class="dropzone-scroller-viewport" #container>
+            <div class="dropzone-item" *ngFor="let file of scroll.viewPortItems; trackBy: trackFile">
+              <img *ngIf="file.type == 'image'" [src]="file.urlOrig" />
+              <video *ngIf="file.type == 'video'" [src]="file.urlOrig"></video>
               <button
-                id="remove-file-btn"
+                class="dropzone-item-remove-btn"
                 type="button"
                 mat-icon-button
                 color="warn"
-                (click)="removeFile(file, url, $event)"
+                (click)="removeFile(file, file.urlOrig, $event)"
               >
                 <mat-icon>close</mat-icon>
               </button>
-            </ng-container>
+            </div>
           </div>
-
-          <!-- </drag-scroll> -->
-        </ngx-dropzone>
-      </div>
+        </virtual-scroller>
+      </ngx-dropzone>
     </div>
   </div>
 </div>

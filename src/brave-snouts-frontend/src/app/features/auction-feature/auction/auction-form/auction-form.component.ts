@@ -245,6 +245,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     );
 
     const auction = new Auction({
+      ...this.auction.value,
+      id: this.auction.value.id,
       name: this.auction.value.name,
       startDate: firebase.firestore.Timestamp.fromDate(startDate),
       endDate: firebase.firestore.Timestamp.fromDate(endDate),
@@ -258,8 +260,12 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       delete auction.archived;
     }
 
+    delete auction.winners;
+    delete auction.items;
+
     const items = this.itemsArr.value.map(
       (item, index) => new AuctionItem({
+        ...item,
         // actually editable in form
         name: item.name,
         description: item.description,

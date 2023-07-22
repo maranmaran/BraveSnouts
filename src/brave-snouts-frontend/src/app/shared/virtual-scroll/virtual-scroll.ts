@@ -186,6 +186,9 @@ export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   @Input()
+  public containerClass: string = '';
+
+  @Input()
   public executeRefreshOutsideAngularZone: boolean = false;
 
   protected _enableUnequalChildrenSizes: boolean = false;
@@ -1670,7 +1673,7 @@ export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {
     );
     let newScrollLength = dimensions.scrollLength;
 
-    return {
+    const calculatedViewport = {
       startIndex: pageInfo.startIndex,
       endIndex: pageInfo.endIndex,
       startIndexWithBuffer: pageInfo.startIndexWithBuffer,
@@ -1681,6 +1684,8 @@ export class VirtualScrollerComponent implements OnInit, OnChanges, OnDestroy {
       scrollEndPosition: pageInfo.scrollEndPosition,
       maxScrollPosition: pageInfo.maxScrollPosition,
     };
+
+    return calculatedViewport;
   }
 }
 

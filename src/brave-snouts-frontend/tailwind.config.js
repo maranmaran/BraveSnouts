@@ -5,7 +5,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
   corePlugins: {
     container: false,
     listStyleType: false,

@@ -18,11 +18,19 @@ export function getAuctionState(auction: Auction): 'future' | 'active' | 'expire
 
 /**Auction that is set in future and is yet to come */
 function isFutureAuction(auction: Auction) {
+    if (auction.startDate instanceof Date) {
+        return isAfter(auction.startDate, new Date())
+    }
+
     return isAfter(auction.startDate.toDate(), new Date());
 }
 
 /**Auction that has ended and/or is processed by firebase function*/
 function isExpiredAuction(auction: Auction) {
+    if (auction.endDate instanceof Date) {
+        return isAfter(auction.endDate, new Date())
+    }
+
     return isBefore(auction.endDate.toDate(), new Date()) || auction.processed && !isFutureAuction(auction)
 }
 

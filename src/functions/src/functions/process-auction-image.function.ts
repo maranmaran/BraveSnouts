@@ -1,7 +1,6 @@
 /* eslint-disable eqeqeq */
 import * as admin from 'firebase-admin';
-import { logger } from 'firebase-functions';
-import * as fs from 'fs';
+import { RuntimeOptions, logger } from 'firebase-functions';
 import { mkdirp } from 'mkdirp';
 import * as sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +19,14 @@ interface ImageProcessingSettings {
     compressExtension: string; enableProdMode
 }
 
-export const processAuctionImagesFn = europeFunctions.storage.bucket().object()
+const runtimeOpts: Partial<RuntimeOptions> = {
+    timeoutSeconds: 540,
+    memory: "1GB"
+}
+
+export const processAuctionImagesFn = europeFunctions
+    .runWith(runtimeOpts)
+    .storage.bucket().object()
     .onFinalize(async (object) => {
         const fullPath = object.name;
         const fullPathSplit = fullPath.split("/");
@@ -96,7 +102,7 @@ export const processAuctionImagesFn = europeFunctions.storage.bucket().object()
 
         logger.log('Uploading processing artifacts');
 
-        const originalImage = `${tempFolder}/${fileName}`;
+        // const originalImage = `${tempFolder}/${fileName}`;
         const thumbImage = `${tempFolder}/${noExtFileName}_thumb.jpg`;
         const compressedImage = `${tempFolder}/${noExtFileName}_compressed.jpg`;
 
@@ -122,8 +128,8 @@ export const processAuctionImagesFn = europeFunctions.storage.bucket().object()
         logger.info(`Uploading ${fileName}_thumb.jpg`);
         await bucket.upload(thumbImage, { destination: thumbDestination, ...uploadOptions });
 
-        fs.unlinkSync(thumbImage);
-        fs.unlinkSync(originalImage);
-        fs.unlinkSync(compressedImage);
-        fs.unlinkSync(tempFolder);
+        // fs.unlinkSync(thumbImage);
+        // fs.unlinkSync(originalImage);
+        // fs.unlinkSync(compressedImage);
+        // fs.unlinkSync(tempFolder);
     });

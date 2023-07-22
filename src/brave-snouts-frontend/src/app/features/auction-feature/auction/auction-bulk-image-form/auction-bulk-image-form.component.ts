@@ -174,6 +174,10 @@ export class AuctionBulkImageFormComponent implements OnInit {
       bid: 0,
     }));
 
+    // these are nested fb collections, not props
+    delete auction.winners;
+    delete auction.items;
+
     // create auction
     // create items
     // delete unused media files
@@ -220,4 +224,8 @@ export class AuctionBulkImageFormComponent implements OnInit {
   }
 
   //#endregion
+
+  trackFile(_, item: FirebaseFile) {
+    return item.urlOrig;
+  }
 }

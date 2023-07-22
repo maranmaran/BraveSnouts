@@ -4,39 +4,37 @@
   *ngIf="auction$ | async as auction"
 >
   <div id="auction-details mt-4 sm:mt-0" class="flex flex-col gap-4">
-    <div class="flex flex-row">
-      <div class="section flex flex-row justify-between items-center gap-4">
-        <div class="mat-h2 mb-0 bold">{{ auction.name }}</div>
-        <div
-          class="foreground flex flex-row gap-4"
-          [ngClass]="{
-            'warn default': state == 'expired',
-            'primary lighter': state == 'future'
-          }"
-        >
-          <div [ngSwitch]="state">
-            <ng-container *ngSwitchCase="'future'">
-              Počinje:
-              {{ auction.startDate.toDate() | date : "MMM d, HH:mm:ss" }}
-            </ng-container>
-            <ng-container *ngSwitchCase="'expired'">
-              Završila:
-              {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
-            </ng-container>
+    <div class="section flex flex-col justify-between items-start gap-4">
+      <div class="mat-h2 mb-0 bold">{{ auction.name }}</div>
+      <div
+        class="foreground flex flex-row gap-4"
+        [ngClass]="{
+          'warn default': state == 'expired',
+          'primary lighter': state == 'future'
+        }"
+      >
+        <div [ngSwitch]="state">
+          <ng-container *ngSwitchCase="'future'">
+            Počinje:
+            {{ auction.startDate.toDate() | date : "MMM d, HH:mm:ss" }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'expired'">
+            Završila:
+            {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
+          </ng-container>
 
-            <ng-container *ngSwitchCase="'active'">
-              Traje do:
-              {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
-            </ng-container>
-          </div>
-          <countdown
-            *ngIf="state == 'active' && config"
-            class="m-0 bold"
-            #cd
-            [config]="config"
-          >
-          </countdown>
+          <ng-container *ngSwitchCase="'active'">
+            Traje do:
+            {{ auction.endDate.toDate() | date : "MMM d, HH:mm:ss" }}
+          </ng-container>
         </div>
+        <countdown
+          *ngIf="state == 'active' && config"
+          class="m-0 bold"
+          #cd
+          [config]="config"
+        >
+        </countdown>
       </div>
     </div>
   </div>

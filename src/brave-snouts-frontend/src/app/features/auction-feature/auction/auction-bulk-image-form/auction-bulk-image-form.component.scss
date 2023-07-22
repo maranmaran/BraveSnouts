@@ -2,77 +2,59 @@
   font-size: 14px !important;
 }
 
-virtual-scroller {
+.dropzone-loader {
+  @apply w-full bottom-1 rounded-xl
+}
+
+.dropzone {
+  // overflow: hidden;
+  position: relative !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  height: 100%;
-}
+  height: 40rem; // equivalent of 2 items row (incl. gap)
 
-ngx-dropzone {
-  overflow: hidden;
-
-  drag-scroll {
-    overflow-y: hidden;
-  }
-}
-
-.form-drag-scroll {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-
-  .drag-scroll-content {
-    width: 100% !important;
-  }
-}
-
-.container {
-  height: calc(100% - 56px) !important;
-}
-
-.auction-item-media-dropzone {
-  @apply grid grid-cols-5 gap-8 border-2 border-solid border-gray-400 rounded-lg;
-
-  &:hover,
-  &:focus,
-  &:active,
-  &:visited {
-    @apply border-teal-400;
-  }
-}
-
-#uploadBtn {
-  @apply absolute justify-self-center self-center;
-}
-
-.item-image {
-  @apply relative shadow-md;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  height: 100%;
-  width: 100%;
-
-  &:hover {
-    @apply shadow-xl;
+  .dropzone-upload-btn {
+    @apply absolute justify-self-center self-center;
   }
 
-  img,
-  video {
-    @apply w-40 h-auto;
-  }
+}
 
-  #remove-file-btn {
-    border-radius: 100%;
-    background: #ff0;
-    margin: 5px;
-    color: red !important;
-    position: absolute;
-    z-index: 1;
-    right: 1px;
-    top: 1px;
+.dropzone-scroller {
+  @apply w-full h-full border-none;
 
-    &:hover {
-      @apply shadow-md;
+  .dropzone-scroller-viewport {
+    @apply grid grid-cols-5 gap-8;
+
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
+      @apply border-teal-400;
+    }
+
+    .dropzone-item {
+      @apply relative shadow-md flex justify-center items-center;
+      @apply h-40 w-auto p-3;
+
+      img,
+      video {
+        @apply max-w-full max-h-full h-auto w-auto;
+      }
+
+      &:hover {
+        @apply shadow-xl;
+      }
+
+      .dropzone-item-remove-btn {
+        @apply rounded-full bg-yellow-300 m-1 text-red-600 absolute z-10 right-[1px] top-[1px];
+
+        &:hover {
+          @apply shadow-md;
+        }
+      }
     }
   }
 }
