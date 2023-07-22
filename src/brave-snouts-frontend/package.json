@@ -8,9 +8,8 @@
     "config": "ts-node ./src/environments/set-env.script.ts",
     "config:dev": "npm run config -- --environment=dev",
     "config:prod": "npm run config -- --environment=prod",
-    "build:dev": "npm run install:safe && npm run config:dev && ng build -c development --output-hashing=all",
-    "build:prod": "npm run install:safe && npm run config:prod && ng build -c production --output-hashing=all",
-    "install:safe": "npm ci && npm audit fix --force"
+    "build:dev": "npm ci && npm run config:dev && ng build -c development --output-hashing=all",
+    "build:prod": "npm ci && npm run config:prod && ng build -c production --output-hashing=all"
   },
   "dependencies": {
     "@angular/animations": "~16.1.6",
