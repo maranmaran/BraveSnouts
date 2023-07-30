@@ -67,7 +67,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
       this.itemScrollViewSvc.view$.subscribe((view) => {
         if (view == 'grid' && window.history.state == 'Items view') {
           // clear history state so we can go back
-          console.log('going back because manual');
+          console.debug('going back because of manual action');
           window.history.go(-1);
         }
 
@@ -134,7 +134,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
   // Handle back button navigation (history)
   @HostListener('window:popstate') onPopState() {
-    console.log('popping state');
+    console.debug('popping state');
 
     if (this.itemScrollViewSvc.block) {
       return;

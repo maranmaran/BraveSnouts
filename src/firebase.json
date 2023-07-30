@@ -3,9 +3,8 @@
 {
   "hosting": [
     {
-      // "target": "dev",
       "site": "bravesnoutsdev",
-      "public": "src/brave-snouts-frontend/dist/brave-snouts-frontend",
+      "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -30,9 +29,8 @@
       ]
     },
     {
-      // "target": "prod",
       "site": "bravesnoutsprod",
-      "public": "src/brave-snouts-frontend/dist/brave-snouts-frontend",
+      "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
       "ignore": [
         "firebase.json",
         "**/.*",

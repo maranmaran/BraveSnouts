@@ -1,125 +1,87 @@
 <div id="bulk-image-form" class="container flex flex-col gap-4">
-  <form
-    [formGroup]="auction"
-    class="mt-5 auction-form section grid grid-cols-1 md:grid-cols-2 gap-8"
-  >
-    <div id="basic-data" class="flex flex-col gap-4">
-      <div class="flex flex-row gap-4 justify-between items-center">
-        <h1>Aukcija</h1>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="onSubmit()"
-          [disabled]="!isValid"
-        >
-          Spremi
-        </button>
-      </div>
-
-      <div class="flex flex-row flex-wrap gap-4">
-        <mat-form-field class="flex-[2_1_100%]">
-          <mat-label>Naziv</mat-label>
-          <input matInput formControlName="name" />
-        </mat-form-field>
-
-        <mat-form-field class="flex-[1_2_100%]">
-          <mat-label>Trajanje aukcije</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input
-              matInput
-              matStartDate
-              placeholder="Početak"
-              formControlName="startDate"
-            />
-            <input
-              matInput
-              matEndDate
-              placeholder="Kraj"
-              formControlName="endDate"
-            />
-          </mat-date-range-input>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-date-range-picker #picker [touchUi]="isMobile">
-          </mat-date-range-picker>
-        </mat-form-field>
-
-        <div
-          class="w-full flex flex-row flex-wrap gap-2 sm:gap-4 md:gap-8 lg:gap-12"
-        >
-          <div id="start-time" class="flex flex-row gap-2">
-            <label class="center pb-0 mb-0" for="startTime">Početak:</label>
-            <ngx-mat-timepicker-field
-              [defaultTime]="'12:00 PM'"
-              [format]="24"
-              formControlName="startTime"
-            ></ngx-mat-timepicker-field>
-          </div>
-          <div id="end-time" class="flex flex-row gap-2">
-            <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
-            <ngx-mat-timepicker-field
-              [defaultTime]="'12:00 PM'"
-              [format]="24"
-              formControlName="endTime"
-            ></ngx-mat-timepicker-field>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="description" class="flex flex-col gap-4">
-      <div class="mat-h2 bold">Opis aukcije</div>
-      <textarea
-        class="editor w-full p-1 mat-typography"
-        [placeholder]="'Opis predmeta'"
-        formControlName="description"
-      ></textarea>
-    </div>
-  </form>
-
-  <div class="px-16 pb-16 items-form h-full flex flex-col gap-4">
-    <h1 class="section">Slike</h1>
-
-    <div>
-      <mat-progress-bar
-        *ngIf="uploadState$ | async"
-        class="dropzone-loader"
-        mode="indeterminate"
-      ></mat-progress-bar>
-      
-      <ngx-dropzone
-        class="dropzone"
-        (change)="uploadFiles($event)"
-        [disableClick]="dragActive"
-        [expandable]="false"
-      >
-        <ngx-dropzone-label
-          class="dropzone-upload-btn"
-          *ngIf="files?.length == 0"
-        >
-          <button mat-stroked-button type="button">Učitaj</button>
-        </ngx-dropzone-label>
-  
-        <virtual-scroller #scroll class="dropzone-scroller" [items]="files" [childHeight]="160">
-          <div class="dropzone-scroller-viewport" #container>
-            <div class="dropzone-item" *ngFor="let file of scroll.viewPortItems; trackBy: trackFile">
-              <img *ngIf="file.type == 'image'" [src]="file.urlOrig" />
-              <video *ngIf="file.type == 'video'" [src]="file.urlOrig"></video>
-              <button
-                class="dropzone-item-remove-btn"
-                type="button"
-                mat-icon-button
-                color="warn"
-                (click)="removeFile(file, file.urlOrig, $event)"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
+    <form [formGroup]="auction" class="mt-5 auction-form section grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div id="basic-data" class="flex flex-col gap-4">
+            <div class="flex flex-row gap-4 justify-between items-center">
+                <h1>Aukcija</h1>
+                <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!isValid">Spremi</button>
             </div>
-          </div>
-        </virtual-scroller>
-      </ngx-dropzone>
+
+            <div class="flex flex-row flex-wrap gap-4">
+                <mat-form-field class="flex-[2_1_100%]">
+                    <mat-label>Naziv</mat-label>
+                    <input matInput formControlName="name" />
+                </mat-form-field>
+
+                <mat-form-field class="flex-[1_2_100%]">
+                    <mat-label>Trajanje aukcije</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matInput matStartDate placeholder="Početak" formControlName="startDate" />
+                        <input matInput matEndDate placeholder="Kraj" formControlName="endDate" />
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker [touchUi]="isMobile$ | async"> </mat-date-range-picker>
+                </mat-form-field>
+
+                <div class="w-full flex flex-row flex-wrap gap-2 sm:gap-4 md:gap-8 lg:gap-12">
+                    <div id="start-time" class="flex flex-row gap-2">
+                        <label class="center pb-0 mb-0" for="startTime">Početak:</label>
+                        <ngx-mat-timepicker-field
+                            [defaultTime]="'12:00 PM'"
+                            [format]="24"
+                            formControlName="startTime"
+                        ></ngx-mat-timepicker-field>
+                    </div>
+                    <div id="end-time" class="flex flex-row gap-2">
+                        <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
+                        <ngx-mat-timepicker-field
+                            [defaultTime]="'12:00 PM'"
+                            [format]="24"
+                            formControlName="endTime"
+                        ></ngx-mat-timepicker-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="description" class="flex flex-col gap-4">
+            <div class="mat-h2 font-bold">Opis aukcije</div>
+            <textarea
+                class="editor w-full p-1 mat-typography"
+                [placeholder]="'Opis predmeta'"
+                formControlName="description"
+            ></textarea>
+        </div>
+    </form>
+
+    <div class="px-16 pb-16 items-form h-full flex flex-col gap-4">
+        <h1 class="section">Slike</h1>
+
+        <div>
+            <mat-progress-bar *ngIf="uploadState$ | async" class="dropzone-loader" mode="indeterminate"></mat-progress-bar>
+
+            <ngx-dropzone class="dropzone" (change)="uploadFiles($event)" [disableClick]="dragActive" [expandable]="false">
+                <ngx-dropzone-label class="dropzone-upload-btn" *ngIf="files?.length == 0">
+                    <button mat-stroked-button type="button">Učitaj</button>
+                </ngx-dropzone-label>
+
+                <virtual-scroller #scroll class="dropzone-scroller" [items]="files" [childHeight]="160">
+                    <div class="dropzone-scroller-viewport" #container>
+                        <div class="dropzone-item" *ngFor="let file of scroll.viewPortItems; trackBy: trackFile">
+                            <img *ngIf="file.type == 'image'" [src]="file.original.gUrl" />
+                            <video *ngIf="file.type == 'video'" [src]="file.original.gUrl"></video>
+                            <button
+                                class="dropzone-item-remove-btn"
+                                type="button"
+                                mat-icon-button
+                                color="warn"
+                                (click)="removeFile(file, file.original.gUrl, $event)"
+                            >
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </virtual-scroller>
+            </ngx-dropzone>
+        </div>
     </div>
-  </div>
 </div>

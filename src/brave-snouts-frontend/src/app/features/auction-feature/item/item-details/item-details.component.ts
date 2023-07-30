@@ -92,12 +92,6 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     const previousItem = changes.item?.previousValue;
     const currentItem = changes.item?.currentValue;
 
-    // console.log("\n\n")
-    // console.log(currentItem?.name)
-    // console.log(previousItem)
-    // console.log(currentItem)
-    // console.log("\n\n")
-
     if (!previousItem || !currentItem) {
       return;
     }
@@ -136,15 +130,13 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
           this.userId = user?.uid,
           this.userData = user,
           this.changeDetectorRef.detectChanges()
-        ),
-          err => console.log(err)),
+        )),
 
       this.authSvc.isAuthenticated$
         .subscribe(isAuth => (
           this.isAuthenticated = isAuth,
           this.changeDetectorRef.detectChanges()
-        ),
-          err => console.log(err))
+        ))
     ]
   }
 

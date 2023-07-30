@@ -13,7 +13,7 @@ export class EmailLoginComponent implements OnInit {
     private readonly router: Router
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.authSvc.completeEmailLogin().then(() => this.router.navigate(['/aukcije']));
   }
 

@@ -9,7 +9,7 @@ import { HotToastService } from '@ngneat/hot-toast';
                 app.hrabrenjuske@gmail.com
             </div>
             
-            <button id="clipboard-btn" matTooltip="Kopiraj" [cdkCopyToClipboard]="value" class="pointer mat-elevation-z2" (cdkCopyToClipboardCopied)="onCopyFinished($event)">
+            <button id="clipboard-btn" matTooltip="Kopiraj" [cdkCopyToClipboard]="value" class="cursor-pointer mat-elevation-z2" (cdkCopyToClipboardCopied)="onCopyFinished($event)">
                 <mat-icon>
                     content_copy
                 </mat-icon>

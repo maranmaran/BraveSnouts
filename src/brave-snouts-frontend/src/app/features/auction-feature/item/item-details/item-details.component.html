@@ -1,131 +1,104 @@
 <mat-card
-  appearance="outlined"
-  *ngIf="bootstrapped"
-  @skipInitAnimation
-  class="flex flex-col gap-4 auction-item m-2 mat-elevation-z5 elevate hover-large primary h-min"
+    appearance="outlined"
+    *ngIf="bootstrapped"
+    @skipInitAnimation
+    class="auction-item mat-elevation-z5 elevate hover-large primary h-min"
 >
-  <mat-card-title
-    class="relative flex flex-row justify-between items-center gap-4"
-    style="height: 64px"
-  >
-    <label class="mb-0 bold mat-body sm:mat-h2">
-      {{ item.name }}
-    </label>
+    <mat-card-title class="auction-item-title">
+        <label class="mb-0 font-bold mat-body sm:mat-h2">
+            {{ item.name }}
+        </label>
 
-    <div class="flex flex-col mr-0 relative">
-      <div class="mat-small text-center no-wrap" style="background: whitesmoke">
-        Trenutna ponuda
-      </div>
+        <div class="flex flex-col mr-0 relative">
+            <div class="mat-small text-center flex-nowrap" style="background: whitesmoke">Trenutna ponuda</div>
 
-      <label
-        class="absolute mat-body sm:mat-h2"
-        [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
-        class="no-wrap mb-0 mat-h2 bold center"
-      >
-        {{ (item.user ? item.bid : item.startBid) | moneyAsync | async }}
-      </label>
-    </div>
-  </mat-card-title>
+            <label
+                class="absolute mat-body sm:mat-h2"
+                [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
+                class="flex-nowrap mb-0 mat-h2 font-bold center"
+            >
+                {{ (item.user ? item.bid : item.startBid) | moneyAsync | async }}
+            </label>
+        </div>
+    </mat-card-title>
 
-  <ng-container id="tags">
-    <div
-      class="best-bid-label background warn lighter mat-small"
-      *ngIf="userId == item.user && isAuthenticated"
-      [@fadeIn]="userId === item.user && isAuthenticated"
-    >
-      Vaša ponuda je trenutno najbolja
-    </div>
-    <div
-      class="best-bid-label background primary lighter mat-small"
-      *ngIf="item.bid == item.startBid && !item.bidId"
-    >
-      Još nije dana niti jedna ponuda
-    </div>
-  </ng-container>
+    <ng-container #tags>
+        <div
+            class="best-bid-label background warn lighter mat-small"
+            *ngIf="userId == item.user && isAuthenticated"
+            [@fadeIn]="userId === item.user && isAuthenticated"
+        >
+            Vaša ponuda je trenutno najbolja
+        </div>
+        <div class="best-bid-label background primary lighter mat-small" *ngIf="item.bid == item.startBid && !item.bidId">
+            Još nije dana niti jedna ponuda
+        </div>
+    </ng-container>
 
-  <app-item-media
-    id="picture"
-    class="card-image"
-    [media]="item.media"
-    [galleryId]="item.id"
-    [auctionId]="item.auctionId"
-  ></app-item-media>
+    <app-item-media
+        class="auction-item-media"
+        [media]="item.media"
+        [galleryId]="item.id"
+        [auctionId]="item.auctionId"
+    ></app-item-media>
 
-  <mat-card-content id="description" class="m-0 overflow-hidden">
-    <div
-      *ngIf="item.description; else noDescription"
-      class="overflow-hidden flex flex-row gap-2 justify-start items-center"
-    >
-      <span
-        #description
-        class="truncated overflow-hidden"
-        [innerHtml]="item.description"
-      ></span>
-      <a
-        *ngIf="isTruncated(description)"
-        mat-stroked-button
-        color="accent"
-        class="mt-2 pointer self-end"
-        (click)="onShowDescription(item.description)"
-      >
-        Više
-      </a>
-    </div>
+    <mat-card-content class="auction-item-description">
+        <div
+            *ngIf="item.description; else noDescription"
+            class="overflow-hidden flex flex-row gap-2 justify-start items-center"
+        >
+            <span #description class="truncated overflow-hidden" [innerHtml]="item.description"></span>
+            <a
+                *ngIf="isTruncated(description)"
+                mat-stroked-button
+                color="accent"
+                class="mt-2 cursor-pointer self-end"
+                (click)="onShowDescription(item.description)"
+            >
+                Više
+            </a>
+        </div>
 
-    <ng-template #noDescription>
-      <div class="center w-full">
-        <i>Nema opisa predmeta</i>
-      </div>
-    </ng-template>
-  </mat-card-content>
+        <ng-template #noDescription>
+            <div class="center w-full">
+                <i>Nema opisa predmeta</i>
+            </div>
+        </ng-template>
+    </mat-card-content>
 
-  <mat-card-actions
-    id="actions"
-    class="flex flex-col items-center justify-center"
-  >
-    <div
-      id="bit-action-row"
-      class="w-full mb-3 flex flex-row justify-center items-center"
-    >
-      <button
-        class="mr-5 offer-button"
-        mat-icon-button
-        color="warn"
-        (click)="subtractBid()"
-        [disabled]="currentBid == item.bid"
-      >
-        <mat-icon>remove</mat-icon>
-      </button>
+    <mat-card-actions class="auction-item-actions">
+        <div class="auction-item-actions_row">
+            <button
+                class="m-0 mr-5 offer-button"
+                mat-icon-button
+                color="warn"
+                (click)="subtractBid()"
+                [disabled]="currentBid == item.bid"
+            >
+                <mat-icon>remove</mat-icon>
+            </button>
 
-      <div
-        class="mat-h2 m-0 bold"
-        [ngClass]="{ 'foreground accent default': currentBid != item.bid }"
-      >
-        {{ currentBid | moneyAsync | async }}
-      </div>
+            <div class="mat-h2 m-0 font-bold" [ngClass]="{ 'foreground accent default': currentBid != item.bid }">
+                {{ currentBid | moneyAsync | async }}
+            </div>
 
-      <button
-        class="ml-5 offer-button"
-        mat-icon-button
-        color="primary"
-        (click)="addBid()"
-      >
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
+            <button class="m-0 ml-5 offer-button" mat-icon-button color="primary" (click)="addBid()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
 
-    <button
-      class="w-full"
-      mat-flat-button
-      [disabled]="bidDisabled || currentBid <= item.bid"
-      type="button"
-      (click)="onBid(item)"
-      color="primary"
-    >
-      <div class="flex flex-row justify-center items-center gap-2">
-        <mat-icon> pets </mat-icon> <span>Ponudi</span>
-        <mat-icon> pets </mat-icon>
-      </div>
-    </button>
-  </mat-card-actions>
+        <button
+            class="w-full"
+            mat-flat-button
+            [disabled]="bidDisabled || currentBid <= item.bid"
+            type="button"
+            (click)="onBid(item)"
+            color="primary"
+        >
+            <div class="flex flex-row justify-center items-center gap-2">
+                <mat-icon> pets </mat-icon> <span>Ponudi</span>
+                <mat-icon> pets </mat-icon>
+            </div>
+        </button>
+    </mat-card-actions>
 </mat-card>

@@ -7,9 +7,14 @@ export class User {
   signInMethod: string;
   providerId: string;
   emailSettings: EmailSettings;
+
+  code?: string;
+
+  // admin: make user change email
   overrideEmail: {
     reason: string;
   };
+  // admin: inform user with custom message
   informUser: {
     message: string;
   };

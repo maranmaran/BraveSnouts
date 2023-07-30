@@ -21,12 +21,10 @@ export function mergeArrays(original: AuctionItem[], next: DocumentChangeAction<
     // new document
     if (idx == -1) {
       original.push(getFullDocument(document.payload.doc));
-      // console.log("Added");
     }
     // modified document
     else if (document.type == 'modified') {
       original[idx] = getFullDocument(document.payload.doc);
-      // console.log('Modified');
     }
 
   }

@@ -1,58 +1,40 @@
-<div
-  class="container flex flex-col gap-4 mt-2 sm:mt-0"
-  #scrollingBlock
-  *ngIf="auction$ | async as auction"
->
-  <div class="auction-toolbar mt-2 flex flex-row justify-between">
-    <button routerLink="/aukcije" class="btn-small" mat-mini-fab color="warn">
-      <mat-icon>arrow_back</mat-icon>
-      <!-- Natrag -->
-    </button>
+<div class="container flex flex-col gap-4 mt-2 sm:mt-0" #scrollingBlock *ngIf="auction$ | async as auction">
+    <div class="auction-toolbar mt-2 flex flex-row justify-between">
+        <button routerLink="/aukcije" class="btn-small" mat-mini-fab color="warn">
+            <mat-icon>arrow_back</mat-icon>
+            <!-- Natrag -->
+        </button>
 
-    <button
-      *ngIf="userTrackedItems?.size > 0"
-      routerLink="/aukcije/moji-predmeti"
-      gaEvent="my_items_click"
-      gaCategory="items_tracking"
-      class="btn-small"
-      mat-raised-button
-      color="primary"
-    >
-      Moji predmeti
-    </button>
-  </div>
-
-  <div
-    class="auction-toolbar flex flex-col md:flex-row justify-between items-center"
-  >
-    <div class="section flex flex-row justify-between items-center gap-4">
-      <div class="mb-0 bold mat-body sm:mat-h2 md:mat-h1">
-        {{ auction.name }}
-      </div>
-      <countdown
-        *ngIf="config"
-        #cd
-        [config]="config"
-        class="m-0 bold mat-body sm:mat-h2 md:mat-h1"
-      ></countdown>
-    </div>
-
-    <div class="section flex flex-row">
-      <div class="mb-0 bold flex flex-row gap-6 mat-body sm:mat-h2 md:mat-h1">
-        <label>Ukupno donirano:</label>
-        <div
-          class="foreground primary lighter"
-          [@priceOnBidChanged]="moneyRaised ? 'change' : 'no-change'"
+        <button
+            *ngIf="userTrackedItems?.size > 0"
+            routerLink="/aukcije/moji-predmeti"
+            gaEvent="my_items_click"
+            gaCategory="items_tracking"
+            class="btn-small"
+            mat-raised-button
+            color="primary"
         >
-          {{ auction.raisedMoney | moneyAsync | async }}
-        </div>
-      </div>
+            Moji predmeti
+        </button>
     </div>
-  </div>
 
-  <app-item-list
-    [auction]="auction"
-    [auctionId]="auction.id"
-    [parentScroll]="scrollingBlock"
-  ></app-item-list>
+    <div class="auction-toolbar flex flex-col md:flex-row justify-between items-center gap-2">
+        <div class="section flex flex-row justify-between items-center gap-4">
+            <div class="mb-0 font-bold mat-body sm:mat-h2 md:mat-h1">
+                {{ auction.name }}
+            </div>
+            <countdown *ngIf="config" #cd [config]="config" class="m-0 font-bold mat-body sm:mat-h2 md:mat-h1"></countdown>
+        </div>
+
+        <div class="section flex flex-row">
+            <div class="mb-0 font-bold flex flex-row gap-6 mat-body sm:mat-h2 md:mat-h1">
+                <label>Ukupno donirano:</label>
+                <div class="foreground primary lighter" [@priceOnBidChanged]="moneyRaised ? 'change' : 'no-change'">
+                    {{ auction.raisedMoney | moneyAsync | async }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-item-list [auction]="auction" [auctionId]="auction.id" [parentScroll]="scrollingBlock"></app-item-list>
 </div>

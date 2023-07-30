@@ -180,7 +180,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
     })
     );
 
-    await store.doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner).catch(err => logger.error(err));
+    await store.doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner);
 
     // update each item for winner details
     for await (const bid of bids) {

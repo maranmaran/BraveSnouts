@@ -3,9 +3,13 @@ export interface FirebaseFile {
   name: string;
   type: string;
 
-  path: string;
+  original: FirebaseFileAccess;
+  thumbnail: FirebaseFileAccess;
+  compressed: FirebaseFileAccess;
+}
 
-  urlOrig: string;
-  urlComp: string;
-  urlThumb: string;
+export interface FirebaseFileAccess {
+  path: string;
+  fUrl: string; // firebase url
+  gUrl: string; // gcloud url
 }

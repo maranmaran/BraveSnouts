@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/firestore';
-import { Observable, Subscription, from, noop, of } from 'rxjs';
+import { Observable, Subscription, from, of } from 'rxjs';
 import { concatMap, distinctUntilChanged, finalize, first, map, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
@@ -48,10 +48,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     this.userTracksItems$ = this.getIfUserTrackesItems();
 
     this.adminSub = this.admin$.pipe(distinctUntilChanged())
-      .subscribe(
-        admin => this.initList(admin),
-        err => console.log(err)
-      )
+      .subscribe(admin => this.initList(admin))
   }
 
   ngOnDestroy(): void {
@@ -64,8 +61,6 @@ export class AuctionListComponent implements OnInit, OnDestroy {
      * @param admin Whether or not user is admin
      */
   initList(admin: boolean) {
-
-    // console.log(`Initializing list | Admin - ${admin}`); // debug
 
     // retrieve appropriate query
     const query = admin ? this.allAuctionsSortedQuery : this.notFinishedAuctionsSortedQuery;
@@ -207,7 +202,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
             concatMap(() => this.itemsRepo.deleteTrackedItems(auctionObj.id)),
             finalize(() => this.loadingSvc.active$.next(false))
-          ).subscribe(noop, err => console.log(err))
+          ).subscribe()
       })
 
   }

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, noop, throwError } from 'rxjs';
-import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { Subscription, noop } from 'rxjs';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
@@ -75,7 +75,6 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
       let items$ = this.itemsRepo.getAll(auctionId, query);
 
       let updateJob = items$.pipe(
-        tap(console.log),
         take(1),
         mergeMap(items => [...items]),
         map(item => item.winner),
@@ -96,8 +95,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
           var partialData = { winner: data } as AuctionItem;
 
           return this.itemsRepo.getDocument(auctionId, id as string).set(partialData, { merge: true })
-        }),
-        catchError(err => (console.log(err), throwError(err))),
+        })
       );
 
       updateJobs.push(updateJob.toPromise());
@@ -105,7 +103,7 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
 
     Promise.all(updateJobs)
       .then(() => (this.sendConfirmation(option), this.success = true))
-      .catch(err => (console.log(err), this.success = false))
+      .catch(err => (console.error(err), this.success = false))
       .finally(() => this.bootstrap = true);
   }
 

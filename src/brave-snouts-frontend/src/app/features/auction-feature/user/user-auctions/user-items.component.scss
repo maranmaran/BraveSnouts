@@ -27,3 +27,18 @@ virtual-scroller {
     top: unset;
     font-size: 9px;
 }
+
+
+#won-items,
+#outbidded-items {
+    .auction-item {
+        width: 430px !important;
+    }
+}
+
+#won-items-gallery,
+#outbidded-items-gallery {
+    app-item-media {
+        margin-right: 10px;
+    }
+}

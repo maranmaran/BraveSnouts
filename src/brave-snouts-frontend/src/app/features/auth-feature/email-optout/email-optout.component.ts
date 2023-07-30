@@ -89,7 +89,7 @@ export class EmailOptoutComponent implements OnInit, OnDestroy {
           this.userId = userId;
         },
         (err) => (
-          console.log(err), (this.bootstrap = true), (this.success = false)
+          console.error(err), (this.bootstrap = true), (this.success = false)
         )
       );
   }

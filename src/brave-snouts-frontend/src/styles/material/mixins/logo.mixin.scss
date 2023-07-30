@@ -2,15 +2,15 @@
   .logo-base {
     cursor: pointer;
 
-    z-index: 100;
+    z-index: 100 !important;
     position: relative;
     top: 35px;
 
     border-radius: 50%;
     border: 5px solid white;
 
-    height: 90px;
-    width: 90px;
+    height: 75px;
+    width: 75px;
 
     -webkit-user-select: none !important;
     -khtml-user-select: none !important;

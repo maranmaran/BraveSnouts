@@ -137,10 +137,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
           // join items
           this.items = mergeArrays(this.items, items);
-          // console.log(`Currently having ${this.items.length} items.`, this.items)
-          // console.log("Types are", items.map(item => item.type))
-          // console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
-          // console.log("\n")
 
           // set last item
           this.last = this.items[this.items.length - 1];
@@ -149,7 +145,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           this.fetchInProgress = false;
           this.loadingSvc.active$.next(false);
         },
-        (err) => console.log(err)
       );
 
     this._subsink.add(subscription);
@@ -226,12 +221,8 @@ export class AdminPageComponent implements OnInit, OnDestroy {
                 error: 'Nešto je pošlo po zlu',
               })
             )
-            .subscribe({
-              next: noop,
-              error: err => console.error(err)
-            });
+            .subscribe();
         },
-        (err) => console.log(err)
       );
   }
 
@@ -254,7 +245,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           error: 'Nešto je pošlo po zlu',
         })
       )
-      .subscribe(noop, (err) => console.log(err));
+      .subscribe();
   }
 
   confirmDialog(text: string, yes = 'Želim', no = 'Ne želim') {
@@ -303,12 +294,8 @@ export class AdminPageComponent implements OnInit, OnDestroy {
                 error: 'Nešto je pošlo po zlu',
               })
             )
-            .subscribe({
-              next: noop,
-              error: err => console.error(err)
-            });
+            .subscribe();
         },
-        (err) => console.log(err)
       );
   }
 
@@ -325,7 +312,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(take(1))
-      .subscribe(noop, (err) => console.log(err));
+      .subscribe();
   }
 
   openHandoverInformation(data) {
@@ -341,7 +328,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(take(1))
-      .subscribe(noop, (err) => console.log(err));
+      .subscribe();
   }
 
   onItemDescription(item: AuctionItem) {
@@ -391,7 +378,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       )
       .subscribe((url) => {
         window.location.href = url;
-      }, console.log);
+      });
   }
 
   newItemsMail(auctionId: string) {

@@ -1,11 +1,12 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
+import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -34,8 +35,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _subsink = new SubSink();
 
-  // TODO: merge all of these into pipe, service or smth central
-  get isMobile() { return this.breakpointObs.isMatched(Breakpoints.Handset); }
+  readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   constructor(
     private readonly itemsRepo: AuctionItemRepository,
@@ -107,7 +107,6 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.outbiddedItems = [...this.items.filter(item => item.user != this.userId)]
 
       this.itemDialogSvc.items.next(this.items);
-      // console.log(this.winningItems, this.outbiddedItems);
 
       if (this.items?.length == this.total) {
         setTimeout(() => this.loadingSvc.active$.next(false));

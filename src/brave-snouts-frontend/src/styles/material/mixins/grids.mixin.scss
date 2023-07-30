@@ -1,6 +1,7 @@
 @import "@angular/material/theming";
 
 @mixin grids-theme($theme) {
+
   //#region Items grid breakpoints (Full components)
   virtual-scroller.full-items-grid {
     .items-grid {
@@ -20,38 +21,43 @@
       }
     }
   }
+
   // gt-xs
   @media (min-width: 560px) {
-    virtual-scroller.full-items-grid {
-      .items-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-  }
-  // gt-md
-  @media (min-width: 960px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   }
-  // gt-lg
-  @media (min-width: 1300px) {
+
+  // gt-md
+  @media (min-width: 960px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
   }
-  // gt-xl
-  @media (min-width: 1920px) {
+
+  // gt-lg
+  @media (min-width: 1300px) {
     virtual-scroller.full-items-grid {
       .items-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
       }
     }
   }
+
+  // gt-xl
+  @media (min-width: 1920px) {
+    virtual-scroller.full-items-grid {
+      .items-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+  }
+
   // gt-lg
   @media (min-width: 1920px) {
     virtual-scroller.full-items-grid {
@@ -62,14 +68,16 @@
   }
 
   @media (max-width: 700px) {
+
     // For item gallery grid
     app-auction-details {
-      > .container {
+      >.container {
         padding-left: 0 !important;
         padding-right: 0 !important;
       }
     }
   }
+
   //#endregion
 
   //#region Item media gallery SCSS (Mobile view grid with pics only)
@@ -80,9 +88,11 @@
     // 4 rows
     $maxHeight: 100%;
     $maxWidth: 100%;
+
     .media-container {
       position: relative !important;
-      padding-top: 100%; /* added */
+      padding-top: 100%;
+      /* added */
 
       #single-image,
       #placeholder {
@@ -113,19 +123,7 @@
       }
     }
   }
+
   //#endregion
 
-  #won-items,
-  #outbidded-items {
-    .auction-item {
-      width: 430px !important;
-    }
-  }
-
-  #won-items-gallery,
-  #outbidded-items-gallery {
-    app-item-media {
-      margin-right: 10px;
-    }
-  }
 }

@@ -1,4 +1,5 @@
 import { isAfter, isBefore } from "date-fns";
+import { Timestamp } from "firebase/firestore";
 import { Auction } from "src/business/models/auction.model";
 
 export function getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
@@ -18,11 +19,7 @@ export function getAuctionState(auction: Auction): 'future' | 'active' | 'expire
 
 /**Auction that is set in future and is yet to come */
 function isFutureAuction(auction: Auction) {
-    if (auction.startDate instanceof Date) {
-        return isAfter(auction.startDate, new Date())
-    }
-
-    return isAfter(auction.startDate.toDate(), new Date());
+    return isAfter(ensureTimestamp(auction.startDate).toDate(), new Date());
 }
 
 /**Auction that has ended and/or is processed by firebase function*/
@@ -31,6 +28,21 @@ function isExpiredAuction(auction: Auction) {
         return isAfter(auction.endDate, new Date())
     }
 
-    return isBefore(auction.endDate.toDate(), new Date()) || auction.processed && !isFutureAuction(auction)
+    const before = isBefore(ensureTimestamp(auction.endDate).toDate(), new Date());
+
+    const expired = before || auction.processed && !isFutureAuction(auction)
+
+    return expired;
 }
 
+function ensureTimestamp(date: Timestamp | Date | Object) {
+    if (date instanceof Timestamp) {
+        return date;
+    }
+
+    if (date instanceof Date) {
+        return Timestamp.fromDate(date);
+    }
+
+    return new Timestamp((date as any).seconds, (date as any).nanoseconds);
+}

@@ -1,57 +1,42 @@
 <ng-container *ngIf="media && media?.length > 0; else noMedia">
-  <ng-container *ngIf="!isMobile; else singleMedia">
-    <gallery
-      *ngIf="media.length > 1"
-      class="w-full h-full"
-      [id]="galleryId"
-      (itemClick)="openLightbox($event)"
-    ></gallery>
-    <img
-      *ngIf="media.length == 1"
-      class="w-full h-full single-gallery-image pointer"
-      (click)="openLightbox()"
-      [ngStyle]="{
-        background:
-          'url(' +
-          (media[0].urlComp ?? media[0].urlThumb) +
-          ') 50% 50% no-repeat',
-        'background-size': 'contain'
-      }"
-      [src]="
-        (loadGradually$ | async)
-          ? media[0].urlOrig ?? media[0].urlComp
-          : media[0].urlComp
-      "
-    />
-  </ng-container>
+    <ng-container *ngIf="!(isMobile$ | async); else singleMedia">
+        <gallery
+            *ngIf="media.length > 1"
+            class="w-full h-full"
+            [id]="galleryId"
+            (itemClick)="openLightbox($event)"
+        ></gallery>
+        <img
+            *ngIf="media.length == 1"
+            class="w-full h-full single-gallery-image cursor-pointer"
+            (click)="openLightbox()"
+            [ngStyle]="{
+                background: 'url(' + (media[0].urlComp ?? media[0].urlThumb) + ') 50% 50% no-repeat',
+                'background-size': 'contain'
+            }"
+            [src]="(loadGradually$ | async) ? media[0].urlOrig ?? media[0].urlComp : media[0].urlComp"
+        />
+    </ng-container>
 
-  <ng-template #singleMedia>
-    <div>
-      <img
-        id="single-image"
-        class="img-fluid"
-        [ngStyle]="{
-          background: 'url(' + media[0].urlThumb + ') 50% 50% no-repeat',
-          'background-size': 'cover'
-        }"
-        [src]="
-          (loadGradually$ | async)
-            ? media[0].urlComp ?? media[0].urlThumb
-            : media[0].urlThumb
-        "
-      />
-      <ng-content></ng-content>
-    </div>
-  </ng-template>
+    <ng-template #singleMedia>
+        <div>
+            <img
+                id="single-image"
+                class="img-fluid"
+                [ngStyle]="{
+                    background: 'url(' + media[0].urlThumb + ') 50% 50% no-repeat',
+                    'background-size': 'cover'
+                }"
+                [src]="(loadGradually$ | async) ? media[0].urlComp ?? media[0].urlThumb : media[0].urlThumb"
+            />
+            <ng-content></ng-content>
+        </div>
+    </ng-template>
 </ng-container>
 
 <ng-template #noMedia>
-  <div>
-    <img
-      id="placeholder"
-      *ngIf="!media || media?.length == 0"
-      src="assets/placeholders/PlaceholderProductImage.svg"
-    />
-    <ng-content></ng-content>
-  </div>
+    <div>
+        <img id="placeholder" *ngIf="!media || media?.length == 0" src="assets/placeholders/PlaceholderProductImage.svg" />
+        <ng-content></ng-content>
+    </div>
 </ng-template>

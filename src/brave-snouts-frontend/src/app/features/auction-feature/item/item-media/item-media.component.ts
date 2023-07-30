@@ -4,6 +4,7 @@ import { Lightbox } from 'ng-gallery/lightbox';
 import { firstValueFrom } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
+import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { SettingsService } from 'src/business/services/settings.service';
 import { environment } from 'src/environments/environment';
 import { ItemScrollViewService } from './../item-gallery/item-scroll-view.service';
@@ -43,9 +44,7 @@ export class ItemMediaComponent implements OnInit {
 
   media: ItemMedia[];
 
-  public get isMobile(): boolean {
-    return this.mobileView;
-  }
+  readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   async ngOnInit() {
     // no items
@@ -62,9 +61,9 @@ export class ItemMediaComponent implements OnInit {
   private getItemImages() {
     return this.dbMedia.map(x => ({
       type: x.type,
-      urlOrig: this.getCachedImageUrl(x.urlOrig),
-      urlComp: this.getCachedImageUrl(x.urlComp),
-      urlThumb: this.getCachedImageUrl(x.urlThumb),
+      urlOrig: this.getCachedImageUrl(x.original.gUrl),
+      urlComp: this.getCachedImageUrl(x.compressed.gUrl),
+      urlThumb: this.getCachedImageUrl(x.thumbnail.gUrl),
     } as ItemMedia));
   }
 

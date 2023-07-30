@@ -5,12 +5,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import 'firebase/auth';
 import firebase from 'firebase/compat/app';
-import { from, noop, Observable, of, throwError } from 'rxjs';
+import { firstValueFrom, from, noop, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
   concatMap,
   filter,
+  first,
   map,
+  shareReplay,
   switchMap,
   take,
   tap
@@ -22,9 +24,10 @@ import { User } from 'src/business/models/user.model';
 import { environment } from 'src/environments/environment';
 import { RegisterComponent } from './../../app/features/auth-feature/register/register.component';
 
+export type UserWithCode = User & { code: string };
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _usingRedirectFlag = true;
 
   constructor(
     private readonly auth: AngularFireAuth,
@@ -33,42 +36,34 @@ export class AuthService {
     private toastSvc: HotToastService
   ) { }
 
-  public get user$() {
-    return this.auth.user;
-  }
+  user$ = this.auth.user.pipe(shareReplay(1));
+  userId$ = this.auth.user.pipe(map((user) => user?.uid), shareReplay(1));
+  isAuthenticated$ = this.user$.pipe(map((user) => !!user?.uid), shareReplay(1));
 
-  public get userId$() {
-    return this.auth.user.pipe(map((user) => user?.uid));
-  }
-
-  public get userDbInfo$() {
-    return this.userId$.pipe(
-      switchMap((id) => this.getUserDbExists(id).pipe(map((r) => [r, id]))),
-      switchMap(([exists, id]) => {
-        if (exists && id) return this.getUser(id as string).pipe(take(1));
-
-        if (!exists && id) return of({ code: 'registration-not-complete' });
-
+  userDbInfo$ = this.userId$.pipe(
+    switchMap((id) => this.getUserDbExists(id).pipe(map((r) => [r, id]))),
+    switchMap(([exists, id]) => {
+      if (!id) {
         return of(null);
-      })
-    );
-  }
+      }
 
-  public get isAuthenticated$() {
-    return this.user$.pipe(map((user) => !!user?.uid));
-  }
+      return exists
+        ? this.getUser(id as string)
+        : of(<Partial<User>>{ code: 'registration-not-complete' });
+    }),
+    first(),
+    shareReplay(1)
+  );
 
-  public get isAdmin$() {
-    return from(this.auth.user).pipe(
-      switchMap((user) =>
-        user
-          ? this.store.doc(`admins/${user.uid}`).valueChanges().pipe(take(1))
-          : of(null)
-      ),
-      // tap(console.log),
-      map((admin) => !!admin)
-    );
-  }
+  isAdmin$ = from(this.auth.user).pipe(
+    switchMap((user) =>
+      user
+        ? this.store.doc(`admins/${user.uid}`).valueChanges().pipe(take(1))
+        : of(null)
+    ),
+    map(admin => !!admin),
+    shareReplay(1)
+  );
 
   login() {
     return from(this.auth.currentUser).pipe(
@@ -85,13 +80,13 @@ export class AuthService {
 
         // inner observable that resolves auth
         return dialogRef.afterClosed().pipe(
-          take(1),
-          switchMap((login) =>
-            login ? from(this.doAuth(login.method, login.data)) : of(null)
+          first(),
+          switchMap(login => login
+            ? from(this.loginUser(login.method, login.data))
+            : of(null)
           )
         );
       })
-      // concatMap(cred => cred ? this.getUserInternalInformation(cred.user.uid) : of(null))
     );
   }
 
@@ -111,37 +106,16 @@ export class AuthService {
     return this.auth.signOut();
   }
 
-  /** Handles authentication flow
-   * If user chose method then it logs him in
-   * Registers user if he's new
-   */
-  async doAuth(method, data): Promise<firebase.auth.UserCredential> {
-    const cred = await this.loginUser(method, data);
-
-    if (this._usingRedirectFlag) {
-      return;
-    }
-
-    // if (cred && cred.additionalUserInfo.isNewUser) {
-    //   await this.addNewUser(cred);
-    // }
-
-    return cred;
-  }
-
   /** Logs user in depending on method */
-  async loginUser(method, data) {
-    let cred: firebase.auth.UserCredential = null;
-
+  private async loginUser(method, data) {
     try {
       switch (method) {
         case 'gmail':
           // throw new Error("Not implemented");
-          cred = await this.handleGmailLogin();
+          await this.handleGmailLogin();
           break;
         case 'facebook':
           throw new Error('Not implemented');
-          // cred = await this.handleFacebookLogin();
           break;
         case 'email':
           await this.handleEmailLogin(data.email);
@@ -149,92 +123,23 @@ export class AuthService {
         default:
           break;
       }
-
-      if (cred == null && this._usingRedirectFlag) {
-        return;
-      }
-
-      return cred;
     } catch (err) {
       if (err.code) this.handleErrors(err);
       return null;
     }
   }
 
-  async handleGmailLogin() {
+  private async handleGmailLogin() {
     const google = new firebase.auth.GoogleAuthProvider();
     google.addScope('profile');
     google.addScope('email');
 
     google.setCustomParameters({ prompt: 'select_account' });
 
-    // return await this.auth.signInWithPopup(google);
-
     await this.auth.signInWithRedirect(google);
-    return null;
   }
 
-  socialLoginInProgress = false;
-  async completeSocialLogin() {
-    if (!this._usingRedirectFlag) {
-      return;
-    }
-
-    this.socialLoginInProgress = true;
-    await this.auth
-      .getRedirectResult()
-      .then(async (cred) => {
-        // console.log(cred);
-
-        if ((cred as any).code) {
-          this.handleErrors(cred);
-          return;
-        }
-
-        if (
-          cred == null ||
-          cred.user == null ||
-          cred.additionalUserInfo?.profile == null
-        ) {
-          return;
-        }
-
-        const profile = cred.additionalUserInfo.profile as any;
-        // console.log(profile);
-
-        if (!profile.email || profile.email?.trim() == '') {
-          this.handleErrors({ code: 'no-email' });
-          return;
-        }
-
-        const userRegistered = (
-          await this.store.doc(`users/${cred.user.uid}`).get().toPromise()
-        ).exists;
-        if (!cred.additionalUserInfo.isNewUser && userRegistered) return;
-
-        return await this.registerUserComplete(
-          cred.user.uid,
-          cred.user.email,
-          profile.picture,
-          cred.additionalUserInfo.providerId,
-          cred.credential.signInMethod
-        ).toPromise();
-      })
-      .catch((err) => {
-        console.log(err);
-
-        if (err.code == 'auth/account-exists-with-different-credential') {
-          this.handleErrors({ code: err.code });
-        }
-
-        if (err.code) {
-          this.handleErrors(err);
-        }
-      })
-      .finally(() => (this.socialLoginInProgress = false));
-  }
-
-  handleEmailLogin(
+  private handleEmailLogin(
     email: string
   ): Promise<firebase.auth.UserCredential | void> {
     const actionCodeSettings = {
@@ -261,7 +166,8 @@ export class AuthService {
         });
       })
       .catch((err) => {
-        // console.log(err);
+        console.error(err);
+
         this.toastSvc.error(
           'Imali smo poteškoća sa prijavom. Molimo vas pokušajte ponovno ili nas kontaktirajte.',
           {
@@ -274,22 +180,17 @@ export class AuthService {
       });
   }
 
-  isEmailLinkSignIn(windowHref) {
-    return this.auth.isSignInWithEmailLink(windowHref);
-  }
-
   emailLoginInProgress = false;
   async completeEmailLogin() {
     this.emailLoginInProgress = true;
 
-    const isEmailSignIn = await this.isEmailLinkSignIn(window.location.href);
+    const isEmailSignIn = await this.auth.isSignInWithEmailLink(window.location.href);
     if (!isEmailSignIn)
-      return new Promise((res, rej) => rej('Not email sign in'));
+      return new Promise((_, err) => err('Not email sign in'));
 
     // Confirm the link is a sign-in with email link.
     // Additional state parameters can also be passed via URL.
-    // This can be used to continue the user's intended action before triggering
-    // the sign-in operation.
+    // This can be used to continue the user's intended action before triggering the sign-in operation.
     // Get the email if available. This should be available if the user completes
     // the flow on the same device where they started it.
     var email = window.localStorage.getItem('emailForSignIn');
@@ -298,14 +199,12 @@ export class AuthService {
       // attacks, ask the user to provide the associated email again. For example:
       email = window.prompt('Molim vas unesite email za potvrdu');
     }
+
     // The client SDK will parse the code from the link for you.
     return this.auth
       .signInWithEmailLink(email, window.location.href)
-      .then(async (cred) => {
+      .then(async cred => {
         // Clear email from storage.
-
-        // console.log(cred);
-
         window.localStorage.removeItem('emailForSignIn');
 
         // You can access the new user via result.user
@@ -315,25 +214,19 @@ export class AuthService {
         // result.additionalUserInfo.isNewUser
 
         const userRegistered = (
-          await this.store.doc(`users/${cred.user.uid}`).get().toPromise()
+          await firstValueFrom(this.store.doc(`users/${cred.user.uid}`).get())
         ).exists;
 
         if (!cred.additionalUserInfo.isNewUser && userRegistered) return;
 
-        return await this.registerUserComplete(
-          cred.user.uid,
-          cred.user.email,
-          '',
-          'email',
-          'email'
-        ).toPromise();
+        return await firstValueFrom(
+          this.registerUserComplete(cred.user.uid, cred.user.email, '', 'email', 'email')
+        );
       })
-      .catch(
-        (err) => (
-          console.log(err),
-          this.toastSvc.error('Neispravan email ili iskorišten link za prijavu')
-        )
-      )
+      .catch(err => (
+        console.error(err),
+        this.toastSvc.error('Neispravan email ili iskorišten link za prijavu')
+      ))
       .finally(() => (this.emailLoginInProgress = false));
   }
 
@@ -345,7 +238,7 @@ export class AuthService {
     signInMethod: string
   ) {
     // GET USER DATA
-    let dialogRef = this.dialog.open(RegisterComponent, {
+    const dialogRef = this.dialog.open(RegisterComponent, {
       height: 'auto',
       width: '98%',
       maxWidth: '20rem',
@@ -357,7 +250,7 @@ export class AuthService {
 
     // inner observable that resolves auth
     return dialogRef.afterClosed().pipe(
-      take(1),
+      first(),
       switchMap((data) => {
         const user = new User({
           id,
@@ -375,18 +268,8 @@ export class AuthService {
   }
 
   /** Handles different login errors */
-  handleErrors(err, provider = null) {
+  private handleErrors(err, provider = null) {
     console.error(err);
-
-    // if (err?.code == "auth/account-exists-with-different-credential") {
-    //     // this.store.collection("users").doc()
-    //     this.toastSvc.error("Prijavite se na način na koji ste se prijavili prvi put u aplikaciju. Nije moguće imat račun sa dvije iste e-pošte.", {
-    //         position: "top-center",
-    //         dismissible: true,
-    //         autoClose: true,
-    //         duration: 20000
-    //     });
-    // }
 
     if (err?.code == 'no-email') {
       this.toastSvc.error(
@@ -428,7 +311,7 @@ export class AuthService {
   }
 
   /** Saves new user to the users collection */
-  addNewUser(user: User) {
+  private addNewUser(user: User) {
     // save only when user is authenticated. Because of firestore rules
     return from(this.isAuthenticated$).pipe(
       filter((x) => !!x),
@@ -439,18 +322,17 @@ export class AuthService {
           .collection(`users`)
           .doc(user.id)
           .set(Object.assign({}, user), { merge: true })
-          .catch((err) => console.log(err));
       })
     );
   }
 
-  getUser(id: string) {
+  private getUser(id: string) {
     return this.store
       .doc(`users/${id}`)
       .valueChanges({ idField: 'id' }) as Observable<User>;
   }
 
-  getUserDbExists(id: string) {
+  private getUserDbExists(id: string) {
     return this.store
       .doc(`users/${id}`)
       .get()
@@ -478,14 +360,14 @@ export class AuthService {
         if (!email) return;
 
         this.changeEmail(email, forcefulOverride)
-          .pipe(take(1))
-          .subscribe(noop, (err) => console.log(err));
+          .pipe(first())
+          .subscribe(noop);
       });
   }
 
-  changeEmail(email: string, forcefulOverride = false) {
+  private changeEmail(email: string, forcefulOverride = false) {
     return this.user$.pipe(
-      take(1),
+      first(),
       concatMap((user) => user.updateEmail(email)),
       catchError((err) => {
         if (err.code == 'auth/requires-recent-login') {
@@ -499,16 +381,16 @@ export class AuthService {
             )
           );
 
-          return throwError(err);
+          return throwError(() => err);
         }
 
         this.toastSvc.error(
           'Došlo je do greške molimo vas obratite nam se na mail za pomoć'
         );
-        return throwError(err);
+        return throwError(() => err);
       }),
       concatMap(() => this.userId$),
-      concatMap((id) =>
+      concatMap(id =>
         this.store.doc(`users/${id}`).update({ email, overrideEmail: null })
       ),
       tap(() => {

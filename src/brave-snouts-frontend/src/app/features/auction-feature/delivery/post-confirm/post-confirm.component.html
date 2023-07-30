@@ -1,121 +1,107 @@
 <div class="container center mt-5 flex flex-col self-center">
-  <div
-    *ngIf="postDeliveryInfoForm && !bootstrap"
-    class="form-content flex flex-col justify-start items-center gap-4"
-  >
-    <div class="section p-3 flex flex-col gap-4">
-      <h1>Dostava poštom</h1>
+    <div *ngIf="postDeliveryInfoForm && !bootstrap" class="form-content flex flex-col justify-start items-center gap-4">
+        <div class="section p-3 flex flex-col gap-4">
+            <h1>Dostava poštom</h1>
 
-      <form class="mt-3" [formGroup]="postDeliveryInfoForm">
-        <mat-form-field>
-          <mat-label>Ime i prezime</mat-label>
-          <input matInput formControlName="fullName" />
-        </mat-form-field>
+            <form class="mt-3" [formGroup]="postDeliveryInfoForm">
+                <mat-form-field>
+                    <mat-label>Ime i prezime</mat-label>
+                    <input matInput formControlName="fullName" />
+                </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Grad</mat-label>
-          <input matInput formControlName="city" />
-        </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Grad</mat-label>
+                    <input matInput formControlName="city" />
+                </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Adresa i kućni broj</mat-label>
-          <input matInput formControlName="address" />
-        </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Adresa i kućni broj</mat-label>
+                    <input matInput formControlName="address" />
+                </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Poštanski broj</mat-label>
-          <input matInput formControlName="zipNumber" />
-        </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Poštanski broj</mat-label>
+                    <input matInput formControlName="zipNumber" />
+                </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Broj mobitela</mat-label>
-          <input matInput formControlName="phoneNumber" />
-        </mat-form-field>
-      </form>
+                <mat-form-field>
+                    <mat-label>Broj mobitela</mat-label>
+                    <input matInput formControlName="phoneNumber" />
+                </mat-form-field>
+            </form>
 
-      <button
-        class="self-end"
-        mat-flat-button
-        color="primary"
-        (click)="onSubmit()"
-        [disabled]="!postDeliveryInfoForm.valid || submitted"
-      >
-        Spremi
-      </button>
-    </div>
-    <div class="section mat-h2 text-center">
-      <div>
-        Ukoliko niste u mogućnosti doći na primopredaju, osvojene predmete
-        šaljemo poštom.
-      </div>
-      <div class="mt-3 bold">
-        U tom slučaju potrebno je uplatiti dodatnih
-        <span class="foreground warn default">{{
-          postageFee | moneyAsync | async
-        }}</span>
-        za poštarinu.
-      </div>
-      <div
-        *ngIf="(settings$ | async)['postage_rules']"
-        [innerHtml]="(settings$ | async)['postage_rules']"
-      ></div>
-      <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION ABOVE -->
-    </div>
-    <div class="section mat-h2 text-center">
-      <div class="bold">Opis plaćanja:</div>
-      <div class="mt-3">{{ paymentDetail }}</div>
+            <button
+                class="self-end"
+                mat-flat-button
+                color="primary"
+                (click)="onSubmit()"
+                [disabled]="!postDeliveryInfoForm.valid || submitted"
+            >
+                Spremi
+            </button>
+        </div>
+        <div class="section mat-h2 text-center">
+            <div>Ukoliko niste u mogućnosti doći na primopredaju, osvojene predmete šaljemo poštom.</div>
+            <div class="mt-3 font-bold">
+                U tom slučaju potrebno je uplatiti dodatnih
+                <span class="foreground warn default">{{ postageFee | moneyAsync | async }}</span>
+                za poštarinu.
+            </div>
+            <div *ngIf="(settings$ | async)['postage_rules']" [innerHtml]="(settings$ | async)['postage_rules']"></div>
+            <!--CUSTOM POSTAGE FEE FOR BOOKS AUCTION ABOVE -->
+        </div>
+        <div class="section mat-h2 text-center">
+            <div class="font-bold">Opis plaćanja:</div>
+            <div class="mt-3">{{ paymentDetail }}</div>
+        </div>
+
+        <div
+            class="section mat-h2 text-center"
+            *ngIf="(settings$ | async)['postage_remark']"
+            [innerHtml]="(settings$ | async)['postage_remark']"
+        ></div>
+        <app-donate class="w-full" [text]="false"></app-donate>
     </div>
 
-    <div
-      class="section mat-h2 text-center"
-      *ngIf="(settings$ | async)['postage_remark']"
-      [innerHtml]="(settings$ | async)['postage_remark']"
-    ></div>
-    <app-donate class="w-full" [text]="false"></app-donate>
-  </div>
+    <div *ngIf="bootstrap && success == true" class="container flex flex-col gap-4 justify-start items-center">
+        <div class="animation-ctn">
+            <div class="icon icon--order-success svg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">
+                    <g fill="none" stroke="#22AE73" stroke-width="2">
+                        <circle
+                            cx="77"
+                            cy="77"
+                            r="72"
+                            style="stroke-dasharray: 480px, 480px; stroke-dashoffset: 960px"
+                        ></circle>
+                        <circle
+                            id="colored"
+                            fill="#22AE73"
+                            cx="77"
+                            cy="77"
+                            r="72"
+                            style="stroke-dasharray: 480px, 480px; stroke-dashoffset: 960px"
+                        ></circle>
+                        <polyline
+                            class="st0"
+                            stroke="#fff"
+                            stroke-width="10"
+                            points="43.5,77.8 63.7,97.9 112.2,49.4 "
+                            style="stroke-dasharray: 100px, 100px; stroke-dashoffset: 200px"
+                        />
+                    </g>
+                </svg>
+            </div>
+        </div>
 
-  <div
-    *ngIf="bootstrap && success == true"
-    class="container flex flex-col gap-4 justify-start items-center"
-  >
-    <div class="animation-ctn">
-      <div class="icon icon--order-success svg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">
-          <g fill="none" stroke="#22AE73" stroke-width="2">
-            <circle
-              cx="77"
-              cy="77"
-              r="72"
-              style="stroke-dasharray: 480px, 480px; stroke-dashoffset: 960px"
-            ></circle>
-            <circle
-              id="colored"
-              fill="#22AE73"
-              cx="77"
-              cy="77"
-              r="72"
-              style="stroke-dasharray: 480px, 480px; stroke-dashoffset: 960px"
-            ></circle>
-            <polyline
-              class="st0"
-              stroke="#fff"
-              stroke-width="10"
-              points="43.5,77.8 63.7,97.9 112.2,49.4 "
-              style="stroke-dasharray: 100px, 100px; stroke-dashoffset: 200px"
-            />
-          </g>
-        </svg>
-      </div>
+        <h1>Hvala na potvrdi</h1>
     </div>
 
-    <h1>Hvala na potvrdi</h1>
-  </div>
-
-  <div *ngIf="bootstrap && success == false" class="text-center p-5">
-    <!-- <div  class="text-center p-5"> -->
-    <h3>
-      Nešto je pošlo po zlu i nismo mogli potvrditi preuzimanje poštom. Molim
-      Vas kontaktirajte nas kroz korisničku službu !
-    </h3>
-  </div>
+    <div *ngIf="bootstrap && success == false" class="text-center p-5">
+        <!-- <div  class="text-center p-5"> -->
+        <h3>
+            Nešto je pošlo po zlu i nismo mogli potvrditi preuzimanje poštom. Molim Vas kontaktirajte nas kroz korisničku
+            službu !
+        </h3>
+    </div>
 </div>

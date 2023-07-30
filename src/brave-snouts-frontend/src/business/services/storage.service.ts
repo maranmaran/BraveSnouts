@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { FirebaseFile } from '../models/firebase-file.model';
 
@@ -43,12 +44,29 @@ export class StorageService {
 
         const url: string = await firstValueFrom(ref.getDownloadURL());
 
+        const pathThumb = path.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
+        const fUrlThumb = url.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
+
+        const pathComp = url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
+        const fUrlComp = url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
+
         const firebaseFile = <FirebaseFile>{
-            name, type, path,
-            urlOrig: url,
-            // compressed and thumb don't exist yet but will once async compression is done on backend 
-            urlComp: url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed'),
-            urlThumb: url.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb')
+            name, type,
+            original: {
+                path: path,
+                fUrl: url,
+                gUrl: this.getGoogleCloudLink(url)
+            },
+            compressed: {
+                path: pathComp,
+                fUrl: fUrlComp,
+                gUrl: this.getGoogleCloudLink(fUrlComp)
+            },
+            thumbnail: {
+                path: pathThumb,
+                fUrl: fUrlThumb,
+                gUrl: this.getGoogleCloudLink(fUrlThumb)
+            },
         };
 
         allFiles.push(firebaseFile);
@@ -57,4 +75,16 @@ export class StorageService {
 
     private getImageBucket = (auctionId: string) => `auction-items/${auctionId}`;
     private getFirebaseFileType = (type): 'file' | 'image' | 'video' => type.indexOf('image') != -1 ? 'image' : 'video';
+
+
+    private getGoogleCloudLink(firebaseLink: string) {
+        const bucket = environment.firebaseConfig.storageBucket;
+        const split = firebaseLink.split(bucket);
+
+        // strip /o/
+        const right = split[1].substring('/o/'.length);
+        const left = 'http://storage.googleapis.com/' + bucket;
+
+        return `${left}/${right}`;
+    }
 }

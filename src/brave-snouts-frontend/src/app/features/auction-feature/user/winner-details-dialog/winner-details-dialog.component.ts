@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { noop } from 'rxjs';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { MessageDialogComponent } from 'src/app/shared/message-dialog/message-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
@@ -60,7 +59,7 @@ export class WinnerDetailsDialogComponent implements OnInit {
       data
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
+    dialogRef.afterClosed().pipe(take(1)).subscribe()
 
   }
 
@@ -75,7 +74,7 @@ export class WinnerDetailsDialogComponent implements OnInit {
       data
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(noop, err => console.log(err))
+    dialogRef.afterClosed().pipe(take(1)).subscribe()
 
   }
 

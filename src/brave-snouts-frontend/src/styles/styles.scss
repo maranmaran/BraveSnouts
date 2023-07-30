@@ -10,27 +10,17 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
 }
 
-.h-full {
-  height: 100% !important;
-}
-
-.w-full {
-  width: 100% !important;
-}
-
 .center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @apply flex justify-center items-center;
 }
 
 .img-fluid {
-  height: 100%;
-  width: auto;
+  @apply h-full w-auto;
 }
 
 h1,
@@ -40,10 +30,6 @@ h4,
 h5,
 h6 {
   margin-bottom: 0 !important;
-}
-
-.bold {
-  font-weight: bold;
 }
 
 img,
@@ -57,53 +43,18 @@ video {
   -webkit-tap-highlight-color: none !important;
 }
 
-.pointer {
-  cursor: pointer;
-}
-
+// 3rd PARTY LIBRARY
 lightbox {
   gallery {
     background-color: black !important;
   }
 }
 
-.d-flex {
-  display: flex;
-}
-
 gallery {
   background-color: white !important;
 }
 
-.editor {
-  display: flex;
-  flex-direction: column;
-  min-height: 200px !important;
-}
-
-.no-wrap {
-  white-space: nowrap;
-}
-
-.wrap {
-  white-space: pre-wrap !important;
-}
-
-.bold {
-  font-weight: bold !important;
-}
-
-.relative {
-  position: relative;
-}
-
-.absolute {
-  position: absolute;
-}
-
-.overflow-x {
-  overflow-x: auto;
-}
+// 3rd PARTY LIBRARY
 
 label {
   padding-bottom: 0 !important;
@@ -115,23 +66,6 @@ label {
   padding-top: 1rem;
   margin-bottom: 10px;
   height: calc(100% - 56px - 1rem) !important; // because of toolbar height
-}
-
-.email-auth-hot-toast {
-  margin-top: 100px;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.toolbar-btn {
-  position: relative;
-  right: 5px;
-  font-size: 10px !important;
-  line-height: 2 !important;
-  padding: 0 5px !important;
-  cursor: pointer;
 }
 
 .btn-small {
@@ -151,18 +85,14 @@ label {
 
 .truncated {
   display: block;
-  white-space: nowrap; /* forces text to single line */
+  white-space: nowrap;
+  /* forces text to single line */
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.overflow-hidden {
-  overflow: hidden;
-}
-.overflow-auto {
-  overflow: auto;
-}
-
-.all-initial {
-  all: initial;
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px !important;
 }

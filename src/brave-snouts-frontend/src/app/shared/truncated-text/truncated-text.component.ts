@@ -24,10 +24,7 @@ export class TruncatedTextComponent implements OnInit, OnDestroy {
     // on mobile we probably want to display less text.. (about 70% till further changes)
     this.subscription = this.breakpointObs
       .observe(Breakpoints.XSmall)
-      .subscribe({
-        complete: () => this.characters = this.characters * 0.3,
-        error: console.log
-      })
+      .subscribe(() => this.characters = this.characters * 0.3)
   }
 
   ngOnDestroy() {

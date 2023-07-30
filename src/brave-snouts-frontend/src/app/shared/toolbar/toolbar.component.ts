@@ -4,11 +4,9 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { addDays } from 'date-fns';
 import 'firebase/auth';
-import firebase from 'firebase/compat/app';
-import { Observable, noop } from 'rxjs';
+import { noop } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { SupportComponent } from 'src/app/shared/support/support.component';
-import { User } from 'src/business/models/user.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { SubSink } from 'subsink';
@@ -21,6 +19,7 @@ import { ItemScrollViewService } from './../../features/auction-feature/item/ite
   providers: [],
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
+
   constructor(
     private readonly authSvc: AuthService,
     private readonly router: Router,
@@ -29,19 +28,14 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     public readonly itemScrollViewSvc: ItemScrollViewService
   ) { }
 
-  user$: Observable<firebase.User | null>;
-  userInfo$: Observable<User | null>;
-  admin$: Observable<boolean>;
-  active$: Observable<boolean>; // whether or not progress bar is active
+  user$ = this.authSvc.user$;
+  admin$ = this.authSvc.isAdmin$;
+  active$ = this.loadingSvc.active$;
+  userInfo$ = this.authSvc.getUserInformation();
 
   private _subsink = new SubSink();
 
   ngOnInit(): void {
-    this.user$ = this.authSvc.user$;
-    this.admin$ = this.authSvc.isAdmin$;
-    this.active$ = this.loadingSvc.active$;
-    this.userInfo$ = this.authSvc.getUserInformation();
-
     this._subsink.add(
       this.itemScrollViewSvc.view$
         .pipe(
@@ -49,7 +43,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
           distinctUntilChanged()
         )
         .subscribe((view) => {
-          // console.log(view);
           this.viewTabs.selectedIndex = view == 'grid' ? 0 : 1;
           this.viewTabs?.realignInkBar();
         })

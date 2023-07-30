@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { noop, throwError } from 'rxjs';
-import { catchError, map, mergeMap, startWith, take, tap } from 'rxjs/operators';
+import { noop } from 'rxjs';
+import { map, mergeMap, startWith, take, tap } from 'rxjs/operators';
 import { Winner, WinnerOnAuction } from 'src/business/models/winner.model';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -126,7 +126,6 @@ export class PostConfirmComponent implements OnInit {
         }),
         map((winner: Winner) => [winner.itemId, Object.assign({}, winner, { postalInformation: data, deliveryChoice: 'postal' })]),
         mergeMap(([id, data]) => this.itemsRepo.getDocument(auctionId, id as string).update({ winner: data as Winner })),
-        catchError(err => (console.log(err), throwError(err))),
       );
 
       updateJobs.push(updateJob.toPromise());
@@ -134,7 +133,7 @@ export class PostConfirmComponent implements OnInit {
 
     Promise.all(updateJobs)
       .then(() => (this.sendConfirmation(), this.success = true))
-      .catch(err => (console.log(err), this.success = false))
+      .catch(err => (console.error(err), this.success = false))
       .finally(() => this.bootstrap = true);
   }
 

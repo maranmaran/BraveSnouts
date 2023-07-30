@@ -28,8 +28,6 @@ export class AuctionItemRepository {
     }
 
     getAll(auctionId: string, queryFn?: QueryFn<DocumentData>) {
-        // console.error("Getting all prohibited");
-        // return of([]);
         return this.getCollection(auctionId, queryFn).valueChanges({ idField: 'id' })
     }
 

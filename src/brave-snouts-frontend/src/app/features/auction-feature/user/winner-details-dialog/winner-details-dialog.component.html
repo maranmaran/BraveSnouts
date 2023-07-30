@@ -1,124 +1,96 @@
 <div class="w-full flex flex-col">
-  <button class="flex self-end" mat-icon-button (click)="onClose()">
-    <mat-icon> close </mat-icon>
-  </button>
+    <button class="flex self-end" mat-icon-button (click)="onClose()">
+        <mat-icon> close </mat-icon>
+    </button>
 </div>
 
-<div
-  class="p-2 overflow-auto flex flex-col gap-2"
-  style="max-height: 800px !important"
->
-  <virtual-scroller
-    #itemsScroller
-    *ngIf="winners && winners.length > 0; else noWinners"
-    #scroll
-    [items]="winners"
-  >
-    <mat-card
-      appearance="raised"
-      id="winner"
-      *ngFor="let winner of scroll.viewPortItems; trackBy: trackByFn"
-      class="mat-elevation-z8 elevate hover-large mt-2"
-    >
-      <mat-card-header>
-        <mat-card-title class="flex flex-row justify-start items-center">
-          <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon>
-          {{ winner.userInfo.name }}
-        </mat-card-title>
-        <mat-card-subtitle>{{ winner.userInfo.email }}</mat-card-subtitle>
-        <mat-card-subtitle>{{ winner.userInfo.phoneNumber }}</mat-card-subtitle>
-      </mat-card-header>
+<div class="p-2 overflow-auto flex flex-col gap-2" style="max-height: 800px !important">
+    <virtual-scroller #itemsScroller *ngIf="winners && winners.length > 0; else noWinners" #scroll [items]="winners">
+        <mat-card
+            appearance="raised"
+            id="winner"
+            *ngFor="let winner of scroll.viewPortItems; trackBy: trackByFn"
+            class="mat-elevation-z8 elevate hover-large mt-2"
+        >
+            <mat-card-header>
+                <mat-card-title class="flex flex-row justify-start items-center">
+                    <mat-icon class="mr-2" style="color: #f9d935">emoji_events</mat-icon>
+                    {{ winner.userInfo.name }}
+                </mat-card-title>
+                <mat-card-subtitle>{{ winner.userInfo.email }}</mat-card-subtitle>
+                <mat-card-subtitle>{{ winner.userInfo.phoneNumber }}</mat-card-subtitle>
+            </mat-card-header>
 
-      <mat-card-content class="flex flex-col gap-2">
-        <div id="delivery" class="mat-small flex flex-row gap-2">
-          <label class="pb-0 bold center">Ukupna donacija</label>
-          <label class="foreground primary lighter">
-            {{ getTotalDonations(winner) | moneyAsync | async }}</label
-          >
-        </div>
+            <mat-card-content class="flex flex-col gap-2">
+                <div id="delivery" class="mat-small flex flex-row gap-2">
+                    <label class="pb-0 font-bold center">Ukupna donacija</label>
+                    <label class="foreground primary lighter"> {{ getTotalDonations(winner) | moneyAsync | async }}</label>
+                </div>
 
-        <div id="delivery" class="mat-small flex flex-row gap-2">
-          <label class="pb-0 bold center">Odabir dostave:</label>
-          <ng-container [ngSwitch]="winner.deliveryChoice">
-            <label *ngSwitchCase="'handover'" class="foreground warn default">
-              Osobno
-              <button
-                mat-icon-button
-                color="warn"
-                *ngIf="winner.handoverOption"
-                (click)="openHandoverInformation(winner.handoverOption)"
-                matTooltip="{{ winner.handoverOption }}"
-              >
-                <mat-icon>location_on</mat-icon>
-              </button>
-            </label>
+                <div id="delivery" class="mat-small flex flex-row gap-2">
+                    <label class="pb-0 font-bold center">Odabir dostave:</label>
+                    <ng-container [ngSwitch]="winner.deliveryChoice">
+                        <label *ngSwitchCase="'handover'" class="foreground warn default">
+                            Osobno
+                            <button
+                                mat-icon-button
+                                color="warn"
+                                *ngIf="winner.handoverOption"
+                                (click)="openHandoverInformation(winner.handoverOption)"
+                                matTooltip="{{ winner.handoverOption }}"
+                            >
+                                <mat-icon>location_on</mat-icon>
+                            </button>
+                        </label>
 
-            <label *ngSwitchCase="'postal'" style="color: #c326ff">
-              Poštom
-              <button
-                mat-icon-button
-                *ngIf="winner.postalInformation"
-                (click)="openPostalInformation(winner.postalInformation)"
-                matTooltip="Detalji za slanje"
-              >
-                <mat-icon>drafts</mat-icon>
-              </button>
-            </label>
-            <label *ngSwitchDefault class="foreground primary lighter">
-              Nije odabrano
-            </label>
-          </ng-container>
-        </div>
+                        <label *ngSwitchCase="'postal'" style="color: #c326ff">
+                            Poštom
+                            <button
+                                mat-icon-button
+                                *ngIf="winner.postalInformation"
+                                (click)="openPostalInformation(winner.postalInformation)"
+                                matTooltip="Detalji za slanje"
+                            >
+                                <mat-icon>drafts</mat-icon>
+                            </button>
+                        </label>
+                        <label *ngSwitchDefault class="foreground primary lighter"> Nije odabrano </label>
+                    </ng-container>
+                </div>
 
-        <div id="items" class="mat-small flex flex-row gap-2">
-          <label class="pb-0 bold center">Osvojeni predmeti:</label>
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="openWonItems(winner.items)"
-            matTooltip="Osvojeni predmeti"
-          >
-            <mat-icon>shopping_basket</mat-icon>
-          </button>
-        </div>
+                <div id="items" class="mat-small flex flex-row gap-2">
+                    <label class="pb-0 font-bold center">Osvojeni predmeti:</label>
+                    <button mat-icon-button color="warn" (click)="openWonItems(winner.items)" matTooltip="Osvojeni predmeti">
+                        <mat-icon>shopping_basket</mat-icon>
+                    </button>
+                </div>
 
-        <div id="pack-status" class="mat-small pb-0 flex flex-row gap-2">
-          <label class="pb-0 bold center">Spakirano:</label>
-          <mat-button-toggle-group
-            [value]="winner.packed ? winner.packed : 'no'"
-            (change)="markPackedState($event, winner)"
-          >
-            <mat-button-toggle value="yes" class="foreground primary lighter"
-              >Da</mat-button-toggle
-            >
-            <mat-button-toggle value="no" class="foreground warn default"
-              >Ne</mat-button-toggle
-            >
-          </mat-button-toggle-group>
-        </div>
+                <div id="pack-status" class="mat-small pb-0 flex flex-row gap-2">
+                    <label class="pb-0 font-bold center">Spakirano:</label>
+                    <mat-button-toggle-group
+                        [value]="winner.packed ? winner.packed : 'no'"
+                        (change)="markPackedState($event, winner)"
+                    >
+                        <mat-button-toggle value="yes" class="foreground primary lighter">Da</mat-button-toggle>
+                        <mat-button-toggle value="no" class="foreground warn default">Ne</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
 
-        <div id="payment" class="mat-small pb-0 flex flex-row gap-2">
-          <label class="pb-0 bold center">Status plaćanja:</label>
-          <mat-button-toggle-group
-            [value]="winner.paymentStatus"
-            (change)="markPaymentStatus($event, winner)"
-          >
-            <mat-button-toggle value="paid" class="foreground primary lighter"
-              >Plaćeno</mat-button-toggle
-            >
-            <mat-button-toggle value="pending">U toku</mat-button-toggle>
-            <mat-button-toggle
-              value="notpaid"
-              class="foreground warn default text-wrap"
-              >Nije plaćeno
-            </mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </virtual-scroller>
+                <div id="payment" class="mat-small pb-0 flex flex-row gap-2">
+                    <label class="pb-0 font-bold center">Status plaćanja:</label>
+                    <mat-button-toggle-group [value]="winner.paymentStatus" (change)="markPaymentStatus($event, winner)">
+                        <mat-button-toggle value="paid" class="foreground primary lighter">Plaćeno</mat-button-toggle>
+                        <mat-button-toggle value="pending">U toku</mat-button-toggle>
+                        <mat-button-toggle value="notpaid" class="foreground warn default text-wrap"
+                            >Nije plaćeno
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </virtual-scroller>
 
-  <ng-template #noWinners>
-    <i class="w-full text-center">Nema pobjednika</i>
-  </ng-template>
+    <ng-template #noWinners>
+        <i class="w-full text-center">Nema pobjednika</i>
+    </ng-template>
 </div>

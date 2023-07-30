@@ -1,5 +1,5 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { format, parse } from 'date-fns';
@@ -11,6 +11,7 @@ import { concatMap, finalize, mergeMap, take } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { AuthService } from 'src/business/services/auth.service';
+import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { SubSink } from 'subsink';
@@ -37,9 +38,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   createMode = false;
 
   /**Check if current view is mobile phone */
-  public get isMobile(): boolean {
-    return this.breakpointObs.isMatched(Breakpoints.Handset)
-  }
+  readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   private _subsink = new SubSink();
 
@@ -70,8 +69,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     // route back to home if use is not admin
     this._subsink.add(
       this.authSvc.isAdmin$.subscribe(
-        isAdmin => isAdmin ? noop() : this.router.navigate(['/aukcije']),
-        err => console.log(err)
+        isAdmin => isAdmin ? noop() : this.router.navigate(['/aukcije'])
       )
     )
 
@@ -213,7 +211,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     // this.uploadStates$.push(new BehaviorSubject(true));
     // this.storage.deleteFile(url)
     //   // .then(() => this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1))
-    //   .catch(err => console.log(err))
+    //   
     //   .finally(() => {
     //     // delete locally
     //     this.files[itemIdx].splice(this.files[itemIdx].indexOf(file), 1);
@@ -292,10 +290,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       from(this.auctionRepo.create(auction))
         .pipe(
           concatMap(auction => from(this.auctionItemRepo.writeBatch(auction.id, items)))
-        ).subscribe(
-          _ => this.postCreate(),
-          err => console.log(err)
-        ))
+        ).subscribe(_ => this.postCreate()))
   }
 
   onUpdate(auction: Auction, items: AuctionItem[]) {
@@ -309,10 +304,7 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
       from(this.auctionRepo.set(auctionRefId, Object.assign({}, auction)))
         .pipe(
           concatMap(_ => from(this.auctionItemRepo.writeBatch(auctionRefId, items))),
-        ).subscribe(
-          _ => this.postUpdate(),
-          err => console.log(err)
-        )
+        ).subscribe(_ => this.postUpdate())
     )
 
     let raisedMoneyToSubtract = 0;
@@ -352,13 +344,13 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     if (!this.filesToDeleteQueue) return;
 
     for (const file of this.filesToDeleteQueue) {
-      this.storage.deleteFile(file.urlOrig).catch(err => console.log(err))
+      this.storage.deleteFile(file.original.fUrl)
 
-      file.urlThumb != file.urlOrig
-        && this.storage.deleteFile(file.urlThumb).catch(err => console.log(err))
+      file.thumbnail.fUrl != file.original.fUrl
+        && this.storage.deleteFile(file.thumbnail.fUrl)
 
-      file.urlComp != file.urlOrig
-        && this.storage.deleteFile(file.urlComp).catch(err => console.log(err))
+      file.compressed.fUrl != file.original.fUrl
+        && this.storage.deleteFile(file.compressed.fUrl)
     }
   }
 

@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,6 +12,7 @@ import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
 import { FirebaseFile } from 'src/business/models/firebase-file.model';
 import { AuthService } from 'src/business/services/auth.service';
+import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { FunctionsService } from 'src/business/services/functions.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
@@ -38,9 +38,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
   uploadState$ = new BehaviorSubject<boolean>(false);
   dragActive = false;
 
-  // TODO: merge all of these into pipe, service or smth central
-  private readonly breakpointObs = inject(BreakpointObserver);
-  get isMobile() { return this.breakpointObs.isMatched(Breakpoints.Handset); }
+  readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   private _subsink = new SubSink();
 
@@ -206,7 +204,7 @@ export class AuctionBulkImageFormComponent implements OnInit {
 
     // no await, I don't care if this gets done..
     for (const file of this.filesToDeleteQueue) {
-      this.storage.deleteFile(file.urlOrig).catch((err) => console.log(err));
+      this.storage.deleteFile(file.original.fUrl);
     }
   }
 
@@ -226,6 +224,6 @@ export class AuctionBulkImageFormComponent implements OnInit {
   //#endregion
 
   trackFile(_, item: FirebaseFile) {
-    return item.urlOrig;
+    return item.original.fUrl;
   }
 }

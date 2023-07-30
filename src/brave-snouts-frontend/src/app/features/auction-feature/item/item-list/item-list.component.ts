@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -16,7 +15,7 @@ import {
 } from 'src/app/shared/virtual-scroll/virtual-scroll';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { Auction } from 'src/business/models/auction.model';
-import { AuthService } from 'src/business/services/auth.service';
+import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { mergeArrays } from 'src/business/services/items.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
@@ -48,7 +47,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @ViewChild('itemsScroller', { static: false })
   scroller: VirtualScrollerComponent;
   constructor(
-    private readonly authSvc: AuthService,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly loadingSvc: ProgressBarService,
     private readonly changeDetectorRef: ChangeDetectorRef
@@ -57,14 +55,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
   }
 
   @Input() auction: Auction;
-  @Input('auctionId') auctionId: string = 'k83JqY20Bjnv58hmYcHb';
+  @Input('auctionId') auctionId: string;
   @Input() parentScroll: Element;
 
   private _subsink = new SubSink();
 
-  // TODO: merge all of these into pipe, service or smth central
-  private readonly breakpointObs = inject(BreakpointObserver);
-  get isMobile() { return this.breakpointObs.isMatched(Breakpoints.Handset); }
+  readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   async ngOnInit() {
     if (this.fromDialog) {
@@ -128,10 +124,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
           // join items
           this.items = mergeArrays(this.items, items);
-          // console.log(`Currently having ${this.items.length} items.`, this.items)
-          // console.log("Types are", items.map(item => item.type))
-          // console.log("Caches are", items.map(item => item.payload.doc.metadata.fromCache))
-          // console.log("\n")
 
           // set last item
           this.last = this.items[this.items.length - 1];
@@ -141,8 +133,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
           this.loadingSvc.active$.next(false);
           // this.changeDetectorRef.detectChanges();
           this.manualChangeDetection.queueChangeDetection();
-        },
-        (err) => console.log(err)
+        }
       );
 
     this._subsink.add(subscription);

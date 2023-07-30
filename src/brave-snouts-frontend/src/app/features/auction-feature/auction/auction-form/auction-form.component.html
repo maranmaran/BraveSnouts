@@ -1,249 +1,180 @@
 <div class="container flex flex-col gap-4" #scrollingBlock>
-  <div class="auction-form" flexLayout="row">
-    <div class="section flex flex-col gap-4">
-      <div class="flex flex-row gap-4 justify-between items-center">
-        <h1>Aukcija</h1>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="onSubmit()"
-          [disabled]="!isValid"
-        >
-          Spremi
-        </button>
-      </div>
-
-      <form [formGroup]="auction">
-        <div class="flex flex-row flex-wrap gap-4">
-          <mat-form-field class="flex-[2_1_100%]">
-            <mat-label>Naziv</mat-label>
-            <input matInput formControlName="name" />
-          </mat-form-field>
-
-          <mat-form-field class="flex-[1_2_100%]">
-            <mat-label>Trajanje aukcije</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input
-                matInput
-                matStartDate
-                placeholder="Početak"
-                formControlName="startDate"
-              />
-              <input
-                matInput
-                matEndDate
-                placeholder="Kraj"
-                formControlName="endDate"
-              />
-            </mat-date-range-input>
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="picker"
-            ></mat-datepicker-toggle>
-            <mat-date-range-picker #picker [touchUi]="isMobile">
-            </mat-date-range-picker>
-          </mat-form-field>
-
-          <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-12">
-            <div id="start-time" class="flex flex-row gap-2">
-              <label class="center pb-0 mb-0" for="startTime">Početak:</label>
-              <ngx-mat-timepicker-field
-                [defaultTime]="'12:00 PM'"
-                [format]="24"
-                formControlName="startTime"
-              ></ngx-mat-timepicker-field>
+    <div class="auction-form" flexLayout="row">
+        <div class="section flex flex-col gap-4">
+            <div class="flex flex-row gap-4 justify-between items-center">
+                <h1>Aukcija</h1>
+                <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!isValid">Spremi</button>
             </div>
-            <div id="end-time" class="flex flex-row gap-2">
-              <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
-              <ngx-mat-timepicker-field
-                [defaultTime]="'12:00 pm'"
-                [format]="24"
-                formControlName="endTime"
-              ></ngx-mat-timepicker-field>
-            </div>
-          </div>
+
+            <form [formGroup]="auction">
+                <div class="flex flex-row flex-wrap gap-4">
+                    <mat-form-field class="flex-[2_1_100%]">
+                        <mat-label>Naziv</mat-label>
+                        <input matInput formControlName="name" />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-[1_2_100%]">
+                        <mat-label>Trajanje aukcije</mat-label>
+                        <mat-date-range-input [rangePicker]="picker">
+                            <input matInput matStartDate placeholder="Početak" formControlName="startDate" />
+                            <input matInput matEndDate placeholder="Kraj" formControlName="endDate" />
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker [touchUi]="isMobile$ | async"> </mat-date-range-picker>
+                    </mat-form-field>
+
+                    <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-12">
+                        <div id="start-time" class="flex flex-row gap-2">
+                            <label class="center pb-0 mb-0" for="startTime">Početak:</label>
+                            <ngx-mat-timepicker-field
+                                [defaultTime]="'12:00 PM'"
+                                [format]="24"
+                                formControlName="startTime"
+                            ></ngx-mat-timepicker-field>
+                        </div>
+                        <div id="end-time" class="flex flex-row gap-2">
+                            <label class="center pb-0 mb-0" for="endTime">Kraj:</label>
+                            <ngx-mat-timepicker-field
+                                [defaultTime]="'12:00 pm'"
+                                [format]="24"
+                                formControlName="endTime"
+                            ></ngx-mat-timepicker-field>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="items-form h-full flex flex-col gap-4">
-    <div class="items-header flex flex-row">
-      <div class="section flex flex-row gap-4 justify-between items-center">
-        <h1>Predmeti</h1>
-        <button
-          *ngIf="!isMobile"
-          mat-flat-button
-          color="primary"
-          type="button"
-          (click)="addItem()"
-        >
-          Dodaj
-        </button>
-      </div>
     </div>
 
-    <virtual-scroller
-      class="full-items-grid pb-5"
-      [formGroup]="items"
-      #scroll
-      [items]="itemsArr.controls"
-      [parentScroll]="scrollingBlock"
-    >
-      <div
-        #container
-        class="items-grid"
-        [formGroup]="items"
-        formArrayName="items"
-      >
-        <form
-          [formGroup]="item"
-          *ngFor="
-            let item of scroll.viewPortItems;
-            trackBy: trackByFn;
-            let i = index
-          "
-        >
-          <mat-card
-            appearance="raised"
-            class="mat-elevation-z5 flex flex-col gap-4"
-          >
-            <mat-card-header class="flex flex-col">
-              <mat-card-title class="header flex flex-col">
-                <div class="flex flex-row gap-2 justify-start items-center">
-                  <mat-form-field>
-                    <mat-label>Naziv</mat-label>
-                    <input
-                      id="name-{{ scroll.viewPortInfo.startIndex + i }}"
-                      matInput
-                      formControlName="name"
-                    />
-                  </mat-form-field>
-
-                  <button
-                    id="deleteBtn-{{ scroll.viewPortInfo.startIndex + i }}"
-                    mat-icon-button
-                    class="relative"
-                    type="button"
-                    color="warn"
-                    style="bottom: 0.75rem"
-                    (click)="removeItem(scroll.viewPortInfo.startIndex + i)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-
-                <mat-form-field>
-                  <mat-label>Početna cijena</mat-label>
-                  <input
-                    #startValue
-                    id="price-{{ scroll.viewPortInfo.startIndex + i }}"
-                    matInput
-                    type="number"
-                    step="0.5"
-                    value="0.00"
-                    formControlName="startPrice"
-                  />
-                  <span class="mr-2" matSuffix>€</span>
-                </mat-form-field>
-              </mat-card-title>
-            </mat-card-header>
-
-            <mat-card-content>
-              <div class="flex flex-col gap-4">
-                <div class="media">
-                  <mat-progress-bar
-                    *ngIf="
-                      uploadStates$[scroll.viewPortInfo.startIndex + i] | async
-                    "
-                    mode="indeterminate"
-                  >
-                  </mat-progress-bar>
-
-                  <ngx-dropzone
-                    id="images-{{ scroll.viewPortInfo.startIndex + i }}"
-                    class="auction-item-media-dropzone pb-0"
-                    (change)="
-                      uploadFiles($event, scroll.viewPortInfo.startIndex + i)
-                    "
-                    [disableClick]="dragActive"
-                  >
-                    <ngx-dropzone-label
-                      *ngIf="
-                        files[scroll.viewPortInfo.startIndex + i]?.length == 0
-                      "
-                    >
-                      <button mat-stroked-button type="button">Učitaj</button>
-                    </ngx-dropzone-label>
-
-                    <drag-scroll
-                      class="form-drag-scroll flex flex-row"
-                      *ngIf="
-                        files[scroll.viewPortInfo.startIndex + i]?.length > 0
-                      "
-                      [drag-scroll-y-disabled]="true"
-                      [snap-disabled]="true"
-                      (dragStart)="dragActive = true"
-                      (dragEnd)="dragEnd()"
-                    >
-                      <div
-                        class="item mr-2"
-                        drag-scroll-item
-                        *ngFor="
-                          let file of files[scroll.viewPortInfo.startIndex + i]
-                        "
-                      >
-                        <ng-container *ngIf="file.urlOrig as url">
-                          <img *ngIf="file.type == 'image'" [src]="url" />
-                          <video
-                            *ngIf="file.type == 'video'"
-                            [src]="url"
-                          ></video>
-                          <button
-                            id="remove-file-btn"
-                            type="button"
-                            mat-icon-button
-                            color="accent"
-                            (click)="
-                              removeFile(
-                                scroll.viewPortInfo.startIndex + i,
-                                file,
-                                url,
-                                $event
-                              )
-                            "
-                          >
-                            <mat-icon>close</mat-icon>
-                          </button>
-                        </ng-container>
-                      </div>
-                    </drag-scroll>
-                  </ngx-dropzone>
-                </div>
-
-                <textarea
-                  id="description-{{ scroll.viewPortInfo.startIndex + i }}"
-                  class="editor"
-                  [placeholder]="'Opis predmeta'"
-                  formControlName="description"
-                ></textarea>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </form>
-        <div *ngIf="isMobile" class="form-actions mt-2">
-          <button
-            class="w-full"
-            mat-flat-button
-            color="primary"
-            (click)="addItem()"
-          >
-            Dodaj
-          </button>
+    <div class="items-form h-full flex flex-col gap-4">
+        <div class="items-header flex flex-row">
+            <div class="section flex flex-row gap-4 justify-between items-center">
+                <h1>Predmeti</h1>
+                <button *ngIf="!(isMobile$ | async)" mat-flat-button color="primary" type="button" (click)="addItem()">
+                    Dodaj
+                </button>
+            </div>
         </div>
-      </div>
-    </virtual-scroller>
-  </div>
+
+        <virtual-scroller
+            class="full-items-grid pb-5"
+            [formGroup]="items"
+            #scroll
+            [items]="itemsArr.controls"
+            [parentScroll]="scrollingBlock"
+        >
+            <div #container class="items-grid" [formGroup]="items" formArrayName="items">
+                <form [formGroup]="item" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let i = index">
+                    <mat-card appearance="raised" class="mat-elevation-z5 flex flex-col gap-4">
+                        <mat-card-header class="flex flex-col">
+                            <mat-card-title class="header flex flex-col">
+                                <div class="flex flex-row gap-2 justify-start items-center">
+                                    <mat-form-field>
+                                        <mat-label>Naziv</mat-label>
+                                        <input
+                                            id="name-{{ scroll.viewPortInfo.startIndex + i }}"
+                                            matInput
+                                            formControlName="name"
+                                        />
+                                    </mat-form-field>
+
+                                    <button
+                                        id="deleteBtn-{{ scroll.viewPortInfo.startIndex + i }}"
+                                        mat-icon-button
+                                        class="relative"
+                                        type="button"
+                                        color="warn"
+                                        style="bottom: 0.75rem"
+                                        (click)="removeItem(scroll.viewPortInfo.startIndex + i)"
+                                    >
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+
+                                <mat-form-field>
+                                    <mat-label>Početna cijena</mat-label>
+                                    <input
+                                        #startValue
+                                        id="price-{{ scroll.viewPortInfo.startIndex + i }}"
+                                        matInput
+                                        type="number"
+                                        step="0.5"
+                                        value="0.00"
+                                        formControlName="startPrice"
+                                    />
+                                    <span class="mr-2" matSuffix>€</span>
+                                </mat-form-field>
+                            </mat-card-title>
+                        </mat-card-header>
+
+                        <mat-card-content>
+                            <div class="flex flex-col gap-4">
+                                <div class="media">
+                                    <mat-progress-bar
+                                        *ngIf="uploadStates$[scroll.viewPortInfo.startIndex + i] | async"
+                                        mode="indeterminate"
+                                    >
+                                    </mat-progress-bar>
+
+                                    <ngx-dropzone
+                                        id="images-{{ scroll.viewPortInfo.startIndex + i }}"
+                                        class="auction-item-media-dropzone pb-0"
+                                        (change)="uploadFiles($event, scroll.viewPortInfo.startIndex + i)"
+                                        [disableClick]="dragActive"
+                                    >
+                                        <ngx-dropzone-label *ngIf="files[scroll.viewPortInfo.startIndex + i]?.length == 0">
+                                            <button mat-stroked-button type="button">Učitaj</button>
+                                        </ngx-dropzone-label>
+
+                                        <drag-scroll
+                                            class="form-drag-scroll flex flex-row"
+                                            *ngIf="files[scroll.viewPortInfo.startIndex + i]?.length > 0"
+                                            [drag-scroll-y-disabled]="true"
+                                            [snap-disabled]="true"
+                                            (dragStart)="dragActive = true"
+                                            (dragEnd)="dragEnd()"
+                                        >
+                                            <div
+                                                class="item mr-2"
+                                                drag-scroll-item
+                                                *ngFor="let file of files[scroll.viewPortInfo.startIndex + i]"
+                                            >
+                                                <ng-container *ngIf="file.original.gUrl as url">
+                                                    <img *ngIf="file.type == 'image'" [src]="url" />
+                                                    <video *ngIf="file.type == 'video'" [src]="url"></video>
+                                                    <button
+                                                        id="remove-file-btn"
+                                                        type="button"
+                                                        mat-icon-button
+                                                        color="accent"
+                                                        (click)="
+                                                            removeFile(scroll.viewPortInfo.startIndex + i, file, url, $event)
+                                                        "
+                                                    >
+                                                        <mat-icon>close</mat-icon>
+                                                    </button>
+                                                </ng-container>
+                                            </div>
+                                        </drag-scroll>
+                                    </ngx-dropzone>
+                                </div>
+
+                                <textarea
+                                    id="description-{{ scroll.viewPortInfo.startIndex + i }}"
+                                    class="editor"
+                                    [placeholder]="'Opis predmeta'"
+                                    formControlName="description"
+                                ></textarea>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </form>
+                <div *ngIf="isMobile$ | async" class="form-actions mt-2">
+                    <button class="w-full" mat-flat-button color="primary" (click)="addItem()">Dodaj</button>
+                </div>
+            </div>
+        </virtual-scroller>
+    </div>
 </div>
 <!--
 
