@@ -317,7 +317,6 @@ export class AuthService {
       filter((x) => !!x),
       take(1),
       switchMap(() => {
-        // console.log("Saving", user)
         return this.store
           .collection(`users`)
           .doc(user.id)

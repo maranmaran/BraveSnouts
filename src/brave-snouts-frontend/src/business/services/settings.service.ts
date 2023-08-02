@@ -4,23 +4,21 @@ import { first, map, shareReplay } from "rxjs/operators";
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-
     private readonly firestore = inject(AngularFirestore);
 
-    settings$ = this.get();
-    imageProcessingSettings$ = this.getImageProcessingSettings();
+    settings$ = this.firestore.doc<GlobalSettings>('config/global')
+        .valueChanges()
+        .pipe(
+            first(),
+            shareReplay(1)
+        );
 
-    private get() {
-        return this.firestore.doc<GlobalSettings>('config/global').valueChanges().pipe(first(), shareReplay(1));
-    }
-
-    private getImageProcessingSettings() {
-        if (!this.firestore) {
-            return;
-        }
-
-        return this.firestore.doc<ImageProcessingSettings>('config/image-processing').valueChanges().pipe(first(), shareReplay(1));
-    }
+    imageProcessingSettings$ = this.firestore.doc<ImageProcessingSettings>('config/image-processing')
+        .valueChanges()
+        .pipe(
+            first(),
+            shareReplay(1)
+        );
 
     getMailVariables() {
         return this.firestore.doc<MailVariables>("config/mail-variables").valueChanges().pipe(

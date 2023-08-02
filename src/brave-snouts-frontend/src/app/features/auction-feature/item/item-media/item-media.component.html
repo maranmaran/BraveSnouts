@@ -7,27 +7,28 @@
             (itemClick)="openLightbox($event)"
         ></gallery>
         <img
-            *ngIf="media.length == 1"
+            *ngIf="media.length == 1 && (media[0] | firebaseImage | async) as image"
             class="w-full h-full single-gallery-image cursor-pointer"
             (click)="openLightbox()"
             [ngStyle]="{
-                background: 'url(' + (media[0].urlComp ?? media[0].urlThumb) + ') 50% 50% no-repeat',
+                background: 'url(' + image.thumb + ') 50% 50% no-repeat',
                 'background-size': 'contain'
             }"
-            [src]="(loadGradually$ | async) ? media[0].urlOrig ?? media[0].urlComp : media[0].urlComp"
+            [src]="image.src"
         />
     </ng-container>
 
     <ng-template #singleMedia>
         <div>
             <img
+                *ngIf="media[0] | firebaseImage | async as image"
                 id="single-image"
                 class="img-fluid"
                 [ngStyle]="{
                     background: 'url(' + media[0].urlThumb + ') 50% 50% no-repeat',
                     'background-size': 'cover'
                 }"
-                [src]="(loadGradually$ | async) ? media[0].urlComp ?? media[0].urlThumb : media[0].urlThumb"
+                [src]="image.thumb"
             />
             <ng-content></ng-content>
         </div>

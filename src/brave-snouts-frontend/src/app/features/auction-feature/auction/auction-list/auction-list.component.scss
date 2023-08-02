@@ -2,7 +2,7 @@
     display: grid;
     grid-template-rows: minmax(0, auto) minmax(0, 1fr);
     gap: 1rem;
-    
+
     .auctions-grid {
         margin-top: 3rem;
 
@@ -16,7 +16,22 @@
             padding: 0.5rem;
         }
 
-        @media(max-width: 600px) {
+        #donate {
+            padding: 0.5rem
+        }
+    }
+}
+
+@media(max-width: 800px) {
+    .container-grid {
+        display: flex;
+        flex-direction: column;
+
+        .auctions-grid {
+            padding: 0;
+            grid-template-columns: minmax(0px, 1fr);
+            gap: 2rem;
+
             #auctions {
                 overflow: unset;
                 max-height: unset;
@@ -24,24 +39,6 @@
             }
         }
 
-        #donate {
-            padding: 0.5rem
-        }
-    }
-    
-    @media(max-width: 600px) {
-        .auctions-grid {
-            padding: 0;
-            grid-template-columns: minmax(0px, 1fr);
-            gap: 2rem;
-        }
-    }
-}
-
-@media(max-width: 600px) {
-    .container-grid {
-        display: flex;
-        flex-direction: column;
         #ads {
             margin-top: 2rem;
         }

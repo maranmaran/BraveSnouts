@@ -4,12 +4,13 @@ import { Lightbox } from 'ng-gallery/lightbox';
 import { firstValueFrom } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
+import { FirebaseImagePipe } from 'src/business/pipes/firebase-image.pipe';
 import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { SettingsService } from 'src/business/services/settings.service';
 import { environment } from 'src/environments/environment';
 import { ItemScrollViewService } from './../item-gallery/item-scroll-view.service';
 
-interface ItemMedia {
+export interface ItemMedia {
   type: 'image' | 'video'
   urlThumb: string;
   urlComp: string;
@@ -23,7 +24,6 @@ interface ItemMedia {
   providers: []
 })
 export class ItemMediaComponent implements OnInit {
-
   protected imageCacheSeed = environment.imageCacheSeed;
 
   protected loadGradually$ = inject(SettingsService).settings$.pipe(
@@ -33,7 +33,8 @@ export class ItemMediaComponent implements OnInit {
   constructor(
     private readonly gallery: Gallery,
     private readonly lightbox: Lightbox,
-    private readonly itemScrollSvc: ItemScrollViewService
+    private readonly itemScrollSvc: ItemScrollViewService,
+    private readonly firebaseImagePipe: FirebaseImagePipe,
   ) {
   }
 
@@ -69,56 +70,55 @@ export class ItemMediaComponent implements OnInit {
 
   /* Sets up images and videos for gallery component */
   async setupGallery() {
-
     const galleryRef = this.gallery.ref(this.galleryId);
 
     const itemsLen = galleryRef.stateSnapshot.items.length;
-
     if (itemsLen > 0) {
       return;
     }
 
     const loadGradually = await firstValueFrom(this.loadGradually$);
 
-    for (const { type, urlThumb: thumbUrl, urlComp: compressedUrl, urlOrig: originalUrl } of this.media) {
-
+    for (const mediaItem of this.media) {
       const galleryItem = {
-        src: loadGradually ? originalUrl : compressedUrl ?? originalUrl,
-        thumb: loadGradually ? originalUrl : thumbUrl ?? originalUrl,
-        type
+        ...(await firstValueFrom(this.firebaseImagePipe.transform(mediaItem))),
+        type: mediaItem.type
       };
 
-      if (type == 'image')
+      if (galleryItem.type == 'image')
         galleryRef.addImage(galleryItem);
 
-      if (type == 'video')
+      if (galleryItem.type == 'video')
         galleryRef.addVideo(galleryItem);
     }
+
+    galleryRef.set(0, 'instant');
   }
 
 
   /* Opens fullscreen view of image aka lightbox */
-  openLightbox(imageIdx: number = 0) {
-
+  async openLightbox(imageIdx: number = 0) {
     let lightboxData = [];
-    for (const { type, urlThumb: thumbUrl, urlComp: compressedUrl, urlOrig: originalUrl } of this.media) {
 
-      const galleryItem = { src: originalUrl ?? compressedUrl, thumb: thumbUrl ?? compressedUrl, type };
+    for (const mediaItem of this.media) {
+      const lightboxItem = {
+        ...(await firstValueFrom(this.firebaseImagePipe.transform(mediaItem, true))),
+        type: mediaItem.type
+      };
 
-      if (type == 'image')
-        lightboxData.push(galleryItem);
+      if (lightboxItem.type == 'image')
+        lightboxData.push(lightboxItem);
 
-      if (type == 'video')
-        lightboxData.push(galleryItem);
+      if (lightboxItem.type == 'video')
+        lightboxData.push(lightboxItem);
     }
 
     this.lightbox.open(imageIdx, this.galleryId, {
       'panelClass': 'fullscreen',
     });
 
-    history.pushState({ modal: true }, '');
-
     this.itemScrollSvc.block = true;
+    history.pushState({ modal: true }, '');
 
     this.lightbox.closed
       .pipe(first())

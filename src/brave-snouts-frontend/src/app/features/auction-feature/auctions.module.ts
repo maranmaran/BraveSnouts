@@ -21,6 +21,7 @@ import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
 import { TruncatedTextComponent } from "src/app/shared/truncated-text/truncated-text.component";
 import { VirtualScrollerModule } from "src/app/shared/virtual-scroll/virtual-scroll.module";
 import { AuctionDatePipe } from "src/business/pipes/custom-date.pipe";
+import { FirebaseImagePipe } from "src/business/pipes/firebase-image.pipe";
 import { MoneyPipe } from "src/business/pipes/money.pipe";
 import { TruncatePipe } from "src/business/pipes/truncate.pipe";
 import { ChangeEmailDialogComponent } from "../auth-feature/change-email-dialog/change-email-dialog.component";
@@ -126,10 +127,14 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         TruncatedTextComponent,
         TruncatePipe,
         MoneyPipe,
+        FirebaseImagePipe,
         ConfirmDialogComponent,
         MessageDialogComponent,
         EmailCopyComponent,
         MessageDialogComponent,
     ],
+    providers: [
+        FirebaseImagePipe
+    ]
 })
 export class AuctionsModule { }

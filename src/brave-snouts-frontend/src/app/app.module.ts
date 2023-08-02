@@ -66,7 +66,7 @@ registerLocaleData(hrLocale);
         dots: false,
         counter: false,
         thumb: false,
-        loop: false,
+        loop: true,
 
         debug: false,
       },
