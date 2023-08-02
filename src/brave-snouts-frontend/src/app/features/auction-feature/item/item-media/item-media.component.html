@@ -1,5 +1,5 @@
 <ng-container *ngIf="media && media?.length > 0; else noMedia">
-    <ng-container *ngIf="!(isMobile$ | async); else singleMedia">
+    <ng-container *ngIf="!mobileView; else mobileImageGalleryItem">
         <gallery
             *ngIf="media.length > 1"
             class="w-full h-full"
@@ -18,20 +18,18 @@
         />
     </ng-container>
 
-    <ng-template #singleMedia>
-        <div>
-            <img
-                *ngIf="media[0] | firebaseImage | async as image"
-                id="single-image"
-                class="img-fluid"
-                [ngStyle]="{
-                    background: 'url(' + image.thumb + ') 50% 50% no-repeat',
-                    'background-size': 'cover'
-                }"
-                [src]="image.src"
-            />
-            <ng-content></ng-content>
-        </div>
+    <ng-template #mobileImageGalleryItem>
+        <img
+            *ngIf="media[0] | firebaseImage | async as image"
+            id="single-image"
+            class="img-fluid"
+            [ngStyle]="{
+                background: 'url(' + image.thumb + ') 50% 50% no-repeat',
+                'background-size': 'contain'
+            }"
+            [src]="image.thumb"
+        />
+        <ng-content></ng-content>
     </ng-template>
 </ng-container>
 

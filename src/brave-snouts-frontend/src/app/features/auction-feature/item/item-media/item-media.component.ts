@@ -5,7 +5,6 @@ import { firstValueFrom, Subject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { FirebaseImagePipe } from 'src/business/pipes/firebase-image.pipe';
-import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { SettingsService } from 'src/business/services/settings.service';
 import { environment } from 'src/environments/environment';
 import { ItemScrollViewService } from './../item-gallery/item-scroll-view.service';
@@ -39,7 +38,6 @@ export class ItemMediaComponent implements OnInit, OnDestroy {
   media: ItemMedia[];
 
   readonly imageCacheSeed = environment.imageCacheSeed;
-  readonly isMobile$ = inject(BreakpointService).isMobile$;
   readonly loadGradually$ = inject(SettingsService).settings$.pipe(
     map(x => x.gradualImageLoading)
   );
