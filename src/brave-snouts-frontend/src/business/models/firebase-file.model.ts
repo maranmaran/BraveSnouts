@@ -1,7 +1,7 @@
 
 export interface FirebaseFile {
   name: string;
-  type: string;
+  type: 'image' | 'video';
 
   original: FirebaseFileAccess;
   thumbnail: FirebaseFileAccess;

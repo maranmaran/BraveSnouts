@@ -25,10 +25,10 @@
                 id="single-image"
                 class="img-fluid"
                 [ngStyle]="{
-                    background: 'url(' + media[0].urlThumb + ') 50% 50% no-repeat',
+                    background: 'url(' + image.thumb + ') 50% 50% no-repeat',
                     'background-size': 'cover'
                 }"
-                [src]="image.thumb"
+                [src]="image.src"
             />
             <ng-content></ng-content>
         </div>

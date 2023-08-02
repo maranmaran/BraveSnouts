@@ -23,54 +23,30 @@
 
   .background {
     &.warn.lighter {
-      background: mat.get-color-from-palette(
-        map-get($theme, warn),
-        50
-      ) !important;
+      background: mat.get-color-from-palette(map-get($theme, warn),
+          50) !important;
     }
 
     &.primary.lighter {
-      background: mat.get-color-from-palette(
-        map-get($theme, primary),
-        50
-      ) !important;
+      background: mat.get-color-from-palette(map-get($theme, primary),
+          50) !important;
     }
   }
 
   .foreground {
     &.warn.default {
-      color: mat.get-color-from-palette(
-        map-get($theme, warn),
-        "default"
-      ) !important;
+      color: mat.get-color-from-palette(map-get($theme, warn),
+          "default"
+        ) !important;
     }
 
     &.primary.lighter {
-      color: mat.get-color-from-palette(
-        map-get($theme, primary),
-        "default"
-      ) !important;
+      color: mat.get-color-from-palette(map-get($theme, primary),
+          "default"
+        ) !important;
     }
   }
 
-  .spinner {
-    position: relative;
-    top: -8px;
-    left: -8px;
-    z-index: 100000;
-
-    width: 106px !important;
-    height: 106px !important;
-
-    svg {
-      width: 106px !important;
-      height: 106px !important;
-
-      circle {
-        stroke-width: 5px !important;
-      }
-    }
-  }
 
   .item-dialog {
     mat-dialog-container {
@@ -145,7 +121,7 @@
     align-items: center;
     justify-content: center;
 
-    & > *[role="img"] {
+    &>*[role="img"] {
       width: $size;
       height: $size;
       font-size: $size;
@@ -184,18 +160,11 @@
     }
   }
 
-  .ng-animating
-    div
-    mat-accordion
-    mat-expansion-panel
-    mat-expansion-panel-header {
+  .ng-animating div mat-accordion mat-expansion-panel mat-expansion-panel-header {
     height: 48px;
   }
-  .ng-animating
-    div
-    mat-accordion
-    mat-expansion-panel
-    div.mat-expansion-panel-content {
+
+  .ng-animating div mat-accordion mat-expansion-panel div.mat-expansion-panel-content {
     height: 0px;
     visibility: hidden;
   }

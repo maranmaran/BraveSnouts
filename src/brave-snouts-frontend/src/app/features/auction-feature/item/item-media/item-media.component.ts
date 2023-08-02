@@ -1,7 +1,7 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { FirebaseImagePipe } from 'src/business/pipes/firebase-image.pipe';
@@ -23,44 +23,48 @@ export interface ItemMedia {
   styleUrls: ['./item-media.component.scss'],
   providers: []
 })
-export class ItemMediaComponent implements OnInit {
-  protected imageCacheSeed = environment.imageCacheSeed;
+export class ItemMediaComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribeSubject = new Subject<void>();
 
-  protected loadGradually$ = inject(SettingsService).settings$.pipe(
-    map(x => x.gradualImageLoading)
-  );
+  private readonly gallery = inject(Gallery);
+  private readonly lightbox = inject(Lightbox);
+  private readonly firebaseImagePipe = inject(FirebaseImagePipe);
+  private readonly itemScrollSvc = inject(ItemScrollViewService);
 
-  constructor(
-    private readonly gallery: Gallery,
-    private readonly lightbox: Lightbox,
-    private readonly itemScrollSvc: ItemScrollViewService,
-    private readonly firebaseImagePipe: FirebaseImagePipe,
-  ) {
-  }
-
-  @Input('media') dbMedia: FirebaseFile[];
-  @Input() auctionId: string;
-  @Input() galleryId: string;
-  @Input('first') mobileView: boolean = false;
+  @Input() auctionId = '';
+  @Input() galleryId = '';
+  @Input('first') mobileView = false;
+  @Input('media') dbMedia: FirebaseFile[] = [];
 
   media: ItemMedia[];
 
+  readonly imageCacheSeed = environment.imageCacheSeed;
   readonly isMobile$ = inject(BreakpointService).isMobile$;
+  readonly loadGradually$ = inject(SettingsService).settings$.pipe(
+    map(x => x.gradualImageLoading)
+  );
+
+  private get ref() { return this.gallery.ref(this.galleryId); }
 
   async ngOnInit() {
-    // no items
     if (!this.dbMedia || this.dbMedia.length == 0)
       return;
 
-    this.media = this.getItemImages();
-
+    this.setMedia();
     await this.setupGallery();
   }
 
-  private getCachedImageUrl = (url: string) => url + '?cacheKey=' + this.imageCacheSeed;
+  ngOnDestroy() {
+    this.ref.destroy();
+    this.ngUnsubscribeSubject.next();
+  }
 
-  private getItemImages() {
-    return this.dbMedia.map(x => ({
+  private getCachedImageUrl(url: string) {
+    return url + '?cacheKey=' + this.imageCacheSeed;
+  }
+
+  private setMedia() {
+    this.media = this.dbMedia.map(x => ({
       type: x.type,
       urlOrig: this.getCachedImageUrl(x.original.gUrl),
       urlComp: this.getCachedImageUrl(x.compressed.gUrl),
@@ -68,61 +72,47 @@ export class ItemMediaComponent implements OnInit {
     } as ItemMedia));
   }
 
-  /* Sets up images and videos for gallery component */
-  async setupGallery() {
-    const galleryRef = this.gallery.ref(this.galleryId);
+  private async setupGallery() {
+    await this.addItemsToGallery();
 
-    const itemsLen = galleryRef.stateSnapshot.items.length;
-    if (itemsLen > 0) {
-      return;
-    }
-
-    const loadGradually = await firstValueFrom(this.loadGradually$);
-
-    for (const mediaItem of this.media) {
-      const galleryItem = {
-        ...(await firstValueFrom(this.firebaseImagePipe.transform(mediaItem))),
-        type: mediaItem.type
-      };
-
-      if (galleryItem.type == 'image')
-        galleryRef.addImage(galleryItem);
-
-      if (galleryItem.type == 'video')
-        galleryRef.addVideo(galleryItem);
-    }
-
-    galleryRef.set(0, 'instant');
+    this.ref.set(0, 'instant');
   }
 
-
   /* Opens fullscreen view of image aka lightbox */
-  async openLightbox(imageIdx: number = 0) {
-    let lightboxData = [];
+  async openLightbox(mediaIdx: number = 0) {
+    const forceHighQuality = !this.mobileView;
 
-    for (const mediaItem of this.media) {
-      const lightboxItem = {
-        ...(await firstValueFrom(this.firebaseImagePipe.transform(mediaItem, true))),
-        type: mediaItem.type
-      };
+    await this.addItemsToGallery(forceHighQuality);
 
-      if (lightboxItem.type == 'image')
-        lightboxData.push(lightboxItem);
-
-      if (lightboxItem.type == 'video')
-        lightboxData.push(lightboxItem);
-    }
-
-    this.lightbox.open(imageIdx, this.galleryId, {
-      'panelClass': 'fullscreen',
-    });
+    this.lightbox.open(mediaIdx, this.galleryId, { 'panelClass': 'fullscreen' });
 
     this.itemScrollSvc.block = true;
     history.pushState({ modal: true }, '');
 
     this.lightbox.closed
       .pipe(first())
-      .subscribe(() => setTimeout(() => this.itemScrollSvc.block = false));
+      .subscribe(() => {
+        this.setupGallery();
+        setTimeout(() => this.itemScrollSvc.block = false)
+      });
   }
 
+  private async addItemsToGallery(forceHighQuality = false) {
+    this.ref.reset();
+    for (const mediaItem of this.media) {
+      const item = {
+        ...(await firstValueFrom(
+          this.firebaseImagePipe.transform(mediaItem, forceHighQuality))
+        ),
+        type: mediaItem.type,
+      };
+
+      if (item.type == 'image')
+        this.ref.addImage(item);
+
+      if (item.type == 'video')
+        this.ref.addVideo(item);
+    }
+  }
 }
+

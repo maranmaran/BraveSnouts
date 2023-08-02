@@ -35,6 +35,27 @@
     background-image: $static-logo;
     background-size: contain;
 
+    .spinner {
+      position: relative;
+      top: -6.5px;
+      left: -6.5px;
+      z-index: 100000;
+
+      --spinner-size: 87.5px;
+
+      width: var(--spinner-size) !important;
+      height: var(--spinner-size) !important;
+
+      svg {
+        width: var(--spinner-size) !important;
+        height: var(--spinner-size) !important;
+
+        circle {
+          stroke-width: 7px !important;
+        }
+      }
+    }
+
     &:hover {
       @extend .logo-animated;
     }

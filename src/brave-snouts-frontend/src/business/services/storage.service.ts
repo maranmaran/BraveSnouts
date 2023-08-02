@@ -76,7 +76,6 @@ export class StorageService {
     private getImageBucket = (auctionId: string) => `auction-items/${auctionId}`;
     private getFirebaseFileType = (type): 'file' | 'image' | 'video' => type.indexOf('image') != -1 ? 'image' : 'video';
 
-
     private getGoogleCloudLink(firebaseLink: string) {
         const bucket = environment.firebaseConfig.storageBucket;
         const split = firebaseLink.split(bucket);
