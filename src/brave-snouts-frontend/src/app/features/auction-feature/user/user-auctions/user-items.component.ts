@@ -1,8 +1,7 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of } from 'rxjs';
-import { mergeMap, take, tap } from 'rxjs/operators';
+import { Observable, firstValueFrom, of } from 'rxjs';
+import { mergeMap, tap } from 'rxjs/operators';
 import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
@@ -20,11 +19,8 @@ import { SubSink } from 'subsink';
 
 })
 export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
-
-  useGallery = true;
-
-  empty: boolean = false;
-  total: number = 0;
+  empty = false;
+  total = 0;
   items: AuctionItem[] = [];
   isLoading$: Observable<boolean>;
 
@@ -34,7 +30,6 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   outbiddedItems: AuctionItem[] = [];
 
   private _subsink = new SubSink();
-
   readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   constructor(
@@ -42,37 +37,31 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly authSvc: AuthService,
     private readonly loadingSvc: ProgressBarService,
     private readonly dialog: MatDialog,
-    private readonly itemDialogSvc: ItemDialogService,
-    private readonly breakpointObs: BreakpointObserver
+    private readonly itemDialogSvc: ItemDialogService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.isLoading$ = this.loadingSvc.active$;
-    this.authSvc.userId$
-      .pipe(take(1))
-      .subscribe(id => {
-        this.userId = id
-
-        this._subsink.add(
-          this.getTrackedItems()
-        );
-      });
+    this.userId = await firstValueFrom(this.authSvc.userId$);
+    this._subsink.add(
+      this.getTrackedItems()
+    );
   }
 
   // Workaround for angular component issue #13870
   disableAnimation = true;
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
     setTimeout(() => this.disableAnimation = false);
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this._subsink.unsubscribe();
   }
 
   getTrackedItems() {
-
     this.loadingSvc.active$.next(true);
+
     return this.itemsRepo.getUserItems(this.userId).pipe(
       tap(items => this.total = items?.length),
       mergeMap(items => this.total > 0 ? [...items] : ["empty"]),
@@ -122,7 +111,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openItem(item: AuctionItem) {
 
-    let dialogRef = this.dialog.open(SingleItemDialogComponent, {
+    this.dialog.open(SingleItemDialogComponent, {
       height: 'auto',
       width: '100%',
       maxWidth: '20rem',
@@ -131,8 +120,6 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       panelClass: ['item-dialog', 'mat-elevation-z8'],
       data: { item, svc: this.itemDialogSvc }
     });
-
-    // dialogRef.afterClosed()
 
     window.history.pushState({ modal: true }, '', '#modal');
   }

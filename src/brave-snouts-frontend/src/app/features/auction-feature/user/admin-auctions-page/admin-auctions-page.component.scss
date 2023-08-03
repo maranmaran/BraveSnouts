@@ -1,14 +1,22 @@
 .container {
   height: unset;
 
+  button {
+    white-space: pre-wrap !important;
+  }
+
   @media(max-width: 1400px) {
-    #admin-actions, table {
-      width: 100% !important;
+
+    #admin-actions,
+    table {
+      width: 95% !important;
     }
   }
 
   @media(min-width: 1400px) {
-    #admin-actions, table {
+
+    #admin-actions,
+    table {
       width: 70% !important;
     }
   }

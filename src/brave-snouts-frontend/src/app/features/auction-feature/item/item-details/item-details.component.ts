@@ -26,7 +26,6 @@ import { BidsRepository } from '../../../../../business/services/repositories/bi
   animations: [itemAnimations, fadeIn],
 })
 export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
-
   constructor(
     private readonly auctionRepo: AuctionRepository,
     private readonly itemsRepo: AuctionItemRepository,
@@ -68,6 +67,11 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   // bid step size
   bidStepSize = environment.itemCardConfig.bidStepSize;
+
+  // shareable item link
+  get link() {
+    return environment.baseUrl + `/aukcije/predmet;auctionId=${this.auction.id};itemId=${this.item.id}`;
+  }
 
   ngOnInit() {
     this.item.bid ??= this.item.startBid
@@ -266,6 +270,20 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
   isTruncated(element) {
     return element?.offsetWidth < element?.scrollWidth;
   }
+
+  onLinkCopyFinished(success: boolean) {
+    if (success) {
+      this.toastSvc.success("Poveznica uspješno kopirana", {
+        dismissible: true,
+        position: 'top-center',
+      })
+    } else {
+      this.toastSvc.success("Poveznica se nije uspjela kopirati", {
+        dismissible: true,
+        position: 'top-center'
+      })
+    }
+  }
   //#endregion
 
   //#region Bid modification
@@ -293,6 +311,5 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.currentBid = Math.round(currentModified) / 100;
   }
   //#endregion
-
 
 }

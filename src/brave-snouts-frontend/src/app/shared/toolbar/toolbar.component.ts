@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2, RendererStyleFlags2, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
@@ -36,17 +36,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   private _subsink = new SubSink();
 
   ngOnInit(): void {
-    this._subsink.add(
-      this.itemScrollViewSvc.view$
-        .pipe(
-          filter(() => !!this.viewTabs),
-          distinctUntilChanged()
-        )
-        .subscribe((view) => {
-          this.viewTabs.selectedIndex = view == 'grid' ? 0 : 1;
-          this.viewTabs?.realignInkBar();
-        })
-    );
+    this.initTabs();
   }
 
   ngOnDestroy() {
@@ -113,14 +103,41 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     this.authSvc.logout();
   }
 
-  @ViewChild('tabs', { static: false }) viewTabs?: MatTabGroup;
-  onTabChange(event: MatTabChangeEvent) {
+
+  readonly renderer = inject(Renderer2)
+
+  private initTabs() {
+    this._subsink.add(
+      // gallery tabs
+      this.itemScrollViewSvc.view$
+        .pipe(
+          filter(() => !!this.galleryTabs),
+          distinctUntilChanged()
+        )
+        .subscribe((view) => {
+          const element = this.galleryTabs._elementRef.nativeElement;
+          const shouldShow = this.router.url.indexOf('moji-predmeti') != -1
+          if (shouldShow) {
+            this.renderer.setStyle(element, 'display', 'none', RendererStyleFlags2.Important);
+          } else {
+            this.renderer.setStyle(element, 'display', 'block', RendererStyleFlags2.Important);
+          }
+
+          this.galleryTabs.selectedIndex = view == 'grid' ? 0 : 1;
+          this.galleryTabs.realignInkBar();
+        })
+
+    );
+  }
+
+  @ViewChild('galleryTabs', { static: false }) galleryTabs?: MatTabGroup;
+  onGalleryTabChange(event: MatTabChangeEvent) {
     if (!event) return;
 
     this.itemScrollViewSvc.switchTab(event.tab.textLabel);
-    if (this.viewTabs) {
-      this.viewTabs.selectedIndex = event.index;
-      this.viewTabs.realignInkBar();
+    if (this.galleryTabs) {
+      this.galleryTabs.selectedIndex = event.index;
+      this.galleryTabs.realignInkBar();
     }
   }
 }

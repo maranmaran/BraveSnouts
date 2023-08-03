@@ -5,6 +5,15 @@
     class="auction-item mat-elevation-z5 elevate hover-large primary h-min"
 >
     <mat-card-title class="auction-item-title">
+        <mat-icon
+            class="absolute bottom-12 -left-2 cursor-pointer foreground primary default rounded-full hover:scale-105 hover:shadow-md hover:p-1 hover:-translate-x-1 hover:translate-y-1"
+            matTooltip="Kopiraj poveznicu"
+            [cdkCopyToClipboard]="link"
+            (cdkCopyToClipboardCopied)="onLinkCopyFinished($event)"
+        >
+            link
+        </mat-icon>
+
         <label class="mb-0 font-bold mat-body sm:mat-h2">
             {{ item.name }}
         </label>

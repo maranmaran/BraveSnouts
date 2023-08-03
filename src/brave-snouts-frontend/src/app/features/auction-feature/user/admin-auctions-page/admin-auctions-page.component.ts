@@ -79,6 +79,10 @@ export class AdminAuctionsPageComponent implements OnInit {
     const handoverDetails = await this.getHandoverDetails();
     if (!handoverDetails) return;
 
+    if (!await this.confirmDialog('Sigurno želiš zatvoriti označene aukcije?')) {
+      return;
+    }
+
     for (const auction of this.selection.selected) {
       let endAuction$ = this.functionsSvc
         .endAuction(auction.id, handoverDetails)
@@ -120,10 +124,9 @@ export class AdminAuctionsPageComponent implements OnInit {
       );
     }
 
-    let confirmAnswer = await this.confirmDialog(
-      'Sigurno želiš poslati pobjedničke mailove trenutno označenim aukcijama?'
-    );
-    if (!confirmAnswer) return;
+    if (!await this.confirmDialog('Sigurno želiš poslati pobjedničke mailove trenutno označenim aukcijama?')) {
+      return;
+    }
 
     this.functionsSvc
       .sendWinnerMails(auctionIds, handoverDetails[0])
@@ -139,11 +142,12 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   async onChangeHandoverDetails() {
-    const confirmMsg = 'Sljedeći dijalog će sudionicima poslati mail s promjenama. Nastaviti?';
-    if (!window.confirm(confirmMsg)) return;
-
     const handoverDetails = await this.getHandoverDetails();
     if (!handoverDetails) return;
+
+    if (!await this.confirmDialog('Sljedeći dijalog će sudionicima poslati mail s promjenama mjesta preuzimanja. Nastaviti?')) {
+      return;
+    }
 
     this.functionsSvc
       .changeHandoverDetails(
@@ -161,7 +165,11 @@ export class AdminAuctionsPageComponent implements OnInit {
       .subscribe();
   }
 
-  onArchiveAuction() {
+  async onArchiveAuction() {
+    if (!await this.confirmDialog('Sigurno želiš arhivirati aukciju?')) {
+      return;
+    }
+
     from(this.selection.selected.map(x => x.id))
       .pipe(
         first(),

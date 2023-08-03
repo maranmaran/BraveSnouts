@@ -51,7 +51,7 @@
     </div>
 
     <div id="user-profile" class="user-auth h-full relative flex flex-row justify-end items-center">
-        <button mat-icon-button class="elevate hover default" matTooltip="Pomoć" (click)="onShowContactHelp()">
+        <button mat-icon-button matTooltip="Pomoć" (click)="onShowContactHelp()">
             <mat-icon>help</mat-icon>
         </button>
 
@@ -60,7 +60,7 @@
         <ng-container *ngIf="user$ | async as user">
             <img
                 *ngIf="user?.photoURL; else noPhoto"
-                class="avatar pointer elevate hover default"
+                class="avatar cursor-pointer elevate hover default"
                 src="{{ user.photoURL }}"
                 matTooltip="{{ user.displayName }}"
                 [matMenuTriggerFor]="profileMenu"
@@ -107,7 +107,7 @@
     </div>
 </mat-toolbar>
 
-<mat-tab-group *ngIf="itemScrollViewSvc.show" #tabs mat-stretch-tabs (selectedTabChange)="onTabChange($event)">
+<mat-tab-group *ngIf="itemScrollViewSvc.show" #galleryTabs mat-stretch-tabs (selectedTabChange)="onGalleryTabChange($event)">
     <mat-tab label="grid">
         <ng-template mat-tab-label>
             <mat-icon color="warn" class="example-tab-icon">view_module</mat-icon>

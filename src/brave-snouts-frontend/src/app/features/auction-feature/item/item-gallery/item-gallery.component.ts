@@ -69,14 +69,16 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
           // clear history state so we can go back
           console.debug('going back because of manual action');
           window.history.go(-1);
+
+          this.onPopState();
         }
 
-        setTimeout(() => {
-          this.itemsScroller?.refresh();
-          this.gridScroller?.refresh()
-        });
+        // setTimeout(() => {
+        //   this.itemsScroller?.refresh();
+        //   this.gridScroller?.refresh()
+        // });
 
-        this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.markForCheck();
       })
     );
   }
@@ -105,18 +107,6 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     // override for scroll
     this.lastScrollItemIdx = this.items.findIndex((it) => it.id == item.id);
     this.openItemsScrollTabOnIndex(this.lastScrollItemIdx);
-
-    // let dialogRef = this.dialog.open(SingleItemDialogComponent, {
-    //   height: 'auto',
-    //   width: '98%',
-    //   maxWidth: '20rem',
-    //   autoFocus: false,
-    //   closeOnNavigation: true,
-    //   panelClass: ['item-dialog', 'mat-elevation-z8'],
-    //   data: { item, svc: this.itemDialogSvc },
-    // });
-
-    // dialogRef.afterClosed()
   }
 
   @ViewChild('itemsScroller', { static: false }) itemsScroller: VirtualScrollerComponent;
@@ -142,12 +132,12 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.itemScrollViewSvc.view == 'items') {
       this.itemScrollViewSvc.switchTab('grid');
-
-      setTimeout(() => {
-        this.itemsScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
-        this.gridScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
-      });
     }
+
+    setTimeout(() => {
+      this.itemsScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
+      this.gridScroller?.scrollToIndex(this.lastScrollItemIdx, true, -50, 0);
+    });
   }
 
   openItemWithScroll(item: AuctionItem) {

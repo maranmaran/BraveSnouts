@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, shareReplay } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ItemScrollViewService {
@@ -8,23 +8,14 @@ export class ItemScrollViewService {
   block = false;
 
   private _view = new BehaviorSubject<string>('grid');
-  public get view$() {
-    return this._view.asObservable();
-  }
-
-  public get view() {
-    return this._view.value;
-  }
+  view$ = this._view.asObservable().pipe(shareReplay(1));
+  get view() { return this._view.value; }
 
   private _loading = new BehaviorSubject<boolean>(false);
-  public get loading$() {
-    return this._loading.asObservable();
-  }
+  loading$ = this._loading.asObservable().pipe(shareReplay(1));
 
   private _show = false;
-  public get show() {
-    return this._show;
-  }
+  get show() { return this._show }
 
   initialize() {
     this._show = true;

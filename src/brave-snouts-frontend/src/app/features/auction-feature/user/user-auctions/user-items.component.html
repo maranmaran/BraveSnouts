@@ -5,112 +5,35 @@
         </button>
     </div>
 
-    <mat-accordion *ngIf="items?.length > 0 && !(isLoading$ | async)">
-        <mat-expansion-panel [expanded]="winningItems.length > 0">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <div class="font-bold m-0 mat-body md:mat-h2">Moji predmeti</div>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
+    <mat-tab-group [animationDuration]="0">
+        <mat-tab label="Moji predmeti">
+            <app-item-list
+                *ngIf="winningItems.length > 0"
+                [items]="winningItems"
+                [useGallery]="false"
+                class="block h-screen"
+            ></app-item-list>
 
-            <ng-container *ngIf="winningItems.length > 0">
-                <virtual-scroller
-                    id="won-items"
-                    class="custom-height"
-                    [horizontal]="true"
-                    *ngIf="!(isMobile$ | async) || !useGallery; else gallery"
-                    #scroll
-                    [items]="winningItems"
-                >
-                    <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
-                    </app-item-details>
-                </virtual-scroller>
-
-                <ng-template #gallery>
-                    <virtual-scroller
-                        id="won-items-gallery"
-                        class="custom-height"
-                        #scroll
-                        [horizontal]="true"
-                        [items]="winningItems"
-                    >
-                        <div
-                            class="media-container center"
-                            *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index"
-                        >
-                            <app-item-media
-                                class="media elevate hover"
-                                [first]="true"
-                                [media]="item.media"
-                                [auctionId]="item.auctionId"
-                                (click)="openItem(item)"
-                            >
-                                <div class="best-bid-label background warn lighter mat-small" *ngIf="userId == item.user">
-                                    Vaša ponuda je najbolja
-                                </div>
-                            </app-item-media>
-                        </div>
-                    </virtual-scroller>
-                </ng-template>
-            </ng-container>
-
-            <div class="text-center" *ngIf="winningItems.length == 0">
+            <div class="text-center mt-4" *ngIf="winningItems.length == 0">
                 <i>Nemate predmeta s najvišom ponudom</i>
             </div>
-        </mat-expansion-panel>
+        </mat-tab>
 
-        <mat-expansion-panel [expanded]="winningItems.length == 0">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <div class="font-bold m-0 mat-body md:mat-h2">Nadmašeni predmeti</div>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
+        <mat-tab label="Nadmašeni predmeti">
+            <app-item-list
+                *ngIf="outbiddedItems.length > 0"
+                [items]="outbiddedItems"
+                [useGallery]="false"
+                class="block h-screen"
+            ></app-item-list>
 
-            <ng-container *ngIf="outbiddedItems.length > 0">
-                <virtual-scroller
-                    id="outbidded-items"
-                    class="custom-height"
-                    [horizontal]="true"
-                    *ngIf="!(isMobile$ | async) || !useGallery; else gallery"
-                    #scroll
-                    [items]="outbiddedItems"
-                >
-                    <app-item-details *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn" [item]="item">
-                    </app-item-details>
-                </virtual-scroller>
-
-                <ng-template #gallery>
-                    <virtual-scroller
-                        id="outbidded-items-gallery"
-                        class="custom-height"
-                        #scroll
-                        [horizontal]="true"
-                        [items]="outbiddedItems"
-                    >
-                        <div
-                            class="media-container center"
-                            *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let idx = index"
-                        >
-                            <app-item-media
-                                class="media elevate hover"
-                                [first]="true"
-                                [media]="item.media"
-                                [auctionId]="item.auctionId"
-                                (click)="openItem(item)"
-                            >
-                            </app-item-media>
-                        </div>
-                    </virtual-scroller>
-                </ng-template>
-            </ng-container>
-
-            <div class="text-center" *ngIf="outbiddedItems.length == 0">
+            <div class="text-center mt-4" *ngIf="outbiddedItems.length == 0">
                 <i>Nema nadmašenih predmeta</i>
             </div>
-        </mat-expansion-panel>
-    </mat-accordion>
+        </mat-tab>
+    </mat-tab-group>
 
-    <div class="text-center mt-3" *ngIf="items?.length == 0 && !(isLoading$ | async)">
+    <div class="text-center mt-4" *ngIf="items?.length == 0 && !(isLoading$ | async)">
         <div><i>Trenutno nemate niti jedan predmet.</i></div>
         <div>
             <i>Sudjelujte u aukciji kako bi vidjeli predmete na koje ste dali ponudu.</i>

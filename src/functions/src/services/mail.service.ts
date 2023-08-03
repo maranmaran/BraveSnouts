@@ -111,4 +111,4 @@ async function getMjmlTemplate(name: string) {
 }
 
 export const getEmailOptoutLink = () =>
-  `${config.base.url}/email-postavke`;
+  `${config.base.url}/aukcije/email-postavke`;

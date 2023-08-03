@@ -39,7 +39,6 @@ export const sendHandoverConfirmationMail = async (
 
     // load and customize html template
     const emailVariables = {
-        // handover_confirm_url: `${config.base.url}/potvrda-primopredaja;auctionId=${auctionId};userId=${user.id}`,
         handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
         user_name: user.displayName.trim().split(" ")[0],
         chosen_handover_option: chosenHandoverOption,
@@ -55,5 +54,5 @@ export const sendHandoverConfirmationMail = async (
 
 export const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {
     const ids = auctionIds.join(",");
-    return `${config.base.url}/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
+    return `${config.base.url}/aukcije/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
 };

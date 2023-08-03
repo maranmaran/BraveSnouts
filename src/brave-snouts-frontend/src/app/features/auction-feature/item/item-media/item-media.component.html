@@ -6,6 +6,7 @@
             [id]="galleryId"
             (itemClick)="openLightbox($event)"
         ></gallery>
+
         <img
             *ngIf="media.length == 1 && (media[0] | firebaseImage | async) as image"
             class="w-full h-full single-gallery-image cursor-pointer"
