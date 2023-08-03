@@ -70,7 +70,7 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   // shareable item link
   get link() {
-    return environment.baseUrl + `/aukcije/predmet;auctionId=${this.auction.id};itemId=${this.item.id}`;
+    return environment?.baseUrl + `/aukcije/predmet;auctionId=${this.auction?.id};itemId=${this.item?.id}`;
   }
 
   ngOnInit() {
