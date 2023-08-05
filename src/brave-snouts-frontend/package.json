@@ -40,7 +40,6 @@
     "ngx-google-analytics": "^14.0.1",
     "ngx-mat-timepicker": "~16.0.2",
     "rxjs": "^7.8.1",
-    "stripe": "^12.17.0",
     "subsink": "^1.0.2",
     "tslib": "^2.6.0",
     "uuid": "^9.0.0",

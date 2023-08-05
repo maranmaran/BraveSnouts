@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
+import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { loadStripe } from "@stripe/stripe-js";
-import { BehaviorSubject, first, firstValueFrom, from, map, of, shareReplay, switchMap, tap } from "rxjs";
+import { BehaviorSubject, map, of, shareReplay } from "rxjs";
 import { environment } from "src/environments/environment";
-import Stripe from "stripe";
 
 export interface Price {
     id: string,
@@ -24,11 +24,7 @@ export interface Product {
 
 @Injectable()
 export class StripeApi {
-
-    // THIS NEEDS TO GO IN FUNCTIONS -- STORE SECURELY
-    private readonly api = new Stripe(environment.stripe.secretKey, {
-        apiVersion: "2022-11-15"
-    });
+    private readonly functions = inject(AngularFireFunctions);
 
     private readonly productsSubject = new BehaviorSubject<Product[]>([]);
     readonly products$ = this.productsSubject.asObservable().pipe(shareReplay(1));
@@ -75,47 +71,11 @@ export class StripeApi {
             return this.products$;
         }
 
-        const call = this.api.products.list({
-            active: true,
-        });
-
-        return from(call)
-            .pipe(
-                first(),
-                map(products => (products as Stripe.Response<Stripe.ApiList<Stripe.Product>>).data),
-                switchMap(async products => Promise.all(products.map(async x => await this.toProduct(x)))),
-                map(products => products.sort((a, b) => a.created < b.created ? 1 : -1)),
-                tap(products => this.productsSubject.next(products))
-            );
+        return this.functions.httpsCallable<void, Product[]>('getProducts-getProductsFn')();
     }
 
     getPrice(id: string) {
-        const call = this.api.prices.retrieve(id, {});
-
-        return from(call)
-            .pipe(
-                first(),
-                map(price => (<Price>{
-                    id: price.id,
-                    currency: price.currency,
-                    amount: price.unit_amount / 100,
-                }))
-            )
-
-    }
-
-    private async toProduct(entry: Stripe.Product) {
-        return <Product>{
-            id: entry.id,
-            name: entry.name,
-            url: entry.url,
-            caption: entry.caption,
-            created: entry.created,
-            description: entry.description,
-            price: await firstValueFrom(this.getPrice(entry.default_price as string)),
-            images: entry.images,
-            metadata: entry.metadata,
-        }
+        return this.functions.httpsCallable<string, Price>('getPrice-getPriceFn')(id);
     }
 }
 

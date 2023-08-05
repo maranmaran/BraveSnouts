@@ -54,7 +54,6 @@ const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
 const contentfulSpace = process.env.CONTENTFUL_SPACE;
 const contentfulApiKey = process.env.CONTENTFUL_API_KEY;
 const contentfulPreviewApiKey = process.env.CONTENTFUL_PREVIEW_API_KEY;
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 
 if (!apiKey) throw new Error(`apiKey missing`);
@@ -97,7 +96,6 @@ const buildEnvironmentFileContent = `
       previewKey: '${contentfulPreviewApiKey}'
     },
     stripe: {
-      secretKey: '${stripeSecretKey}',
       publishableKey: '${stripePublishableKey}'
     },
     pageSizes: {

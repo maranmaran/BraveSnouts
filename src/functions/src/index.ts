@@ -19,12 +19,13 @@ const endAuctionFn = require('./functions/end-auction.function');
 const changeHandoverFn = require('./functions/change-handover.function');
 const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
 const exportAuctionFn = require('./functions/export-auction.function');
-// const processAuctionImagesFn = require('./functions/process-auction-images.function');
 const processAuctionImageFn = require('./functions/process-auction-image.function');
 const handoverConfirmFn = require('./functions/handover-confirm.function');
 const sendWinnerMailFn = require('./functions/send-winner-mail.function');
 const testSendWinnerMailFn = require('./functions/test-send-winner-mail.function');
 const downloadMailsFn = require('./functions/download-mails.function');
+const getProductsFn = require('./functions/stripe/stripe.functions');
+const getPriceFn = require('./functions/stripe/stripe.functions');
 
 //#region 
 
@@ -71,6 +72,10 @@ export const downloadMails = downloadMailsFn;
 
 // exports auction details, winners and donations 
 export const exportAuction = exportAuctionFn;
+
+// Stripe functions
+export const getProducts = getProductsFn; // gets list of active products
+export const getPrice = getPriceFn; // gets specific pricing details
 
 //#endregion
 
