@@ -35,13 +35,7 @@
         (click)="onLogoClick()"
         class="flex flex-row gap-4 justify-center items-center flex-auto logo-center z-50"
     >
-        <div
-            #logo
-            class="logo elevate hover"
-            style="z-index: 100"
-            [ngClass]="{ 'cursor-pointer': !rootRoute }"
-            [hidden]="clickFlag"
-        >
+        <div #logo class="logo elevate hover z-[100]" [ngClass]="{ 'cursor-pointer': !rootRoute }" [hidden]="clickFlag">
             <mat-progress-spinner *ngIf="active$ | async" class="spinner" mode="indeterminate" color="accent">
             </mat-progress-spinner>
         </div>

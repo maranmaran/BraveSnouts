@@ -4,7 +4,7 @@
     </button>
 </div>
 
-<div class="p-2 overflow-auto flex flex-col gap-2" style="max-height: 800px !important">
+<div class="p-2 overflow-auto flex flex-col gap-2 max-h-[800px]">
     <virtual-scroller #itemsScroller *ngIf="winners && winners.length > 0; else noWinners" #scroll [items]="winners">
         <mat-card
             appearance="raised"

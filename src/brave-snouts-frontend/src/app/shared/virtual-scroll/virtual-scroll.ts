@@ -88,7 +88,7 @@ export interface IViewport extends IPageInfo {
   exportAs: 'virtualScroller',
   template: `
     <div class="total-padding" #invisiblePadding></div>
-    <div class="scrollable-content" style="will-change: transform" #content>
+    <div class="scrollable-content will-change-transform" #content>
       <ng-content></ng-content>
     </div>
   `,

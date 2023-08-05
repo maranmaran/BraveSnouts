@@ -68,17 +68,11 @@ label {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   padding-top: 1rem;
-  margin-bottom: 10px;
-  height: calc(100% - 56px - 1rem) !important; // because of toolbar height
+  height: calc(100% - 40px - 1rem) !important; // because of toolbar height
 }
 
 .btn-small {
   font-size: 10px !important;
-}
-
-.back-btn {
-  margin: 0.75rem;
-  margin-top: 0rem !important;
 }
 
 .restrict-height-handover {

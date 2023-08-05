@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Renderer2, RendererStyleFlags2, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { mergeMap, tap } from 'rxjs/operators';
@@ -40,12 +40,25 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly itemDialogSvc: ItemDialogService
   ) { }
 
+  private readonly renderer = inject(Renderer2);
+
   async ngOnInit() {
     this.isLoading$ = this.loadingSvc.active$;
     this.userId = await firstValueFrom(this.authSvc.userId$);
     this._subsink.add(
       this.getTrackedItems()
     );
+
+    this.toggleHtmlVerticalScroll();
+  }
+
+  toggleHtmlVerticalScroll(hidden = true) {
+    this.renderer.setStyle(
+      document.getElementsByTagName("html")[0],
+      'overflow-y',
+      hidden ? 'hidden' : 'auto',
+      RendererStyleFlags2.Important
+    )
   }
 
   // Workaround for angular component issue #13870
@@ -56,6 +69,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.toggleHtmlVerticalScroll(false);
     this._subsink.unsubscribe();
   }
 

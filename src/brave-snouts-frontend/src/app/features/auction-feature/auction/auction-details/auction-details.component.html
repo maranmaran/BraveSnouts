@@ -1,15 +1,15 @@
-<div class="container flex flex-col gap-4 sm:mt-2 mt-0" #scrollingBlock *ngIf="auction$ | async as auction">
-    <div class="auction-toolbar mt-2 flex flex-row justify-between">
-        <button routerLink="/aukcije" class="btn-small" mat-mini-fab color="warn">
+<div class="container flex flex-col gap-4" #scrollingBlock *ngIf="auction$ | async as auction">
+    <div class="w-full flex justify-between">
+        <button routerLink="/aukcije" class="btn-small self-start mx-2" mat-raised-button color="warn">
             <mat-icon>arrow_back</mat-icon>
-            <!-- Natrag -->
+            Natrag
         </button>
 
         <button
             routerLink="/aukcije/moji-predmeti"
             gaEvent="my_items_click"
             gaCategory="items_tracking"
-            class="btn-small"
+            class="btn-small self-end mx-2"
             mat-raised-button
             color="primary"
         >
@@ -17,7 +17,7 @@
         </button>
     </div>
 
-    <div class="auction-toolbar flex md:flex-col flex-row justify-between items-center gap-2">
+    <div class="flex flex-row md:flex-col justify-between items-center gap-2">
         <div class="section flex flex-row justify-between items-center gap-4">
             <div class="mb-0 font-bold sm:text-lg md:text-xl text-2xl">
                 {{ auction.name }}

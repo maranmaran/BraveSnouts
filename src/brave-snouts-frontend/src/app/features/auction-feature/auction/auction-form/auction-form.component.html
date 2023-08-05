@@ -81,10 +81,9 @@
                                     <button
                                         id="deleteBtn-{{ scroll.viewPortInfo.startIndex + i }}"
                                         mat-icon-button
-                                        class="relative"
+                                        class="relative bottom-3"
                                         type="button"
                                         color="warn"
-                                        style="bottom: 0.75rem"
                                         (click)="removeItem(scroll.viewPortInfo.startIndex + i)"
                                     >
                                         <mat-icon>delete</mat-icon>
@@ -176,12 +175,3 @@
         </virtual-scroller>
     </div>
 </div>
-<!--
-
-<virtual-scroller [formGroup]="items" #scroll class="pb-3 items-grid" [items]="[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]">
-    <div formArrayName="items" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn; let i = index;" >
-       <div class="center" style="height: 800px; width: 100%;">
-            <h1>{{ item }}</h1>
-        </div>
-    </div>
-</virtual-scroller> -->

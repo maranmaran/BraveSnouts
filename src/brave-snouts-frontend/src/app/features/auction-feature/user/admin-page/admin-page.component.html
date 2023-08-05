@@ -202,12 +202,7 @@
 
     <div *ngIf="!!(bids$ | async)">
         <ng-container *ngIf="(bids$ | async)?.length > 0; else noBids">
-            <mat-card
-                appearance="raised"
-                *ngFor="let bid of bids$ | async"
-                class="elevate hover"
-                style="margin-bottom: 1rem"
-            >
+            <mat-card appearance="raised" *ngFor="let bid of bids$ | async" class="elevate hover mb-4">
                 <mat-card-header>
                     <img mat-card-avatar [src]="bid.userInfo?.avatar" />
                     <mat-card-title> {{ bid.userInfo?.name }} - {{ bid.bid | moneyAsync | async }} </mat-card-title>
