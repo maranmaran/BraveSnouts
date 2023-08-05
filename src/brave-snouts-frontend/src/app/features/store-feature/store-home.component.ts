@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { ContentfulApiService } from './contentful.api';
+import { StripeApi } from './stripe.api';
 
 @Component({
-  selector: 'blog-container',
+  selector: 'store-container',
   template: `
     <app-toolbar></app-toolbar>
     <div class="container px-4">
       <router-outlet></router-outlet>
     </div> 
   `,
-  providers: [ContentfulApiService]
+  providers: [StripeApi]
 })
-export class BlogHomeComponent {
+export class StoreHomeComponent {
 }

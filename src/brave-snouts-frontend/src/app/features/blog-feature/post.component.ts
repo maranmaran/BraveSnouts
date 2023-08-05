@@ -16,16 +16,14 @@ import { BlogPost, ContentfulApiService as ContentfulApi } from './contentful.ap
     `
   ],
   template: `
-      <div class="h-full px-2 sm:px-10 lg:px-28 max-w-7xl flex flex-col justify-center">
-        <div class="font-bold text-2xl sm:text-4xl lg:text-6xl self-center py-8 sm:py-16 mt-4 px-0">{{post.title}}</div>
-        <div [ngStyle]="{
-            background: 'url(' + post.heroImage + ') 50% 50% no-repeat',
+      <div *ngIf="!!post" class="h-full px-4 w-full max-w-7xl flex flex-col justify-center">
+        <div class="font-bold xs:text-xl md:text-2xl lg:text-4xl text-6xl my-4 self-center ">{{post.title}}</div>
+        <div class="w-full h-[400px] xs:h-[250px] sm:h-[350px]" [ngStyle]="{
+            background: 'url(' + post.hero + ') 50% 50% no-repeat',
             'background-size': 'cover',
             'align-self': 'center',
-            'height': '700px',
-            'width': '100%'
         }" mat-card-image ></div>
-        <span class="p-4" [innerHTML]="post.content"></span>
+        <span class="p-4 flex flex-col break-words" [innerHTML]="post.content"></span>
       </div>
   `
 })
@@ -37,6 +35,8 @@ export class PostComponent implements OnInit {
   post: BlogPost;
 
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     this.post = this.api.selectedPost;
 
     if (!this.post) {

@@ -8,13 +8,13 @@ import { LightboxModule } from "ng-gallery/lightbox";
 import { CountdownModule } from "ngx-countdown";
 import { DragScrollModule } from "ngx-drag-scroll";
 import { NgxDropzoneModule } from "ngx-dropzone";
+import { AuctionsToolbarComponent } from "src/app/features/auction-feature/auctions-toolbar/auctions-toolbar.component";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MaintenanceComponent } from "src/app/shared/maintenance/maintenance.component";
 import { MaterialModule } from "src/app/shared/material.module";
 import { MessageDialogComponent } from "src/app/shared/message-dialog/message-dialog.component";
 import { EmailCopyComponent } from "src/app/shared/support/email-copy.component";
 import { SupportComponent } from "src/app/shared/support/support.component";
-import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
 import { TruncatedTextComponent } from "src/app/shared/truncated-text/truncated-text.component";
 import { VirtualScrollerModule } from "src/app/shared/virtual-scroll/virtual-scroll.module";
 import { AuctionDatePipe } from "src/business/pipes/custom-date.pipe";
@@ -74,7 +74,7 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         HotToastModule.forRoot(),
 
         // Shared
-        ToolbarComponent,
+        AuctionsToolbarComponent,
         MaintenanceComponent,
         SupportComponent,
         TruncatedTextComponent,

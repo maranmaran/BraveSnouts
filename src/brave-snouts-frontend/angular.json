@@ -17,6 +17,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
+              "contentful",
               "rxjs-compat",
               "luxon",
               "ng-gallery"

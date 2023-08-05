@@ -7,7 +7,7 @@ import { SubSink } from 'subsink';
 @Component({
   selector: 'app-container',
   template: `
-    <app-toolbar></app-toolbar>
+    <auctions-toolbar></auctions-toolbar>
     <router-outlet></router-outlet>
   `
 })

@@ -14,7 +14,7 @@
             link
         </mat-icon>
 
-        <label class="mb-0 font-bold mat-body sm:mat-h2">
+        <label class="mb-0 font-bold sm:text-lg text-xl">
             {{ item.name }}
         </label>
 
@@ -22,9 +22,9 @@
             <div class="mat-small text-center flex-nowrap" style="background: whitesmoke">Trenutna ponuda</div>
 
             <label
-                class="absolute mat-body sm:mat-h2"
+                class="absolute xs:text-lg text-xl"
                 [@priceOnBidChanged]="(topBidChanged$ | async) ? 'change' : 'no-change'"
-                class="flex-nowrap mb-0 mat-h2 font-bold center"
+                class="flex-nowrap mb-0 text-xl font-bold center"
             >
                 {{ (item.user ? item.bid : item.startBid) | moneyAsync | async }}
             </label>
@@ -87,7 +87,7 @@
                 <mat-icon>remove</mat-icon>
             </button>
 
-            <div class="mat-h2 m-0 font-bold" [ngClass]="{ 'foreground accent default': currentBid != item.bid }">
+            <div class="text-xl m-0 font-bold" [ngClass]="{ 'foreground accent default': currentBid != item.bid }">
                 {{ currentBid | moneyAsync | async }}
             </div>
 

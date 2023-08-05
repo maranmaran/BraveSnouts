@@ -54,6 +54,8 @@ const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
 const contentfulSpace = process.env.CONTENTFUL_SPACE;
 const contentfulApiKey = process.env.CONTENTFUL_API_KEY;
 const contentfulPreviewApiKey = process.env.CONTENTFUL_PREVIEW_API_KEY;
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 
 if (!apiKey) throw new Error(`apiKey missing`);
 if (!authDomain) throw new Error(`authDomain missing`);
@@ -93,6 +95,10 @@ const buildEnvironmentFileContent = `
       space: '${contentfulSpace}',
       apiKey: '${contentfulApiKey}',
       previewKey: '${contentfulPreviewApiKey}'
+    },
+    stripe: {
+      secretKey: '${stripeSecretKey}',
+      publishableKey: '${stripePublishableKey}'
     },
     pageSizes: {
       itemsList: ${process.env.PAGE_SIZE_ITEMS_LIST ?? 16},

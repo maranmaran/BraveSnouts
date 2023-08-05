@@ -1,4 +1,4 @@
-<div class="container flex flex-col gap-4 mt-2 sm:mt-0" #scrollingBlock *ngIf="auction$ | async as auction">
+<div class="container flex flex-col gap-4 sm:mt-2 mt-0" #scrollingBlock *ngIf="auction$ | async as auction">
     <div class="auction-toolbar mt-2 flex flex-row justify-between">
         <button routerLink="/aukcije" class="btn-small" mat-mini-fab color="warn">
             <mat-icon>arrow_back</mat-icon>
@@ -17,16 +17,16 @@
         </button>
     </div>
 
-    <div class="auction-toolbar flex flex-col md:flex-row justify-between items-center gap-2">
+    <div class="auction-toolbar flex md:flex-col flex-row justify-between items-center gap-2">
         <div class="section flex flex-row justify-between items-center gap-4">
-            <div class="mb-0 font-bold mat-body sm:mat-h2 md:mat-h1">
+            <div class="mb-0 font-bold sm:text-lg md:text-xl text-2xl">
                 {{ auction.name }}
             </div>
-            <countdown *ngIf="config" #cd [config]="config" class="m-0 font-bold mat-body sm:mat-h2 md:mat-h1"></countdown>
+            <countdown *ngIf="config" #cd [config]="config" class="m-0 font-bold sm:text-lg md:text-xl text-2xl"></countdown>
         </div>
 
         <div class="section flex flex-row">
-            <div class="mb-0 font-bold flex flex-row gap-6 mat-body sm:mat-h2 md:mat-h1">
+            <div class="mb-0 font-bold flex flex-row gap-6 sm:text-lg md:text-xl text-2xl">
                 <label>Ukupno donirano:</label>
                 <div class="foreground primary lighter" [@priceOnBidChanged]="moneyRaised ? 'change' : 'no-change'">
                     {{ auction.raisedMoney | moneyAsync | async }}

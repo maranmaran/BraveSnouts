@@ -8,7 +8,7 @@ const routes: Routes = [
     {
         path: '', component: BlogHomeComponent, children: [
             { path: '', component: PostsComponent },
-            { path: 'clanak/:id', data: {}, component: PostComponent },
+            { path: 'clanak/:id', component: PostComponent },
         ]
     },
     { path: '**', redirectTo: '/' }

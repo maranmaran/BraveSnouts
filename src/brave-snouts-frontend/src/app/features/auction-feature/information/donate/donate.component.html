@@ -1,69 +1,43 @@
 <div @fadeIn class="h-full flex flex-col gap-10 justify-between items-center">
-  <div
-    *ngIf="text"
-    class="flex flex-col self-start justify-center items-center"
-  >
-    <div class="mb-3 mr-0 w-full">
-      <b>Pomoći možete i na druge načine:</b>
-      <ul class="primary-list">
-        <li>Donacijom potrepština za životinje</li>
-        <li>
-          Donacijom predmeta za buduće aukcije
-          <ul class="secondary-list">
-            <li>Javite nam se putem društvenih mreža</li>
+    <div *ngIf="text" class="flex flex-col self-start justify-center items-center">
+        <div class="mb-3 mr-0 w-full">
+            <b>Pomoći možete i na druge načine:</b>
+            <ul class="primary-list">
+                <li>Donacijom potrepština za životinje</li>
+                <li>
+                    Donacijom predmeta za buduće aukcije
+                    <ul class="secondary-list">
+                        <li>Javite nam se putem društvenih mreža</li>
 
-            <li>
-              <div class="flex flex-row flex-wrap justify-start items-center">
-                Ili na mail:
-                <app-email-copy></app-email-copy>
-              </div>
-            </li>
-          </ul>
-        </li>
-        <li>
-          Direktnom uplatom na račun udruge uz naznaku
-          <span class="foreground warn default">"donacija".</span>
-        </li>
-      </ul>
+                        <li>
+                            <div class="flex flex-row flex-wrap justify-start items-center">
+                                Ili na mail:
+                                <app-email-copy></app-email-copy>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Direktnom uplatom na račun udruge uz naznaku
+                    <span class="foreground warn default">"donacija".</span>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 
-  <div class="pb-1 payment flex flex-col gap-2 w-full md:w-[80%]">
-    <div
-      *ngFor="let account of accounts$ | async"
-      class="section flex flex-row gap-2 justify-start items-center"
-    >
-      <div [ngSwitch]="account.type">
-        <img
-          class="img-fluid"
-          src="assets/donate-logo/pbz-logo.jpg"
-          *ngSwitchCase="'pbz'"
-        />
-        <img
-          class="img-fluid"
-          src="assets/donate-logo/erste.svg"
-          *ngSwitchCase="'erste'"
-        />
-        <img
-          class="img-fluid"
-          src="assets/donate-logo/keks-logo.jpg"
-          *ngSwitchCase="'keks'"
-        />
-        <img
-          class="img-fluid"
-          src="assets/donate-logo/revolut-logo.svg"
-          *ngSwitchCase="'revolut'"
-        />
-        <img
-          class="img-fluid"
-          src="assets/donate-logo/paypal-logo.svg"
-          *ngSwitchCase="'paypal'"
-        />
-        <img class="img-fluid" [src]="account.image" *ngSwitchDefault />
-      </div>
-      <div class="m-0 sm:mat-h2">
-        {{ account.account }}
-      </div>
+    <div class="pb-1 payment flex flex-col gap-2 w-full md:w-[80%]">
+        <div *ngFor="let account of accounts$ | async" class="section flex flex-row gap-2 justify-start items-center">
+            <div [ngSwitch]="account.type">
+                <img class="img-fluid" src="assets/donate-logo/pbz-logo.jpg" *ngSwitchCase="'pbz'" />
+                <img class="img-fluid" src="assets/donate-logo/erste.svg" *ngSwitchCase="'erste'" />
+                <img class="img-fluid" src="assets/donate-logo/keks-logo.jpg" *ngSwitchCase="'keks'" />
+                <img class="img-fluid" src="assets/donate-logo/revolut-logo.svg" *ngSwitchCase="'revolut'" />
+                <img class="img-fluid" src="assets/donate-logo/paypal-logo.svg" *ngSwitchCase="'paypal'" />
+                <img class="img-fluid" [src]="account.image" *ngSwitchDefault />
+            </div>
+            <div class="m-0 sm:text-base text-xl">
+                {{ account.account }}
+            </div>
+        </div>
     </div>
-  </div>
 </div>

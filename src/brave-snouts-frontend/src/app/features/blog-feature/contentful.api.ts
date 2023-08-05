@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
-import { Entry, EntrySkeletonType, createClient } from 'contentful';
+import { Asset, Entry, EntrySkeletonType, createClient } from 'contentful';
 import { BehaviorSubject, first, from, map, mergeMap, of, shareReplay, tap, toArray } from "rxjs";
 import { environment } from "src/environments/environment";
 
@@ -10,7 +10,7 @@ export interface BlogPost {
     date: Date,
     tags: string[],
     description: string,
-    heroImage: string,
+    hero: string;
     content: string;
 }
 
@@ -46,6 +46,10 @@ export class ContentfulApiService {
     }
 
     getPosts() {
+        if (this.postsSubject.value.length > 0) {
+            return this.posts$;
+        }
+
         const call = this.client.getEntries({ content_type: this.content_type });
 
         return from(call)
@@ -53,10 +57,10 @@ export class ContentfulApiService {
                 first(),
                 map(x => x.items.map(this.toBlogPost)),
                 mergeMap(posts => of(...posts)),
-                mergeMap(post => this.getAsset(post.heroImage)
-                    .pipe(map(r => ({ post, r })))
-                ),
-                map(({ post, r }) => (post.heroImage = r.fields.file.url, post)),
+                // mergeMap(post => this.getAsset(post.heroImage)
+                //     .pipe(map(r => ({ post, r })))
+                // ),
+                // map(({ post, r }) => (post.heroImage = r.fields.file.url, post)),
                 toArray(),
                 map(posts => posts.sort((a, b) => a.date < b.date ? 1 : -1)),
                 tap(posts => this.postsSubject.next(posts))
@@ -75,8 +79,20 @@ export class ContentfulApiService {
             date: new Date(entry.fields.date as string),
             tags: entry.metadata.tags.map(x => x.sys.id),
             description: entry.fields.description,
-            heroImage: (entry.fields.heroImage as any).sys.id,
-            content: documentToHtmlString(entry.fields.content as any),
+            hero: (<Asset>entry.fields.heroImage).fields.file.url,
+            content: documentToHtmlString(entry.fields.content as any, {
+                renderNode: {
+                    ['embedded-asset-block']: (node, children) => {
+                        // render the EMBEDDED_ASSET as you need
+                        return `
+                            <img class="h-auto w-[55%] self-center" 
+                                src="${'https://' + node.data.target.fields.file.url}"
+                                alt="${node.data.target.fields.description}"
+                            />
+                       `
+                    }
+                }
+            })
         };
     }
 
