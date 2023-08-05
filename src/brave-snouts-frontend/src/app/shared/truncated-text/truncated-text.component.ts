@@ -1,11 +1,16 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TruncatePipe } from 'src/business/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-truncated-text',
   templateUrl: './truncated-text.component.html',
-  styleUrls: ['./truncated-text.component.scss']
+  styleUrls: ['./truncated-text.component.scss'],
+  standalone: true,
+  imports: [CommonModule, TruncatePipe],
+  providers: [TruncatePipe]
 })
 export class TruncatedTextComponent implements OnInit, OnDestroy {
 

@@ -51,6 +51,9 @@ const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
 const appId = process.env.FIREBASE_APP_ID;
 const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
+const contentfulSpace = process.env.CONTENTFUL_SPACE;
+const contentfulApiKey = process.env.CONTENTFUL_API_KEY;
+const contentfulPreviewApiKey = process.env.CONTENTFUL_PREVIEW_API_KEY;
 
 if (!apiKey) throw new Error(`apiKey missing`);
 if (!authDomain) throw new Error(`authDomain missing`);
@@ -85,6 +88,11 @@ const buildEnvironmentFileContent = `
       messagingSenderId: "${messagingSenderId}",
       appId: "${appId}",
       measurementId: "${measurementId}"
+    },
+    contentful: {
+      space: '${contentfulSpace}',
+      apiKey: '${contentfulApiKey}',
+      previewKey: '${contentfulPreviewApiKey}'
     },
     pageSizes: {
       itemsList: ${process.env.PAGE_SIZE_ITEMS_LIST ?? 16},

@@ -21,6 +21,22 @@ import { MaterialModule } from './shared/material.module';
 
 registerLocaleData(hrLocale);
 
+export const DEFAULT_GALLERY_CONFIG = {
+  imageSize: 'contain',
+  scrollBehavior: 'smooth',
+  loadingStrategy: 'preload',
+
+  itemAutosize: false,
+  autoHeight: false,
+
+  dots: false,
+  counter: false,
+  thumb: false,
+  loop: true,
+
+  debug: false,
+}
+
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -42,7 +58,6 @@ registerLocaleData(hrLocale);
     ClipboardModule,
     ReactiveFormsModule,
     NgOptimizedImage,
-
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
@@ -54,22 +69,21 @@ registerLocaleData(hrLocale);
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true } },
     {
-      provide: GALLERY_CONFIG,
-      useValue: {
-        imageSize: 'contain',
+      provide: GALLERY_CONFIG, useValue: {
+        autoPlay: true,
+        imageSize: 'cover',
+        dots: true,
+        dotsPosition: 'bottom',
+
         scrollBehavior: 'smooth',
         loadingStrategy: 'preload',
 
-        itemAutosize: false,
-        autoHeight: false,
-
-        dots: false,
         counter: false,
         thumb: false,
         loop: true,
 
         debug: false,
-      },
+      }
     },
   ]
 })

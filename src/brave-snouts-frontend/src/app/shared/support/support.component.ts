@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { EmailCopyComponent } from './email-copy.component';
 
 
 @Component({
@@ -15,7 +17,9 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
       text-align: center;
       resize: none;
     }
-  `]
+  `],
+  standalone: true,
+  imports: [MatIconModule, EmailCopyComponent]
 })
 export class SupportComponent implements OnInit {
 

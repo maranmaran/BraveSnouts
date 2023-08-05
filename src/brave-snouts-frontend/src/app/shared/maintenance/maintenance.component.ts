@@ -8,6 +8,8 @@ import { Component } from '@angular/core';
 
     <div class="mat-h1-4 mt-5 text-center">Spremamo velike stvari !</div>
     </div>
-  `
+  `,
+  standalone: true,
+  imports: []
 })
 export class MaintenanceComponent { }

@@ -1,3 +1,4 @@
+import { NoopScrollStrategy } from '@angular/cdk/overlay';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -76,6 +77,7 @@ export class AuthService {
           maxWidth: '20rem',
           autoFocus: false,
           closeOnNavigation: true,
+          scrollStrategy: new NoopScrollStrategy()
         });
 
         // inner observable that resolves auth

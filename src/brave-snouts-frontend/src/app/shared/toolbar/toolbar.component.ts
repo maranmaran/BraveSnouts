@@ -1,7 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, Renderer2, RendererStyleFlags2, ViewChild, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabChangeEvent, MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterModule } from '@angular/router';
 import { addDays } from 'date-fns';
 import 'firebase/auth';
 import { noop } from 'rxjs';
@@ -16,7 +23,8 @@ import { ItemScrollViewService } from './../../features/auction-feature/item/ite
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
-  providers: [],
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatButtonModule, MatProgressSpinnerModule, MatTooltipModule, MatToolbarModule, MatDialogModule, MatMenuModule, MatIconModule, MatTabsModule]
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
 

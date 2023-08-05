@@ -8,13 +8,10 @@ import { LightboxModule } from "ng-gallery/lightbox";
 import { CountdownModule } from "ngx-countdown";
 import { DragScrollModule } from "ngx-drag-scroll";
 import { NgxDropzoneModule } from "ngx-dropzone";
-import { AuctionRulesComponent } from "src/app/shared/auction-rules/auction-rules.component";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
-import { DonateComponent } from "src/app/shared/donate/donate.component";
 import { MaintenanceComponent } from "src/app/shared/maintenance/maintenance.component";
 import { MaterialModule } from "src/app/shared/material.module";
 import { MessageDialogComponent } from "src/app/shared/message-dialog/message-dialog.component";
-import { PrivacyPolicyComponent } from "src/app/shared/privacy-policy/privacy-policy.component";
 import { EmailCopyComponent } from "src/app/shared/support/email-copy.component";
 import { SupportComponent } from "src/app/shared/support/support.component";
 import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
@@ -39,6 +36,9 @@ import { HandoverConfirmComponent } from "./delivery/handover-confirm/handover-c
 import { HandoverDialogComponent } from "./delivery/handover-dialog/handover-dialog.component";
 import { PostConfirmComponent } from "./delivery/post-confirm/post-confirm.component";
 import { PostDetailsComponent } from "./delivery/post-details/post-details.component";
+import { AuctionRulesComponent } from "./information/auction-rules/auction-rules.component";
+import { DonateComponent } from "./information/donate/donate.component";
+import { PrivacyPolicyComponent } from "./information/privacy-policy/privacy-policy.component";
 import { ItemDetailsComponent } from "./item/item-details/item-details.component";
 import { ItemGalleryComponent } from "./item/item-gallery/item-gallery.component";
 import { ItemListComponent } from "./item/item-list/item-list.component";
@@ -72,18 +72,26 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         // Custom shared
         VirtualScrollerModule,
         HotToastModule.forRoot(),
+
+        // Shared
+        ToolbarComponent,
+        MaintenanceComponent,
+        SupportComponent,
+        TruncatedTextComponent,
+        TruncatePipe,
+        ConfirmDialogComponent,
+        MessageDialogComponent,
+        EmailCopyComponent,
+        MessageDialogComponent,
     ],
 
     declarations: [
         // Core
         AuctionsHomeComponent,
-        ToolbarComponent,
 
         // Misc
         DonateComponent,
         PrivacyPolicyComponent,
-        MaintenanceComponent,
-        SupportComponent,
         AuctionRulesComponent,
 
         // Auctions
@@ -124,14 +132,8 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         WinnerDetailsDialogComponent,
 
         // Shared
-        TruncatedTextComponent,
-        TruncatePipe,
         MoneyPipe,
         FirebaseImagePipe,
-        ConfirmDialogComponent,
-        MessageDialogComponent,
-        EmailCopyComponent,
-        MessageDialogComponent,
     ],
     providers: [
         FirebaseImagePipe
