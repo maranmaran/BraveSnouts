@@ -58,13 +58,16 @@ const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 
 if (!apiKey) throw new Error(`apiKey missing`);
 if (!authDomain) throw new Error(`authDomain missing`);
-// if(!databaseURL)
-//   throw new Error(`databaseURL missing`);
 if (!projectId) throw new Error(`projectId missing`);
 if (!storageBucket) throw new Error(`storageBucket missing`);
 if (!messagingSenderId) throw new Error(`messagingSenderId missing`);
 if (!appId) throw new Error(`appId missing`);
 if (!measurementId) throw new Error(`measurementId missing`);
+if (!measurementId) throw new Error(`measurementId missing`);
+if (!contentfulSpace) throw new Error(`contentfulSpace missing`);
+if (!contentfulApiKey) throw new Error(`contentfulApiKey missing`);
+if (!contentfulPreviewApiKey) throw new Error(`contentfulPreviewApiKey missing`);
+if (!stripePublishableKey) throw new Error(`stripePublishableKey missing`);
 
 if (projectId == 'bravesnoutsprod') {
   console.error('\n\n\n');
