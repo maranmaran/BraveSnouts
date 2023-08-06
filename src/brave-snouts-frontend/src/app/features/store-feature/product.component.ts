@@ -12,7 +12,7 @@ import { Product, StripeApi } from './stripe.api';
     `
   ],
   template: `
-    <div *ngIf="product$ | async as product" class="grid grid-cols-2 justify-center align-center gap-12">
+    <div *ngIf="product$ | async as product" class="grid grid-cols-2 sm:grid-cols-1 justify-center align-center gap-12">
         <img
             class="w-full h-full"
             [src]="product.images[0]"

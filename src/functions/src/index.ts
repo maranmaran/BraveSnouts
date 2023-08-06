@@ -24,8 +24,8 @@ const handoverConfirmFn = require('./functions/handover-confirm.function');
 const sendWinnerMailFn = require('./functions/send-winner-mail.function');
 const testSendWinnerMailFn = require('./functions/test-send-winner-mail.function');
 const downloadMailsFn = require('./functions/download-mails.function');
-const getProductsFn = require('./functions/stripe/stripe.functions');
-const getPriceFn = require('./functions/stripe/stripe.functions');
+const getProductsFn = require('./functions/stripe/get-products.function');
+const getPriceFn = require('./functions/stripe/get-price.function');
 
 //#region 
 

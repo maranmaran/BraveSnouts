@@ -22,7 +22,7 @@ export interface Product {
     metadata: { [name: string]: string; };
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StripeApi {
     private readonly functions = inject(AngularFireFunctions);
 
@@ -40,13 +40,15 @@ export class StripeApi {
         const { error } = await stripe.redirectToCheckout({
             mode: "payment",
             lineItems: [{ price: priceId, quantity: quantity }],
-            successUrl: `${window.location.href}/payment-success`,
-            cancelUrl: `${window.location.href}/payment-failure`,
+            successUrl: `${environment.baseUrl}/merch/placanje-uspjesno`,
+            cancelUrl: `${environment.baseUrl}/merch`,
         });
+
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
         // using `error.message`.
         if (error) {
+            alert(error);
             console.log(error);
             // toast
         }

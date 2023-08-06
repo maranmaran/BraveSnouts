@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { StripeApi } from './stripe.api';
 
 @Component({
   selector: 'store-container',
@@ -9,7 +8,6 @@ import { StripeApi } from './stripe.api';
       <router-outlet></router-outlet>
     </div> 
   `,
-  providers: [StripeApi]
 })
 export class StoreHomeComponent {
 }

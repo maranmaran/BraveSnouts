@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
+import { SocialLinksComponent } from "src/app/shared/social-links/social-links.component";
 import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
 import { BlogHomeComponent } from "./blog-home.component";
 import { BlogRoutingModule } from "./blog-routing.module";
@@ -13,6 +14,7 @@ import { PostsComponent } from "./posts.component";
         BlogRoutingModule,
         ToolbarComponent,
         MatCardModule,
+        SocialLinksComponent
     ],
     declarations: [
         BlogHomeComponent,

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BlogPost, ContentfulApiService } from './contentful.api';
+import { BlogApi, BlogPost } from './blog.api';
 
 @Component({
   selector: 'app-posts',
@@ -27,13 +27,14 @@ import { BlogPost, ContentfulApiService } from './contentful.api';
               <mat-card-subtitle>{{post.date | date: 'MM d, HH:mm'}}</mat-card-subtitle>
             </mat-card-header>
             <span class="p-4 text-sm" [innerHTML]="post.description"></span>
+            <app-social-links class="p-4" [instagram]="post.instagram" [facebook]="post.facebook"></app-social-links>
         </mat-card>
       </div>
   `
 })
 export class PostsComponent {
   private readonly router = inject(Router);
-  readonly posts$ = inject(ContentfulApiService).getPosts();
+  readonly posts$ = inject(BlogApi).getPosts();
 
   navigate(post: BlogPost) {
     const slug = post.slug;

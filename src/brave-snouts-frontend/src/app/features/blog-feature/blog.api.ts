@@ -12,10 +12,12 @@ export interface BlogPost {
     description: string,
     hero: string;
     content: string;
+    instagram: string;
+    facebook: string;
 }
 
-@Injectable()
-export class ContentfulApiService {
+@Injectable({ providedIn: 'root' })
+export class BlogApi {
     private readonly content_type = 'braveSnoutsBlog';
     private readonly client = createClient({
         space: environment.contentful.space,
@@ -57,10 +59,6 @@ export class ContentfulApiService {
                 first(),
                 map(x => x.items.map(this.toBlogPost)),
                 mergeMap(posts => of(...posts)),
-                // mergeMap(post => this.getAsset(post.heroImage)
-                //     .pipe(map(r => ({ post, r })))
-                // ),
-                // map(({ post, r }) => (post.heroImage = r.fields.file.url, post)),
                 toArray(),
                 map(posts => posts.sort((a, b) => a.date < b.date ? 1 : -1)),
                 tap(posts => this.postsSubject.next(posts))
@@ -80,6 +78,8 @@ export class ContentfulApiService {
             tags: entry.metadata.tags.map(x => x.sys.id),
             description: entry.fields.description,
             hero: (<Asset>entry.fields.heroImage).fields.file.url,
+            instagram: entry.fields.instagram,
+            facebook: entry.fields.facebook,
             content: documentToHtmlString(entry.fields.content as any, {
                 renderNode: {
                     ['embedded-asset-block']: (node, children) => {

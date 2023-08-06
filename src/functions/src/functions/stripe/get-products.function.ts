@@ -1,12 +1,13 @@
 import Stripe from "stripe";
 import { config, europeFunctions } from "../..";
-import { Price, Product } from "./stripe.models";
+import { getPriceInternal } from "./get-price.function";
+import { Product } from "./stripe.models";
 
 const api = new Stripe(config.stripe.secret, {
     apiVersion: "2022-11-15"
 });
 
-export const getProducts = europeFunctions.https.onCall(
+export const getProductsFn = europeFunctions.https.onCall(
     async (_, context) => {
         const stripeProducts = await api.products.list({
             active: true,
@@ -23,21 +24,7 @@ export const getProducts = europeFunctions.https.onCall(
     }
 )
 
-export const getPrice = europeFunctions.https.onCall(
-    async (id, context) => await getPriceInternal(id)
-)
-
-async function getPriceInternal(id: string) {
-    const price = await api.prices.retrieve(id, {});
-
-    return <Price>{
-        id: price.id,
-        currency: price.currency,
-        amount: price.unit_amount / 100,
-    }
-}
-
-async function toProduct(entry: Stripe.Product) {
+export async function toProduct(entry: Stripe.Product) {
     return <Product>{
         id: entry.id,
         name: entry.name,

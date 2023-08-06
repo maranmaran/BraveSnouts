@@ -18,6 +18,7 @@
           "options": {
             "allowedCommonJsDependencies": [
               "contentful",
+              "@contentful/rich-text-html-renderer",
               "rxjs-compat",
               "luxon",
               "ng-gallery"

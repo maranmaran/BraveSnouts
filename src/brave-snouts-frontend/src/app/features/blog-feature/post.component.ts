@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { BlogPost, ContentfulApiService as ContentfulApi } from './contentful.api';
+import { BlogPost, BlogApi as ContentfulApi } from './blog.api';
 
 @Component({
   selector: 'app-post',
@@ -18,7 +18,9 @@ import { BlogPost, ContentfulApiService as ContentfulApi } from './contentful.ap
   template: `
       <div *ngIf="!!post" class="h-full px-4 w-full max-w-7xl flex flex-col justify-center">
         <div class="font-bold sm:text-xl md:text-2xl lg:text-4xl text-6xl my-4 self-center ">{{post.title}}</div>
-        <div class="w-full h-[400px] sm:h-[250px] sm:h-[350px]" [ngStyle]="{
+        <app-social-links class="post-socials" [instagram]="post.instagram" [facebook]="post.facebook"></app-social-links>
+
+        <div class="w-full h-[400px] h-350px sm:h-[250px]" [ngStyle]="{
             background: 'url(' + post.hero + ') 50% 50% no-repeat',
             'background-size': 'cover',
             'align-self': 'center',

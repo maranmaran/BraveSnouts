@@ -12,6 +12,7 @@ import { RouterModule } from "@angular/router";
             <button mat-raised-button [routerLink]="['']" routerLinkActive="router-link-active">Početna</button> 
             <button mat-raised-button [routerLink]="['/blog']" routerLinkActive="router-link-active">Blog</button> 
             <button mat-raised-button [routerLink]="['/merch']" routerLinkActive="router-link-active">Merch</button> 
+            <button mat-raised-button [routerLink]="['/udomi']" routerLinkActive="router-link-active">Udomi</button> 
             <button mat-raised-button [routerLink]="['/aukcije']" routerLinkActive="router-link-active">Aukcije</button> 
         </div>    
     `,

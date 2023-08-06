@@ -35,10 +35,12 @@ import { Product, StripeApi } from './stripe.api';
 })
 export class ProductsComponent {
   private readonly router = inject(Router);
-  readonly products$ = inject(StripeApi).getProducts();
+  private readonly api = inject(StripeApi);
+  readonly products$ = this.api.getProducts();
 
   navigate(product: Product) {
     const id = product.id;
-    this.router.navigate(['merch', id])
+    this.api.selectProduct(product);
+    this.router.navigate(['merch', 'proizvod', id])
   }
 }
