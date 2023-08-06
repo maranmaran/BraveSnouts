@@ -24,6 +24,10 @@ jobs:
           FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID_DEV }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
           FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID_DEV }}
+          CONTENTFUL_SPACE: ${{ secrets.CONTENTFUL_SPACE_DEV }}
+          CONTENTFUL_API_KEY: ${{ secrets.CONTENTFUL_API_KEY_DEV }}
+          CONTENTFUL_PREVIEW_API_KEY: ${{ secrets.CONTENTFUL_PREVIEW_API_KEY_DEV }}
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY_DEV }}
           CACHE_SEED: ${{ secrets.CACHE_SEED }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
