@@ -1,60 +1,71 @@
 // firebase target:apply hosting TARGET_NAME RESOURCE_IDENTIFIER
 // https://firebase.google.com/docs/hosting/multisites
 {
-  "hosting": [
-    {
-      "site": "bravesnoutsdev",
-      "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "headers": [
-        {
-          "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "max-age=1210000"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "site": "bravesnoutsprod",
-      "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "headers": [
-        {
-          "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "max-age=1210000"
-            }
-          ]
-        }
-      ]
-    }
-  ],
+  "hosting": {
+    "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=1210000"
+          }
+        ]
+      }
+      // Hard reset -remove cache
+      // {
+      //   "source": "**/*.@(jpg|jpeg|gif|png|svg)",
+      //   "headers": [
+      //     {
+      //       "key": "Cache-Control",
+      //       "value": "public, max-age=0"
+      //     },
+      //     {
+      //       "key": "Clear-Site-Data",
+      //       "value": "\"cache\",\"storage\""
+      //     }
+      //   ]
+      // }
+      // {
+      //   "source":"**",
+      //   "headers": [
+      //     {
+      //       "key": "Cache-Control",
+      //       "value": "no-cache, no-store, must-revalidate"
+      //     },
+      //     {
+      //       "key": "Clear-Site-Data",
+      //       "value": "\"cache\",\"storage\""
+      //     }
+      //   ]
+      // },
+      // {
+      //   "source":"/service-worker.js",
+      //   "headers": [
+      //     {
+      //       "key": "Cache-Control",
+      //       "value": "no-cache, no-store, must-revalidate"
+      //     },
+      //     {
+      //       "key": "Clear-Site-Data",
+      //       "value": "\"cache\",\"storage\""
+      //     }
+      //   ]
+      // }
+    ]
+  },
   "functions": {
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" ci",
