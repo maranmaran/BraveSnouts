@@ -25,7 +25,7 @@ import { BlogPost, BlogApi as ContentfulApi } from './blog.api';
             'background-size': 'cover',
             'align-self': 'center',
         }" mat-card-image ></div>
-        <span class="p-4 flex flex-col break-words" [innerHTML]="post.content"></span>
+        <div class="p-4 flex flex-col break-words prose" [innerHTML]="post.content"></div>
       </div>
   `
 })

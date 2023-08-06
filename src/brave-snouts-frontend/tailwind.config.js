@@ -18,4 +18,5 @@ module.exports = {
         listStylePosition: false,
         preflight: false,
     },
+    plugins: ['prettier-plugin-tailwindcss', '@tailwindcss/typography'],
 }
