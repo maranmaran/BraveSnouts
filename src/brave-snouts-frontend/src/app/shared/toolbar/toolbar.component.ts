@@ -8,7 +8,7 @@ import { RouterModule } from "@angular/router";
     imports: [MatButtonModule, RouterModule],
     styles: [``],
     template: `
-        <div class="flex justify-center gap-4 items-center">
+        <div class="flex flex-wrap justify-center gap-4 items-center">
             <button mat-raised-button [routerLink]="['']" routerLinkActive="router-link-active">Početna</button> 
             <button mat-raised-button [routerLink]="['/blog']" routerLinkActive="router-link-active">Blog</button> 
             <button mat-raised-button [routerLink]="['/merch']" routerLinkActive="router-link-active">Merch</button> 

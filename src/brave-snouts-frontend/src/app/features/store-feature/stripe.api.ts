@@ -1,5 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { HotToastService } from "@ngneat/hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
 import { BehaviorSubject, map, of, shareReplay } from "rxjs";
 import { environment } from "src/environments/environment";
@@ -25,6 +26,7 @@ export interface Product {
 @Injectable({ providedIn: 'root' })
 export class StripeApi {
     private readonly functions = inject(AngularFireFunctions);
+    private readonly toast = inject(HotToastService)
 
     private readonly productsSubject = new BehaviorSubject<Product[]>([]);
     readonly products$ = this.productsSubject.asObservable().pipe(shareReplay(1));
@@ -48,9 +50,8 @@ export class StripeApi {
         // error, display the localized error message to your customer
         // using `error.message`.
         if (error) {
-            alert(error);
-            console.log(error);
-            // toast
+            this.toast.error('Nešto je pošlo po zlu prilikom kupovine');
+            console.debug(error);
         }
     }
 

@@ -11,31 +11,31 @@ import { Animal, AdoptApi as ContentfulApi } from './adopt.api';
     `
   ],
   template: `
-   <div *ngIf="animal$ | async as animal" class="grid grid-cols-2 sm:grid-cols-1 justify-center align-center gap-12">
+   <div *ngIf="animal$ | async as animal" class="container grid grid-cols-2 sm:grid-cols-1 justify-center align-center gap-12">
         <img
             class="w-full h-full"
             [src]="animal.images[0]"
         />
-        <div class="grid grid-rows-[min-content,1fr,1fr] gap-4 h-full">
+        <div class="grid grid-rows-[min-content,1fr,1fr] gap-4 h-full p-2">
 
           <div class="flex flex-row justify-between gap-8">
             <span class="font-bold text-lg">{{ animal.name }}</span>
             <app-social-links class="post-socials" [instagram]="animal.instagram" [facebook]="animal.facebook"></app-social-links>
           </div> 
-          <div>{{ animal.description }}</div> 
 
-            <button
-            class="w-full"
-            mat-flat-button
-            type="button"
-            (click)="onAdopt(animal)"
-            color="primary"
-        >
-            <div class="flex flex-row justify-center items-center gap-2">
-                <mat-icon> pets </mat-icon> <span>Udomi</span>
-                <mat-icon> pets </mat-icon>
-            </div>
-        </button>
+          <div>{{ animal.description }}</div> 
+          <button
+              class="w-full"
+              mat-flat-button
+              type="button"
+              (click)="onAdopt(animal)"
+              color="primary"
+          >
+              <div class="flex flex-row justify-center items-center gap-2">
+                  <mat-icon> pets </mat-icon> <span>Udomi</span>
+                  <mat-icon> pets </mat-icon>
+              </div>
+          </button>
         </div> 
     </div>
   `
