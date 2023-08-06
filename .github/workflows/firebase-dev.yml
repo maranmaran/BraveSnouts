@@ -35,7 +35,7 @@ jobs:
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
 
-  auctions_functions:
+  functions:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
