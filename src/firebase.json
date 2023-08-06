@@ -3,7 +3,6 @@
 {
   "hosting": [
     {
-      "target": "dev",
       "site": "bravesnoutsdev",
       "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
       "ignore": [
@@ -30,7 +29,6 @@
       ]
     },
     {
-      "target": "prod",
       "site": "bravesnoutsprod",
       "public": "brave-snouts-frontend/dist/brave-snouts-frontend",
       "ignore": [
