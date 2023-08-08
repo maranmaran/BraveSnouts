@@ -1,6 +1,7 @@
 # Compiled JavaScript files
 **/*.js
 **/*.js.map
+.runtimeconfig.json
 
 # Except the ESLint config file
 !.eslintrc.js

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "noUnusedLocals": false,
     "module": "commonjs",
     "noImplicitReturns": true,
@@ -11,6 +12,6 @@
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src/**/*"
   ]
 }

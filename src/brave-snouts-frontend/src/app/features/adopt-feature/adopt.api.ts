@@ -1,7 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Asset, Entry, EntrySkeletonType, createClient } from 'contentful';
-import { BehaviorSubject, first, from, map, mergeMap, of, shareReplay, tap, toArray } from "rxjs";
-import { environment } from "src/environments/environment";
+import { Injectable, inject } from "@angular/core";
+import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { BehaviorSubject, map, of, shareReplay, tap } from "rxjs";
 
 export interface Animal {
     name: string;
@@ -14,14 +13,7 @@ export interface Animal {
 
 @Injectable({ providedIn: 'root' })
 export class AdoptApi {
-    private readonly content_type = 'braveSnoutsAdoption';
-    private readonly client = createClient({
-        space: environment.contentful.space,
-        accessToken: environment.contentful.apiKey,
-    });
-
-    constructor() {
-    }
+    private readonly functions = inject(AngularFireFunctions);
 
     private readonly animalsSubject = new BehaviorSubject<Animal[]>([]);
     readonly animals$ = this.animalsSubject.asObservable().pipe(shareReplay(1));
@@ -49,29 +41,9 @@ export class AdoptApi {
             return this.animals$;
         }
 
-        const call = this.client.getEntries({ content_type: this.content_type });
-
-        return from(call)
-            .pipe(
-                first(),
-                map(x => x.items.map(this.toBlogPost)),
-                mergeMap(posts => of(...posts)),
-                toArray(),
-                map(animals => animals.sort((a, b) => a.name < b.name ? 1 : -1)),
-                tap(animals => this.animalsSubject.next(animals))
-            );
+        return this.functions.httpsCallable<void, Animal[]>('getAdoptAnimals-getAdoptAnimalsFn')().pipe(
+            tap(animals => this.animalsSubject.next(animals))
+        );
     }
-
-    private toBlogPost(entry: Entry<EntrySkeletonType, undefined, string>) {
-        return <Animal>{
-            name: entry.fields.name,
-            slug: entry.fields.slug,
-            description: entry.fields.description,
-            images: (<Asset[]>entry.fields.images).map(x => x.fields.file.url),
-            instagram: entry.fields.instagram,
-            facebook: entry.fields.facebook,
-        };
-    }
-
 }
 

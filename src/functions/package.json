@@ -36,6 +36,8 @@
     "path": "^0.12.7",
     "sharp": "^0.32.4",
     "stripe": "^12.17.0",
+    "contentful": "^10.4.0",
+    "@contentful/rich-text-html-renderer": "^16.1.1",
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5"
   },

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { Product, StripeApi } from './stripe.api';
+import { Product, StoreApi } from './store.api';
 
 @Component({
   selector: 'app-product',
@@ -34,7 +34,7 @@ import { Product, StripeApi } from './stripe.api';
 export class ProductComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly api = inject(StripeApi);
+  private readonly api = inject(StoreApi);
 
   product$ = this.api.selectedProduct$;
 

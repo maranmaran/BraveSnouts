@@ -2,7 +2,7 @@
 import * as admin from 'firebase-admin';
 // dependancies
 import * as functions from 'firebase-functions';
-import { MailSettingsService } from './services/mail-settings.service';
+import { MailSettingsService } from './functions/auctions/services/mail-settings.service';
 admin.initializeApp();
 
 export const store = admin.firestore();
@@ -14,18 +14,27 @@ export const europeFunctions = functions.region('europe-west1');
 // settingsSvc.initialize();
 
 // function exports
-const bidChangeFn = require('./functions/bid-change.function');
-const endAuctionFn = require('./functions/end-auction.function');
-const changeHandoverFn = require('./functions/change-handover.function');
-const increaseRaisedMoneyFn = require('./functions/increase-raised-money.function');
-const exportAuctionFn = require('./functions/export-auction.function');
-const processAuctionImageFn = require('./functions/process-auction-image.function');
-const handoverConfirmFn = require('./functions/handover-confirm.function');
-const sendWinnerMailFn = require('./functions/send-winner-mail.function');
-const testSendWinnerMailFn = require('./functions/test-send-winner-mail.function');
-const downloadMailsFn = require('./functions/download-mails.function');
-const getProductsFn = require('./functions/stripe/get-products.function');
-const getPriceFn = require('./functions/stripe/get-price.function');
+
+// auctions
+export const bidChangeFn = require('./functions/auctions/bid-change.function');
+export const endAuctionFn = require('./functions/auctions/end-auction.function');
+export const changeHandoverFn = require('./functions/auctions/change-handover.function');
+export const increaseRaisedMoneyFn = require('./functions/auctions/increase-raised-money.function');
+export const exportAuctionFn = require('./functions/auctions/export-auction.function');
+export const processAuctionImageFn = require('./functions/auctions/process-auction-image.function');
+export const handoverConfirmFn = require('./functions/auctions/handover-confirm.function');
+export const sendWinnerMailFn = require('./functions/auctions/send-winner-mail.function');
+export const downloadMailsFn = require('./functions/auctions/download-mails.function');
+export const testSendWinnerMailFn = require('./functions/auctions/test-send-winner-mail.function');
+
+// blog
+export const setBlogPostsFn = require('./functions/blog/set-blog-posts.function');
+
+// store
+export const setStoreProductsFn = require('./functions/store/set-store-products.function');
+
+// adopt
+export const setAdoptAnimalsFn = require('./functions/adoption/set-adopt-animals.function');
 
 //#region 
 
@@ -73,9 +82,14 @@ export const downloadMails = downloadMailsFn;
 // exports auction details, winners and donations 
 export const exportAuction = exportAuctionFn;
 
-// Stripe functions
-export const getProducts = getProductsFn; // gets list of active products
-export const getPrice = getPriceFn; // gets specific pricing details
+// syncs products from stripe to firestore
+export const getStoreProducts = setStoreProductsFn;
+
+// syncs blog posts from contentful to firestore
+export const getBlogPosts = setBlogPostsFn;
+
+// syncs animals to adopt from contentful to firestore
+export const getAdoptAnimals = setAdoptAnimalsFn;
 
 //#endregion
 
@@ -84,4 +98,3 @@ export const getPrice = getPriceFn; // gets specific pricing details
 // =====================================================================================================
 
 //#endregion
-

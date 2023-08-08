@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\utilities\\src\\scripts\\generate-auction.script.ts",
+            "program": "${workspaceFolder}\\src\\utilities\\src\\scripts\\test-all-mails.script.ts",
             "outFiles": [
                 "${workspaceFolder}/src/utilities/dist/scripts"
             ]

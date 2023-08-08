@@ -51,9 +51,6 @@ const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
 const appId = process.env.FIREBASE_APP_ID;
 const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
-const contentfulSpace = process.env.CONTENTFUL_SPACE;
-const contentfulApiKey = process.env.CONTENTFUL_API_KEY;
-const contentfulPreviewApiKey = process.env.CONTENTFUL_PREVIEW_API_KEY;
 const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 
 if (!apiKey) throw new Error(`apiKey missing`);
@@ -64,9 +61,6 @@ if (!messagingSenderId) throw new Error(`messagingSenderId missing`);
 if (!appId) throw new Error(`appId missing`);
 if (!measurementId) throw new Error(`measurementId missing`);
 if (!measurementId) throw new Error(`measurementId missing`);
-if (!contentfulSpace) throw new Error(`contentfulSpace missing`);
-if (!contentfulApiKey) throw new Error(`contentfulApiKey missing`);
-if (!contentfulPreviewApiKey) throw new Error(`contentfulPreviewApiKey missing`);
 if (!stripePublishableKey) throw new Error(`stripePublishableKey missing`);
 
 if (projectId == 'bravesnoutsprod') {
@@ -92,11 +86,6 @@ const buildEnvironmentFileContent = `
       messagingSenderId: "${messagingSenderId}",
       appId: "${appId}",
       measurementId: "${measurementId}"
-    },
-    contentful: {
-      space: '${contentfulSpace}',
-      apiKey: '${contentfulApiKey}',
-      previewKey: '${contentfulPreviewApiKey}'
     },
     stripe: {
       publishableKey: '${stripePublishableKey}'

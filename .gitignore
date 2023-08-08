@@ -9,6 +9,7 @@
 
 .angular
 .env
+.runtimeconfig.json
 
 *.env
 

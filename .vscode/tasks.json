@@ -3,15 +3,13 @@
     "tasks": [
         {
             "label": "compile",
-            "command": "npx",
+            "command": "npm run build",
             "type": "shell",
-            "args": [
-                "tsc"
-            ],
             "options": {
                 "cwd": "${workspaceFolder}/src/utilities"
             },
             "problemMatcher": []
-        }
-    ]
+        },
+    ],
+    "inputs": []
 }

@@ -27,9 +27,13 @@
     "inputs": [
         {
             "id": "scriptName",
-            "type": "promptString",
+            "type": "pickString",
+            "default": "test-all-mails",
+            "options": [
+                "generate-auction",
+                "test-all-mails",
+            ],
             "description": "Enter the script name to debug (e.g., generate-auction)",
-            "default": "generate-auction"
         }
     ]
 }

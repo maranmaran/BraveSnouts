@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Product, StripeApi } from './stripe.api';
+import { Product, StoreApi } from './store.api';
 
 @Component({
   selector: 'app-products',
@@ -35,7 +35,7 @@ import { Product, StripeApi } from './stripe.api';
 })
 export class ProductsComponent {
   private readonly router = inject(Router);
-  private readonly api = inject(StripeApi);
+  private readonly api = inject(StoreApi);
   readonly products$ = this.api.getProducts();
 
   navigate(product: Product) {
