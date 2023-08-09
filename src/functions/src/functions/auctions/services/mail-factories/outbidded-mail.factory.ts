@@ -1,10 +1,10 @@
+import * as functions from 'firebase-functions';
 import { logger } from "firebase-functions";
-import { config, settingsSvc } from "../..";
-import { AuctionItem, UserInfo } from "../../functions/auctions/models";
+import { AuctionItem, UserInfo } from "../../models/models";
 import { getComposer, getEmailOptoutLink, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
-const template: string = null;
-const getLocalTemplate = async () => template ? template : await getTemplateRaw("outbidded.mail.mjml");
+const templateCache: string = null;
+const getLocalTemplate = async () => templateCache ? templateCache : await getTemplateRaw("outbidded.mail.mjml");
 
 /**Sends outbidded mail */
 export const sendOutbiddedMail = async (
@@ -22,7 +22,7 @@ export const sendOutbiddedMail = async (
     // load and customize html template
     const emailVariables = {
         optout_url: getEmailOptoutLink(),
-        item_url: `${config.base.url}/aukcije/predmet;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
+        item_url: `${functions.config().base.url}/aukcije/predmet;auctionId=${itemAfter.auctionId};itemId=${itemBefore.id}`,
         item_name: itemAfter.name,
         item_bid_before,
         item_bid_after,

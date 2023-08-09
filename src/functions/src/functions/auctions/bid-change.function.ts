@@ -1,6 +1,5 @@
 import * as firebase from "firebase-admin";
 import { logger } from "firebase-functions";
-import { europeFunctions, store } from "../../index";
 import {
   Auction,
   AuctionItem,
@@ -10,8 +9,8 @@ import {
 } from "./models/models";
 import { sendOutbiddedMail } from "./services/mail-factories/outbidded-mail.factory";
 
-/** Sends email notification to higher bidder */
-export const bidChangeFn = europeFunctions.firestore
+// send email notification to users that they have been outbidded
+export const bidChangeFn = functions.region('europe-west1').firestore
   .document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
 
@@ -20,12 +19,12 @@ export const bidChangeFn = europeFunctions.firestore
       const after = change.after.data() as AuctionItem;
 
       const auction = (await (
-        await store.collection("auctions").doc(before.auctionId).get()
+        await admin.firestore().collection("auctions").doc(before.auctionId).get()
       ).data()) as Auction;
 
       if (
         auction.endDate.seconds <
-        firebase.firestore.Timestamp.fromDate(new Date()).seconds
+        firebase.fireadmin.firestore().Timestamp.fromDate(new Date()).seconds
       ) {
         logger.info(`Auction ended`);
         return null;
@@ -61,7 +60,7 @@ export const bidChangeFn = europeFunctions.firestore
 
       // check permission
       const userEmailSettings = (
-        (await store.collection("users").doc(before.user).get()).data()
+        (await admin.firestore().collection("users").doc(before.user).get()).data()
           ?.emailSettings as EmailSettings
       )?.bidUpdates;
       if (!userEmailSettings) {
@@ -72,7 +71,7 @@ export const bidChangeFn = europeFunctions.firestore
 
       // get outbidded user information
       const outbiddedUserData = (await (
-        await store.collection("users").doc(before.user).get()
+        await admin.firestore().collection("users").doc(before.user).get()
       ).data()) as User;
       if (!outbiddedUserData) {
         logger.error("Can not find user");

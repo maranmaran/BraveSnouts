@@ -1,6 +1,7 @@
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { Asset, Entry, EntrySkeletonType, createClient } from "contentful";
-import { config, europeFunctions, store } from "../..";
+import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 
 export interface BlogPost {
     title: string;
@@ -14,27 +15,31 @@ export interface BlogPost {
     facebook: string;
 }
 
-const content_type = 'braveSnoutsBlog';
-const client = createClient({
-    space: config.contentful.space,
-    accessToken: config.contentful.secret,
-});
 
-export const setBlogPostsFn = europeFunctions.pubsub
+export const setBlogPostsFn = functions.region('europe-west1').pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
+
+        const content_type = 'braveSnoutsBlog';
+        const client = createClient({
+            space: functions.config().contentful.space,
+            accessToken: functions.config().contentful.secret,
+        });
+
         const contentfulPosts = await client.getEntries({ content_type: content_type });
 
-        const writer = store.bulkWriter();
+        await admin.firestore().recursiveDelete(admin.firestore().collection('blog'));
+
+        const writer = admin.firestore().bulkWriter();
 
         for (const entry of contentfulPosts.items) {
             const post = await toBlogPost(entry);
-            writer.create(store.doc(`blog-posts/${post.slug}`), post)
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            writer.create(admin.firestore().doc(`blog/${post.slug}`), post)
         }
 
         await writer.close();
-    }
-    )
+    })
 
 
 function toBlogPost(entry: Entry<EntrySkeletonType, undefined, string>) {

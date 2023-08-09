@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "composite": true,
+    // "composite": true,
     "noUnusedLocals": false,
     "module": "commonjs",
     "noImplicitReturns": true,

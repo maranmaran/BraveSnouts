@@ -1,9 +1,9 @@
 import { logger } from 'firebase-functions';
-import { europeFunctions, settingsSvc } from '../..';
-import { Auction, Bid, UserInfo } from './models';
+import { settingsSvc } from '../../index.auctions';
+import { Auction, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
-export const testSendWinnerMailFn = europeFunctions.https.onCall(
+export const testSendWinnerMailFn = functions.region('europe-west1').https.onCall(
     async (data, context) => {
 
         try {

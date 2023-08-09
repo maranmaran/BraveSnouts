@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { config, europeFunctions, store } from "../..";
+import { config } from "../../index.shop";
 
 export interface Product {
     id: string;
@@ -24,25 +24,27 @@ const api = new Stripe(config.stripe.secret, {
     apiVersion: "2022-11-15"
 });
 
-export const setProductsFn = europeFunctions.pubsub
+export const setShopProductsFn = functions.region('europe-west1').pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
         const stripeProducts = await api.products.list({
             active: true,
         });
 
-        const writer = store.bulkWriter();
+        await admin.firestore().recursiveDelete(admin.firestore().collection('shop'));
+
+        const writer = admin.firestore().bulkWriter();
 
         for (const entry of stripeProducts.data) {
             const product = await toProduct(entry);
-            writer.create(store.doc(`store-products/${product.id}`), product)
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            writer.create(admin.firestore().doc(`shop/${product.id}`), product)
         }
 
         await writer.close();
-    }
-    )
+    })
 
-export async function toProduct(entry: Stripe.Product) {
+async function toProduct(entry: Stripe.Product) {
     return <Product>{
         id: entry.id,
         name: entry.name,

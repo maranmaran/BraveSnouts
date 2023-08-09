@@ -1,10 +1,9 @@
-/* eslint-disable eqeqeq */
 import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import { RuntimeOptions, logger } from 'firebase-functions';
 import { mkdirp } from 'mkdirp';
 import * as sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
-import { europeFunctions, store } from '../..';
 
 const path = require('path');
 const os = require('os');
@@ -24,7 +23,10 @@ const runtimeOpts: Partial<RuntimeOptions> = {
     memory: "1GB"
 }
 
-export const processAuctionImagesFn = europeFunctions
+// Processes newly added images and creates
+// Original, Compressed, Thumbnail versions of image in storage
+// Links are created in advance by Client
+export const processAuctionImageFn = functions.region('europe-west1')
     .runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
@@ -59,7 +61,7 @@ export const processAuctionImagesFn = europeFunctions
         const noExtFileName = path.basename(fileName, path.extname(fileName));
 
         // processing settings
-        const settings = (await store.doc("config/image-processing").get()).data() as ImageProcessingSettings;
+        const settings = (await admin.firestore().doc("config/image-processing").get()).data() as ImageProcessingSettings;
         logger.info('Loaded settings:' + JSON.stringify(settings));
 
         // make local folders where we'll process the image

@@ -1,4 +1,4 @@
-import * as firebase from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 export interface FirebaseFile {
     name: string;
@@ -20,8 +20,8 @@ export class Auction {
     id: string;
     name: string;
     description: string;
-    startDate: firebase.firestore.Timestamp;
-    endDate: firebase.firestore.Timestamp;
+    startDate: admin.firestore.Timestamp;
+    endDate: admin.firestore.Timestamp;
     items: AuctionItem[];
 
     raisedMoney: number;

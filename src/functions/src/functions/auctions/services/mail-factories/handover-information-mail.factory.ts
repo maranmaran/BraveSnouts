@@ -1,10 +1,10 @@
 import { logger } from "firebase-functions";
-import { config, settingsSvc } from "../..";
-import { User, UserInfo } from "../../functions/auctions/models";
+import { config, settingsSvc } from "../../../../index.auctions";
+import { User, UserInfo } from "../../models/models";
 import { getComposer, getTemplate, getTemplateRaw, sendMail } from './../mail.service';
 
-const template: string = null;
-const getLocalTemplate = async () => template ? template : await getTemplateRaw("handover-confirm.mail.mjml");
+const templateCache: string = null;
+const getLocalTemplate = async () => templateCache ? templateCache : await getTemplateRaw("handover-confirm.mail.mjml");
 
 /**Sends new handover details mail */
 export const sendHandoverDetailsUpdateMail = async (

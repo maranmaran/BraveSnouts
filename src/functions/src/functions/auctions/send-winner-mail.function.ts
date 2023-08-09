@@ -1,14 +1,12 @@
 /* eslint-disable eqeqeq */
 import { logger } from 'firebase-functions';
-import { europeFunctions, settingsSvc, store } from '../../';
+import { settingsSvc } from '../../index.auctions';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
-import { Auction, AuctionItem, Bid, UserInfo } from './models';
+import { Auction, AuctionItem, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
-/** Processes auctions end
- * Picks up item winners and sends email notification templates for won items
- * Marks auction as processed
- */
-export const sendWinnerMailFn = europeFunctions.https.onCall(
+
+// Sends email for won items
+export const sendWinnerMailFn = functions.region('europe-west1').https.onCall(
     async (data, context) => {
 
         try {
@@ -30,7 +28,7 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 
             for (const auction of auctions) {
                 auction.lastTimeWinningMailsSent = new Date();
-                await store.doc(`auctions/${auction.id}`).update({
+                await admin.firestore().doc(`auctions/${auction.id}`).update({
                     lastTimeWinningMailsSent: new Date()
                 });
             }
@@ -43,7 +41,7 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
     }
 );
 
-const getAuctions = async (auctionIds: string[]) => {
+export const getAuctions = async (auctionIds: string[]) => {
     const auctions: Auction[] = [];
     for (const auctionId of auctionIds) {
         auctions.push(await getAuction(auctionId));
@@ -111,7 +109,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
 
         sendMailJobs.push(new Promise<void>(async (res, err) => {
             await sendWinnerMail(auctions, handoverDetails, userInfo, bids, mailVariables);
-            await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
+            await admin.firestore().doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
             sentMailsCounter++;
             res();
         }))
@@ -125,7 +123,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         sentMailsCounter + skippedCounter == userBids.size) {
 
         for (const [userInfo, _] of userBids) {
-            await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
+            await admin.firestore().doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
         }
 
         logger.info(`Reverted endAuctionMailSent flag`);

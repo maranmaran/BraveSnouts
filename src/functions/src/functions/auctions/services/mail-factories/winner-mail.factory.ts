@@ -1,12 +1,12 @@
 import { logger } from "firebase-functions";
-import { Auction, Bid, UserInfo } from "../../functions/auctions/models";
+import { Auction, Bid, UserInfo } from "../../models/models";
 import { getComposer, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 import { calculatePostage } from "../postage-calculator.service";
 import { getHandoverConfirmUrl } from "./handover-information-mail.factory";
 import { getPostConfirmUrl } from "./post-information-mail.factory";
 
-const template: string = null;
-const getLocalTemplate = async () => template ? template : await getTemplateRaw("end-auction.mail.mjml");
+const templateCache: string = null;
+const getLocalTemplate = async () => templateCache ? templateCache : await getTemplateRaw("end-auction.mail.mjml");
 
 /**Sends auction end mail */
 export const sendWinnerMail = async (

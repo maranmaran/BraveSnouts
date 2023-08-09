@@ -1,11 +1,11 @@
 import * as firebase from "firebase-admin";
 import * as functions from "firebase-functions";
 import { logger } from "firebase-functions";
-import { europeFunctions, store } from "../..";
+import { store } from "../../index.auctions";
 import { Auction, AuctionItem } from "./models/models";
 
-/** Sends email notification to higher bidder */
-export const increaseRaisedMoneyFn = europeFunctions.firestore
+// increments raised money on auction whenever bid passes
+export const increaseRaisedMoneyFn = functions.region('europe-west1').firestore
   .document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
 
@@ -14,15 +14,15 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore
       const after = change.after.data() as AuctionItem;
 
       const auction = (await (
-        await store.collection("auctions").doc(before.auctionId).get()
+        await admin.firestore().collection("auctions").doc(before.auctionId).get()
       ).data()) as Auction;
 
       functions.logger.debug(auction.endDate.seconds);
-      functions.logger.debug(firebase.firestore.Timestamp.fromDate(new Date()).seconds);
+      functions.logger.debug(firebase.fireadmin.firestore().Timestamp.fromDate(new Date()).seconds);
 
       if (
         auction.endDate.seconds <
-        firebase.firestore.Timestamp.fromDate(new Date()).seconds
+        firebase.fireadmin.firestore().Timestamp.fromDate(new Date()).seconds
       ) {
         functions.logger.info(`Auction ended`);
         return null;
@@ -58,7 +58,7 @@ export const increaseRaisedMoneyFn = europeFunctions.firestore
 
       functions.logger.info(`New raised total is now ${raisedMoney}`);
 
-      await store.doc(`auctions/${after.auctionId}`).update({ raisedMoney });
+      await admin.firestore().doc(`auctions/${after.auctionId}`).update({ raisedMoney });
 
       return null;
     } catch (e) {

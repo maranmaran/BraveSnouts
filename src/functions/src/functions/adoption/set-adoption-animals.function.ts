@@ -1,5 +1,6 @@
 import { Asset, Entry, EntrySkeletonType, createClient } from "contentful";
-import { config, europeFunctions, store } from "../..";
+import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 
 export interface Animal {
     name: string;
@@ -10,29 +11,32 @@ export interface Animal {
     facebook: string;
 }
 
-const content_type = 'braveSnoutsAdoption';
-const client = createClient({
-    space: config.contentful.space,
-    accessToken: config.contentful.secret,
-});
 
-export const setAdoptAnimalsFn = europeFunctions.pubsub
+export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
+        const content_type = 'braveSnoutsAdoption';
+        const client = createClient({
+            space: functions.config().contentful.space,
+            accessToken: functions.config().contentful.secret,
+        });
+
         const contentfulAnimals = await client.getEntries({ content_type: content_type });
 
-        const writer = store.bulkWriter();
+        await admin.firestore().recursiveDelete(admin.firestore().collection('adoption'));
+
+        const writer = admin.firestore().bulkWriter();
 
         for (const product of contentfulAnimals.items) {
             const animal = await toAnimal(product);
-            writer.create(store.doc(`adopt-animals/${animal.slug}`), animal)
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            writer.create(admin.firestore().doc(`adoption/${animal.slug}`), animal)
         }
 
         await writer.close();
-    }
-    )
+    })
 
-export async function toAnimal(entry: Entry<EntrySkeletonType, undefined, string>) {
+async function toAnimal(entry: Entry<EntrySkeletonType, undefined, string>) {
     return <Animal>{
         name: entry.fields.name,
         slug: entry.fields.slug,
