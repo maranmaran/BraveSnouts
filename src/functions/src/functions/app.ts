@@ -13,21 +13,21 @@ function initialize() {
 
     admin.initializeApp();
 
-    const store = admin.firestore();
-    const config = functions.config();
-    const mailSettings = new MailSettingsService(store);
-    const europeFunctions = functions.region('europe-west1');
+    const storeL = admin.firestore();
+    const configL = functions.config();
+    const mailSettingsL = new MailSettingsService(store);
+    const europeFunctionsL = functions.region('europe-west1');
 
     admin.firestore().settings({ ignoreUndefinedProperties: true })
 
-    const app = {
-        store,
-        config,
-        mailSettings,
-        europeFunctions
+    const appL = {
+        storeL,
+        configL,
+        mailSettingsL,
+        europeFunctionsL
     };
 
     // console.debug('done', app);
 
-    return app
+    return appL
 }

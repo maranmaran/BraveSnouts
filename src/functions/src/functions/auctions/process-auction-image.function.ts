@@ -5,6 +5,7 @@ import * as sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import { europeFunctions, store } from '../app';
 
+const sharp = require('sharp');
 const path = require('path');
 const os = require('os');
 
@@ -42,9 +43,9 @@ export const processAuctionImageFn = europeFunctions
         // 2 - original
         // 3 - 7b1c4300-2f58-4d01-8c5a-fdc40edcf80e_original.jpg
 
-        const shouldProcess = fullPathSplit.length == 4
-            && fullPathSplit[0] == "auction-items"
-            && fullPathSplit[2] == "original";
+        const shouldProcess = fullPathSplit.length === 4
+            && fullPathSplit[0] === "auction-items"
+            && fullPathSplit[2] === "original";
 
         if (!shouldProcess) {
             return logger.warn("This function only processes " +

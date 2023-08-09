@@ -19,7 +19,6 @@ export interface Price {
     currency: string;
 }
 
-
 const api = new Stripe(config.stripe.secret, {
     apiVersion: "2022-11-15"
 });
