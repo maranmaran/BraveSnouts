@@ -1,9 +1,9 @@
 import { logger } from 'firebase-functions';
-import { settingsSvc } from '../../index.auctions';
+import { europeFunctions, mailSettings } from '../app';
 import { Auction, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
-export const testSendWinnerMailFn = functions.region('europe-west1').https.onCall(
+export const testSendWinnerMailFn = europeFunctions.https.onCall(
     async (data, context) => {
 
         try {
@@ -29,7 +29,7 @@ export const testSendWinnerMailFn = functions.region('europe-west1').https.onCal
             const auctions: Auction[] = [];
 
 
-            const mailVariables = await settingsSvc.getMailVariables();
+            const mailVariables = await mailSettings.getMailVariables();
 
             await sendWinnerMail(auctions, handoverDetails, testUser, bids, mailVariables);
 

@@ -1,6 +1,5 @@
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
 import { logger } from 'firebase-functions';
+import { europeFunctions, store } from '../app';
 import { User } from './models/models';
 import { sendHandoverConfirmationMail } from './services/mail-factories/handover-information-mail.factory';
 import { sendPostConfirmationMail } from './services/mail-factories/post-information-mail.factory';
@@ -10,7 +9,7 @@ import { getComposer, sendMail } from './services/mail.service';
  * Confirms chosen handover option
  * Post or in person
  */
-export const handoverConfirmFn = functions.region('europe-west1').https.onCall(
+export const handoverConfirmFn = europeFunctions.https.onCall(
   async (data, context) => {
     try {
       const userId = data.userId;
@@ -24,7 +23,7 @@ export const handoverConfirmFn = functions.region('europe-west1').https.onCall(
       const postageFee = data.postageFee;
 
       // process auction// add to map
-      const userDb = await (await admin.firestore().doc(`users/${userId}`).get()).data() as User;
+      const userDb = await (await store.doc(`users/${userId}`).get()).data() as User;
 
       if (chosenOption === 'handover') {
         await sendHandoverConfirmationMail(userDb, auctionIds, chosenOptionData);

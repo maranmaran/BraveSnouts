@@ -1,6 +1,6 @@
 
-import { handoverConfirm } from '../../../functions/src/index';
-import { UserInfo } from '../../../functions/src/models/models.js';
+import { UserInfo } from '../../../functions/src/functions/auctions/models/models.js';
+import { handoverConfirm } from '../../../functions/src/index.auctions';
 
 const fakeUser: UserInfo = {
     name: 'Marko Urh',
@@ -22,7 +22,6 @@ const fakeHandoverDetails = [
 
 (async () => {
     testWinnerMails();
-
 })();
 
 async function testWinnerMails() {

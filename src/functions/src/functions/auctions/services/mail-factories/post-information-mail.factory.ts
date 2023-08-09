@@ -1,5 +1,5 @@
 import { logger } from "firebase-functions";
-import { config, settingsSvc } from "../../../../index.auctions";
+import { config, mailSettings } from "../../../app";
 import { User } from "../../models/models";
 import { getComposer, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
@@ -30,7 +30,7 @@ export const sendPostConfirmationMail = async (
         full_name: postFormData.fullName,
         address: postFormData.address,
         phone: postFormData.phoneNumber,
-        ...(await settingsSvc.getMailVariables())
+        ...(await mailSettings.getMailVariables())
     };
 
     const templateRaw = await getLocalTemplate();

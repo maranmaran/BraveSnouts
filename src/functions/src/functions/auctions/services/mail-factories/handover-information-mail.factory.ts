@@ -1,5 +1,5 @@
 import { logger } from "firebase-functions";
-import { config, settingsSvc } from "../../../../index.auctions";
+import { config, mailSettings } from "../../../app";
 import { User, UserInfo } from "../../models/models";
 import { getComposer, getTemplate, getTemplateRaw, sendMail } from './../mail.service';
 
@@ -20,7 +20,7 @@ export const sendHandoverDetailsUpdateMail = async (
             .join("\n")}</ul>`,
         handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
         user_name: user.name.trim().split(" ")[0],
-        ...(await settingsSvc.getMailVariables())
+        ...(await mailSettings.getMailVariables())
     };
 
     const templateRaw = await getTemplateRaw("new-handover.mail.mjml");
@@ -45,7 +45,7 @@ export const sendHandoverConfirmationMail = async (
         handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
         user_name: user.displayName.trim().split(" ")[0],
         chosen_handover_option: chosenHandoverOption,
-        ...(await settingsSvc.getMailVariables())
+        ...(await mailSettings.getMailVariables())
     };
 
     const templateRaw = await getLocalTemplate();

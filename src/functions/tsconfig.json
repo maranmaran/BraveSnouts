@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    // "composite": true,
-    "noUnusedLocals": false,
+    "target": "es2022",
     "module": "commonjs",
-    "noImplicitReturns": true,
     "outDir": "lib",
-    "sourceMap": true,
     "strict": false,
-    "target": "es2017",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
     "strictPropertyInitialization": false,
+    "composite": true // enable to reference in utility scripts
   },
   "compileOnSave": true,
   "include": [

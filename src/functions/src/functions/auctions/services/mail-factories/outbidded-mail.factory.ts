@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import { logger } from "firebase-functions";
+import { mailSettings } from '../../../app';
 import { AuctionItem, UserInfo } from "../../models/models";
 import { getComposer, getEmailOptoutLink, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
@@ -27,7 +28,7 @@ export const sendOutbiddedMail = async (
         item_bid_before,
         item_bid_after,
         user_name: user.name.trim().split(" ")[0],
-        ...(await settingsSvc.getMailVariables())
+        ...(await mailSettings.getMailVariables())
     };
 
     const templateRaw = await getLocalTemplate();

@@ -1,7 +1,7 @@
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { Asset, Entry, EntrySkeletonType, createClient } from "contentful";
-import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { europeFunctions, store } from "../app";
 
 export interface BlogPost {
     title: string;
@@ -16,7 +16,7 @@ export interface BlogPost {
 }
 
 
-export const setBlogPostsFn = functions.region('europe-west1').pubsub
+export const setBlogPostsFn = europeFunctions.pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
 
@@ -28,14 +28,14 @@ export const setBlogPostsFn = functions.region('europe-west1').pubsub
 
         const contentfulPosts = await client.getEntries({ content_type: content_type });
 
-        await admin.firestore().recursiveDelete(admin.firestore().collection('blog'));
+        await store.recursiveDelete(store.collection('blog'));
 
-        const writer = admin.firestore().bulkWriter();
+        const writer = store.bulkWriter();
 
         for (const entry of contentfulPosts.items) {
             const post = await toBlogPost(entry);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.create(admin.firestore().doc(`blog/${post.slug}`), post)
+            writer.create(store.doc(`blog/${post.slug}`), post)
         }
 
         await writer.close();

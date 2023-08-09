@@ -1,5 +1,6 @@
 import * as firebase from "firebase-admin";
 import { logger } from "firebase-functions";
+import { europeFunctions, store } from "../app";
 import {
   Auction,
   AuctionItem,
@@ -10,7 +11,7 @@ import {
 import { sendOutbiddedMail } from "./services/mail-factories/outbidded-mail.factory";
 
 // send email notification to users that they have been outbidded
-export const bidChangeFn = functions.region('europe-west1').firestore
+export const bidChangeFn = europeFunctions.firestore
   .document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
 
@@ -19,12 +20,12 @@ export const bidChangeFn = functions.region('europe-west1').firestore
       const after = change.after.data() as AuctionItem;
 
       const auction = (await (
-        await admin.firestore().collection("auctions").doc(before.auctionId).get()
+        await store.collection("auctions").doc(before.auctionId).get()
       ).data()) as Auction;
 
       if (
         auction.endDate.seconds <
-        firebase.fireadmin.firestore().Timestamp.fromDate(new Date()).seconds
+        firebase.firestore.Timestamp.fromDate(new Date()).seconds
       ) {
         logger.info(`Auction ended`);
         return null;
@@ -60,7 +61,7 @@ export const bidChangeFn = functions.region('europe-west1').firestore
 
       // check permission
       const userEmailSettings = (
-        (await admin.firestore().collection("users").doc(before.user).get()).data()
+        (await store.collection("users").doc(before.user).get()).data()
           ?.emailSettings as EmailSettings
       )?.bidUpdates;
       if (!userEmailSettings) {
@@ -71,7 +72,7 @@ export const bidChangeFn = functions.region('europe-west1').firestore
 
       // get outbidded user information
       const outbiddedUserData = (await (
-        await admin.firestore().collection("users").doc(before.user).get()
+        await store.collection("users").doc(before.user).get()
       ).data()) as User;
       if (!outbiddedUserData) {
         logger.error("Can not find user");

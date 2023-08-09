@@ -3,13 +3,14 @@ import * as admin from "firebase-admin";
 import { logger } from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
-import { config } from "../../index.auctions";
+import { config, europeFunctions, store } from "../app";
 import { AuctionItem, User, WinnerOnAuction } from "./models/models";
+
 const os = require("os");
 const path = require("path");
 
 /** Sends email update to all people with new handover details for auction */
-export const exportAuctionFn = functions.region('europe-west1').https.onCall(
+export const exportAuctionFn = europeFunctions.https.onCall(
   async (data) => {
 
     try {
@@ -51,19 +52,19 @@ export const exportAuctionFn = functions.region('europe-west1').https.onCall(
       // fill above MAPS and add all items data to PREDMETI sheet
       for (const id of ids) {
         const items = (
-          await admin.firestore().collection(`auctions/${id}/items`).get()
+          await store.collection(`auctions/${id}/items`).get()
         ).docs.map((d) => d.data()) as AuctionItem[];
         for (const item of items) {
           itemsMap.set(item.id, item);
         }
 
         const winners = (
-          await admin.firestore().collection(`auctions/${id}/winners`).get()
+          await store.collection(`auctions/${id}/winners`).get()
         ).docs.map((d) => d.data()) as WinnerOnAuction[];
         for (const winner of winners) {
           const userId = winner.id;
           const user = (await (
-            await admin.firestore().doc(`users/${userId}`).get()
+            await store.doc(`users/${userId}`).get()
           ).data()) as User;
 
           if (!usersMap.has(userId)) {

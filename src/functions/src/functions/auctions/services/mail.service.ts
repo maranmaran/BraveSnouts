@@ -1,5 +1,5 @@
 import { logger } from 'firebase-functions';
-import { config } from "../../../index.auctions";
+import { config } from "../../app";
 
 import * as fs from 'fs';
 import * as nodemailer from "nodemailer";
