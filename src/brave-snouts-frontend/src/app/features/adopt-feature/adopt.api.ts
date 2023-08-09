@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
-import { AngularFireFunctions } from "@angular/fire/compat/functions";
-import { BehaviorSubject, map, of, shareReplay, tap } from "rxjs";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { BehaviorSubject, first, map, of, shareReplay, tap } from "rxjs";
 
 export interface Animal {
     name: string;
@@ -13,7 +13,7 @@ export interface Animal {
 
 @Injectable({ providedIn: 'root' })
 export class AdoptApi {
-    private readonly functions = inject(AngularFireFunctions);
+    private readonly store = inject(AngularFirestore);
 
     private readonly animalsSubject = new BehaviorSubject<Animal[]>([]);
     readonly animals$ = this.animalsSubject.asObservable().pipe(shareReplay(1));
@@ -41,9 +41,12 @@ export class AdoptApi {
             return this.animals$;
         }
 
-        return this.functions.httpsCallable<void, Animal[]>('getAdoptAnimals-getAdoptAnimalsFn')().pipe(
-            tap(animals => this.animalsSubject.next(animals))
-        );
+        return this.store.collection<Animal>('adoption')
+            .valueChanges()
+            .pipe(
+                first(),
+                tap(animals => this.animalsSubject.next(animals))
+            );
     }
 }
 

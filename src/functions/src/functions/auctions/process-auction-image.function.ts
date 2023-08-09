@@ -1,9 +1,9 @@
 import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import { RuntimeOptions, logger } from 'firebase-functions';
 import { mkdirp } from 'mkdirp';
-import * as sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
-import { europeFunctions, store } from '../app';
+import { store } from '../app';
 
 const sharp = require('sharp');
 const path = require('path');
@@ -27,7 +27,7 @@ const runtimeOpts: Partial<RuntimeOptions> = {
 // Processes newly added images and creates
 // Original, Compressed, Thumbnail versions of image in storage
 // Links are created in advance by Client
-export const processAuctionImageFn = europeFunctions
+export const processAuctionImageFn = functions.region('europe-west1')
     .runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {

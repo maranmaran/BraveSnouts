@@ -1,6 +1,6 @@
 import { Asset, Entry, EntrySkeletonType, createClient } from "contentful";
 import * as functions from 'firebase-functions';
-import { europeFunctions, store } from "../app";
+import { store } from "../app";
 
 export interface Animal {
     name: string;
@@ -12,7 +12,7 @@ export interface Animal {
 }
 
 
-export const setAdoptionAnimalsFn = europeFunctions.pubsub
+export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
         const content_type = 'braveSnoutsAdoption';

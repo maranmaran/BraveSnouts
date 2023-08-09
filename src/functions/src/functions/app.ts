@@ -3,10 +3,10 @@ import * as functions from 'firebase-functions';
 import { MailSettingsService } from './auctions/services/mail-settings.service';
 
 export const app = initialize();
-export const store = app.store;
-export const config = app.config;
-export const mailSettings = app.mailSettings;
-export const europeFunctions = app.europeFunctions;
+export const store = app.storeL;
+export const config = app.configL;
+export const mailSettings = app.mailSettingsL;
+export const europeFunctions = app.europeFunctionsL;
 
 function initialize() {
     // console.debug('Initializing application');

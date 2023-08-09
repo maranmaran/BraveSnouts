@@ -1,16 +1,17 @@
 import { format } from "date-fns";
 import * as admin from "firebase-admin";
+import * as functions from 'firebase-functions';
 import { logger } from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
-import { config, europeFunctions, store } from "../app";
+import { config, store } from "../app";
 import { AuctionItem, User, WinnerOnAuction } from "./models/models";
 
 const os = require("os");
 const path = require("path");
 
 /** Sends email update to all people with new handover details for auction */
-export const exportAuctionFn = europeFunctions.https.onCall(
+export const exportAuctionFn = functions.region('europe-west1').https.onCall(
   async (data) => {
 
     try {

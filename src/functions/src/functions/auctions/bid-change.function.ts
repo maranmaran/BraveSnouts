@@ -1,6 +1,7 @@
 import * as firebase from "firebase-admin";
+import * as functions from 'firebase-functions';
 import { logger } from "firebase-functions";
-import { europeFunctions, store } from "../app";
+import { store } from "../app";
 import {
   Auction,
   AuctionItem,
@@ -11,7 +12,7 @@ import {
 import { sendOutbiddedMail } from "./services/mail-factories/outbidded-mail.factory";
 
 // send email notification to users that they have been outbidded
-export const bidChangeFn = europeFunctions.firestore
+export const bidChangeFn = functions.region('europe-west1').firestore
   .document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
 

@@ -1,8 +1,10 @@
 import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
-import { europeFunctions, store } from '../app';
+import { store } from '../app';
+
 const os = require('os');
 const path = require('path');
 
@@ -10,7 +12,7 @@ const path = require('path');
  * Picks up item winners and sends email notification templates for won items
  * Marks auction as processed
  */
-export const downloadMailsFn = europeFunctions.https.onCall(
+export const downloadMailsFn = functions.region('europe-west1').https.onCall(
     async (data, context) => {
 
         try {

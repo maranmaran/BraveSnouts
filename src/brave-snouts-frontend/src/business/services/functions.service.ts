@@ -8,39 +8,33 @@ export class FunctionsService {
 
   /** Calls cloud function to process auction end */
   endAuction(auctionId: string, handoverDetails: string[]) {
-    const callable = this.functions.httpsCallable('endAuction-endAuctionFn');
+    const callable = this.functions.httpsCallable('auctions-endAuction');
 
     return callable({ auctionId, handoverDetails });
   }
 
   testSendWinnerMail(email, items) {
-    const callable = this.functions.httpsCallable('testSendWinnerMail-testSendWinnerMailFn');
+    const callable = this.functions.httpsCallable('auctions-testSendWinnerMail');
 
     return callable({ email, items });
   }
 
   /** Calls cloud function to send winner emails */
   sendWinnerMails(auctionIds: string[], handoverDetails: string[]) {
-    const callable = this.functions.httpsCallable(
-      'sendWinnerMail-sendWinnerMailFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-sendWinnerMail');
 
     return callable({ auctionIds, handoverDetails });
   }
 
   /** Sends email update for handover via cloud function */
   changeHandoverDetails(auctionIds: string[], handoverDetails: string[]) {
-    const callable = this.functions.httpsCallable(
-      'changeHandover-changeHandoverFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-changeHandover');
 
     return callable({ auctionIds, handoverDetails });
   }
 
   exportAuction(auctionIds: string[], filename: string) {
-    const callable = this.functions.httpsCallable(
-      'exportAuction-exportAuctionFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-exportAuction');
 
     return callable({ auctionIds, filename });
   }
@@ -53,9 +47,7 @@ export class FunctionsService {
     paymentDetail: string,
     postageFee: number
   ) {
-    const callable = this.functions.httpsCallable(
-      'handoverConfirm-handoverConfirmFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-handoverConfirm');
 
     return callable({
       userId,
@@ -69,9 +61,7 @@ export class FunctionsService {
   }
 
   sendHandoverConfirm(userId: string, auctionIds: string[], chosenOptionData: string) {
-    const callable = this.functions.httpsCallable(
-      'handoverConfirm-handoverConfirmFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-handoverConfirm');
 
     return callable({
       userId,
@@ -82,17 +72,13 @@ export class FunctionsService {
   }
 
   sendNewItemsAddedMail(auctionId: string) {
-    const callable = this.functions.httpsCallable(
-      'newItemsAdded-newItemsAddedFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-newItemsAdded');
 
     return callable({ auctionId });
   }
 
   downloadMails() {
-    const callable = this.functions.httpsCallable(
-      'downloadMails-downloadMailsFn'
-    );
+    const callable = this.functions.httpsCallable('auctions-downloadMails');
 
     return callable({});
   }

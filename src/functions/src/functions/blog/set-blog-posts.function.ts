@@ -52,18 +52,33 @@ function toBlogPost(entry: Entry<EntrySkeletonType, undefined, string>) {
         hero: (<Asset>entry.fields.heroImage).fields.file.url,
         instagram: entry.fields.instagram,
         facebook: entry.fields.facebook,
+        // contentJson: JSON.stringify(entry.fields.content),
         content: documentToHtmlString(entry.fields.content as any, {
             renderNode: {
-                ['embedded-asset-block']: (node, children) => {
-                    // render the EMBEDDED_ASSET as you need
-                    return `
-                        <img class="h-auto w-[55%] self-center" 
-                            src="${'https://' + node.data.target.fields.file.url}"
-                            alt="${node.data.target.fields.description}"
-                        />
-                   `
-                }
+                [`embedded-entry-block`]: (node, children) => renderEntry(node, children),
+                ['embedded-asset-block']: (node, children) => renderAsset(node, children)
             }
         })
     };
+}
+
+function renderEntry(node, _) {
+    return `<iframe
+                src= { node.data.target.fields.embedUrl }
+                height = "100%"
+                width = "100%"
+                frameBorder = "0"
+                scrolling = "no"
+                title = { node.data.target.fields.title }
+            />`
+}
+
+function renderAsset(node, _) {
+    return `
+        <img 
+            style="height: auto; width: 55%; max-height: 350px; align-self: center"
+            src="${'https://' + node.data.target.fields.file.url}"
+            alt="${node.data.target.fields.description}"
+        />
+    `
 }

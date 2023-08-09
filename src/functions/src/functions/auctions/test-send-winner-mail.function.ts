@@ -1,9 +1,10 @@
+import * as functions from 'firebase-functions';
 import { logger } from 'firebase-functions';
-import { europeFunctions, mailSettings } from '../app';
+import { mailSettings } from '../app';
 import { Auction, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
-export const testSendWinnerMailFn = europeFunctions.https.onCall(
+export const testSendWinnerMailFn = functions.region('europe-west1').https.onCall(
     async (data, context) => {
 
         try {

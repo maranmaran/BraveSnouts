@@ -28,6 +28,7 @@
     "@ngneat/overview": "^5.1.1",
     "@stripe/stripe-js": "^1.54.2",
     "@tweenjs/tween.js": "^21.0.0",
+    "@contentful/rich-text-html-renderer": "^16.1.1",
     "date-fns": "^2.30.0",
     "firebase": "^9.23.0",
     "hammerjs": "^2.0.8",

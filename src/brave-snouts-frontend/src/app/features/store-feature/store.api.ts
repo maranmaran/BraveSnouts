@@ -1,8 +1,8 @@
 import { Injectable, inject } from "@angular/core";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { HotToastService } from "@ngneat/hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
-import { Firestore, collection } from "firebase/firestore";
-import { BehaviorSubject, map, of, shareReplay } from "rxjs";
+import { BehaviorSubject, first, map, of, shareReplay, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 
 export interface Price {
@@ -25,7 +25,7 @@ export interface Product {
 
 @Injectable({ providedIn: 'root' })
 export class StoreApi {
-    private readonly store = inject(Firestore);
+    private readonly store = inject(AngularFirestore);
     private readonly toast = inject(HotToastService)
 
     private readonly productsSubject = new BehaviorSubject<Product[]>([]);
@@ -74,10 +74,12 @@ export class StoreApi {
             return this.products$;
         }
 
-        const productsCollection = collection(this.store, 'store');
-        const products = collectionData(productsCollection) as Product[];
-
-        return of(products);
+        return this.store.collection<Product>('shop')
+            .valueChanges()
+            .pipe(
+                first(),
+                tap(products => this.productsSubject.next(products))
+            );
     }
 }
 

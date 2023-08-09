@@ -1,6 +1,7 @@
 import { Injectable, inject } from "@angular/core";
-import { AngularFireFunctions } from "@angular/fire/compat/functions";
-import { BehaviorSubject, map, of, shareReplay, tap } from "rxjs";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
+import firebase from 'firebase/compat/app';
+import { BehaviorSubject, first, map, of, shareReplay, tap, throttleTime } from "rxjs";
 
 export interface BlogPost {
     title: string;
@@ -10,13 +11,14 @@ export interface BlogPost {
     description: string,
     hero: string;
     content: string;
+    contentJson: string;
     instagram: string;
     facebook: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class BlogApi {
-    private readonly functions = inject(AngularFireFunctions);
+    private readonly store = inject(AngularFirestore);
 
     private readonly postsSubject = new BehaviorSubject<BlogPost[]>([]);
     readonly posts$ = this.postsSubject.asObservable().pipe(shareReplay(1));
@@ -43,9 +45,18 @@ export class BlogApi {
             return this.posts$;
         }
 
-        return this.functions.httpsCallable<void, BlogPost[]>('getBlogPosts-getBlogPostsFn')().pipe(
-            tap(posts => this.postsSubject.next(posts))
-        );
+        console.debug('called me');
+        return this.store.collection<BlogPost>('blog')
+            .valueChanges()
+            .pipe(
+                throttleTime(100),
+                first(),
+                map(posts => posts.map(p => ({
+                    ...p,
+                    date: (p.date as unknown as firebase.firestore.Timestamp).toDate()
+                }))),
+                tap(posts => this.postsSubject.next(posts))
+            );
     }
 }
 

@@ -1,5 +1,6 @@
+import * as functions from 'firebase-functions';
 import Stripe from "stripe";
-import { config, europeFunctions, store } from "../app";
+import { config, store } from "../app";
 
 export interface Product {
     id: string;
@@ -23,7 +24,7 @@ const api = new Stripe(config.stripe.secret, {
     apiVersion: "2022-11-15"
 });
 
-export const setShopProductsFn = europeFunctions.pubsub
+export const setShopProductsFn = functions.region('europe-west1').pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
         const stripeProducts = await api.products.list({
