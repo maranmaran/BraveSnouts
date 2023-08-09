@@ -64,19 +64,19 @@ function toBlogPost(entry: Entry<EntrySkeletonType, undefined, string>) {
 
 function renderEntry(node, _) {
     return `<iframe
-                src= { node.data.target.fields.embedUrl }
-                height = "100%"
-                width = "100%"
-                frameBorder = "0"
-                scrolling = "no"
-                title = { node.data.target.fields.title }
-            />`
+                src="${node.data.target.fields.embedUrl}"
+                title="${node.data.target.fields.title}"
+                height="100%"
+                width="100%"
+                frameBorder="0"
+                scrolling="no"
+            ></iframe>`
 }
 
 function renderAsset(node, _) {
     return `
         <img 
-            style="height: auto; width: 55%; max-height: 350px; align-self: center"
+            style="max-width: 450px; width: 70vw, align-self: center"
             src="${'https://' + node.data.target.fields.file.url}"
             alt="${node.data.target.fields.description}"
         />

@@ -14,19 +14,6 @@ import { BlogPost, BlogApi as ContentfulApi } from './blog.api';
         justify-content: center;
         align-items: center;
       }
-
-      // css here needs to reflect one in set-blog-posts.function.ts
-      .h-auto {
-        height: auto !important;
-      }
-
-      .w-[55%] {
-        width: 55%
-      }
-
-      .max-h-[350px] {
-        max-height: 350px;
-      }
     `
   ],
   template: `
@@ -39,7 +26,9 @@ import { BlogPost, BlogApi as ContentfulApi } from './blog.api';
             'background-size': 'cover',
             'align-self': 'center',
         }" mat-card-image ></div>
-        <div class="p-4 flex flex-col break-words prose" [innerHtml]="post().content"></div>
+        
+        <iframe src="undefined" title="Join Zabibas Global Giveaway" height="100%" width="100%" frameBorder="0" scrolling="no"></iframe>
+        <div class="p-4 flex flex-col break-words prose" [innerHtml]="post().content | safeHtml"></div>
         <!-- <div class="p-4 flex flex-col break-words prose" [innerHtml]="post().contentJson"></div> -->
       </div>
   `
