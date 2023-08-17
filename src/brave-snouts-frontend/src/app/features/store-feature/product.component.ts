@@ -25,7 +25,7 @@ import { Product, StoreApi } from './store.api';
           </div> 
           <div>{{ product.description }}</div> 
           <button mat-raised-button color="primary" class="justify-self-end self-end" (click)="buy(product)">
-            Kupi ({{ product.price.amount }} {{ product.price.currency | uppercase }})
+            Dodaj u košaricu ({{ product.price.amount }} {{ product.price.currency | uppercase }})
           </button> 
         </div> 
     </div>
@@ -36,7 +36,7 @@ export class ProductComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly api = inject(StoreApi);
 
-  product$ = this.api.selectedProduct$;
+  readonly product$ = this.api.selectedProduct$;
 
   ngOnInit() {
     this.ensureLoaded();
@@ -61,7 +61,10 @@ export class ProductComponent implements OnInit {
     }
 
     // check if number quantity
-
-    await this.api.checkout(product.price.id, parseInt(quantity));
+    this.api.addToCart({
+      productId: product.id,
+      priceId: product.price.id,
+      quantity: Number.parseInt(quantity)
+    });
   }
 }

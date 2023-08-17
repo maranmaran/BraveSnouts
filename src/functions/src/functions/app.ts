@@ -9,13 +9,11 @@ export const mailSettings = app.mailSettingsL;
 export const europeFunctions = app.europeFunctionsL;
 
 function initialize() {
-    // console.debug('Initializing application');
-
     admin.initializeApp();
 
     const storeL = admin.firestore();
     const configL = functions.config();
-    const mailSettingsL = new MailSettingsService(store);
+    const mailSettingsL = new MailSettingsService(storeL);
     const europeFunctionsL = functions.region('europe-west1');
 
     admin.firestore().settings({ ignoreUndefinedProperties: true })
@@ -26,8 +24,6 @@ function initialize() {
         mailSettingsL,
         europeFunctionsL
     };
-
-    // console.debug('done', app);
 
     return appL
 }

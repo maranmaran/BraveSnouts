@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ImageItem } from 'ng-gallery';
-import { first, map, tap } from 'rxjs';
+import { first, map } from 'rxjs';
 import { Animal, AdoptApi as ContentfulApi } from './adopt.api';
 
 @Component({
@@ -44,8 +44,7 @@ export class AnimalComponent implements OnInit {
 
   animal$ = this.api.selectedAnimal$;
   images$ = this.animal$.pipe(
-    map(x => x.images.map(x => new ImageItem({ src: x, thumb: x }))),
-    tap(console.log)
+    map(x => x.images.map(x => new ImageItem({ src: x.original.gUrl, thumb: x.thumbnail.gUrl }))),
   )
 
   ngOnInit() {

@@ -1,12 +1,13 @@
 import { Injectable, inject } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { BehaviorSubject, first, map, of, shareReplay, tap } from "rxjs";
+import { FirebaseFile } from "src/business/models/firebase-file.model";
 
 export interface Animal {
     name: string;
     slug: string;
     description: string,
-    images: string[];
+    images: FirebaseFile[];
     instagram: string;
     facebook: string;
 }

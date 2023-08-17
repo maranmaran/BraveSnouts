@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "npm run config -- --environment=dev && ng serve -c development",
     "config": "ts-node ./src/environments/set-env.script.ts",
     "config:dev": "npm run config -- --environment=dev",
     "config:prod": "npm run config -- --environment=prod",
-    "build:dev": "npm ci && npm run config:dev && ng build -c development --output-hashing=all",
-    "build:prod": "npm ci && npm run config:prod && ng build -c production --output-hashing=all"
+    "start": "npm run config:dev && ng serve -c production",
+    "build:dev": "npm ci && npm run config:dev && ng build -c development",
+    "build:prod": "npm ci && npm run config:prod && ng build -c production"
   },
   "dependencies": {
     "@angular/animations": "~16.1.6",
@@ -36,7 +36,6 @@
     "ngx-countdown": "^16.0.0",
     "ngx-drag-scroll": "^16.0.0",
     "ngx-dropzone": "^3.1.0",
-    "ngx-google-analytics": "^14.0.1",
     "ngx-mat-timepicker": "~16.0.2",
     "rxjs": "^7.8.1",
     "subsink": "^1.0.2",

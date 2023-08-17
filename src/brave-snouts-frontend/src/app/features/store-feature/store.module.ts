@@ -4,6 +4,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { GalleryModule } from "ng-gallery";
 import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
+import { CartComponent } from "./cart.component";
 import { CheckoutSuccessComponent } from "./checkout-success.component";
 import { ProductComponent } from './product.component';
 import { ProductsComponent } from './products.component';
@@ -23,6 +24,7 @@ import { StoreRoutingModule } from './store-routing.module';
     declarations: [
         StoreHomeComponent,
 
+        CartComponent,
         ProductComponent,
         ProductsComponent,
         CheckoutSuccessComponent,

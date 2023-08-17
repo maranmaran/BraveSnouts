@@ -34,6 +34,7 @@ export class StorageService {
         return this.storage.ref(file).getDownloadURL().pipe(take(1));
     }
 
+
     async uploadAuctionImage(auctionId: string, file: File, allFiles: FirebaseFile[]) {
         const name = uuidv4() + "_original.jpg";
         const path = `${this.getImageBucket(auctionId)}/original/${name}`;
@@ -47,7 +48,7 @@ export class StorageService {
         const pathThumb = path.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
         const fUrlThumb = url.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
 
-        const pathComp = url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
+        const pathComp = path.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
         const fUrlComp = url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
 
         const firebaseFile = <FirebaseFile>{

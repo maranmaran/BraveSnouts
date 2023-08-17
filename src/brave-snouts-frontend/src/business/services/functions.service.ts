@@ -13,8 +13,8 @@ export class FunctionsService {
     return callable({ auctionId, handoverDetails });
   }
 
-  testSendWinnerMail(email, items) {
-    const callable = this.functions.httpsCallable('auctions-testSendWinnerMail');
+  testAuctionMails(email, items) {
+    const callable = this.functions.httpsCallable('auctions-testAuctionMails');
 
     return callable({ email, items });
   }

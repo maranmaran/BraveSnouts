@@ -23,6 +23,10 @@ export interface Product {
     metadata: { [name: string]: string; };
 }
 
+export type LineItem = { productId: string, priceId: string, quantity: number };
+type Cart = LineItem[];
+const lineItemEq = (l: LineItem, r: LineItem) => l.productId == r.productId && l.priceId == r.priceId;
+
 @Injectable({ providedIn: 'root' })
 export class StoreApi {
     private readonly store = inject(AngularFirestore);
@@ -32,16 +36,58 @@ export class StoreApi {
     readonly products$ = this.productsSubject.asObservable().pipe(shareReplay(1));
 
     private readonly selectedProductSubject = new BehaviorSubject<Product>(null);
-    selectedProduct$ = this.selectedProductSubject.asObservable().pipe(shareReplay(1));
+    readonly selectedProduct$ = this.selectedProductSubject.asObservable().pipe(shareReplay(1));
     get selectedProduct() { return this.selectedProductSubject.value };
 
-    async checkout(priceId: string, quantity: number) {
+    private readonly cartSubject = new BehaviorSubject<Cart>(JSON.parse(localStorage.getItem('cart') ?? "[]"));
+    readonly cart$ = this.cartSubject.asObservable()
+        .pipe(
+            tap(cart => {
+                localStorage.setItem('cart', JSON.stringify(cart));
+            }),
+            shareReplay(1)
+        );
+
+    addToCart(item: LineItem) {
+        const cart = this.cartSubject.value;
+        const current = cart.find(x => lineItemEq(x, item));
+
+        if (!current) {
+            cart.push(item);
+        } else {
+            current.quantity += item.quantity;
+        }
+
+        this.cartSubject.next(cart);
+    }
+
+    updateCart(updatedItem: LineItem) {
+        const cart = this.cartSubject.value.map(
+            currentItem => lineItemEq(currentItem, updatedItem) ? updatedItem : currentItem
+        );
+
+        this.cartSubject.next(cart);
+    }
+
+    removeFromCart(item: LineItem) {
+        const cart = this.cartSubject.value.map(
+            currentItem => lineItemEq(currentItem, item) ? null : currentItem
+        );
+
+        console.debug(cart);
+
+        this.cartSubject.next(cart);
+    }
+
+    async checkout() {
+        const cart = this.cartSubject.value;
+
         // Call your backend to create the Checkout session.
         // When the customer clicks on the button, redirect them to Checkout.
         const stripe = await loadStripe(environment.stripe.publishableKey);
         const { error } = await stripe.redirectToCheckout({
             mode: "payment",
-            lineItems: [{ price: priceId, quantity: quantity }],
+            lineItems: cart,
             successUrl: `${environment.baseUrl}/merch/placanje-uspjesno`,
             cancelUrl: `${environment.baseUrl}/merch`,
         });
@@ -51,8 +97,10 @@ export class StoreApi {
         // using `error.message`.
         if (error) {
             this.toast.error('Nešto je pošlo po zlu prilikom kupovine');
-            console.debug(error);
+            console.error(error);
         }
+
+        this.cartSubject.next([]);
     }
 
     selectProduct(product: Product) {

@@ -2,13 +2,17 @@ import * as admin from 'firebase-admin';
 
 export interface FirebaseFile {
     name: string;
-    type: 'image' | 'video'
+    type: 'image' | 'video';
 
-    path: string; // auction-bucket/auctionId
+    original: FirebaseFileAccess;
+    thumbnail: FirebaseFileAccess;
+    compressed: FirebaseFileAccess;
+}
 
-    urlOrig: string;
-    urlComp?: string;
-    urlThumb?: string;
+export interface FirebaseFileAccess {
+    path: string;
+    fUrl: string; // firebase url
+    gUrl: string; // gcloud url
 }
 
 export class Auction {

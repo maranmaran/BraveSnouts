@@ -9,14 +9,14 @@ import { AdoptApi, Animal } from './adopt.api';
     :host { @apply flex flex-col p-4 }
   `],
   template: `
-    <div class="w-full grid grid-cols-3 gap-10 self-center items-center justify-center sm:grid-cols-1 lg:grid-cols-2">
+    <div class="max-w-7xl w-full grid grid-cols-3 gap-10 self-center items-center justify-center sm:grid-cols-1 lg:grid-cols-2">
           <mat-card *ngFor="let animal of animals$ | async" (click)="navigate(animal)" class="
             max-w-xl justify-self-center w-full
             shadow-lg rounded-b-md flex justify-start p-0 
             transition-all duration-250 cursor-pointer hover:shadow-2xl hover:scale-105
           ">
             <div [ngStyle]="{
-                background: 'url(' + animal.images[0] + ') 50% 50% no-repeat',
+                background: 'url(' + animal.images[0].original.gUrl + ') 50% 50% no-repeat',
                 'background-size': 'cover',
                 'align-self': 'center',
                 'height': '250px',

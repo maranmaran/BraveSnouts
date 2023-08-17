@@ -1,13 +1,12 @@
-import * as functions from 'firebase-functions';
 import { logger } from "firebase-functions";
-import { store } from "../app";
+import { europeFunctions, store } from "../app";
 import { Auction, AuctionItem, Bid, TrackedItem, UserInfo, WinnerOnAuction } from "./models/models";
 
 /** 
  * Processes auctions end
  * Writes winners to DB
  */
-export const endAuctionFn = functions.region('europe-west1').https.onCall(
+export const endAuctionFn = europeFunctions.https.onCall(
   async (data, context) => {
 
     try {

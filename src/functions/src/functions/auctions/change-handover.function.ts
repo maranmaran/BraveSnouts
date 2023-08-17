@@ -1,11 +1,10 @@
-import * as functions from 'firebase-functions';
 import { logger } from "firebase-functions";
-import { store } from "../app";
+import { europeFunctions, store } from "../app";
 import { UserInfo, WinnerOnAuction } from "./models/models";
 import { sendHandoverDetailsUpdateMail } from "./services/mail-factories/handover-information-mail.factory";
 
 /** Sends email update to all people with new handover details for auction */
-export const changeHandoverFn = functions.region('europe-west1').https.onCall(
+export const changeHandoverFn = europeFunctions.https.onCall(
     async (data, context) => {
 
         const auctionIds = data.auctionIds as string[];

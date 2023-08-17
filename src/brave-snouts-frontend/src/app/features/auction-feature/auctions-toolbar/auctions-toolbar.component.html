@@ -1,4 +1,4 @@
-<mat-toolbar class="toolbar flex flex-row justify-between" color="primary">
+<mat-toolbar class="h-10 flex flex-row justify-between" color="primary">
     <div id="actions" class="flex flex-row w-32">
         <button mat-icon-button *ngIf="admin$ | async; privacyPolicy" [matMenuTriggerFor]="adminMenu">
             <mat-icon>menu</mat-icon>
@@ -15,16 +15,11 @@
         </mat-menu>
 
         <ng-container *ngIf="!(admin$ | async)">
-            <button
-                mat-icon-button
-                class="elevate hover default"
-                matTooltip="Polica privatnosti"
-                routerLink="/aukcije/polica-privatnosti"
-            >
+            <button mat-icon-button matTooltip="Polica privatnosti" routerLink="/aukcije/polica-privatnosti">
                 <mat-icon>policy</mat-icon>
             </button>
 
-            <button mat-icon-button class="elevate hover default" routerLink="/aukcije/pravila">
+            <button mat-icon-button routerLink="/aukcije/pravila">
                 <mat-icon>info</mat-icon>
             </button>
         </ng-container>
@@ -44,7 +39,7 @@
         <div class="logo-animated" [hidden]="!clickFlag"></div>
     </div>
 
-    <div id="user-profile" class="user-auth h-full relative flex flex-row justify-end items-center">
+    <div id="user-profile" class="user-auth h-full relative flex flex-row justify-end items-center gap-2">
         <button mat-icon-button matTooltip="Pomoć" (click)="onShowContactHelp()">
             <mat-icon>help</mat-icon>
         </button>

@@ -1,13 +1,12 @@
 /* eslint-disable eqeqeq */
-import * as functions from 'firebase-functions';
 import { logger } from 'firebase-functions';
-import { mailSettings, store } from '../app';
+import { europeFunctions, mailSettings, store } from '../app';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
 import { Auction, AuctionItem, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
 // Sends email for won items
-export const sendWinnerMailFn = functions.region('europe-west1').https.onCall(
+export const sendWinnerMailFn = europeFunctions.https.onCall(
     async (data, context) => {
 
         try {

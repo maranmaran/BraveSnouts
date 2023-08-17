@@ -24,9 +24,12 @@ import { BlogApi, BlogPost } from './blog.api';
           'min-w-full grid grid-cols-2 sm:grid-cols-1 gap-8 col-span-3 sm:col-span-1 lg:col-span-2': first 
         }"
       >
-          <div mat-card-image class="h-[250px] w-full self-center bg-cover" 
-            [ngClass]="{ 'h-full sm:h-[250px]': first }"
-            [ngStyle]="{ background: 'url(' + post.hero + ') 50% 50% no-repeat' }"
+          <div mat-card-image 
+            class="min-h-full sm:h-[200px] h-[250px] w-full self-center bg-no-repeat bg-cover" 
+            [ngClass]="{ 'md:h-[250px] lg:h-[300px] xl:h-[350px] h-[450px]': first }"
+            [ngStyle]="{
+                  'background': 'url(' + post.hero.original.gUrl + '), url(' + post.hero.compressed.gUrl + '), url(' + post.hero.thumbnail.gUrl + ')',
+            }"
           ></div>
           <mat-card-content>
             <mat-card-header class="px-4 pt-5 pb-0">

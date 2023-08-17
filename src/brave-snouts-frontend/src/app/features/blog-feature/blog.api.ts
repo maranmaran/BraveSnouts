@@ -2,6 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import firebase from 'firebase/compat/app';
 import { BehaviorSubject, first, map, of, shareReplay, tap, throttleTime } from "rxjs";
+import { FirebaseFile } from "src/business/models/firebase-file.model";
 
 export interface BlogPost {
     title: string;
@@ -9,9 +10,8 @@ export interface BlogPost {
     date: Date,
     tags: string[],
     description: string,
-    hero: string;
+    hero: FirebaseFile;
     content: string;
-    contentJson: string;
     instagram: string;
     facebook: string;
 }
@@ -45,7 +45,6 @@ export class BlogApi {
             return this.posts$;
         }
 
-        console.debug('called me');
         return this.store.collection<BlogPost>('blog')
             .valueChanges()
             .pipe(

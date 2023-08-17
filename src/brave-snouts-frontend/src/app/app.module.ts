@@ -11,7 +11,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GALLERY_CONFIG } from 'ng-gallery';
 import { LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
-import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
@@ -44,8 +43,8 @@ export const DEFAULT_GALLERY_CONFIG = {
     AppRoutingModule,
 
     // Google analytics
-    NgxGoogleAnalyticsModule.forRoot(environment.firebaseConfig.measurementId),
-    NgxGoogleAnalyticsRouterModule,
+    // NgxGoogleAnalyticsModule.forRoot(environment.firebaseConfig.measurementId),
+    // NgxGoogleAnalyticsRouterModule,
 
     // Firebase
     AngularFireModule.initializeApp(environment.firebaseConfig),

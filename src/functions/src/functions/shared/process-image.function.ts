@@ -1,9 +1,8 @@
 import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
 import { RuntimeOptions, logger } from 'firebase-functions';
 import { mkdirp } from 'mkdirp';
 import { v4 as uuidv4 } from 'uuid';
-import { store } from '../app';
+import { europeFunctions, store } from '../app';
 
 const sharp = require('sharp');
 const path = require('path');
@@ -27,29 +26,18 @@ const runtimeOpts: Partial<RuntimeOptions> = {
 // Processes newly added images and creates
 // Original, Compressed, Thumbnail versions of image in storage
 // Links are created in advance by Client
-export const processAuctionImageFn = functions.region('europe-west1')
+export const processImageFn = europeFunctions
     .runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
         const fullPath = object.name;
         const fullPathSplit = fullPath.split("/");
 
-        // Example of path we're processing:
-        // format: "auction-images/{auctionId}/original/{file}"
-        // example: /auction-items/eb2ebae6-d561-44d8-ae01-6c043e3f58a5/original/7b1c4300-2f58-4d01-8c5a-fdc40edcf80e_original.jpg
-        // fullPathSplit:
-        // 0 - auction-items
-        // 1 - eb2ebae6-d561-44d8-ae01-6c043e3f58a5
-        // 2 - original
-        // 3 - 7b1c4300-2f58-4d01-8c5a-fdc40edcf80e_original.jpg
-
-        const shouldProcess = fullPathSplit.length === 4
-            && fullPathSplit[0] === "auction-items"
-            && fullPathSplit[2] === "original";
+        const shouldProcess = fullPathSplit.length === 4 && fullPathSplit[2] === "original";
 
         if (!shouldProcess) {
             return logger.warn("This function only processes " +
-                "following path: /auction-images/{auctionId}/original/{file}",
+                "following path: /<root>/{entityId}/original/{file}",
                 { path: object.name }
             );
         }
@@ -57,7 +45,9 @@ export const processAuctionImageFn = functions.region('europe-west1')
         logger.info(`Processing image: ${fullPath}`);
 
         // basic metadata
-        const auctionId = fullPathSplit?.[1];
+        const root = fullPathSplit[0];
+        const entityId = fullPathSplit?.[1];
+
         const fileName = fullPathSplit?.[fullPathSplit.length - 1];
         const noExtFileName = path.basename(fileName, path.extname(fileName));
 
@@ -68,7 +58,7 @@ export const processAuctionImageFn = functions.region('europe-west1')
         // make local folders where we'll process the image
         // in case functions preserve some kind local cache
         const localFolderUID = uuidv4();
-        const tempFolder = path.join(os.tmpdir(), "auction-image", localFolderUID);
+        const tempFolder = path.join(os.tmpdir(), "bsnouts-images", localFolderUID);
         await mkdirp(tempFolder);
 
         const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
@@ -109,9 +99,9 @@ export const processAuctionImageFn = functions.region('europe-west1')
         const thumbImage = `${tempFolder}/${noExtFileName}_thumb.jpg`;
         const compressedImage = `${tempFolder}/${noExtFileName}_compressed.jpg`;
 
-        const auctionDest = `auction-items/${auctionId}`;
-        const thumbDestination = `${auctionDest}/thumb/${noExtFileName}_thumb.jpg`;
-        const compressedDest = `${auctionDest}/compressed/${noExtFileName}_compressed.jpg`;
+        const storageDest = `${root}/${entityId}`;
+        const thumbDestination = `${storageDest}/thumb/${noExtFileName}_thumb.jpg`;
+        const compressedDest = `${storageDest}/compressed/${noExtFileName}_compressed.jpg`;
 
         const uploadOptions = {
             gzip: true,

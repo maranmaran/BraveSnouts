@@ -1,49 +1,38 @@
-<div class="container flex flex-col justify-start items-center">
-  <button mat-icon-button class="self-end" (click)="onClose()">
-    <mat-icon> close </mat-icon>
-  </button>
-
-  <div class="mb-4 flex flex-row gap-12 justify-between items-center">
-    <img
-      id="google"
-      class="login-btn elevate hover-big"
-      src="assets/social-logo/google.svg"
-      (click)="selectMethod('gmail')"
-      matTooltip="Gmail prijava"
-    />
-
-    <img
-      id="mail"
-      class="login-btn elevate hover-big"
-      src="assets/social-logo/message.svg"
-      (click)="selectMethod('email')"
-      matTooltip="Prijava putem maila"
-    />
-  </div>
-
-  <div
-    id="privacy"
-    class="foreground primary lighter link"
-    routerLink="/aukcije/polica-privatnosti"
-    (click)="onClose()"
-  >
-    Polica privatnosti
-  </div>
-
-  <div *ngIf="method == 'email'" class="mt-5 mb-2 w-full flex flex-col gap-2">
-    <mat-form-field>
-      <mat-label>Email</mat-label>
-      <input matInput type="email" [formControl]="email" />
-    </mat-form-field>
-
-    <button
-      class="self-end"
-      mat-flat-button
-      color="primary"
-      (click)="onSubmit()"
-      [disabled]="!email.valid"
-    >
-      Prijava
+<div class="container pb-4 flex flex-col justify-start items-center">
+    <button mat-icon-button class="self-end" (click)="onClose()">
+        <mat-icon> close </mat-icon>
     </button>
-  </div>
+
+    <div class="mb-4 flex flex-row gap-12 justify-between items-center">
+        <img
+            id="google"
+            class="login-btn elevate hover-big"
+            src="assets/social-logo/google.svg"
+            (click)="selectMethod('gmail')"
+            matTooltip="Gmail prijava"
+        />
+
+        <img
+            id="mail"
+            class="login-btn elevate hover-big"
+            src="assets/social-logo/message.svg"
+            (click)="selectMethod('email')"
+            matTooltip="Prijava putem maila"
+        />
+    </div>
+
+    <div id="privacy" class="foreground primary lighter link" routerLink="/aukcije/polica-privatnosti" (click)="onClose()">
+        Polica privatnosti
+    </div>
+
+    <div *ngIf="method == 'email'" class="mt-5 mb-2 w-full flex flex-col gap-2">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [formControl]="email" />
+        </mat-form-field>
+
+        <button class="self-end" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!email.valid">
+            Prijava
+        </button>
+    </div>
 </div>

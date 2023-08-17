@@ -13,8 +13,8 @@
     "sourceMap": true
   },
   "references": [
-    {
-      "path": "../functions",
-    }
+    // {
+    //   "path": "../functions",
+    // }
   ]
 }

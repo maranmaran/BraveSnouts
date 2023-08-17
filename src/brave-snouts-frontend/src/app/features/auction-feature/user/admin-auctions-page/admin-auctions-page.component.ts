@@ -270,7 +270,7 @@ export class AdminAuctionsPageComponent implements OnInit {
       }),
       map(([settings, user]) => { return { email: settings.testing.email ?? user.email, itemsCount: settings.testing.itemsCount ?? 10 } }),
       switchMap(((data: { email: string, itemsCount: number }) =>
-        this.functionsSvc.testSendWinnerMail(data.email, data.itemsCount)
+        this.functionsSvc.testAuctionMails(data.email, data.itemsCount)
       ))
     ).subscribe(noop);
   }
