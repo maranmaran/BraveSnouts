@@ -33,11 +33,10 @@ import { AdoptApi, Animal } from './adopt.api';
 export class AnimalsComponent {
   private readonly router = inject(Router);
   private readonly api = inject(AdoptApi);
-  readonly animals$ = this.api.getAnimals();
+  readonly animals$ = this.api.animals$;
 
   navigate(animal: Animal) {
-    const slug = animal.slug;
     this.api.selectAnimal(animal);
-    this.router.navigate(['udomi', `njuska`, slug])
+    this.router.navigate(['udomi', `njuska`, animal.slug])
   }
 }

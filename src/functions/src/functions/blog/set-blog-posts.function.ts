@@ -68,7 +68,6 @@ async function toBlogPost(entry: Entry<EntrySkeletonType, undefined, string>) {
         hero: (<Asset>entry.fields.heroImage).fields.file,
         instagram: entry.fields.instagram,
         facebook: entry.fields.facebook,
-        // contentJson: JSON.stringify(entry.fields.content),
         content: documentToHtmlString(entry.fields.content as Document, {
             renderNode: {
                 ['embedded-asset-block']: (node, children) => renderAsset(node, children)

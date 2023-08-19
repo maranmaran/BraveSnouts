@@ -1,7 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { first } from 'rxjs'
-import { BlogPost, BlogApi as ContentfulApi } from './blog.api'
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { BlogApi } from './blog.api';
 
 @Component({
   selector: 'app-post',
@@ -16,58 +16,49 @@ import { BlogPost, BlogApi as ContentfulApi } from './blog.api'
         `,
   ],
   template: `
-        <div *ngIf="post()" class="h-full px-4 w-full max-w-7xl flex flex-col justify-center">
-            <div class="font-bold sm:text-xl md:text-2xl lg:text-4xl text-6xl my-4 self-center ">{{ post().title }}</div>
+        <div *ngIf="post$ | async as post" class="h-full px-4 w-full max-w-7xl flex flex-col justify-center">
+            <div class="font-bold sm:text-xl md:text-2xl lg:text-4xl text-6xl my-4 self-center ">{{ post.title }}</div>
             <app-social-links
                 class="post-socials"
-                [instagram]="post().instagram"
-                [facebook]="post().facebook"
+                [instagram]="post.instagram"
+                [facebook]="post.facebook"
             ></app-social-links>
-
             <div
                 class="w-full h-[400px] h-350px sm:h-[250px] self-center bg-no-repeat bg-cover"
                 [ngStyle]="{
-                  'background': 'url(' + post().hero.original.gUrl + '), url(' + post().hero.compressed.gUrl + '), url(' + post().hero.thumbnail.gUrl + ')',
+                  'background': 'url(' + post.hero.original.gUrl + '), url(' + post.hero.compressed.gUrl + '), url(' + post.hero.thumbnail.gUrl + ')',
                 }"
                 mat-card-image
             ></div>
-
-            <iframe
-                src="undefined"
-                title="Join Zabibas Global Giveaway"
-                height="100%"
-                width="100%"
-                frameBorder="0"
-                scrolling="no"
-            ></iframe>
-            <div class="p-4 flex flex-col break-words prose" [innerHtml]="post().content | safeHtml"></div>
+            <div class="p-4 flex flex-col break-words prose" [innerHtml]="post.content | safeHtml"></div>
         </div>
     `,
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribeSubject = new Subject<void>();
+
   private readonly route = inject(ActivatedRoute)
   private readonly router = inject(Router)
-  private readonly api = inject(ContentfulApi)
+  private readonly api = inject(BlogApi)
 
-  post = signal<BlogPost>(null)
+  readonly post$ = this.api.selectedPost$;
 
   ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    this.setPost()
-  }
 
-  setPost() {
-    this.post.set(this.api.selectedPost)
-
-    if (!this.post()) {
+    if (!this.api.selectedPost) {
       const slug = this.route.snapshot.params.id
       this.api
         .getPost(slug)
-        .pipe(first())
+        .pipe(takeUntil(this.ngUnsubscribeSubject))
         .subscribe({
-          next: post => this.post.set(post),
+          next: post => this.api.selectPost(post),
           error: _ => this.router.navigate(['blog']),
         })
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribeSubject.next();
   }
 }

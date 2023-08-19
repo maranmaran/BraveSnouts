@@ -8,7 +8,7 @@ const routes: Routes = [
     {
         path: '', component: AdoptHomeComponent, children: [
             { path: '', component: AnimalsComponent },
-            { path: 'njuska/:id', component: AnimalComponent },
+            { path: 'njuska/:id', component: AnimalComponent, pathMatch: 'prefix' },
         ]
     },
     { path: '**', redirectTo: '/' }

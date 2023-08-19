@@ -1,3 +1,7 @@
-import { setShopProductsFn } from "./functions/shop/set-shop-products.function";
+import { setProductCatalogFn, setProductCatalogHttpFn } from "./functions/shop/set-product-catalog.function";
 
-export const setShopProducts = setShopProductsFn;
+export const setProductCatalog = setProductCatalogFn;
+
+
+// TODO: Remove
+export const setProductCatalogHttp = setProductCatalogHttpFn;

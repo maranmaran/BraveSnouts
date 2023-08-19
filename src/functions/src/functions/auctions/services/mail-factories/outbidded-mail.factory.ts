@@ -16,9 +16,7 @@ export const sendOutbiddedMail = async (
     const item_bid_before = `${itemBefore.bid} €`;
     const item_bid_after = `${itemAfter.bid} €`;
 
-    logger.info(
-        `Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${item_bid_before} to ${item_bid_after}!`
-    );
+    logger.info(`Sending mail to ${user.email} as he was outbidded on ${itemBefore.name}(${itemBefore.bidId}) from ${item_bid_before} to ${item_bid_after}!`);
 
     // load and customize html template
     const emailVariables = {

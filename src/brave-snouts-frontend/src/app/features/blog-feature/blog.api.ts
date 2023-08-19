@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import firebase from 'firebase/compat/app';
-import { BehaviorSubject, first, map, of, shareReplay, tap, throttleTime } from "rxjs";
+import { BehaviorSubject, first, map, of, shareReplay, tap } from "rxjs";
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 
 export interface BlogPost {
@@ -24,6 +24,7 @@ export class BlogApi {
     readonly posts$ = this.postsSubject.asObservable().pipe(shareReplay(1));
 
     private readonly selectedPostSubject = new BehaviorSubject<BlogPost>(null);
+    readonly selectedPost$ = this.selectedPostSubject.asObservable().pipe(shareReplay(1));
     get selectedPost() { return this.selectedPostSubject.value }
 
     selectPost(post: BlogPost) {
@@ -35,7 +36,7 @@ export class BlogApi {
             return of(this.postsSubject.value.find(x => x.slug === slug));
         }
 
-        return this.getPosts().pipe(
+        return this.posts$.pipe(
             map(x => x.find(x => x.slug === slug))
         );
     }
@@ -48,7 +49,6 @@ export class BlogApi {
         return this.store.collection<BlogPost>('blog')
             .valueChanges()
             .pipe(
-                throttleTime(100),
                 first(),
                 map(posts => posts.map(p => ({
                     ...p,

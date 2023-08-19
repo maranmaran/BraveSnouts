@@ -18,9 +18,6 @@ export const increaseRaisedMoneyFn = europeFunctions
         await store.collection("auctions").doc(before.auctionId).get()
       ).data()) as Auction;
 
-      functions.logger.debug(auction.endDate.seconds);
-      functions.logger.debug(firebase.firestore.Timestamp.fromDate(new Date()).seconds);
-
       if (
         auction.endDate.seconds <
         firebase.firestore.Timestamp.fromDate(new Date()).seconds
@@ -30,9 +27,7 @@ export const increaseRaisedMoneyFn = europeFunctions
       }
 
       if (after.bid === before.bid) {
-        functions.logger.warn(
-          `Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`
-        );
+        functions.logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
         return;
       }
 

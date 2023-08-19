@@ -34,23 +34,17 @@ export const bidChangeFn = europeFunctions.firestore
       logger.info(`Before BidId: ${before.bidId} - After BidId: ${after.bidId}`);
 
       if (!after.user || !before.user) {
-        logger.info(
-          `User id is not present. Before:${before.user} After:${after.user}`
-        );
+        logger.info(`User id is not present. Before:${before.user} After:${after.user}`);
         return null;
       }
 
       if (after.bid === before.bid) {
-        logger.warn(
-          `Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`
-        );
+        logger.warn(`Same value bid of ${after.bid} \n Bid IDs: ${after.bidId} and ${before.bidId}`);
         return null;
       }
 
       if (after.bid < before.bid) {
-        logger.warn(
-          `Lesser value bid of ${after.bid} < ${before.bid}. Bid IDs: after: ${after.bidId} and before: ${before.bidId}`
-        );
+        logger.warn(`Lesser value bid of ${after.bid} < ${before.bid}. Bid IDs: after: ${after.bidId} and before: ${before.bidId}`);
         return null;
       }
 
@@ -65,9 +59,7 @@ export const bidChangeFn = europeFunctions.firestore
           ?.emailSettings as EmailSettings
       )?.bidUpdates;
       if (!userEmailSettings) {
-        logger.warn(
-          `Didn't send bid update to user because he either opted out or was not found. ${before.user}`
-        );
+        logger.warn(`Didn't send bid update to user because he either opted out or was not found. ${before.user}`);
       }
 
       // get outbidded user information

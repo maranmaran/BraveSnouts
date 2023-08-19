@@ -36,9 +36,7 @@ export const sendHandoverConfirmationMail = async (
     auctionIds: string[],
     chosenHandoverOption: string
 ) => {
-    logger.info(
-        `Sending mail to ${user.email} for chosen handover option update`
-    );
+    logger.info(`Sending mail to ${user.email} for chosen handover option update`);
 
     // load and customize html template
     const emailVariables = {

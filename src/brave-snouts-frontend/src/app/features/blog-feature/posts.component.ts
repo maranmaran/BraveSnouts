@@ -45,10 +45,11 @@ import { BlogApi, BlogPost } from './blog.api';
 })
 export class PostsComponent {
   private readonly router = inject(Router);
-  readonly posts$ = inject(BlogApi).getPosts();
+  private readonly api = inject(BlogApi);
+  readonly posts$ = this.api.posts$;
 
   navigate(post: BlogPost) {
-    const slug = post.slug;
-    this.router.navigate(['blog', `clanak`, slug])
+    this.api.selectPost(post);
+    this.router.navigate(['blog', `clanak`, post.slug])
   }
 }

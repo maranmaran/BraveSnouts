@@ -1,0 +1,74 @@
+[
+    {
+        "id": "1",
+        "slug": "obicna-majica",
+        "name": "Obična majica",
+        "active": "true",
+        "price": "5.6",
+        "currency": "EUR",
+        "sizes": [
+            "XS",
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"
+        ],
+        "variations": [
+            {
+                "colorName": "Crvena",
+                "colorCode": "red",
+                "images": [
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                ]
+            },
+            {
+                "colorName": "Žuta",
+                "colorCode": "yellow",
+                "images": [
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "slug": "v-majica",
+        "name": "V izrez majica",
+        "active": "true",
+        "price": "8.9",
+        "currency": "EUR",
+        "sizes": [
+            "XS",
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"
+        ],
+        "variations": [
+            {
+                "colorName": "Crvena",
+                "colorCode": "red",
+                "images": [
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                ]
+            },
+            {
+                "colorName": "Žuta",
+                "colorCode": "yellow",
+                "images": [
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
+                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                ]
+            }
+        ]
+    }
+]

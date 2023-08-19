@@ -28,7 +28,7 @@ export const changeHandoverFn = europeFunctions.https.onCall(
             for (const [_, userInfo] of usersMap) {
                 await sendHandoverDetailsUpdateMail(userInfo, auctionIds, handoverDetails);
 
-                logger.info(`Lokacija preuzimanja promijenjena za korisnika: <b>${userInfo.name}</b> na lokaciju: <b>${handoverDetails}</b>`);
+                logger.info(`Handover location changed for user: <b>${userInfo.name}</b> to following location: <b>${handoverDetails}</b>`);
                 // const adminUpdateMessage = `Lokacija preuzimanja promijenjena za korisnika: <b>${userInfo.name}</b> na lokaciju: <b>${handoverDetails}</b>`;
                 // await sendMail(getComposer("app.hrabrenjuske@gmail.com", `${userInfo.name} je promijenio/la lokaciju preuzimanja`, adminUpdateMessage));
             }

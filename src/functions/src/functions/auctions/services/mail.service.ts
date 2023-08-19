@@ -13,8 +13,6 @@ const formData = require('form-data');
 const mailComposer = require("nodemailer/lib/mail-composer");
 
 const client = (() => {
-  console.log(config);
-
   switch (config?.mail?.provider) {
     case 'mailgun':
       return new mailgun(formData).client({
@@ -90,7 +88,7 @@ export function getComposer(to: string, subject: string, html: string) {
 export async function getTemplateRaw(name: string) {
   logger.log('Getting template ' + name);
   const mjmlFile = await getMjmlTemplate(name);
-  logger.log('fetched raw template');
+  logger.log('Fetched raw template');
   return mjmlFile;
 }
 

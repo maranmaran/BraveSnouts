@@ -5,25 +5,44 @@ import { loadStripe } from "@stripe/stripe-js";
 import { BehaviorSubject, first, map, of, shareReplay, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 
-export interface Price {
-    id: string,
-    amount: number,
-    currency: string;
-}
-
 export interface Product {
     id: string;
+    slug: string;
     name: string;
-    url: string | null;
-    caption?: string | null;
-    created: number;
-    description: string | null;
-    price: Price,
-    images: string[];
-    metadata: { [name: string]: string; };
+    active: string;
+    price: number;
+    currency: string;
+    description: string;
+    sizes: string[]
+    variations: ProductVariation[];
+    stripeProducts: StripeProduct[];
 }
 
-export type LineItem = { productId: string, priceId: string, quantity: number };
+export interface ProductVariation {
+    colorName: string;
+    colorCode: string;
+    images: string[]
+}
+
+export interface StripeProduct {
+    sizeIdx: number;
+    variationIdx: number;
+    stripeProductId: string;
+    stripePriceId: string;
+    stripeProductName: string;
+}
+
+export interface LineItem {
+    productId: string,
+    priceId: string,
+    total: number;
+    price: number,
+    quantity: number,
+    currency: string,
+    name: string;
+    image: string;
+};
+
 type Cart = LineItem[];
 const lineItemEq = (l: LineItem, r: LineItem) => l.productId == r.productId && l.priceId == r.priceId;
 
@@ -42,11 +61,33 @@ export class StoreApi {
     private readonly cartSubject = new BehaviorSubject<Cart>(JSON.parse(localStorage.getItem('cart') ?? "[]"));
     readonly cart$ = this.cartSubject.asObservable()
         .pipe(
-            tap(cart => {
+            map(cart => {
                 localStorage.setItem('cart', JSON.stringify(cart));
+
+                // if not backward compatible, full reset
+                if (!this.cartValid(cart)) {
+                    localStorage.removeItem('cart');
+                    this.cartSubject.next([]);
+                    return [];
+                }
+
+                return cart;
             }),
             shareReplay(1)
         );
+
+    cartValid(cart: Cart) {
+        return cart.reduce((a, b) => a
+            && !!b.currency
+            && !!b.name
+            && !!b.image
+            && !!b.total
+            && !!b.price
+            && !!b.priceId
+            && !!b.productId
+            && !!b.quantity
+            , true)
+    }
 
     addToCart(item: LineItem) {
         const cart = this.cartSubject.value;
@@ -79,6 +120,10 @@ export class StoreApi {
         this.cartSubject.next(cart);
     }
 
+    clearCart() {
+        this.cartSubject.next([]);
+    }
+
     async checkout() {
         const cart = this.cartSubject.value;
 
@@ -86,10 +131,13 @@ export class StoreApi {
         // When the customer clicks on the button, redirect them to Checkout.
         const stripe = await loadStripe(environment.stripe.publishableKey);
         const { error } = await stripe.redirectToCheckout({
+            lineItems: cart.map(x => ({ price: x.priceId, quantity: x.quantity })),
             mode: "payment",
-            lineItems: cart,
+            submitType: 'donate',
+            billingAddressCollection: 'required',
+            shippingAddressCollection: { allowedCountries: ['HR'] },
             successUrl: `${environment.baseUrl}/merch/placanje-uspjesno`,
-            cancelUrl: `${environment.baseUrl}/merch`,
+            cancelUrl: `${environment.baseUrl}/merch/kosarica`,
         });
 
         // If `redirectToCheckout` fails due to a browser or network
@@ -107,13 +155,13 @@ export class StoreApi {
         this.selectedProductSubject.next(product);
     }
 
-    getProduct(id: string) {
+    getProduct(slug: string) {
         if (this.productsSubject.value.length > 0) {
-            return of(this.productsSubject.value.find(x => x.id === id));
+            return of(this.productsSubject.value.find(x => x.slug === slug));
         }
 
-        return this.getProducts().pipe(
-            map(x => x.find(x => x.id === id))
+        return this.products$.pipe(
+            map(x => x.find(x => x.slug === slug))
         );
     }
 

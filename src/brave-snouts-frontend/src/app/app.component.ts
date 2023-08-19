@@ -1,5 +1,5 @@
 import { ApplicationRef, Component } from '@angular/core';
-import { combineLatest, first, firstValueFrom, startWith } from 'rxjs';
+import { combineLatest, firstValueFrom, startWith, zip } from 'rxjs';
 import { AuthService } from 'src/business/services/auth.service';
 import { ManualChangeDetection } from 'src/business/utils/manual-change-detection.util';
 import { SubSink } from 'subsink';
@@ -13,28 +13,36 @@ import { StoreApi } from './features/store-feature/store.api';
 export class AppComponent {
   constructor(
     private readonly authSvc: AuthService,
-    readonly applicationRef: ApplicationRef,
     private readonly adoptApi: AdoptApi,
     private readonly blogApi: BlogApi,
     private readonly storeApi: StoreApi,
+    readonly applicationRef: ApplicationRef,
 
   ) {
-    // TODO: Maybe not needed
+    // TODO: Review...I don't recall why I did this
     ManualChangeDetection.STATIC_APPLICATION_REF = applicationRef;
-
-    adoptApi.getAnimals().pipe(first()).subscribe();
-    blogApi.getPosts().pipe(first()).subscribe();
-    storeApi.getProducts().pipe(first()).subscribe();
   }
 
   private readonly _subsink = new SubSink();
 
   ngOnInit() {
-    this._subsink.add(this.listenLogin())
+    this._subsink.add(
+      this.listenLogin(),
+      this.initContent()
+    );
   }
 
   ngOnDestroy() {
     this._subsink.unsubscribe();
+  }
+
+  initContent() {
+    return zip([
+      this.storeApi.getProducts(),
+      this.adoptApi.getAnimals(),
+      this.blogApi.getPosts(),
+    ]).subscribe()
+    // .pipe(tap(console.log))
   }
 
   listenLogin() {
