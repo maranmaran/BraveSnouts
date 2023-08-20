@@ -1,35 +1,50 @@
 import { Injectable, inject } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { HotToastService } from "@ngneat/hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
-import { BehaviorSubject, first, map, of, shareReplay, tap } from "rxjs";
+import { BehaviorSubject, first, firstValueFrom, map, of, shareReplay, tap } from "rxjs";
+import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { environment } from "src/environments/environment";
+
+export const shirtGenderDisplayName = (gender: string) => {
+    switch (gender) {
+        case "man":
+            return "Muška";
+        case "women":
+            return "Ženska";
+        case "child":
+            return "Dječja";
+    }
+
+    return "";
+}
 
 export interface Product {
     id: string;
     slug: string;
     name: string;
+    type: string;
+    gender?: string;
     active: string;
     price: number;
-    currency: string;
     description: string;
-    sizes: string[]
+    stripe: StripeProduct,
+    hasSizes: boolean;
     variations: ProductVariation[];
-    stripeProducts: StripeProduct[];
 }
 
 export interface ProductVariation {
     colorName: string;
     colorCode: string;
-    images: string[]
+    images: FirebaseFile[],
+    size?: string;
+    stock: number;
 }
 
 export interface StripeProduct {
-    sizeIdx: number;
-    variationIdx: number;
-    stripeProductId: string;
-    stripePriceId: string;
-    stripeProductName: string;
+    productId: string;
+    priceId: string;
 }
 
 export interface LineItem {
@@ -38,8 +53,7 @@ export interface LineItem {
     total: number;
     price: number,
     quantity: number,
-    currency: string,
-    product: { name: string, image: string, slug: string };
+    product: ProductVariation & { name: string, slug: string }
 };
 
 type Cart = LineItem[];
@@ -48,10 +62,15 @@ const lineItemEq = (l: LineItem, r: LineItem) => l.productId == r.productId && l
 @Injectable({ providedIn: 'root' })
 export class StoreApi {
     private readonly store = inject(AngularFirestore);
+    private readonly functions = inject(AngularFireFunctions);
     private readonly toast = inject(HotToastService)
 
     private readonly productsSubject = new BehaviorSubject<Product[]>([]);
-    readonly products$ = this.productsSubject.asObservable().pipe(shareReplay(1));
+    readonly products$ = this.productsSubject.asObservable()
+        .pipe(
+            map(p => p.filter(x => this.filter(x))),
+            shareReplay(1)
+        );
 
     private readonly selectedProductSubject = new BehaviorSubject<Product>(null);
     readonly selectedProduct$ = this.selectedProductSubject.asObservable().pipe(shareReplay(1));
@@ -90,10 +109,15 @@ export class StoreApi {
             && !!b.total
             && !!b.price
             && !!b.quantity
-            && !!b.currency
             && !!b.priceId
             && !!b.productId
             , true)
+    }
+
+    private filter: (p: Product) => boolean = x => x.gender == 'man';
+    setFilter(filter: (p: Product) => boolean) {
+        this.filter = filter;
+        this.productsSubject.next(this.productsSubject.value);
     }
 
     calculateItemTotal(item: LineItem) {
@@ -142,15 +166,10 @@ export class StoreApi {
         // Call your backend to create the Checkout session.
         // When the customer clicks on the button, redirect them to Checkout.
         const stripe = await loadStripe(environment.stripe.publishableKey);
-        const { error } = await stripe.redirectToCheckout({
-            lineItems: cart.map(x => ({ price: x.priceId, quantity: x.quantity })),
-            mode: "payment",
-            submitType: 'donate',
-            billingAddressCollection: 'required',
-            shippingAddressCollection: { allowedCountries: ['HR'] },
-            successUrl: `${environment.baseUrl}/merch/placanje-uspjesno`,
-            cancelUrl: `${environment.baseUrl}/merch/kosarica`,
-        });
+
+        const sessionId = await firstValueFrom(this.functions.httpsCallable('shop-createCheckoutSession')(cart));
+
+        const { error } = await stripe.redirectToCheckout({ sessionId });
 
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
@@ -172,7 +191,7 @@ export class StoreApi {
             return of(this.productsSubject.value.find(x => x.slug === slug));
         }
 
-        return this.products$.pipe(
+        return this.getProducts().pipe(
             map(x => x.find(x => x.slug === slug))
         );
     }
@@ -186,6 +205,22 @@ export class StoreApi {
             .valueChanges()
             .pipe(
                 first(),
+                map(products => products.map(p => {
+                    // remove 0 stocked variations
+                    p.variations.map(v => v.stock == 0
+                        ? null
+                        : v
+                    ).filter(x => !!x);
+
+                    // check if we have any variations after former filtering
+                    if (!p.variations || p.variations?.length == 0) {
+                        return null;
+                    }
+
+                    // we're ok moving on...
+                    return p;
+                }).filter(x => !!x)
+                ),
                 tap(products => this.productsSubject.next(products))
             );
     }

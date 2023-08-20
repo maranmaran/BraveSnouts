@@ -1,75 +1,549 @@
 [
     {
         "id": "1",
-        "category": "Ženska",
-        "slug": "obicna-majica",
-        "name": "Obična majica",
-        "active": "true",
+        "slug": "hnj-majica-muska",
+        "name": "HNJ Majica",
         "price": "5.6",
-        "currency": "EUR",
-        "sizes": [
-            "XS",
-            "S",
-            "M",
-            "L",
-            "XL",
-            "XXL"
-        ],
+        "type": "shirt",
+        "gender": "man",
+        "hasSizes": "true",
         "variations": [
             {
-                "colorName": "Crvena",
-                "colorCode": "red",
+                "colorName": "Bijela",
+                "colorCode": "white",
                 "images": [
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                    "hnj-m-white"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 1
+                    }
                 ]
             },
             {
-                "colorName": "Žuta",
-                "colorCode": "yellow",
+                "colorName": "Svijetlo siva",
+                "colorCode": "lightgray",
                 "images": [
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                    "hnj-m-light-gray"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 1
+                    }
+                ]
+            },
+            {
+                "colorName": "Crna",
+                "colorCode": "black",
+                "images": [
+                    "hnj-m-black"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 1
+                    },
+                    {
+                        "size": "M",
+                        "stock": 2
+                    }
+                ]
+            },
+            {
+                "colorName": "Tamno plava",
+                "colorCode": "navy",
+                "images": [
+                    "hnj-m-navy-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 5
+                    }
+                ]
+            },
+            {
+                "colorName": "Svijetlo plava",
+                "colorCode": "lightblue",
+                "images": [
+                    "hnj-m-light-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 5
+                    },
+                    {
+                        "size": "M",
+                        "stock": 1
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 2
+                    }
+                ]
+            },
+            {
+                "colorName": "Ljubičasta",
+                "colorCode": "mediumpurple",
+                "images": [
+                    "hnj-m-purple"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 7
+                    },
+                    {
+                        "size": "M",
+                        "stock": 1
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 2
+                    }
+                ]
+            },
+            {
+                "colorName": "Zelena",
+                "colorCode": "mediumseagreen",
+                "images": [
+                    "hnj-m-green"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 7
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 1
+                    }
                 ]
             }
         ]
     },
     {
         "id": "2",
-        "slug": "v-majica",
-        "category": "Muška",
-        "name": "V izrez majica",
-        "active": "true",
-        "price": "8.9",
-        "currency": "EUR",
-        "sizes": [
-            "XS",
-            "S",
-            "M",
-            "L",
-            "XL",
-            "XXL"
-        ],
+        "slug": "hnj-majica-zenska",
+        "name": "HNJ Majica",
+        "price": "5.6",
+        "type": "shirt",
+        "gender": "woman",
+        "hasSizes": "true",
         "variations": [
             {
-                "colorName": "Crvena",
-                "colorCode": "red",
+                "colorName": "Bijela",
+                "colorCode": "white",
                 "images": [
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                    "hnj-w-white"
+                ],
+                "inventory": [
+                    {
+                        "size": "XL",
+                        "stock": 1
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 2
+                    }
                 ]
             },
             {
-                "colorName": "Žuta",
-                "colorCode": "yellow",
+                "colorName": "Svijetlo roza",
+                "colorCode": "mistyrose",
                 "images": [
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fcompressed%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_compressed.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Foriginal%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f",
-                    "http://storage.googleapis.com/bravesnoutsdev.appspot.com/auction-items%2F2dcd8764-2a3d-4a33-8ad1-e8983bd1d413%2Fthumb%2F68675cab-5449-4cc3-a6cf-49f94cb7e676_original_thumb.jpg?alt=media&token=de9006de-fade-482d-9759-a3cddbc9663f"
+                    "hnj-w-baby-pink"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 4
+                    },
+                    {
+                        "size": "L",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 1
+                    }
                 ]
+            },
+            {
+                "colorName": "Barbie pink",
+                "colorCode": "hotpink",
+                "images": [
+                    "hnj-w-barbie-pink"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 3
+                    },
+                    {
+                        "size": "M",
+                        "stock": 5
+                    },
+                    {
+                        "size": "L",
+                        "stock": 5
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 7
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 7
+                    }
+                ]
+            },
+            {
+                "colorName": "Magenta",
+                "colorCode": "magenta",
+                "images": [
+                    "hnj-w-magenta"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 3
+                    },
+                    {
+                        "size": "L",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 4
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 4
+                    }
+                ]
+            },
+            {
+                "colorName": "Ljubičasta",
+                "colorCode": "mediumpurple",
+                "images": [
+                    "hnj-w-purple"
+                ],
+                "inventory": [
+                    {
+                        "size": "L",
+                        "stock": 5
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 4
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 8
+                    }
+                ]
+            },
+            {
+                "colorName": "Tamno plava",
+                "colorCode": "navy",
+                "images": [
+                    "hnj-w-navy-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "XL",
+                        "stock": 1
+                    }
+                ]
+            },
+            {
+                "colorName": "Plava",
+                "colorCode": "blue",
+                "images": [
+                    "hnj-w-royal-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 2
+                    },
+                    {
+                        "size": "L",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 7
+                    }
+                ]
+            },
+            {
+                "colorName": "Svijetlo plava",
+                "colorCode": "lightblue",
+                "images": [
+                    "hnj-w-baby-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 1
+                    },
+                    {
+                        "size": "L",
+                        "stock": 3
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 4
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 5
+                    }
+                ]
+            },
+            {
+                "colorName": "Svijetlo siva",
+                "colorCode": "lightgray",
+                "images": [
+                    "hnj-w-light-gray"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "slug": "hnj-majica-djecja",
+        "name": "HNJ Majica",
+        "price": "5.6",
+        "type": "shirt",
+        "gender": "child",
+        "hasSizes": "true",
+        "variations": [
+            {
+                "colorName": "Svijetlo roza",
+                "colorCode": "mistyrose",
+                "images": [
+                    "hnj-c-baby-pink"
+                ],
+                "inventory": [
+                    {
+                        "size": "3-4",
+                        "stock": 5
+                    },
+                    {
+                        "size": "5-6",
+                        "stock": 7
+                    },
+                    {
+                        "size": "7-8",
+                        "stock": 4
+                    },
+                    {
+                        "size": "9-11",
+                        "stock": 17
+                    },
+                    {
+                        "size": "12-14",
+                        "stock": 11
+                    }
+                ]
+            },
+            {
+                "colorName": "Svijetlo plava",
+                "colorCode": "lightblue",
+                "images": [
+                    "hnj-c-baby-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "5-6",
+                        "stock": 4
+                    },
+                    {
+                        "size": "7-8",
+                        "stock": 3
+                    },
+                    {
+                        "size": "9-11",
+                        "stock": 5
+                    },
+                    {
+                        "size": "12-14",
+                        "stock": 6
+                    }
+                ]
+            },
+            {
+                "colorName": "Plava",
+                "colorCode": "blue",
+                "images": [
+                    "hnj-c-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "7-8",
+                        "stock": 4
+                    },
+                    {
+                        "size": "9-11",
+                        "stock": 3
+                    }
+                ]
+            },
+            {
+                "colorName": "Magenta",
+                "colorCode": "magenta",
+                "images": [
+                    "hnj-w-magenta"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 3
+                    },
+                    {
+                        "size": "L",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 4
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 4
+                    }
+                ]
+            },
+            {
+                "colorName": "Ljubičasta",
+                "colorCode": "mediumpurple",
+                "images": [
+                    "hnj-w-purple"
+                ],
+                "inventory": [
+                    {
+                        "size": "L",
+                        "stock": 5
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 4
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 8
+                    }
+                ]
+            },
+            {
+                "colorName": "Tamno plava",
+                "colorCode": "navy",
+                "images": [
+                    "hnj-w-navy-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "XL",
+                        "stock": 1
+                    }
+                ]
+            },
+            {
+                "colorName": "Plava",
+                "colorCode": "blue",
+                "images": [
+                    "hnj-w-royal-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "S",
+                        "stock": 2
+                    },
+                    {
+                        "size": "L",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 6
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 7
+                    }
+                ]
+            },
+            {
+                "colorName": "Svijetlo plava",
+                "colorCode": "lightblue",
+                "images": [
+                    "hnj-w-baby-blue"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 1
+                    },
+                    {
+                        "size": "L",
+                        "stock": 3
+                    },
+                    {
+                        "size": "XL",
+                        "stock": 4
+                    },
+                    {
+                        "size": "XXL",
+                        "stock": 5
+                    }
+                ]
+            },
+            {
+                "colorName": "Svijetlo siva",
+                "colorCode": "lightgray",
+                "images": [
+                    "hnj-w-light-gray"
+                ],
+                "inventory": [
+                    {
+                        "size": "M",
+                        "stock": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "slug": "hnj-casa",
+        "name": "HNJ Čaša",
+        "price": "5.6",
+        "type": "item",
+        "hasSizes": false,
+        "variations": [
+            {
+                "images": [
+                    "cup"
+                ],
+                "inventory": {
+                    "stock": 4
+                }
             }
         ]
     }

@@ -4,10 +4,55 @@ import * as fs from 'fs';
 import { mkdirp } from 'mkdirp';
 import Stripe from "stripe";
 import { config, europeFunctions, store } from "../app";
-import { SnoutsProduct, SnoutsProductId, StripePrice, StripeProduct } from './shop.models';
+import { FirebaseFile } from '../auctions/models/models';
 
 const path = require('path');
 const os = require('os');
+
+interface InputSnoutsProduct {
+    id: string;
+    slug: string;
+    name: string;
+    type: string;
+    gender?: string;
+    price: number;
+    description: string;
+    hasSizes: boolean;
+    variations: InputSnoutsProductVariation[];
+}
+
+interface InputSnoutsProductVariation {
+    colorName: string;
+    colorCode: string;
+    images: FirebaseFile[],
+    inventory: { stock: number, size?: string }[] | { stock: number, size?: string }
+}
+
+interface OutputSnoutsProduct {
+    id: string;
+    slug: string;
+    name: string;
+    type: string;
+    gender?: string;
+    price: number;
+    description: string;
+    hasSizes: boolean;
+    stripe: OutputStripeProduct,
+    variations: OutputSnoutsProductVariation[];
+}
+
+interface OutputStripeProduct {
+    productId: string;
+    priceId: string;
+}
+
+interface OutputSnoutsProductVariation {
+    stock: number;
+    size: string;
+    colorName: string;
+    colorCode: string;
+    images: FirebaseFile[],
+}
 
 const api = new Stripe(config.stripe.secret, {
     apiVersion: "2022-11-15"
@@ -45,9 +90,7 @@ async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: s
     await bucket.file(catalogBucketPath).download({ destination: `${tempFolder}/${catalogFileName}` });
 
     logger.log('Reading product catalog');
-    const snoutsCatalogJson = fs.readFileSync(`${tempFolder}/${catalogFileName}`, 'utf-8');
-    const snoutsCatalogParsed: SnoutsProduct[] = JSON.parse(snoutsCatalogJson);
-    const snoutsCatalog = new Map<SnoutsProductId, SnoutsProduct>(snoutsCatalogParsed.map(x => [x.id, x]));
+    const snoutsCatalog = getCatalog(`${tempFolder}/${catalogFileName}`);
 
     logger.log('Archiving current catalog in stripe');
     await archiveCurrentStripeCatalog();
@@ -61,132 +104,163 @@ async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: s
     logger.log('Finished');
 }
 
-async function archiveCurrentStripeCatalog() {
-    const prices: Stripe.Price[] = [];
-    const products: Stripe.Product[] = [];
+function getCatalog(storagePath: string) {
+    const json = fs.readFileSync(storagePath, 'utf-8');
+    const catalog: InputSnoutsProduct[] = JSON.parse(json);
+    const refinedCatalog = refineCatalog(catalog);
 
+    return refinedCatalog;
+}
+
+function refineCatalog(catalog: InputSnoutsProduct[]) {
+    const refinedCatalog: OutputSnoutsProduct[] = [];
+    for (let product of catalog) {
+
+        const outputVariations: OutputSnoutsProductVariation[] = [];
+        for (let variation of product.variations) {
+            variation = refineCatalogImages(variation);
+            outputVariations.push(...flattenByInventorySpecifics(variation));
+        }
+
+        refinedCatalog.push({
+            variations: outputVariations,
+            description: product.description,
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            hasSizes: product.hasSizes,
+            slug: product.slug,
+            stripe: { priceId: '', productId: '' },
+            type: product.type,
+            gender: product.gender,
+        })
+    }
+
+    return refinedCatalog;
+}
+
+function flattenByInventorySpecifics(variation: InputSnoutsProductVariation) {
+    const flattened: OutputSnoutsProductVariation[] = []
+
+    const inventory = Array.isArray(variation.inventory)
+        ? variation.inventory
+        : [variation.inventory];
+
+    for (const i of inventory) {
+        flattened.push({
+            colorCode: variation.colorCode,
+            colorName: variation.colorName,
+            images: variation.images,
+            stock: i.stock,
+            size: i.size,
+        })
+    }
+
+    return flattened;
+}
+
+function refineCatalogImages(variation: InputSnoutsProductVariation) {
+    const files: FirebaseFile[] = [];
+
+    for (const image of variation.images) {
+        const imageName = image as any as string; // This is string in the start 100%
+        const bucket = process.env.FIREBASE_STORAGE_BUCKET ?? 'bravesnoutsdev.appspot.com';
+        const imagesStoragePath = 'product-catalog/images';
+
+        const origUrl = `http://storage.googleapis.com/${bucket}/${imagesStoragePath}/original/${imageName}.jpg`
+        const thumbUrl = `http://storage.googleapis.com/${bucket}/${imagesStoragePath}/thumb/${imageName}_thumb.jpg`
+        const compUrl = `http://storage.googleapis.com/${bucket}/${imagesStoragePath}/compressed/${imageName}_compressed.jpg`
+
+        files.push({
+            name: imageName,
+            type: 'image',
+            original: {
+                fUrl: origUrl,
+                gUrl: origUrl,
+                path: imagesStoragePath + '/original'
+            },
+            compressed: {
+                fUrl: compUrl,
+                gUrl: compUrl,
+                path: imagesStoragePath + '/compressed'
+            },
+            thumbnail: {
+                fUrl: thumbUrl,
+                gUrl: thumbUrl,
+                path: imagesStoragePath + '/thumb'
+            }
+        })
+    }
+
+    variation.images = files;
+    return variation;
+}
+
+async function archiveCurrentStripeCatalog() {
     let hasMore = true;
     while (hasMore) {
-        const res = await api.prices.list({ active: true });
-        prices.push(...res.data);
+        const res = await api.prices.list({ active: true, });
         hasMore = res.has_more;
+
+        for (const p of res.data) {
+            await api.prices.update(p.id, { active: false });
+        }
     }
 
     hasMore = true;
     while (hasMore) {
         const res = await api.products.list({ active: true });
-        products.push(...res.data);
         hasMore = res.has_more;
-    }
 
-    for (const p of prices) {
-        await api.prices.update(p.id, { active: false });
-    }
-    for (const p of products) {
-        await api.products.update(p.id, { active: false });
+        for (const p of res.data) {
+            await api.products.update(p.id, { active: false });
+        }
     }
 }
 
-/** 
- * Loads Brave Snouts product catalog into stripe via stripe API 
- * Brave snouts products are varied by sizes and variations
- * This loads sizes * variations products into stripe catalog for every brave snouts product
- * Products are differentiated then by order of sizes and variations and in that way updated or archived in stripe
- * */
-async function createCatalogInStripe(snoutsCatalog: Map<SnoutsProductId, SnoutsProduct>) {
-    // new stripe data (from our catalog)
-    const newStripeProducts = [...snoutsCatalog.values()].map(x => toStripeProducts(x)).flat(1);
-
+async function createCatalogInStripe(snoutsCatalog: OutputSnoutsProduct[]) {
     // sync with stripe API and modify catalog to contain information about stripe's productId and priceId
-    for (const newProduct of newStripeProducts) {
-        const newPrice = newProduct.price;
+    for (const newProduct of snoutsCatalog) {
+        const newPrice = { id: newProduct.id, amount: newProduct.price };
 
         const curProduct = await createProduct(newProduct)
         const curPrice = await createPrice(curProduct, newPrice);
 
-        const bsnoutsProduct = snoutsCatalog.get(newProduct.variation.snoutsProductId);
-        bsnoutsProduct.stripeProducts ??= [];
-        bsnoutsProduct.stripeProducts.push({
-            sizeIdx: newProduct.variation.sizeIdx,
-            variationIdx: newProduct.variation.variationIdx,
-            stripePriceId: curPrice.id,
-            stripeProductId: curProduct.id,
-            stripeProductName: curProduct.name
-        });
-    }
-}
-
-/**
- * Catalog item = product with variations and sizes
- * 
- * Amount of stripe products = SIZES * VARIATIONS
- * 
- * Stripe item = one unique variation and size of product
- *   - ID: "itemId-incrementSizeId-incrementVariationId" 
- *   - Increments are starting from 0 up to length of array
- *   - If we delete item in product catalog there will be extra item remaining in stripe, it needs to be deactivated
- *   - One price per product => All unique Stripe Items have the same price
- *   - Stripe price ID == Catalog Item Id
- *   - Stripe product ID starts with Catalog Item Id
- */
-function toStripeProducts(item: SnoutsProduct): StripeProduct[] {
-    const products: StripeProduct[] = [];
-
-    for (let sizeIdx = 0; sizeIdx < item.sizes.length; sizeIdx++) {
-        for (let variationIdx = 0; variationIdx < item.variations.length; variationIdx++) {
-            products.push({
-                id: `${item.id}-${sizeIdx}-${variationIdx}`,
-                variation: {
-                    id: `${item.id}-${sizeIdx}-${variationIdx}`,
-                    sizeIdx: sizeIdx,
-                    variationIdx: variationIdx,
-                    snoutsProductId: item.id
-                },
-                price: {
-                    id: item.id,
-                    amount: item.price,
-                    currency: item.currency
-                },
-                slug: item.slug,
-                name: `${item.name} ${item.sizes[sizeIdx]} ${item.variations[variationIdx].colorName}`,
-                images: item.variations[variationIdx].images,
-                description: item.description,
-            })
+        newProduct.stripe = {
+            priceId: curPrice.id,
+            productId: curProduct.id,
         }
     }
-
-    return products;
 }
 
-async function createProduct(newProduct: StripeProduct) {
+async function createProduct(product: OutputSnoutsProduct) {
     return await api.products.create({
-        name: newProduct.name,
+        name: product.slug,
         active: true,
-        description: newProduct.description,
-        images: newProduct.images,
-        metadata: { firestoreId: newProduct.id, firestoreData: JSON.stringify(newProduct) },
-        shippable: true,
         type: 'good',
-        url: `https://localhost:4200/merch/proizvod/${newProduct.slug}`,
-        // non taxable https://stripe.com/docs/tax/tax-categories 
-        tax_code: 'txcd_00000000',
+        shippable: true,
+        description: product.description,
+        images: product.variations.flatMap(x => x.images.flatMap(x => x.original.gUrl)).slice(0, 8),
+        url: `${config.base.url}/merch/proizvod/${product.slug}`,
+        metadata: { firestoreId: product.slug },
+        tax_code: 'txcd_00000000', // non taxable https://stripe.com/docs/tax/tax-categories
     });
 }
 
-async function createPrice(curProduct: Stripe.Product, newPrice: StripePrice) {
+async function createPrice(product: Stripe.Product, price: { id: string, amount: number }) {
     return await api.prices.create({
         active: true,
         tax_behavior: 'exclusive',
         billing_scheme: 'per_unit',
-        currency: newPrice.currency.toLowerCase(),
-        unit_amount: Math.round(newPrice.amount * 100),
-        nickname: newPrice.id,
-        metadata: { firestoreId: newPrice.id, firestoreData: JSON.stringify(newPrice) },
-        product: curProduct.id,
+        currency: "eur",
+        unit_amount: Math.round(price.amount * 100),
+        nickname: product.name,
+        product: product.id,
+        metadata: { firestoreId: price.id },
     });
 }
 
-async function createCatalogInDatabase(snoutsCatalog: Map<SnoutsProductId, SnoutsProduct>) {
+async function createCatalogInDatabase(snoutsCatalog: OutputSnoutsProduct[]) {
     // ensure deleted
     await store.recursiveDelete(store.collection('shop'));
 

@@ -3,7 +3,27 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { HotToastService } from '@ngneat/hot-toast'
 import { Subject, filter, takeUntil, tap } from 'rxjs'
-import { Product, ProductVariation, StoreApi } from './store.api'
+import { FirebaseFile } from 'src/business/models/firebase-file.model'
+import { uniqueArray } from 'src/business/utils/unique-array.util'
+import { Product, ProductVariation, StoreApi, shirtGenderDisplayName } from './store.api'
+
+type ProductImages = FirebaseFile[];
+
+interface ProductColor {
+  colorName: string;
+  colorCode: string;
+}
+
+interface ProductSize {
+  size: string;
+}
+
+interface VariationId {
+  color?: ProductColor;
+  size?: ProductSize;
+}
+
+type VariationMap = Map<VariationId, ProductVariation>;
 
 @Component({
   selector: 'app-product',
@@ -20,52 +40,49 @@ import { Product, ProductVariation, StoreApi } from './store.api'
             class="grid grid-cols-2 sm:grid-cols-1 justify-center align-center gap-12 
            w-[80vw] max-w-2xl sm:max-w-full sm:w-full"
         >
-            <!--NG GALLERY-->
-            <img class="w-full h-auto self-center shadow-md" [src]="product.variations[0].images[0]" />
-
+            <media-gallery [media]="product.variations[0].images" [fullResolution]="true"></media-gallery>
+        
             <form *ngIf="form" [formGroup]="form" class="grid grid-rows-[min-content,1fr,1fr] gap-12 sm:gap-4 h-full">
                 <div class="flex flex-row justify-between gap-8">
-                    <span class="font-bold text-lg">{{ product.name }}</span>
-                    <span class="font-bold text-xl">{{ product.price }} {{ product.currency | uppercase }}</span>
+                    <span class="font-bold text-lg">{{ productName }}</span>
+                    <span class="font-bold text-xl">{{ product.price }} €</span>
                 </div>
                 <div *ngIf="product.description">{{ product.description }}</div>
 
                 <div class="flex flex-col gap-4">
-                  <div class="flex flex-row gap-8">
-                      <mat-slider
-                          class="w-full"
-                          min="0"
-                          [max]="product?.sizes?.length - 1 ?? 6"
-                          step="1"
-                          showTickMarks
-                          discrete
-                          [displayWith]="sizeThumbLabel.bind(this)"
-                      >
-                          <input #slider matSliderThumb formControlName="size" />
-                      </mat-slider>
-                      <span class="font-bold self-center  ml-auto">{{ sizeThumbLabel(slider.value) }}</span>
+                  <div *ngIf="sizes?.length > 0" class="flex flex-row gap-8">
+                    <mat-form-field>
+                      <mat-label>Veličina</mat-label>
+                      <mat-select formControlName="size">
+                        <mat-option *ngFor="let size of sizes" [value]="size">
+                          {{ size.size | uppercase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
                   </div>
   
-                  <div class="w-full flex flex-row h-10 justify-start items-center">
-                      <div *ngFor="let variation of product.variations" 
-                        (click)="selectVariation(variation)"
-                        [matTooltip]="variation.colorName "
+                  <div *ngIf="colors?.length > 0" class="w-full flex flex-col h-10 justify-start items-start" >
+                    <div class="font-bold self-start">{{ selectedColor?.colorName | titlecase }}</div>
+                    <div class="flex flex-row flex-wrap">
+                      <div *ngFor="let color of colors" 
+                        (click)="selectColor(color)"
                         class="rounded-full h-8 w-8 cursor-pointer m-4 transition-all duration-150
-                               hover:brightness-95 outline-solid outline border-solid border-4"
+                                hover:brightness-95 outline-solid outline border-solid"
                         [ngClass]="{
-                          'drop-shadow-[0px_2px_6px_rgb(55,65,81)]': form.controls.variation?.value === variation,
+                          'drop-shadow-[0px_2px_6px_rgb(55,65,81)]': isSelectedColor(color),
                         }"
                         [ngStyle]="{
-                          backgroundColor: variation.colorCode,
-                          borderColor: form.controls.variation?.value === variation ? 'white' : 'transparent',
-                          outlineColor: form.controls.variation?.value === variation ? variation.colorCode : 'transparent',
+                          backgroundColor: color.colorCode,
+                          borderWidth: isSelectedColor(color) ? '4px' : '2px',
+                          borderColor: isSelectedColor(color) ? 'white' : 'lightgray',
+                          outlineColor: isSelectedColor(color) ? color.colorCode : 'transparent',
                         }"></div>
-                        <span class="font-bold self-center ml-auto">{{ form.controls.variation.value.colorName | titlecase }}</span>
+                    </div>
                   </div>
                 </div>
 
-                <button mat-raised-button color="primary" class="justify-self-end self-end" (click)="buy(product)">
-                    Dodaj u košaricu ({{ product.price }} {{ product.currency | uppercase }})
+                <button mat-raised-button color="primary" class="justify-self-end self-end" [disabled]="!form.valid" (click)="buy(product)">
+                    Dodaj u košaricu ({{ product.price }} €)
                 </button>
             </form>
         </div>
@@ -83,6 +100,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   protected form: FormGroup
   readonly product$ = this.api.selectedProduct$.pipe(
     filter(x => !!x),
+    tap(p => this.indexData(p)),
     tap(p => (this.form = this.createForm(p))),
   )
 
@@ -103,24 +121,86 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.ngUnsubscribeSubject.next()
   }
 
-  createForm(product: Product) {
-    let size = product.sizes.length / 2;
-    let variation = product.variations[0];
+  protected selectedColor: ProductColor;
+  protected selectedSize: ProductSize;
 
-    // set from state if we're navigating here from cart
-    const stripeProductName = history.state.stripeProductName;
-    if (stripeProductName) {
-      const stripeProduct = product.stripeProducts.find(x => x.stripeProductName == stripeProductName);
+  protected product: Product;
+  protected productName: string;
+  protected colors: ProductColor[] = [];
+  protected sizes: ProductSize[] = [];
 
-      size = stripeProduct.sizeIdx;
-      variation = product.variations[stripeProduct.variationIdx];
+  protected sizeToColors = new Map<ProductSize, ProductColor[]>();
+
+  isSelectedColor(color: ProductColor) {
+    return this.selectedColor?.colorCode == color.colorCode;
+  }
+
+  isSelectedSize(size: ProductSize) {
+    return this.selectedSize?.size == size.size;
+  }
+
+  findVariations(variations: ProductVariation[], color?: ProductColor, size?: ProductSize) {
+    return variations.filter(x => {
+      if (!color && !size) {
+        return x;
+      }
+      if (!color && size) {
+        return x.size == size.size;
+      }
+      if (color && !size) {
+        return x.colorCode == color.colorCode;
+      }
+      return x.colorCode == color.colorCode && x.size == size.size;
+    });
+  }
+
+  indexData(product: Product) {
+    this.sizes = uniqueArray(product.variations.map(x => <ProductSize>(
+      { size: x.size }))
+    ).filter(x => !!x && Object.keys(x).length > 0);
+
+    this.colors = uniqueArray(product.variations.map(x => <ProductColor>(
+      { colorCode: x.colorCode, colorName: x.colorName }))
+    ).filter(x => !!x && Object.keys(x).length > 0);
+
+    for (const size of this.sizes) {
+      const sizeColors = this.findVariations(product.variations, null, size);
+      this.sizeToColors.set(size, sizeColors);
     }
 
-    return this.fb.group({
+    this.product = product;
+    this.productName = `${product.name} ${shirtGenderDisplayName(product.gender)}`.trim()
+  }
+
+  createForm(product: Product) {
+    // get variation from state when going back
+    let size = this.sizes?.[0] ?? null;
+    let color = size ? this.sizeToColors.get(size)[0] : null;
+
+    // set from state if we're navigating here from cart
+    // const stripeProductName = history.state.stripeProductName;
+    // if (stripeProductName) {
+    //   const stripeProduct = product.stripeProduct.find(x => x.stripeProductName == stripeProductName);
+
+    //   size = stripeProduct.sizeIdx;
+    //   variation = product.variations[stripeProduct.variationIdx];
+    // }
+
+    this.form = this.fb.group({
       quantity: this.fb.control(1, Validators.required),
-      size: this.fb.control(size, Validators.required),
-      variation: this.fb.control(variation, Validators.required),
-    })
+      size: this.fb.control(size),
+      color: this.fb.control(color),
+    });
+
+    this.form.controls.size.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribeSubject))
+      .subscribe(x => this.selectSize(x));
+
+    if (product.hasSizes) {
+      this.selectSize(this.form.controls.size.value);
+    }
+
+    return this.form;
   }
 
   async buy(product: Product) {
@@ -128,34 +208,40 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const sizeIdx = this.form.value.size;
-    const variationIdx = product.variations.indexOf(this.form.value.variation);
-    const stripeProduct = product.stripeProducts.find(x =>
-      x.sizeIdx == sizeIdx && x.variationIdx == variationIdx
-    );
+    const variation = this.findVariations(this.product.variations, this.selectedColor, this.selectedSize)[0];
+
+    const stripeProduct = product.stripe;
+
+    const variationName = `${shirtGenderDisplayName(product.gender)} ${variation.size} ${variation.colorName}`.trim();
+    const variationProductName = `${product.name} - ${variationName}`;
 
     this.api.addToCart({
-      productId: stripeProduct.stripePriceId,
-      priceId: stripeProduct.stripePriceId,
+      productId: stripeProduct.productId,
+      priceId: stripeProduct.priceId,
       price: product.price,
-      currency: product.currency,
       quantity: 1,
-      product: {
-        name: stripeProduct.stripeProductName,
-        slug: product.slug,
-        image: (this.form.value.variation as ProductVariation).images[0]
-      },
-      total: product.price
+      total: product.price,
+      product: { ...variation, slug: product.slug, name: variationProductName }
     })
 
     this.toast.success('Dodano u košaricu');
   }
 
-  selectVariation(variation: ProductVariation) {
-    this.form.controls.variation.setValue(variation);
+  selectSize(size: ProductSize) {
+    this.selectedSize = size;
+
+    const availableColors = this.sizeToColors.get(size);
+    this.colors = availableColors;
+
+    this.selectColor(this.colors[0]);
+  }
+
+  selectColor(color: ProductColor) {
+    this.selectedColor = color;
+    this.form.controls.color.setValue(color);
   }
 
   sizeThumbLabel(idx: number | string) {
-    return this.api?.selectedProduct ? this.api.selectedProduct.sizes[idx] : ''
+    return this.api?.selectedProduct ? this.sizes?.[idx]?.size ?? '' : ''
   }
 }

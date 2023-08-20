@@ -1,12 +1,13 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
   selector: 'app-email-copy',
   standalone: true,
-  imports: [MatIconModule, ClipboardModule],
+  imports: [MatIconModule, ClipboardModule, MatButtonModule,],
   template: `
     <div class="container flex flex-row justify-center items-center">
             <div class="section" id="email_clipboard">

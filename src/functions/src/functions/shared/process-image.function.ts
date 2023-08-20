@@ -33,8 +33,7 @@ export const processImageFn = europeFunctions
         const fullPath = object.name;
         const fullPathSplit = fullPath.split("/");
 
-        const shouldProcess = fullPathSplit.length === 4 && fullPathSplit[2] === "original";
-
+        const shouldProcess = fullPathSplit.some(x => x === "original");
         if (!shouldProcess) {
             return logger.warn("This function only processes " +
                 "following path: /<root>/{entityId}/original/{file}",
@@ -45,10 +44,8 @@ export const processImageFn = europeFunctions
         logger.info(`Processing image: ${fullPath}`);
 
         // basic metadata
-        const root = fullPathSplit[0];
-        const entityId = fullPathSplit?.[1];
-
-        const fileName = fullPathSplit?.[fullPathSplit.length - 1];
+        const fileName = fullPathSplit.pop();
+        const filePath = fullPathSplit.join('/');
         const noExtFileName = path.basename(fileName, path.extname(fileName));
 
         // processing settings
@@ -99,9 +96,8 @@ export const processImageFn = europeFunctions
         const thumbImage = `${tempFolder}/${noExtFileName}_thumb.jpg`;
         const compressedImage = `${tempFolder}/${noExtFileName}_compressed.jpg`;
 
-        const storageDest = `${root}/${entityId}`;
-        const thumbDestination = `${storageDest}/thumb/${noExtFileName}_thumb.jpg`;
-        const compressedDest = `${storageDest}/compressed/${noExtFileName}_compressed.jpg`;
+        const thumbDestination = `${filePath}/thumb/${noExtFileName}_thumb.jpg`;
+        const compressedDest = `${filePath}/compressed/${noExtFileName}_compressed.jpg`;
 
         const uploadOptions = {
             gzip: true,

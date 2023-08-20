@@ -7,9 +7,11 @@ import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
 import { MatSliderModule } from "@angular/material/slider";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { GalleryModule } from "ng-gallery";
+import { MediaGallery } from "src/app/shared/media-gallery/media-gallery.component";
 import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
 import { CartComponent } from "./cart.component";
 import { CheckoutSuccessComponent } from "./checkout-success.component";
@@ -24,6 +26,7 @@ import { StoreRoutingModule } from './store-routing.module';
         ReactiveFormsModule,
         StoreRoutingModule,
         ToolbarComponent,
+        MediaGallery,
 
         GalleryModule,
         MatCardModule,
@@ -34,6 +37,7 @@ import { StoreRoutingModule } from './store-routing.module';
         MatTooltipModule,
         MatInputModule,
         MatButtonToggleModule,
+        MatSelectModule,
     ],
     declarations: [
         StoreHomeComponent,

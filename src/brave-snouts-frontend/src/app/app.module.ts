@@ -5,7 +5,7 @@ import hrLocale from '@angular/common/locales/hr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule, SETTINGS as FIRESTORE_SETTINGS } from '@angular/fire/compat/firestore';
-import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functions';
+import { AngularFireFunctionsModule, USE_EMULATOR as FUNCTIONS_EMULATOR, REGION } from '@angular/fire/compat/functions';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -67,6 +67,10 @@ export const DEFAULT_GALLERY_CONFIG = {
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true } },
+    {
+      provide: FUNCTIONS_EMULATOR,
+      useValue: false ? undefined : (console.error('USING LOCAL FIREBASE FUNCTIONS'), ['localhost', 5001]),
+    },
     {
       provide: GALLERY_CONFIG, useValue: {
         autoPlay: true,

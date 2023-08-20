@@ -4,7 +4,8 @@ import { PostConfirmFormData } from 'src/app/features/auction-feature/delivery/p
 
 @Injectable()
 export class FunctionsService {
-  constructor(private functions: AngularFireFunctions) { }
+  constructor(private functions: AngularFireFunctions) {
+  }
 
   /** Calls cloud function to process auction end */
   endAuction(auctionId: string, handoverDetails: string[]) {

@@ -16,7 +16,7 @@ export const sendWinnerMail = async (
     items: Bid[],
     settingsMailVariables: any,
 ) => {
-    const templateRaw = getLocalTemplate();
+    const templateRaw = await getLocalTemplate();
 
     logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
 
@@ -27,7 +27,7 @@ export const sendWinnerMail = async (
     const paymentDetail = `${user.name}`;
     let totalDonation = items
         .map((x) => x.value)
-        .reduce((prev, cur) => prev + cur);
+        .reduce((prev, cur) => prev + cur, 0);
     totalDonation = Math.round(totalDonation * 100) / 100;
 
     const emailVariables = {
