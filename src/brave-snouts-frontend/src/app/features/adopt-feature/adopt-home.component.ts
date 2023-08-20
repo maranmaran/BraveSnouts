@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'blog-container',
+  selector: 'adopt-home',
   template: `
     <app-toolbar></app-toolbar>
     <router-outlet></router-outlet>

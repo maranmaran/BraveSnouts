@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
+import { HotToastService } from '@ngneat/hot-toast'
 import { Subject, filter, takeUntil, tap } from 'rxjs'
 import { Product, ProductVariation, StoreApi } from './store.api'
 
@@ -22,7 +23,7 @@ import { Product, ProductVariation, StoreApi } from './store.api'
             <!--NG GALLERY-->
             <img class="w-full h-auto self-center shadow-md" [src]="product.variations[0].images[0]" />
 
-            <form *ngIf="form" [formGroup]="form" class="grid grid-rows-[min-content,1fr,1fr] gap-12 h-full">
+            <form *ngIf="form" [formGroup]="form" class="grid grid-rows-[min-content,1fr,1fr] gap-12 sm:gap-4 h-full">
                 <div class="flex flex-row justify-between gap-8">
                     <span class="font-bold text-lg">{{ product.name }}</span>
                     <span class="font-bold text-xl">{{ product.price }} {{ product.currency | uppercase }}</span>
@@ -51,10 +52,13 @@ import { Product, ProductVariation, StoreApi } from './store.api'
                         [matTooltip]="variation.colorName "
                         class="rounded-full h-8 w-8 cursor-pointer m-4 transition-all duration-150
                                hover:brightness-95 outline-solid outline border-solid border-4"
+                        [ngClass]="{
+                          'drop-shadow-[0px_2px_6px_rgb(55,65,81)]': form.controls.variation?.value === variation,
+                        }"
                         [ngStyle]="{
                           backgroundColor: variation.colorCode,
+                          borderColor: form.controls.variation?.value === variation ? 'white' : 'transparent',
                           outlineColor: form.controls.variation?.value === variation ? variation.colorCode : 'transparent',
-                          borderColor: form.controls.variation?.value === variation ? 'white' : 'transparent'
                         }"></div>
                         <span class="font-bold self-center ml-auto">{{ form.controls.variation.value.colorName | titlecase }}</span>
                   </div>
@@ -74,6 +78,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router)
   private readonly api = inject(StoreApi)
   private readonly fb = inject(FormBuilder)
+  private readonly toast = inject(HotToastService)
 
   protected form: FormGroup
   readonly product$ = this.api.selectedProduct$.pipe(
@@ -99,10 +104,22 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   createForm(product: Product) {
+    let size = product.sizes.length / 2;
+    let variation = product.variations[0];
+
+    // set from state if we're navigating here from cart
+    const stripeProductName = history.state.stripeProductName;
+    if (stripeProductName) {
+      const stripeProduct = product.stripeProducts.find(x => x.stripeProductName == stripeProductName);
+
+      size = stripeProduct.sizeIdx;
+      variation = product.variations[stripeProduct.variationIdx];
+    }
+
     return this.fb.group({
       quantity: this.fb.control(1, Validators.required),
-      size: this.fb.control(product.sizes.length / 2, Validators.required),
-      variation: this.fb.control(product.variations[0], Validators.required),
+      size: this.fb.control(size, Validators.required),
+      variation: this.fb.control(variation, Validators.required),
     })
   }
 
@@ -123,10 +140,15 @@ export class ProductComponent implements OnInit, OnDestroy {
       price: product.price,
       currency: product.currency,
       quantity: 1,
-      name: stripeProduct.stripeProductName,
-      image: (this.form.value.variation as ProductVariation).images[0],
+      product: {
+        name: stripeProduct.stripeProductName,
+        slug: product.slug,
+        image: (this.form.value.variation as ProductVariation).images[0]
+      },
       total: product.price
     })
+
+    this.toast.success('Dodano u košaricu');
   }
 
   selectVariation(variation: ProductVariation) {

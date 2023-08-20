@@ -2,9 +2,11 @@ import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
 import { MatSliderModule } from "@angular/material/slider";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { GalleryModule } from "ng-gallery";
@@ -30,7 +32,8 @@ import { StoreRoutingModule } from './store-routing.module';
         MatFormFieldModule,
         MatSliderModule,
         MatTooltipModule,
-
+        MatInputModule,
+        MatButtonToggleModule,
     ],
     declarations: [
         StoreHomeComponent,

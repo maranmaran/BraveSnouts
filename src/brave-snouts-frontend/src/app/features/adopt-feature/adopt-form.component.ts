@@ -6,7 +6,6 @@ import { AdoptApi } from "./adopt.api";
 @Component({
     selector: 'app-adopt-component',
     template: `
-    
     `,
 })
 export class AdoptFormComponent {

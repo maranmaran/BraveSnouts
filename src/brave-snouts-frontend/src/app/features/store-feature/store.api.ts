@@ -39,8 +39,7 @@ export interface LineItem {
     price: number,
     quantity: number,
     currency: string,
-    name: string;
-    image: string;
+    product: { name: string, image: string, slug: string };
 };
 
 type Cart = LineItem[];
@@ -61,6 +60,15 @@ export class StoreApi {
     private readonly cartSubject = new BehaviorSubject<Cart>(JSON.parse(localStorage.getItem('cart') ?? "[]"));
     readonly cart$ = this.cartSubject.asObservable()
         .pipe(
+            map(cart =>
+                cart.filter(x => !!x)
+            ),
+            map(cart => {
+                for (const item of cart) {
+                    this.calculateItemTotal(item);
+                }
+                return cart;
+            }),
             map(cart => {
                 localStorage.setItem('cart', JSON.stringify(cart));
 
@@ -78,15 +86,19 @@ export class StoreApi {
 
     cartValid(cart: Cart) {
         return cart.reduce((a, b) => a
-            && !!b.currency
-            && !!b.name
-            && !!b.image
+            && !!b.product
             && !!b.total
             && !!b.price
+            && !!b.quantity
+            && !!b.currency
             && !!b.priceId
             && !!b.productId
-            && !!b.quantity
             , true)
+    }
+
+    calculateItemTotal(item: LineItem) {
+        item.total = Math.round(item.price * item.quantity * 100) / 100;
+        return item.total;
     }
 
     addToCart(item: LineItem) {
@@ -113,7 +125,7 @@ export class StoreApi {
     removeFromCart(item: LineItem) {
         const cart = this.cartSubject.value.map(
             currentItem => lineItemEq(currentItem, item) ? null : currentItem
-        );
+        ).filter(x => !!x);
 
         console.debug(cart);
 

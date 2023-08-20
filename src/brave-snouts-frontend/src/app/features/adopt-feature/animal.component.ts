@@ -7,7 +7,6 @@ import { AdoptApi, Animal } from './adopt.api'
 @Component({
   selector: 'app-animal',
   styleUrls: ['./adopt.styles.scss'],
-  styles: [``],
   template: `
         <div
             *ngIf="animal$ | async as animal"

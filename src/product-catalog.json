@@ -1,6 +1,7 @@
 [
     {
         "id": "1",
+        "category": "Ženska",
         "slug": "obicna-majica",
         "name": "Obična majica",
         "active": "true",
@@ -38,6 +39,7 @@
     {
         "id": "2",
         "slug": "v-majica",
+        "category": "Muška",
         "name": "V izrez majica",
         "active": "true",
         "price": "8.9",
