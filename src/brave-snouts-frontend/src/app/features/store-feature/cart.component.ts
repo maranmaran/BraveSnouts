@@ -19,12 +19,12 @@ import { LineItem, StoreApi } from './store.api'
                     *ngFor="let item of cart$ | async"
                     class="p-4 shadow-md w-[90%] flex flex-row gap-16 sm:gap-4 sm:flex-col hover:shadow-lg"
                 >
-                    <img
-                        class="w-24 h-fit self-center cursor-pointer hover:shadow-2xl"
-                        [src]="item.product.image"
-                        (click)="navigateProduct(item.product.slug, item.product.name)"
-                    />
-                    <div class="flex flex-col">
+                    <media-gallery class="w-32 h-full min-h-[100px] self-center cursor-pointer hover:shadow-2xl" 
+                      [media]="item.product.images" [fullResolution]="true"
+                      (click)="navigateProduct(item.product.slug, item.product.name)"
+                    ></media-gallery>
+
+                    <div class="flex flex-col w-full">
                         <div class="font-bold mb-4">{{ item.product.name }}</div>
                         <div class="text-sm">
                             Količina:
@@ -49,6 +49,7 @@ import { LineItem, StoreApi } from './store.api'
                     </div>
                 </div>
             </div>
+
             <div id="actions" class="md:order-1">
                 <button mat-raised-button (click)="clear()">Očisti</button>
                 <button mat-raised-button (click)="buy()">Kupi ({{ total$ | async }} €)</button>

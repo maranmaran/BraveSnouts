@@ -32,7 +32,7 @@ export class AdoptApi {
             return of(this.animalsSubject.value.find(x => x.slug === slug));
         }
 
-        return this.animals$.pipe(
+        return this.getAnimals().pipe(
             map(x => x.find(x => x.slug === slug))
         );
     }

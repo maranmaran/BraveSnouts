@@ -57,7 +57,7 @@ export interface LineItem {
 };
 
 type Cart = LineItem[];
-const lineItemEq = (l: LineItem, r: LineItem) => l.productId == r.productId && l.priceId == r.priceId;
+const lineItemEq = (l: LineItem, r: LineItem) => l.productId == r.productId && l.priceId == r.priceId && l.product.name == r.product.name;
 
 @Injectable({ providedIn: 'root' })
 export class StoreApi {
