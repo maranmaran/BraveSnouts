@@ -1,5 +1,5 @@
 import { logger } from 'firebase-functions';
-import { config } from "../../app";
+import { appConfig } from "../../app";
 
 import * as fs from 'fs';
 import * as nodemailer from "nodemailer";
@@ -13,11 +13,11 @@ const formData = require('form-data');
 const mailComposer = require("nodemailer/lib/mail-composer");
 
 const client = (() => {
-  switch (config?.mail?.provider) {
+  switch (appConfig?.mail?.provider) {
     case 'mailgun':
       return new mailgun(formData).client({
         username: 'api',
-        key: config.mailgun?.apikey,
+        key: appConfig.mailgun?.apikey,
         url: "https://api.eu.mailgun.net"
       }) as any;
     case 'gmail':
@@ -25,8 +25,8 @@ const client = (() => {
         service: "Gmail",
         pool: true,
         auth: {
-          user: config.gmail?.user,
-          pass: config.gmail?.password,
+          user: appConfig.gmail?.user,
+          pass: appConfig.gmail?.password,
         },
       }) as any;
     case 'ethereal':
@@ -35,8 +35,8 @@ const client = (() => {
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-          user: config.ethereal?.user,
-          pass: config.ethereal?.password,
+          user: appConfig.ethereal?.user,
+          pass: appConfig.ethereal?.password,
         },
       }) as any;
     default:
@@ -49,11 +49,11 @@ export const sendMail = async composer => {
   try {
     const message = (await composer.compile().build()).toString('ascii');
 
-    switch (config.mail.provider) {
+    switch (appConfig.mail.provider) {
       case 'mailgun':
         return await client.messages
           .create(
-            config.mailgun?.domain, // domain
+            appConfig.mailgun?.domain, // domain
             { to: composer.mail.to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message } // message data
           )
       case 'gmail':
@@ -110,4 +110,4 @@ async function getMjmlTemplate(name: string) {
 }
 
 export const getEmailOptoutLink = () =>
-  `${config.base.url}/aukcije/email-postavke`;
+  `${appConfig.base.url}/aukcije/email-postavke`;

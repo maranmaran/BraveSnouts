@@ -211,8 +211,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     const variations = this.findVariations(this.product.variations, this.selectedColor, this.selectedSize);
     const variation = variations[0];
 
-    console.log(variations, variation);
-
     const stripeProduct = product.stripe;
 
     const variationName = `${shirtGenderDisplayName(product.gender) ?? ''} ${variation.size ?? ''} ${variation.colorName ?? ''}`.trim();

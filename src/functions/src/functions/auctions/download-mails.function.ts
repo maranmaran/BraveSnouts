@@ -2,7 +2,7 @@ import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
-import { europeFunctions, store } from '../app';
+import { appStore, europeFunctions } from '../app';
 
 const os = require('os');
 const path = require('path');
@@ -16,7 +16,7 @@ export const downloadMailsFn = europeFunctions.https.onCall(
 
         try {
 
-            const users = (await (await store.collection("/users/")
+            const users = (await (await appStore.collection("/users/")
                 .where("emailSettings.auctionAnnouncements", "==", true)
                 .where("emailSettings.bidUpdates", "==", true)
             ).get()).docs;

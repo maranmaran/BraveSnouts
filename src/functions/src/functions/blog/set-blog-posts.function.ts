@@ -1,8 +1,7 @@
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { BLOCKS, Block, Document, Inline, Text } from "@contentful/rich-text-types";
 import { Asset, AssetFile, Entry, EntrySkeletonType, createClient } from "contentful";
-import * as functions from 'firebase-functions';
-import { europeFunctions, store } from "../app";
+import { appConfig, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from "../auctions/models/models";
 import { StorageService } from "../shared/services/storage.service";
 
@@ -26,16 +25,16 @@ export const setBlogPostsFn = europeFunctions.pubsub
 
         const content_type = 'braveSnoutsBlog';
         const client = createClient({
-            space: functions.config().contentful.space,
-            accessToken: functions.config().contentful.secret,
+            space: appConfig.contentful.space,
+            accessToken: appConfig.contentful.secret,
         });
 
         const contentfulPosts = await client.getEntries({ content_type: content_type });
 
-        await store.recursiveDelete(store.collection('blog'));
+        await appStore.recursiveDelete(appStore.collection('blog'));
         await storage.recursiveDelete('blog');
 
-        const writer = store.bulkWriter();
+        const writer = appStore.bulkWriter();
 
         for (const entry of contentfulPosts.items) {
             const post = await toBlogPost(entry);
@@ -43,7 +42,7 @@ export const setBlogPostsFn = europeFunctions.pubsub
             post.hero = (await uploadToStorage(post.slug, [post.hero as AssetFile]))[0];
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.create(store.doc(`blog/${post.slug}`), post)
+            writer.create(appStore.doc(`blog/${post.slug}`), post)
         }
 
         await writer.close();

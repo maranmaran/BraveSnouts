@@ -19,8 +19,8 @@ import { LineItem, StoreApi } from './store.api'
                     *ngFor="let item of cart$ | async"
                     class="p-4 shadow-md w-[90%] flex flex-row gap-16 sm:gap-4 sm:flex-col hover:shadow-lg"
                 >
-                    <media-gallery class="w-32 h-full min-h-[100px] self-center cursor-pointer hover:shadow-2xl" 
-                      [media]="item.product.images" [fullResolution]="true"
+                    <media-gallery class="w-32 h-full min-h-[100px] self-center cursor-pointer flex items-center" 
+                      [media]="item.product.images" [fullResolution]="true" size="contain"
                       (click)="navigateProduct(item.product.slug, item.product.name)"
                     ></media-gallery>
 

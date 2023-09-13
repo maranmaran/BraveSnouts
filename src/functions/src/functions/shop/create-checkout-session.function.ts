@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { config, europeFunctions } from "../app";
+import { appConfig, europeFunctions } from "../app";
 
 interface LineItem {
     productId: string,
@@ -12,12 +12,11 @@ interface LineItem {
 
 type Cart = LineItem[];
 
-const api = new Stripe(config.stripe.secret, {
+const api = new Stripe(appConfig.stripe.secret, {
     apiVersion: "2022-11-15"
 });
 
-export const createCheckoutSessionFn = europeFunctions
-    .https
+export const createCheckoutSessionFn = europeFunctions.https
     .onCall(async (data, ctx) => {
         const cart = data as Cart;
         await reserveInventory(cart);
@@ -50,8 +49,8 @@ async function createCheckoutSessionId(cart: Cart) {
         mode: 'payment',
         line_items: lineItems,
         payment_method_types: ['card'],
-        cancel_url: `${config.base.url}/merch/kosarica`,
-        success_url: `${config.base.url}/merch/placanje-uspjesno`,
+        cancel_url: `${appConfig.base.url}/merch/kosarica`,
+        success_url: `${appConfig.base.url}/merch/placanje-uspjesno`,
         expires_at: Math.floor(Date.now() / 1000) + (3600 * 2), // 2 hours
         custom_text: {
             shipping_address: {

@@ -3,80 +3,39 @@ import { logger } from "firebase-functions";
 import * as fs from 'fs';
 import { mkdirp } from 'mkdirp';
 import Stripe from "stripe";
-import { config, europeFunctions, store } from "../app";
+import { appConfig, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
 
 const path = require('path');
 const os = require('os');
 
-interface InputSnoutsProduct {
-    id: string;
-    slug: string;
-    name: string;
-    type: string;
-    gender?: string;
-    price: number;
-    description: string;
-    hasSizes: boolean;
-    variations: InputSnoutsProductVariation[];
-}
-
-interface InputSnoutsProductVariation {
-    colorName: string;
-    colorCode: string;
-    images: FirebaseFile[],
-    inventory: { stock: number, size?: string }[] | { stock: number, size?: string }
-}
-
-interface OutputSnoutsProduct {
-    id: string;
-    slug: string;
-    name: string;
-    type: string;
-    gender?: string;
-    price: number;
-    description: string;
-    hasSizes: boolean;
-    stripe: OutputStripeProduct,
-    variations: OutputSnoutsProductVariation[];
-}
-
-interface OutputStripeProduct {
-    productId: string;
-    priceId: string;
-}
-
-interface OutputSnoutsProductVariation {
-    stock: number;
-    size: string;
-    colorName: string;
-    colorCode: string;
-    images: FirebaseFile[],
-}
-
-const api = new Stripe(config.stripe.secret, {
+const api = new Stripe(appConfig.stripe.secret, {
     apiVersion: "2022-11-15"
 });
 
 // TODO: Remove
-export const setProductCatalogHttpFn = europeFunctions
-    .https
+export const setProductCatalogHttpFn = europeFunctions.https
     .onCall(async (data, ctx) => {
         await syncCatalogToStripe('product-catalog/product-catalog.json', 'product-catalog.json');
     })
 
-export const setProductCatalogFn = europeFunctions
-    .storage.bucket().object()
+export const setProductCatalogFn = europeFunctions.storage
+    .bucket().object()
     .onFinalize(async (object) => {
         const bucketPath = object.name;
         const fileName = 'product-catalog.json'
 
-        if (!bucketPath.startsWith('product-catalog') || bucketPath.indexOf(fileName) === -1) {
+        if (bucketPath !== '/product-catalog/product-catalog.json') {
             return logger.warn("This function only processes " +
-                "following path: /<root>/{entityId}/original/{file}",
+                "following path: /product-catalog/product.json",
                 { path: bucketPath }
             );
         }
+
+        if (bucketPath.length > 100) {
+            return logger.error("Path is too long, review the code", { bucketPath });
+        }
+
 
         await syncCatalogToStripe(bucketPath, fileName);
     })
@@ -114,7 +73,7 @@ function getCatalog(storagePath: string) {
 
 function refineCatalog(catalog: InputSnoutsProduct[]) {
     const refinedCatalog: OutputSnoutsProduct[] = [];
-    for (let product of catalog) {
+    for (const product of catalog) {
 
         const outputVariations: OutputSnoutsProductVariation[] = [];
         for (let variation of product.variations) {
@@ -240,8 +199,8 @@ async function createProduct(product: OutputSnoutsProduct) {
         type: 'good',
         shippable: true,
         description: product.description,
-        images: product.variations.flatMap(x => x.images.flatMap(x => x.original.gUrl)).slice(0, 8),
-        url: `${config.base.url}/merch/proizvod/${product.slug}`,
+        images: product.variations.flatMap(x => x.images.flatMap(y => y.original.gUrl)).slice(0, 8),
+        url: `${appConfig.base.url}/merch/proizvod/${product.slug}`,
         metadata: { firestoreId: product.slug },
         tax_code: 'txcd_00000000', // non taxable https://stripe.com/docs/tax/tax-categories
     });
@@ -262,15 +221,60 @@ async function createPrice(product: Stripe.Product, price: { id: string, amount:
 
 async function createCatalogInDatabase(snoutsCatalog: OutputSnoutsProduct[]) {
     // ensure deleted
-    await store.recursiveDelete(store.collection('shop'));
+    await appStore.recursiveDelete(appStore.collection('shop'));
 
     // write new
-    const bulkWriter = store.bulkWriter();
+    const bulkWriter = appStore.bulkWriter();
 
     for (const bsnoutsProduct of snoutsCatalog.values()) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        bulkWriter.create(store.doc(`shop/${bsnoutsProduct.slug}`), bsnoutsProduct);
+        bulkWriter.create(appStore.doc(`shop/${bsnoutsProduct.slug}`), bsnoutsProduct);
     }
 
     await bulkWriter.close();
+}
+
+interface InputSnoutsProduct {
+    id: string;
+    slug: string;
+    name: string;
+    type: string;
+    gender?: string;
+    price: number;
+    description: string;
+    hasSizes: boolean;
+    variations: InputSnoutsProductVariation[];
+}
+
+interface InputSnoutsProductVariation {
+    colorName: string;
+    colorCode: string;
+    images: FirebaseFile[],
+    inventory: { stock: number, size?: string }[] | { stock: number, size?: string }
+}
+
+interface OutputSnoutsProduct {
+    id: string;
+    slug: string;
+    name: string;
+    type: string;
+    gender?: string;
+    price: number;
+    description: string;
+    hasSizes: boolean;
+    stripe: OutputStripeProduct,
+    variations: OutputSnoutsProductVariation[];
+}
+
+interface OutputStripeProduct {
+    productId: string;
+    priceId: string;
+}
+
+interface OutputSnoutsProductVariation {
+    stock: number;
+    size: string;
+    colorName: string;
+    colorCode: string;
+    images: FirebaseFile[],
 }

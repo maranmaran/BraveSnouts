@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import { mkdirp } from "mkdirp";
 import { v4 as uuidv4 } from 'uuid';
 import { FirebaseFile } from "../../auctions/models/models";
-const sharp = require('sharp');
 const path = require('path');
 const os = require('os');
 
@@ -49,11 +48,11 @@ export class StorageService {
         // make firebase file model
         const url = await res[0].publicUrl(); // this is gcloud link...
 
-        const pathThumb = pathOrig.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
-        const fUrlThumb = url.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
+        const pathThumb = decodeURI(pathOrig).replace('/original/', '/thumb/').replace('_original', '_thumb');
+        const fUrlThumb = decodeURI(url).replace('/original/', '/thumb/').replace('_original', '_thumb');
 
-        const pathComp = pathOrig.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
-        const fUrlComp = url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
+        const pathComp = decodeURI(pathOrig).replace('/original/', '/compressed/').replace('_original', '_compressed');
+        const fUrlComp = decodeURI(url).replace('/original/', '/compressed/').replace('_original', '_compressed');
 
         const firebaseFile = <FirebaseFile>{
             name: external.name,

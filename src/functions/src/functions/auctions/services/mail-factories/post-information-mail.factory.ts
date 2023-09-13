@@ -1,5 +1,5 @@
 import { logger } from "firebase-functions";
-import { config, mailSettings } from "../../../app";
+import { appConfig, mailSettings } from "../../../app";
 import { User } from "../../models/models";
 import { getComposer, getTemplate, getTemplateRaw, sendMail } from "../mail.service";
 
@@ -48,6 +48,6 @@ export const getPostConfirmUrl = (
     auctionIds: string[]
 ) => {
     const ids = auctionIds.join(",");
-    return `${config.base.url}/aukcije/potvrda-posta;auctionIds=${ids};userId=${userId};donation=${totalDonation};paymentDetails=${paymentDetail};postageFee=${postageFee}`;
+    return `${appConfig.base.url}/aukcije/potvrda-posta;auctionIds=${ids};userId=${userId};donation=${totalDonation};paymentDetails=${paymentDetail};postageFee=${postageFee}`;
 };
 

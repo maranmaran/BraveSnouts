@@ -3,7 +3,7 @@ import * as admin from "firebase-admin";
 import { logger } from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
-import { config, europeFunctions, store } from "../app";
+import { appConfig, appStore, europeFunctions } from "../app";
 import { AuctionItem, User, WinnerOnAuction } from "./models/models";
 
 const os = require("os");
@@ -52,19 +52,19 @@ export const exportAuctionFn = europeFunctions.https.onCall(
       // fill above MAPS and add all items data to PREDMETI sheet
       for (const id of ids) {
         const items = (
-          await store.collection(`auctions/${id}/items`).get()
+          await appStore.collection(`auctions/${id}/items`).get()
         ).docs.map((d) => d.data()) as AuctionItem[];
         for (const item of items) {
           itemsMap.set(item.id, item);
         }
 
         const winners = (
-          await store.collection(`auctions/${id}/winners`).get()
+          await appStore.collection(`auctions/${id}/winners`).get()
         ).docs.map((d) => d.data()) as WinnerOnAuction[];
         for (const winner of winners) {
           const userId = winner.id;
           const user = (await (
-            await store.doc(`users/${userId}`).get()
+            await appStore.doc(`users/${userId}`).get()
           ).data()) as User;
 
           if (!usersMap.has(userId)) {
@@ -86,7 +86,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
           for (const item of winner.items) {
             itemsSheetData.push([
               `${item.name.toUpperCase()}, ${itemsMap.get(item.id).description}`,
-              `${config.base.url}/aukcije/predmet;auctionId=${item.auctionId};itemId=${item.id}`,
+              `${appConfig.base.url}/aukcije/predmet;auctionId=${item.auctionId};itemId=${item.id}`,
               winner.userInfo?.name,
               item.bid,
             ]);

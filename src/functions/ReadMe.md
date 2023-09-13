@@ -30,9 +30,9 @@ List of variables:
     -   Set provider
         -   `firebase functions:config:set mail.provider="mailgun | gmail | ethereal"`
     -   Etheral mail secret (LOCAL)
-        -   `firebase functions:config:set ethereal.user="patience56@ethereal.email" ethereal.password="jYsRxVBXdsfU6W8nHv"`
+        -   `firebase functions:config:set ethereal.user="<mail>" ethereal.password="<pass>"`
     -   GMail mail secret (used in PROD)
-        -   `firebase functions:config:set gmail.user="patience56@gmail.email" gmail.password="jYsRxVBXdsfU6W8nHv"`
+        -   `firebase functions:config:set gmail.user="<mail>" gmail.password="<pass>"`
     -   Mailgun (used in PROD)
         -   `firebase functions:config:set mailgun.apikey="apiKey" mailgun.baseurl="baseUrl" mailgun.domain="domainName"`
 
@@ -40,6 +40,15 @@ List of variables:
 
 At the moment two projects exist in firebase  
 One is **dev** and other is **prod**
+
+## Kill switch
+
+There's a kill switch function that listen's to firebase budget alerts which are forwarded in pub/sub.
+Once threshold is reached the billing is disabled.
+This threshold is set in firestore configuration and can be dynamic.
+Default is 150€ but can be increased through store if the app is receiving bigger traffic.
+
+Alerts are also configured to send budget alert mails, SMS and call cell phone over 100€
 
 ### Functions
 
@@ -52,10 +61,3 @@ One is **dev** and other is **prod**
 
 -   `firebase use prod`
 -   `firebase deploy --only functions`
-
-## TODO:
-
-### Facebook messaging
-
--   https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window
--   https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags

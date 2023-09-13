@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 import { logger } from 'firebase-functions';
-import { europeFunctions, mailSettings, store } from '../app';
+import { appStore, europeFunctions, mailSettings } from '../app';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
 import { Auction, AuctionItem, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
@@ -28,7 +28,7 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 
             for (const auction of auctions) {
                 auction.lastTimeWinningMailsSent = new Date();
-                await store.doc(`auctions/${auction.id}`).update({
+                await appStore.doc(`auctions/${auction.id}`).update({
                     lastTimeWinningMailsSent: new Date()
                 });
             }
@@ -109,7 +109,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
 
         sendMailJobs.push(new Promise<void>(async (res, err) => {
             await sendWinnerMail(auctions, handoverDetails, userInfo, bids, mailVariables);
-            await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
+            await appStore.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
             sentMailsCounter++;
             res();
         }))
@@ -123,7 +123,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         sentMailsCounter + skippedCounter == userBids.size) {
 
         for (const [userInfo, _] of userBids) {
-            await store.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
+            await appStore.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
         }
 
         logger.info(`Reverted endAuctionMailSent flag`);

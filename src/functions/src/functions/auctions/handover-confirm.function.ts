@@ -1,5 +1,5 @@
 import { logger } from 'firebase-functions';
-import { europeFunctions, store } from '../app';
+import { appStore, europeFunctions } from '../app';
 import { User } from './models/models';
 import { sendHandoverConfirmationMail } from './services/mail-factories/handover-information-mail.factory';
 import { sendPostConfirmationMail } from './services/mail-factories/post-information-mail.factory';
@@ -23,7 +23,7 @@ export const handoverConfirmFn = europeFunctions.https.onCall(
       const postageFee = data.postageFee;
 
       // process auction// add to map
-      const userDb = await (await store.doc(`users/${userId}`).get()).data() as User;
+      const userDb = await (await appStore.doc(`users/${userId}`).get()).data() as User;
 
       if (chosenOption === 'handover') {
         await sendHandoverConfirmationMail(userDb, auctionIds, chosenOptionData);

@@ -1,5 +1,5 @@
 import { logger } from "firebase-functions";
-import { config, mailSettings } from "../../../app";
+import { appConfig, mailSettings } from "../../../app";
 import { User, UserInfo } from "../../models/models";
 import { getComposer, getTemplate, getTemplateRaw, sendMail } from './../mail.service';
 
@@ -55,5 +55,5 @@ export const sendHandoverConfirmationMail = async (
 
 export const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {
     const ids = auctionIds.join(",");
-    return `${config.base.url}/aukcije/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
+    return `${appConfig.base.url}/aukcije/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
 };

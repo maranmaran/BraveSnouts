@@ -45,11 +45,11 @@ export class StorageService {
 
         const url: string = await firstValueFrom(ref.getDownloadURL());
 
-        const pathThumb = path.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
-        const fUrlThumb = url.replace('%2Foriginal%2F', '%2Fthumb%2F').replace('_original', '_original_thumb');
+        const pathThumb = decodeURI(path).replace('/original/', '/thumb/').replace('_original', '_original_thumb');
+        const fUrlThumb = decodeURI(url).replace('/original/', '/thumb/').replace('_original', '_original_thumb');
 
-        const pathComp = path.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
-        const fUrlComp = url.replace('%2Foriginal%2F', '%2Fcompressed%2F').replace('_original', '_original_compressed');
+        const pathComp = decodeURI(path).replace('/original/', '/compressed/').replace('_original', '_original_compressed');
+        const fUrlComp = decodeURI(url).replace('/original/', '/compressed/').replace('_original', '_original_compressed');
 
         const firebaseFile = <FirebaseFile>{
             name, type,

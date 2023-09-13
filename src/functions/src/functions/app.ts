@@ -3,13 +3,14 @@ import * as functions from 'firebase-functions';
 import { MailSettingsService } from './auctions/services/mail-settings.service';
 
 export const app = initialize();
-export const store = app.storeL;
-export const config = app.configL;
+export const appAdmin = app.adminL;
+export const appStore = app.storeL;
+export const appConfig = app.configL;
 export const mailSettings = app.mailSettingsL;
 export const europeFunctions = app.europeFunctionsL;
 
 function initialize() {
-    admin.initializeApp();
+    const adminL = admin.initializeApp();
 
     const storeL = admin.firestore();
     const configL = functions.config();
@@ -19,6 +20,7 @@ function initialize() {
     admin.firestore().settings({ ignoreUndefinedProperties: true })
 
     const appL = {
+        adminL,
         storeL,
         configL,
         mailSettingsL,
