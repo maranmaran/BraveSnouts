@@ -86,10 +86,10 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         const tempFolder = path.join(os.tmpdir(), "bsnouts-images", localFolderUID);
         await mkdirp(tempFolder);
 
-        const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        const bucket = appStorage.bucket();
 
         logger.log('Downloading image');
-        const originalLocalPath = `${tempFolder}/${fileName}`;
+        const originalLocalPath = `${tempFolder}/${fileName}.jpg`;
         await bucket.file(fullPath).download({ destination: originalLocalPath });
 
         logger.log(`Processing image ${fileName}`);
@@ -122,12 +122,12 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
 
         logger.log('Uploading processed artifacts');
 
-        // const originalImage = `${tempFolder}/${fileName}`;
+        // const originalImage = `${tempFolder}/${fileName}.jpg`;
         const thumbImage = `${tempFolder}/${noExtFileName}_thumb.jpg`;
         const compressedImage = `${tempFolder}/${noExtFileName}_compressed.jpg`;
 
-        const thumbDestination = `${rootPath}/thumb/${noExtFileName}_thumb.jpg`;
-        const compressedDest = `${rootPath}/compressed/${noExtFileName}_compressed.jpg`;
+        const thumbDestination = `${rootPath}/thumb/${noExtFileName}_thumb`;
+        const compressedDest = `${rootPath}/compressed/${noExtFileName}_compressed`;
 
         const uploadOptions = {
             gzip: true,
@@ -141,14 +141,14 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
             }
         };
 
-        logger.info(`Uploading ${fileName}_compressed.jpg to ${compressedDest}`);
+        logger.info(`Uploading ${noExtFileName}_compressed to ${compressedDest}`);
         await bucket.upload(compressedImage, { destination: compressedDest, ...uploadOptions });
 
-        logger.info(`Uploading ${fileName}_thumb.jpg to ${thumbDestination}`);
+        logger.info(`Uploading ${noExtFileName}_thumb to ${thumbDestination}`);
         await bucket.upload(thumbImage, { destination: thumbDestination, ...uploadOptions });
 
+        // // fs.unlinkSync(originalImage);
         // fs.unlinkSync(thumbImage);
-        // fs.unlinkSync(originalImage);
         // fs.unlinkSync(compressedImage);
         // fs.unlinkSync(tempFolder);
     });

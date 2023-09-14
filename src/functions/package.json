@@ -3,14 +3,13 @@
   "scripts": {
     "lint": "eslint \"src/**/*\"",
     "test": "mocha 'test/*.spec.ts'",
+    "kill-ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
     "build": "tsc",
     "build:watch": "tsc -w",
-    "serve": "npm run build && firebase emulators:start",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log",
-    "emulator": "npm run build && firebase emulators:start --inspect-functions"
+    "serve": "npm run build && npm run kill-ports && firebase emulators:start",
+    "serve:watch": "npm run build:watch && npm run kill-ports && firebase emulators:start",
+    "emulator": "npm run build && npm run kill-ports && firebase emulators:start --inspect-functions"
   },
   "engines": {
     "node": "20"

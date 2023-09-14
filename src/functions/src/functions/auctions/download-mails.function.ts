@@ -37,7 +37,7 @@ export const downloadMailsFn = europeFunctions.https.onCall(
             const exportFilePath = path.join(os.tmpdir(), `${FILENAME}.xlsx`);
             XLSX.writeFile(wb, exportFilePath, { bookType: 'xlsx' });
 
-            const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+            const bucket = appStorage.bucket();
             const response = await bucket.upload(exportFilePath,
                 {
                     destination: `exports/${FILENAME}.xlsx`,

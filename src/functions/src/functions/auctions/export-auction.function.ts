@@ -158,7 +158,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
       const exportFilePath = path.join(os.tmpdir(), `${sheetTitle}.xlsx`);
       XLSX.writeFile(wb, exportFilePath, { bookType: "xlsx" });
 
-      const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+      const bucket = appStorage.bucket();
 
       const response = await bucket.upload(exportFilePath, {
         destination: `exports/${sheetTitle}.xlsx`,

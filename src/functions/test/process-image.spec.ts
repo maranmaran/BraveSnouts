@@ -1,58 +1,124 @@
 // import { test } from 'bun:test';
 import { assert } from 'chai';
-import firebaseAdmin from 'firebase-admin';
-import firebaseTestInit from 'firebase-functions-test';
+import { appStorage } from '../src/functions/app';
+import { StorageService } from '../src/functions/shared/services/storage.service';
 
-const firebaseTest = firebaseTestInit({});
-// firebaseTest.mockConfig({ stripe: { key: '23wr42ewr34' }});
-// firebaseTest.wrap(func);
+// const firebaseTest = firebaseTestInit({});
+// // firebaseTest.mockConfig({ stripe: { key: '23wr42ewr34'   }});
+// const processImageWrap = firebaseTest.wrap(processImageFn);
 
-const projectId = 'bravesnoutsdev'
-const storageBucket = 'bravesnoutsdev.appspot.com';
-
-process.env.GCLOUD_PROJECT = projectId
-process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080'
-process.env.FIREBASE_STORAGE_EMULATOR_HOST = '127.0.0.1:9199'
-firebaseAdmin.initializeApp({ projectId, storageBucket })
-
-const storage = firebaseAdmin.storage();
-const store = firebaseAdmin.firestore();
-
-const timeout = 0; // disable timeout
+const defTimeout = 0; // disable timeout
+const defWait = 5; // default wait time
 
 describe('process image tests', async () => {
 
     beforeEach(async () => {
-        await storage.bucket().deleteFiles();
+        await appStorage.bucket().deleteFiles();
     })
 
-    it('should process original image', async () => {
+    it('should process root original image', async () => {
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'original/cup' });
+        await wait(defWait);
 
-        await storage.bucket().upload('test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'original/cup' });
-        await wait(5);
-
-        const response = await storage.bucket().getFiles();
+        const response = await appStorage.bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length > 0, 'should not be empty');
         assert.isTrue(files.length == 3, 'should be equal to 3');
 
-        assert.isTrue(files.filter(x => x.includes('original/cup')).length == 1, 'should have 1 original');
-        assert.isTrue(files.filter(x => x.includes('thumb/cup_thumb')).length == 1, 'should have 1 thumb');
-        assert.isTrue(files.filter(x => x.includes('compressed/cup_compressed')).length == 1, 'should have 1 compressed');
-    }).timeout(timeout)
+        assertProcessedImage('', 'cup', files);
+
+        await checkForInfiniteTrigger(3);
+    }).timeout(defTimeout)
+
+    it('should process nested original image', async () => {
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'something/original/cup' });
+        await wait(defWait);
+
+        const response = await appStorage.bucket().getFiles();
+        const files = (response.flatMap(x => x) as File[]).map(x => x.name);
+
+        assert.isTrue(files.length > 0, 'should not be empty');
+        assert.isTrue(files.length == 3, 'should be equal to 3');
+
+        assertProcessedImage('something/', 'cup', files);
+
+        await checkForInfiniteTrigger(3);
+    }).timeout(defTimeout)
 
     it('should exit when processing non original image', async () => {
-        await storage.bucket().upload('test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'nonoriginal/cup' });
-        await wait(5);
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'nonoriginal/cup' });
+        await wait(defWait);
 
-        const response = await storage.bucket().getFiles();
+        const response = await appStorage.bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length == 1 && files[0] == 'nonoriginal/cup', 'no other images should be present');
-    }).timeout(timeout)
 
+        await checkForInfiniteTrigger(1);
+    }).timeout(defTimeout)
+
+    it('should exit when processing not supported file or extension', async () => {
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'application/pdf', destination: 'original/cup.pdf' });
+        await wait(defWait);
+
+        const response = await appStorage.bucket().getFiles();
+        const files = (response.flatMap(x => x) as File[]).map(x => x.name);
+
+        assert.isTrue(files.length == 1 && files[0] == 'original/cup.pdf', 'no other files should be present');
+
+        await checkForInfiniteTrigger(1);
+    }).timeout(defTimeout)
+
+    it('storage service external to internal downloads and provides accessible links', async () => {
+        const service = new StorageService();
+
+        const firebaseFile = await service.externalToStorage({
+            name: 'photo',
+            url: 'https://picsum.photos/200',
+            destination: 'picsum'
+        });
+        await wait(defWait);
+
+        const response = await appStorage.bucket().getFiles();
+        const files = (response.flatMap(x => x) as File[]).map(x => x.name);
+
+        assertProcessedImage('picsum/', 'photo_original', files);
+
+        await checkForInfiniteTrigger(3);
+    }).timeout(defTimeout)
+
+    it('storage service external to internal is processed if placed in nested original container', async () => {
+        const service = new StorageService();
+
+        const firebaseFile = await service.externalToStorage({
+            name: 'photo',
+            url: 'https://picsum.photos/200',
+            destination: 'picsum/original'
+        });
+        await wait(defWait);
+
+        const response = await appStorage.bucket().getFiles();
+        const files = (response.flatMap(x => x) as File[]).map(x => x.name);
+
+        assertProcessedImage('picsum/original/', 'photo_original', files);
+
+        await checkForInfiniteTrigger(3);
+    }).timeout(defTimeout)
 });
+
+function assertProcessedImage(rootPath: string, name: string, files: string[]) {
+    assert.isTrue(files.filter(x => x == `${rootPath}original/${name}`).length == 1, 'should have 1 original');
+    assert.isTrue(files.filter(x => x == `${rootPath}thumb/${name}_thumb`).length == 1, 'should have 1 thumb');
+    assert.isTrue(files.filter(x => x == `${rootPath}compressed/${name}_compressed`).length == 1, 'should have 1 compressed');
+}
+
+async function checkForInfiniteTrigger(originalCount: number) {
+    await wait(defWait);
+    const response = await appStorage.bucket().getFiles();
+    const files = (response.flatMap(x => x) as File[]).map(x => x.name);
+    assert.equal(files.length, originalCount);
+}
 
 async function wait(seconds: number) {
     await new Promise(res => setTimeout(() => res(null), seconds * 1000));

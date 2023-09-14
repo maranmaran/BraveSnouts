@@ -1,12 +1,11 @@
 import { logger } from "firebase-functions";
 import * as fs from 'fs';
 import { mkdirp } from 'mkdirp';
+import * as os from 'os';
+import * as path from 'path';
 import Stripe from "stripe";
 import { appConfig, appStorage, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
-
-const path = require('path');
-const os = require('os');
 
 const api = new Stripe(appConfig.stripe.secret, {
     apiVersion: "2022-11-15"
@@ -40,7 +39,7 @@ export const setProductCatalogFn = europeFunctions.storage
     })
 
 async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: string) {
-    const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+    const bucket = appStorage.bucket();
     const tempFolder = path.join(os.tmpdir(), "bsnouts-product-catalog");
     await mkdirp(tempFolder);
 

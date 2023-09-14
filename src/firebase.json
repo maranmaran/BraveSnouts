@@ -36,14 +36,11 @@
     "ui": {
       "enabled": true
     },
-    "functions": {
-      "port": 5001
-    },
-    "database": {
-      "port": 9000
-    },
     "hosting": {
       "port": 5000
+    },
+    "functions": {
+      "port": 5001
     },
     "firestore": {
       "port": 8080
@@ -51,10 +48,16 @@
     "pubsub": {
       "port": 8085
     },
+    "database": {
+      "port": 9000
+    },
     "storage": {
       "port": 9199
     },
-    "singleProjectMode": true
+    "singleProjectMode": true,
+    "auth": {
+      "port": 9099
+    }
   },
   "storage": {
     "rules": ".firebase-setup/storage.rules"
@@ -62,5 +65,8 @@
   "firestore": {
     "rules": ".firebase-setup/firestore.rules",
     "indexes": ".firebase-setup/firestore.indexes.json"
+  },
+  "database": {
+    "rules": ".firebase-setup/database.rules.json"
   }
 }

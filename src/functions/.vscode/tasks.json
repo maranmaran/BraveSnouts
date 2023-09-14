@@ -15,7 +15,7 @@
             "command": "npm run build",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/src/functions",
+                "cwd": "${workspaceFolder}",
             },
             "problemMatcher": []
         },
@@ -24,7 +24,7 @@
             "command": "npm run emulator",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/src/functions",
+                "cwd": "${workspaceFolder}",
             },
             "isBackground": true,
             // This task is run before some debug tasks.

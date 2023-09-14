@@ -11,7 +11,14 @@ export const mailSettings = app.mailSettingsL;
 export const europeFunctions = app.europeFunctionsL;
 
 function initialize() {
-    const adminL = admin.initializeApp();
+    const projectId = process.env.GCLOUD_PROJECT ?? 'bravesnoutsdev';
+    const bucket = process.env.FIREBASE_STORAGE_BUCKET ?? 'bravesnoutsdev.appspot.com';
+    console.log(projectId, bucket);
+
+    const adminL = admin.initializeApp({
+        projectId: process.env.GCLOUD_PROJECT,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? 'bravesnoutsdev.appspot.com'
+    });
 
     const storeL = admin.firestore();
     const storageL = admin.storage();
