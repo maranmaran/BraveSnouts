@@ -17,12 +17,32 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "preLaunchTask": "compile",
+            "preLaunchTask": "compile-utilities",
             "program": "${workspaceFolder}\\src\\utilities\\src\\scripts\\${input:scriptName}.script.ts",
             "outFiles": [
                 "${workspaceFolder}/src/utilities/dist/**/*.js"
             ]
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Tests",
+            "cwd": "${workspaceFolder}/src/functions/test",
+            "preLaunchTask": "compile-function-tests",
+            "program": "${workspaceFolder}/src/functions/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--reporter",
+                "dot",
+                "--slow",
+                "5000",
+                "--colors",
+                "${workspaceFolder}/src/functions/lib/test/**/*.spec.js",
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
     ],
     "inputs": [
         {

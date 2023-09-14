@@ -1,12 +1,10 @@
-import * as admin from 'firebase-admin';
 import { RuntimeOptions, logger } from 'firebase-functions';
 import { mkdirp } from 'mkdirp';
+import * as os from 'os';
+import * as path from 'path';
+import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
-import { appStore, europeFunctions } from '../app';
-
-const sharp = require('sharp');
-const path = require('path');
-const os = require('os');
+import { appStorage, appStore, europeFunctions } from '../app';
 
 // TODO: Deprecate some settings
 interface ImageProcessingSettings {
@@ -15,7 +13,7 @@ interface ImageProcessingSettings {
     compressResizeHeight: number;
     compressResizeWidth: number;
     compressMethod: string;
-    compressExtension: string; enableProdMode
+    compressExtension: string;
 }
 
 const runtimeOpts: Partial<RuntimeOptions> = {
@@ -23,7 +21,7 @@ const runtimeOpts: Partial<RuntimeOptions> = {
     memory: "1GB"
 }
 
-const supportedExtensions = new Set([".jpg", ".png", ".jpeg"]);
+const supportedExtensions = ["image", "jpeg", "png", "jpg"];
 
 // Processes newly added images and creates
 // Original, Compressed, Thumbnail versions of image in storage
@@ -32,40 +30,54 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
         const fullPath = object.name;
-
         // -------------  IMPORTANT -------------
 
         // */something/original/*.jpg
         const filePath = path.dirname(object.name);
         // *.jpg
-        const fileName = path.baseName(object.name);
+        const fileName = path.basename(object.name);
         // */something
-        const rootPath = path.dirname(filePath);
+        const rootPath = path.dirname(filePath) == '.' ? "" : path.dirname(filePath);
         // */something/original/image.jpg -> image
         const noExtFileName = path.basename(fileName, path.extname(fileName));
 
         // Exit conditions, beware of loops
         const tooLongPath = fullPath.length > 100;
-        const notOriginal = !filePath.endsWith('original');
-        const rootPathInOriginal = rootPath.endsWith('original');
-        const notSupportedExtension = !supportedExtensions.has(path.extname(fileName));
+        const rootPathIsLocatedInDirectoryNamedOriginal = rootPath.includes('/original/');
+        const uploadedFilePathIsNotInDirectoryNamedOriginal = path.basename(filePath) !== 'original';
+        const notSupportedExtension = supportedExtensions.filter(x => object.contentType.includes(x)).length == 0;
 
-        const exitCondition = notOriginal
-            || rootPathInOriginal
-            || tooLongPath
-            || notSupportedExtension;
+        const exitCondition = tooLongPath
+            || notSupportedExtension
+            || rootPathIsLocatedInDirectoryNamedOriginal
+            || uploadedFilePathIsNotInDirectoryNamedOriginal;
 
         if (exitCondition) {
             return logger.warn("This function only processes " +
                 "following path: */original/{file}",
-                { path: object.name }
+                {
+                    path: object.name,
+                    tooLongPath,
+                    notSupportedExtension,
+                    rootPathIsLocatedInDirectoryNamedOriginal,
+                    uploadedFilePathIsNotInDirectoryNamedOriginal
+                }
             );
         }
 
         logger.info(`Processing image: ${fullPath}`);
 
         // processing settings
-        const settings = (await appStore.doc("config/image-processing").get()).data() as ImageProcessingSettings;
+        let settings = (await appStore.doc("config/image-processing").get()).data() as ImageProcessingSettings;
+        settings ??= {
+            compress: true,
+            compressMethod: 'JPG',
+            compressExtension: 'jpg',
+            compressResizeWidth: 500,
+            compressResizeHeight: 500,
+            compressQuality: 50,
+        };
+
         logger.info('Loaded settings:' + JSON.stringify(settings));
 
         // make local folders where we'll process the image
@@ -74,7 +86,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         const tempFolder = path.join(os.tmpdir(), "bsnouts-images", localFolderUID);
         await mkdirp(tempFolder);
 
-        const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
 
         logger.log('Downloading image');
         const originalLocalPath = `${tempFolder}/${fileName}`;
@@ -108,7 +120,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
             .jpeg({ quality: 85, progressive: true })
             .toFile(thumbLocalPath);
 
-        logger.log('Uploading processing artifacts');
+        logger.log('Uploading processed artifacts');
 
         // const originalImage = `${tempFolder}/${fileName}`;
         const thumbImage = `${tempFolder}/${noExtFileName}_thumb.jpg`;
@@ -130,10 +142,10 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         };
 
         logger.info(`Uploading ${fileName}_compressed.jpg to ${compressedDest}`);
-        // await bucket.upload(compressedImage, { destination: compressedDest, ...uploadOptions });
+        await bucket.upload(compressedImage, { destination: compressedDest, ...uploadOptions });
 
         logger.info(`Uploading ${fileName}_thumb.jpg to ${thumbDestination}`);
-        // await bucket.upload(thumbImage, { destination: thumbDestination, ...uploadOptions });
+        await bucket.upload(thumbImage, { destination: thumbDestination, ...uploadOptions });
 
         // fs.unlinkSync(thumbImage);
         // fs.unlinkSync(originalImage);

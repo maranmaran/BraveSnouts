@@ -1,9 +1,8 @@
-import * as admin from 'firebase-admin';
 import { logger } from "firebase-functions";
 import * as fs from 'fs';
 import { mkdirp } from 'mkdirp';
 import Stripe from "stripe";
-import { appConfig, appStore, europeFunctions } from "../app";
+import { appConfig, appStorage, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
 
 const path = require('path');
@@ -41,7 +40,7 @@ export const setProductCatalogFn = europeFunctions.storage
     })
 
 async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: string) {
-    const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+    const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
     const tempFolder = path.join(os.tmpdir(), "bsnouts-product-catalog");
     await mkdirp(tempFolder);
 

@@ -1,8 +1,7 @@
-import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
-import { appStore, europeFunctions } from '../app';
+import { appStorage, appStore, europeFunctions } from '../app';
 
 const os = require('os');
 const path = require('path');
@@ -38,7 +37,7 @@ export const downloadMailsFn = europeFunctions.https.onCall(
             const exportFilePath = path.join(os.tmpdir(), `${FILENAME}.xlsx`);
             XLSX.writeFile(wb, exportFilePath, { bookType: 'xlsx' });
 
-            const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+            const bucket = appStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
             const response = await bucket.upload(exportFilePath,
                 {
                     destination: `exports/${FILENAME}.xlsx`,

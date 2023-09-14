@@ -2,11 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "compile",
+            "label": "compile-utilities",
             "command": "npm run build",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}/src/utilities"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "compile-function-tests",
+            "command": "npm run build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/src/functions"
             },
             "problemMatcher": []
         },
