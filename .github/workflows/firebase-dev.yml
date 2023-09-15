@@ -47,8 +47,9 @@ jobs:
         working-directory: ./src/functions
       - run: npm ci
         working-directory: ./src/functions
-      - run: firebase use dev && npm run test:emulators
-        working-directory: ./src/functions
+      - uses: w9jds/firebase-action@master
+        with:
+          args: firebase use dev && npm run test:emulators
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
           PROJECT_PATH: "./src/functions"
