@@ -54,6 +54,7 @@ jobs:
           # FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
           # PROJECT_PATH: "./src/functions"
       - run: firebase use dev
+      - run: npm ci
       - run: npm run test:emulators
       # - run: firebase deploy --only functions
       # - uses: w9jds/firebase-action@master
