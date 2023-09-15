@@ -12,6 +12,7 @@ jobs:
   hosting:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: npm run build:dev
         working-directory: ./src/brave-snouts-frontend
         env:
