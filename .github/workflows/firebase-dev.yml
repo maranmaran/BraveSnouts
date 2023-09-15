@@ -51,15 +51,8 @@ jobs:
       - uses: w9jds/setup-firebase@main
         with:
           firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
-          # FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
-          # PROJECT_PATH: "./src/functions"
-      - run: firebase use dev
       - run: npm ci
+      - run: firebase use dev
       - run: npm run test:emulators
-      # - run: firebase deploy --only functions
-      # - uses: w9jds/firebase-action@master
-      #   with:
-      #     args: deploy --only functions --project dev
-      #   env:
-      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
-      #     PROJECT_PATH: "./src/functions"
+        env:
+          CLOUD_RUNTIME_CONFIG: "test/test-assets/.runtimeconfig.test.json"

@@ -3,10 +3,6 @@ import { assert } from 'chai';
 import { appStorage } from '../src/functions/app';
 import { StorageService } from '../src/functions/shared/services/storage.service';
 
-// const firebaseTest = firebaseTestInit({});
-// // firebaseTest.mockConfig({ stripe: { key: '23wr42ewr34'   }});
-// const processImageWrap = firebaseTest.wrap(processImageFn);
-
 const defTimeout = 0; // disable timeout
 const defWait = 5; // default wait time
 
