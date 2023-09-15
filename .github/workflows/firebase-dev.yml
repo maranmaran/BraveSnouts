@@ -51,6 +51,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: 20
+          distribution: "zulu"
       - uses: w9jds/setup-firebase@main
         with:
           tools-version: 12.5.4
