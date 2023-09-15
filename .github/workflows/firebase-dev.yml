@@ -61,3 +61,7 @@ jobs:
       - run: npm run test:emulators
         env:
           CLOUD_RUNTIME_CONFIG: "test/test-assets/.runtimeconfig.test.json"
+          GCLOUD_PROJECT: "bravesnoutsdev"
+          FIREBASE_STORAGE_BUCKET: "bravesnoutsdev.appspot.com"
+          FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080"
+          FIREBASE_STORAGE_EMULATOR_HOST: "127.0.0.1:9199"
