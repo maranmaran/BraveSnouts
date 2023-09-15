@@ -47,6 +47,8 @@ jobs:
         working-directory: ./src/functions
       - run: npm ci
         working-directory: ./src/functions
+      - run: firebase use dev
+        working-directory: ./src/functions
       - run: npm run test:emulators
         working-directory: ./src/functions
       # - uses: w9jds/firebase-action@master
