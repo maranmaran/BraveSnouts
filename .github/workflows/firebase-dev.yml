@@ -50,6 +50,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: w9jds/setup-firebase@main
         with:
+          tools-version: 11.29.1
           firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
       - run: npm ci
       - run: firebase use dev
