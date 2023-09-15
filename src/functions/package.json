@@ -3,6 +3,7 @@
   "scripts": {
     "lint": "eslint \"src/**/*\"",
     "test": "mocha 'test/*.spec.ts'",
+    "test:emulators": "npm run build && npm run kill-ports && firebase emulators:exec \"mocha 'test/*.spec.ts'\"",
     "kill-ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
     "build": "tsc",
     "build:watch": "tsc -w",
