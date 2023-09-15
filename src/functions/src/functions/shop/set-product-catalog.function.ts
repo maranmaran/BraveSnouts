@@ -1,4 +1,5 @@
 import { logger } from "firebase-functions";
+import { ObjectMetadata } from "firebase-functions/v1/storage";
 import * as fs from 'fs';
 import { mkdirp } from 'mkdirp';
 import * as os from 'os';
@@ -20,6 +21,11 @@ export const setProductCatalogHttpFn = europeFunctions.https
 export const setProductCatalogFn = europeFunctions.storage
     .bucket().object()
     .onFinalize(async (object) => {
+        if (object.metadata?.processedByFirebaseFunction) {
+            logger.info('Already processed', object.name);
+            return;
+        }
+
         const bucketPath = object.name;
         const fileName = 'product-catalog.json'
 
@@ -34,10 +40,20 @@ export const setProductCatalogFn = europeFunctions.storage
             return logger.error("Path is too long, review the code", { bucketPath });
         }
 
-
         await syncCatalogToStripe(bucketPath, fileName);
+        await markAsProcessed(object);
     })
 
+async function markAsProcessed(object: ObjectMetadata) {
+    logger.info('Marking product catalog as processed');
+
+    const metadata = {
+        processedByFirebaseFunction: true,
+        firebaseFunctionName: 'setProductCatalog'
+    };
+
+    await appStorage.bucket().file(object.name).setMetadata({ metadata }, { fileName: object.name });
+}
 async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: string) {
     const bucket = appStorage.bucket();
     const tempFolder = path.join(os.tmpdir(), "bsnouts-product-catalog");

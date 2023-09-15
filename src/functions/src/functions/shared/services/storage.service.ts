@@ -19,6 +19,7 @@ export class StorageService {
             contentType: 'image/jpeg',
             metadata: {
                 firebaseStorageDownloadTokens: uuidv4(),
+
             }
         }
     };

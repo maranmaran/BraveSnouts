@@ -29,6 +29,11 @@ const supportedExtensions = ["image", "jpeg", "png", "jpg"];
 export const processImageFn = europeFunctions.runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
+        if (object.metadata?.processedByFirebaseFunction) {
+            logger.info('Already processed', object.name);
+            return;
+        }
+
         const fullPath = object.name;
         // -------------  IMPORTANT -------------
 
@@ -129,6 +134,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         const thumbDestination = `${rootPath}/thumb/${noExtFileName}_thumb`;
         const compressedDest = `${rootPath}/compressed/${noExtFileName}_compressed`;
 
+        const processedMetadata = { processedByFirebaseFunction: true, firebaseFunctionName: 'processImageFunction' };
         const uploadOptions = {
             gzip: true,
             public: true,
@@ -137,6 +143,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
                 contentType: 'image/jpeg',
                 metadata: {
                     firebaseStorageDownloadTokens: uuidv4(),
+                    ...processedMetadata
                 }
             }
         };
@@ -146,6 +153,9 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
 
         logger.info(`Uploading ${noExtFileName}_thumb to ${thumbDestination}`);
         await bucket.upload(thumbImage, { destination: thumbDestination, ...uploadOptions });
+
+        logger.info(`Marking ${fullPath} as processed`);
+        await bucket.file(fullPath).setMetadata({ metadata: processedMetadata }, { filePath: fullPath });
 
         // // fs.unlinkSync(originalImage);
         // fs.unlinkSync(thumbImage);

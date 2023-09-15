@@ -114,7 +114,7 @@ function assertProcessedImage(rootPath: string, name: string, files: string[]) {
 }
 
 async function checkForInfiniteTrigger(originalCount: number) {
-    await wait(defWait);
+    await wait(defWait * 2);
     const response = await appStorage.bucket().getFiles();
     const files = (response.flatMap(x => x) as File[]).map(x => x.name);
     assert.equal(files.length, originalCount);
