@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: w9jds/setup-firebase@main
         with:
-          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+          firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
           # FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
           # PROJECT_PATH: "./src/functions"
       - run: firebase use dev
