@@ -13,7 +13,10 @@ describe('process image tests', async () => {
     })
 
     it('should process root original image', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'original/cup' });
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+            contentType: 'image/jpeg',
+            destination: 'original/cup'
+        });
         await wait(defWait);
 
         const response = await appStorage.bucket().getFiles();
@@ -28,7 +31,10 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should process nested original image', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'something/original/cup' });
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+            contentType: 'image/jpeg',
+            destination: 'something/original/cup'
+        });
         await wait(defWait);
 
         const response = await appStorage.bucket().getFiles();
@@ -43,7 +49,10 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing non original image', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'image/jpeg', destination: 'nonoriginal/cup' });
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+            contentType: 'image/jpeg',
+            destination: 'nonoriginal/cup'
+        });
         await wait(defWait);
 
         const response = await appStorage.bucket().getFiles();
@@ -55,7 +64,10 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing not supported file or extension', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', { contentType: 'application/pdf', destination: 'original/cup.pdf' });
+        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+            contentType: 'application/pdf',
+            destination: 'original/cup.pdf'
+        });
         await wait(defWait);
 
         const response = await appStorage.bucket().getFiles();
@@ -66,7 +78,49 @@ describe('process image tests', async () => {
         await checkForInfiniteTrigger(1);
     }).timeout(defTimeout)
 
-    it('storage service external to internal downloads and provides accessible links', async () => {
+    it('should exit when processing already processed image', async () => {
+        await appStorage.bucket()
+            .upload('test/test-assets/cup.jpg', {
+                contentType: 'application/jpg',
+                destination: 'original/cup.jpg',
+                metadata: {
+                    metadata: {
+                        processedByFirebaseFunction: true
+                    }
+                }
+            });
+        await wait(defWait);
+
+        const response = await appStorage.bucket().getFiles();
+        const files = (response.flatMap(x => x) as File[]).map(x => x.name);
+
+        assert.isTrue(files.length == 1, 'should have no images, as the input should not have been processed');
+
+        await checkForInfiniteTrigger(1);
+    }).timeout(defTimeout)
+
+    it('should set processedByFirebaseFunction when image has been processed', async () => {
+        await appStorage.bucket()
+            .upload('test/test-assets/cup.jpg', {
+                contentType: 'application/jpg',
+                destination: 'original/cup.jpg'
+            });
+        await wait(defWait);
+
+        const response = await appStorage.bucket().getFiles();
+        const files = (response.flatMap(x => x) as any[]).map(x => x);
+
+        assert.isTrue(files.length == 3);
+
+        assert.isTrue(files.every(f =>
+            StorageService.isProcessedAlready(f) &&
+            f.metadata.metadata.firebaseFunctionName == 'processImageFunction'
+        ), 'all files should be processed');
+
+        await checkForInfiniteTrigger(3);
+    }).timeout(defTimeout)
+
+    it('storage service - external image downloads to internal storage and provides accessible links', async () => {
         const service = new StorageService();
 
         const firebaseFile = await service.externalToStorage({
@@ -84,7 +138,7 @@ describe('process image tests', async () => {
         await checkForInfiniteTrigger(3);
     }).timeout(defTimeout)
 
-    it('storage service external to internal is processed if placed in nested original container', async () => {
+    it('storage service - external image downloads to internal storage and is processed, even if placed in nested original container', async () => {
         const service = new StorageService();
 
         const firebaseFile = await service.externalToStorage({
@@ -101,6 +155,7 @@ describe('process image tests', async () => {
 
         await checkForInfiniteTrigger(3);
     }).timeout(defTimeout)
+
 });
 
 function assertProcessedImage(rootPath: string, name: string, files: string[]) {

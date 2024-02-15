@@ -24,6 +24,15 @@ export class StorageService {
         }
     };
 
+    public static isProcessedAlready(obj: any) {
+        return StorageService.isTrue(obj?.metadata?.processedByFirebaseFunction) ||
+            StorageService.isTrue(obj?.metadata?.metadata?.processedByFirebaseFunction);
+    }
+
+    public static isTrue(value) {
+        return value == true || value == "true";
+    }
+
     async recursiveDelete(prefix: string) {
         await this.bucket.deleteFiles({ prefix });
     }

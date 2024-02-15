@@ -7,6 +7,7 @@ import * as path from 'path';
 import Stripe from "stripe";
 import { appConfig, appStorage, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
+import { StorageService } from "../shared/services/storage.service";
 
 const api = new Stripe(appConfig.stripe.secret, {
     apiVersion: "2022-11-15"
@@ -21,7 +22,8 @@ export const setProductCatalogHttpFn = europeFunctions.https
 export const setProductCatalogFn = europeFunctions.storage
     .bucket().object()
     .onFinalize(async (object) => {
-        if (object.metadata?.processedByFirebaseFunction) {
+
+        if (StorageService.isProcessedAlready(object)) {
             logger.info('Already processed', object.name);
             return;
         }

@@ -5,6 +5,7 @@ import * as path from 'path';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import { appStorage, appStore, europeFunctions } from '../app';
+import { StorageService } from './services/storage.service';
 
 // TODO: Deprecate some settings
 interface ImageProcessingSettings {
@@ -29,9 +30,11 @@ const supportedExtensions = ["image", "jpeg", "png", "jpg"];
 export const processImageFn = europeFunctions.runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
-        if (object.metadata?.processedByFirebaseFunction) {
+        logger.info("Image metadata", object);
+
+        if (StorageService.isProcessedAlready(object)) {
             logger.info('Already processed', object.name);
-            return;
+            return -1;
         }
 
         const fullPath = object.name;
@@ -58,7 +61,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
             || uploadedFilePathIsNotInDirectoryNamedOriginal;
 
         if (exitCondition) {
-            return logger.warn("This function only processes " +
+            logger.warn("This function only processes " +
                 "following path: */original/{file}",
                 {
                     path: object.name,
@@ -68,6 +71,8 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
                     uploadedFilePathIsNotInDirectoryNamedOriginal
                 }
             );
+
+            return -1;
         }
 
         logger.info(`Processing image: ${fullPath}`);
@@ -161,4 +166,6 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         // fs.unlinkSync(thumbImage);
         // fs.unlinkSync(compressedImage);
         // fs.unlinkSync(tempFolder);
+
+        return 3;
     });
