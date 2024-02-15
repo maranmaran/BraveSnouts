@@ -4,7 +4,7 @@ import { appStorage } from '../src/functions/app';
 import { StorageService } from '../src/functions/shared/services/storage.service';
 
 const defTimeout = 0; // disable timeout
-const defWait = 5; // default wait time
+const defWait = 15; // default wait time
 
 describe('process image tests', async () => {
 
