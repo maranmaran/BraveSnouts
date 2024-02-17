@@ -9,7 +9,7 @@ import { getComposer, sendMail } from './services/mail.service';
  * Confirms chosen handover option
  * Post or in person
  */
-export const handoverConfirmFn = europeFunctions.https.onCall(
+export const handoverConfirmFn = europeFunctions().https.onCall(
   async (data, context) => {
     try {
       const userId = data.userId;
@@ -23,7 +23,7 @@ export const handoverConfirmFn = europeFunctions.https.onCall(
       const postageFee = data.postageFee;
 
       // process auction// add to map
-      const userDb = await (await appStore.doc(`users/${userId}`).get()).data() as User;
+      const userDb = await (await appStore().doc(`users/${userId}`).get()).data() as User;
 
       if (chosenOption === 'handover') {
         await sendHandoverConfirmationMail(userDb, auctionIds, chosenOptionData);

@@ -26,7 +26,7 @@ export const sendOutbiddedMail = async (
         item_bid_before,
         item_bid_after,
         user_name: user.name.trim().split(" ")[0],
-        ...(await mailSettings.getMailVariables())
+        ...(await mailSettings().getMailVariables())
     };
 
     const templateRaw = await getLocalTemplate();

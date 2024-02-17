@@ -27,7 +27,7 @@ const supportedExtensions = ["image", "jpeg", "png", "jpg"];
 // Processes newly added images and creates
 // Original, Compressed, Thumbnail versions of image in storage
 // Links are created in advance by Client
-export const processImageFn = europeFunctions.runWith(runtimeOpts)
+export const processImageFn = europeFunctions().runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
         logger.info("Image metadata", object);
@@ -78,7 +78,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         logger.info(`Processing image: ${fullPath}`);
 
         // processing settings
-        let settings = (await appStore.doc("config/image-processing").get()).data() as ImageProcessingSettings;
+        let settings = (await appStore().doc("config/image-processing").get()).data() as ImageProcessingSettings;
         settings ??= {
             compress: true,
             compressMethod: 'JPG',
@@ -96,7 +96,7 @@ export const processImageFn = europeFunctions.runWith(runtimeOpts)
         const tempFolder = path.join(os.tmpdir(), "bsnouts-images", localFolderUID);
         await mkdirp(tempFolder);
 
-        const bucket = appStorage.bucket();
+        const bucket = appStorage().bucket();
 
         logger.log('Downloading image');
         const originalLocalPath = `${tempFolder}/${fileName}.jpg`;

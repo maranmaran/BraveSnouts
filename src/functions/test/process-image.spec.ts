@@ -9,17 +9,17 @@ const defWait = 15; // default wait time
 describe('process image tests', async () => {
 
     beforeEach(async () => {
-        await appStorage.bucket().deleteFiles();
+        await appStorage().bucket().deleteFiles();
     })
 
     it('should process root original image', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
             contentType: 'image/jpeg',
             destination: 'original/cup'
         });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length > 0, 'should not be empty');
@@ -31,13 +31,13 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should process nested original image', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
             contentType: 'image/jpeg',
             destination: 'something/original/cup'
         });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length > 0, 'should not be empty');
@@ -49,13 +49,13 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing non original image', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
             contentType: 'image/jpeg',
             destination: 'nonoriginal/cup'
         });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length == 1 && files[0] == 'nonoriginal/cup', 'no other images should be present');
@@ -64,13 +64,13 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing not supported file or extension', async () => {
-        await appStorage.bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
             contentType: 'application/pdf',
             destination: 'original/cup.pdf'
         });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length == 1 && files[0] == 'original/cup.pdf', 'no other files should be present');
@@ -79,7 +79,7 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing already processed image', async () => {
-        await appStorage.bucket()
+        await appStorage().bucket()
             .upload('test/test-assets/cup.jpg', {
                 contentType: 'application/jpg',
                 destination: 'original/cup.jpg',
@@ -91,7 +91,7 @@ describe('process image tests', async () => {
             });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assert.isTrue(files.length == 1, 'should have no images, as the input should not have been processed');
@@ -100,14 +100,14 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should set processedByFirebaseFunction when image has been processed', async () => {
-        await appStorage.bucket()
+        await appStorage().bucket()
             .upload('test/test-assets/cup.jpg', {
                 contentType: 'application/jpg',
                 destination: 'original/cup.jpg'
             });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as any[]).map(x => x);
 
         assert.isTrue(files.length == 3);
@@ -130,7 +130,7 @@ describe('process image tests', async () => {
         });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assertProcessedImage('picsum/', 'photo_original', files);
@@ -148,7 +148,7 @@ describe('process image tests', async () => {
         });
         await wait(defWait);
 
-        const response = await appStorage.bucket().getFiles();
+        const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
         assertProcessedImage('picsum/original/', 'photo_original', files);
@@ -166,7 +166,7 @@ function assertProcessedImage(rootPath: string, name: string, files: string[]) {
 
 async function checkForInfiniteTrigger(originalCount: number) {
     await wait(defWait * 2);
-    const response = await appStorage.bucket().getFiles();
+    const response = await appStorage().bucket().getFiles();
     const files = (response.flatMap(x => x) as File[]).map(x => x.name);
     assert.equal(files.length, originalCount);
 }

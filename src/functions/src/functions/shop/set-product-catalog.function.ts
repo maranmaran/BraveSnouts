@@ -9,17 +9,17 @@ import { appConfig, appStorage, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
 import { StorageService } from "../shared/services/storage.service";
 
-const api = new Stripe(appConfig.stripe.secret, {
+const api = new Stripe(appConfig().stripe.secret, {
     apiVersion: "2022-11-15"
 });
 
 // TODO: Remove
-export const setProductCatalogHttpFn = europeFunctions.https
+export const setProductCatalogHttpFn = europeFunctions().https
     .onCall(async (data, ctx) => {
         await syncCatalogToStripe('product-catalog/product-catalog.json', 'product-catalog.json');
     })
 
-export const setProductCatalogFn = europeFunctions.storage
+export const setProductCatalogFn = europeFunctions().storage
     .bucket().object()
     .onFinalize(async (object) => {
 
@@ -54,10 +54,10 @@ async function markAsProcessed(object: ObjectMetadata) {
         firebaseFunctionName: 'setProductCatalog'
     };
 
-    await appStorage.bucket().file(object.name).setMetadata({ metadata }, { fileName: object.name });
+    await appStorage().bucket().file(object.name).setMetadata({ metadata }, { fileName: object.name });
 }
 async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: string) {
-    const bucket = appStorage.bucket();
+    const bucket = appStorage().bucket();
     const tempFolder = path.join(os.tmpdir(), "bsnouts-product-catalog");
     await mkdirp(tempFolder);
 
@@ -216,7 +216,7 @@ async function createProduct(product: OutputSnoutsProduct) {
         shippable: true,
         description: product.description,
         images: product.variations.flatMap(x => x.images.flatMap(y => y.original.gUrl)).slice(0, 8),
-        url: `${appConfig.base.url}/merch/proizvod/${product.slug}`,
+        url: `${appConfig().base.url}/merch/proizvod/${product.slug}`,
         metadata: { firestoreId: product.slug },
         tax_code: 'txcd_00000000', // non taxable https://stripe.com/docs/tax/tax-categories
     });
@@ -237,14 +237,14 @@ async function createPrice(product: Stripe.Product, price: { id: string, amount:
 
 async function createCatalogInDatabase(snoutsCatalog: OutputSnoutsProduct[]) {
     // ensure deleted
-    await appStore.recursiveDelete(appStore.collection('shop'));
+    await appStore().recursiveDelete(appStore().collection('shop'));
 
     // write new
-    const bulkWriter = appStore.bulkWriter();
+    const bulkWriter = appStore().bulkWriter();
 
     for (const bsnoutsProduct of snoutsCatalog.values()) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        bulkWriter.create(appStore.doc(`shop/${bsnoutsProduct.slug}`), bsnoutsProduct);
+        bulkWriter.create(appStore().doc(`shop/${bsnoutsProduct.slug}`), bsnoutsProduct);
     }
 
     await bulkWriter.close();

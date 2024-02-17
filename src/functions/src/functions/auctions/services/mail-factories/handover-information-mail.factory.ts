@@ -20,7 +20,7 @@ export const sendHandoverDetailsUpdateMail = async (
             .join("\n")}</ul>`,
         handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
         user_name: user.name.trim().split(" ")[0],
-        ...(await mailSettings.getMailVariables())
+        ...(await mailSettings().getMailVariables())
     };
 
     const templateRaw = await getTemplateRaw("new-handover.mail.mjml");
@@ -43,7 +43,7 @@ export const sendHandoverConfirmationMail = async (
         handover_confirm_url: getHandoverConfirmUrl(user.id, auctionIds),
         user_name: user.displayName.trim().split(" ")[0],
         chosen_handover_option: chosenHandoverOption,
-        ...(await mailSettings.getMailVariables())
+        ...(await mailSettings().getMailVariables())
     };
 
     const templateRaw = await getLocalTemplate();
@@ -55,5 +55,5 @@ export const sendHandoverConfirmationMail = async (
 
 export const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {
     const ids = auctionIds.join(",");
-    return `${appConfig.base.url}/aukcije/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
+    return `${appConfig().base.url}/aukcije/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
 };

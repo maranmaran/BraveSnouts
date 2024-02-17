@@ -6,7 +6,7 @@ import { Auction, AuctionItem, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
 // Sends email for won items
-export const sendWinnerMailFn = europeFunctions.https.onCall(
+export const sendWinnerMailFn = europeFunctions().https.onCall(
     async (data, context) => {
 
         try {
@@ -28,7 +28,7 @@ export const sendWinnerMailFn = europeFunctions.https.onCall(
 
             for (const auction of auctions) {
                 auction.lastTimeWinningMailsSent = new Date();
-                await appStore.doc(`auctions/${auction.id}`).update({
+                await appStore().doc(`auctions/${auction.id}`).update({
                     lastTimeWinningMailsSent: new Date()
                 });
             }
@@ -91,7 +91,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
     let sentMailsCounter = 0;
     let skippedCounter = 0;
 
-    const mailVariables = await mailSettings.getMailVariables();
+    const mailVariables = await mailSettings().getMailVariables();
 
     let sendMailJobs: Promise<void>[] = [];
     for (const [userInfo, bids] of userBids) {
@@ -109,7 +109,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
 
         sendMailJobs.push(new Promise<void>(async (res, err) => {
             await sendWinnerMail(auctions, handoverDetails, userInfo, bids, mailVariables);
-            await appStore.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
+            await appStore().doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
             sentMailsCounter++;
             res();
         }))
@@ -123,7 +123,7 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         sentMailsCounter + skippedCounter == userBids.size) {
 
         for (const [userInfo, _] of userBids) {
-            await appStore.doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
+            await appStore().doc(`users/${userInfo.id}`).update({ endAuctionMailSent: false })
         }
 
         logger.info(`Reverted endAuctionMailSent flag`);

@@ -9,7 +9,7 @@ const os = require("os");
 const path = require("path");
 
 /** Sends email update to all people with new handover details for auction */
-export const exportAuctionFn = europeFunctions.https.onCall(
+export const exportAuctionFn = europeFunctions().https.onCall(
   async (data) => {
 
     try {
@@ -51,19 +51,19 @@ export const exportAuctionFn = europeFunctions.https.onCall(
       // fill above MAPS and add all items data to PREDMETI sheet
       for (const id of ids) {
         const items = (
-          await appStore.collection(`auctions/${id}/items`).get()
+          await appStore().collection(`auctions/${id}/items`).get()
         ).docs.map((d) => d.data()) as AuctionItem[];
         for (const item of items) {
           itemsMap.set(item.id, item);
         }
 
         const winners = (
-          await appStore.collection(`auctions/${id}/winners`).get()
+          await appStore().collection(`auctions/${id}/winners`).get()
         ).docs.map((d) => d.data()) as WinnerOnAuction[];
         for (const winner of winners) {
           const userId = winner.id;
           const user = (await (
-            await appStore.doc(`users/${userId}`).get()
+            await appStore().doc(`users/${userId}`).get()
           ).data()) as User;
 
           if (!usersMap.has(userId)) {
@@ -85,7 +85,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
           for (const item of winner.items) {
             itemsSheetData.push([
               `${item.name.toUpperCase()}, ${itemsMap.get(item.id).description}`,
-              `${appConfig.base.url}/aukcije/predmet;auctionId=${item.auctionId};itemId=${item.id}`,
+              `${appConfig().base.url}/aukcije/predmet;auctionId=${item.auctionId};itemId=${item.id}`,
               winner.userInfo?.name,
               item.bid,
             ]);
@@ -158,7 +158,7 @@ export const exportAuctionFn = europeFunctions.https.onCall(
       const exportFilePath = path.join(os.tmpdir(), `${sheetTitle}.xlsx`);
       XLSX.writeFile(wb, exportFilePath, { bookType: "xlsx" });
 
-      const bucket = appStorage.bucket();
+      const bucket = appStorage().bucket();
 
       const response = await bucket.upload(exportFilePath, {
         destination: `exports/${sheetTitle}.xlsx`,

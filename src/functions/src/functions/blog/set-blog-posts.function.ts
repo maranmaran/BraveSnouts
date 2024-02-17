@@ -19,22 +19,22 @@ export interface BlogPost {
 
 const storage = new StorageService();
 
-export const setBlogPostsFn = europeFunctions.pubsub
+export const setBlogPostsFn = europeFunctions().pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
 
         const content_type = 'braveSnoutsBlog';
         const client = createClient({
-            space: appConfig.contentful.space,
-            accessToken: appConfig.contentful.secret,
+            space: appConfig().contentful.space,
+            accessToken: appConfig().contentful.secret,
         });
 
         const contentfulPosts = await client.getEntries({ content_type: content_type });
 
-        await appStore.recursiveDelete(appStore.collection('blog'));
+        await appStore().recursiveDelete(appStore().collection('blog'));
         await storage.recursiveDelete('blog');
 
-        const writer = appStore.bulkWriter();
+        const writer = appStore().bulkWriter();
 
         for (const entry of contentfulPosts.items) {
             const post = await toBlogPost(entry);
@@ -42,7 +42,7 @@ export const setBlogPostsFn = europeFunctions.pubsub
             post.hero = (await uploadToStorage(post.slug, [post.hero as AssetFile]))[0];
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.create(appStore.doc(`blog/${post.slug}`), post)
+            writer.create(appStore().doc(`blog/${post.slug}`), post)
         }
 
         await writer.close();

@@ -4,7 +4,7 @@ import { appStore, europeFunctions } from "../app";
 import { Auction, AuctionItem } from "./models/models";
 
 // increments raised money on auction whenever bid passes
-export const increaseRaisedMoneyFn = europeFunctions
+export const increaseRaisedMoneyFn = europeFunctions()
   .firestore
   .document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
@@ -12,7 +12,7 @@ export const increaseRaisedMoneyFn = europeFunctions
     const after = change.after.data() as AuctionItem;
 
     const auction = (await (
-      await appStore.collection("auctions").doc(before.auctionId).get()
+      await appStore().collection("auctions").doc(before.auctionId).get()
     ).data()) as Auction;
 
     if (
@@ -41,7 +41,7 @@ export const increaseRaisedMoneyFn = europeFunctions
       return null;
     }
 
-    const auctionSnapshot = await appStore
+    const auctionSnapshot = await appStore()
       .doc(`auctions/${after.auctionId}`)
       .get();
     const auctionDoc = (await auctionSnapshot.data()) as Auction;
@@ -51,7 +51,7 @@ export const increaseRaisedMoneyFn = europeFunctions
 
     functions.logger.info(`New raised total is now ${raisedMoney}`);
 
-    await appStore.doc(`auctions/${after.auctionId}`).update({ raisedMoney });
+    await appStore().doc(`auctions/${after.auctionId}`).update({ raisedMoney });
 
     return null;
   });

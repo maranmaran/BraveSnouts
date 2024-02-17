@@ -7,7 +7,7 @@ interface PostageRule {
 }
 
 export async function calculatePostage(itemsWonCount: number) {
-    const docs = (await appStore.collection("config/postage-calculation/rules").get()).docs;
+    const docs = (await appStore().collection("config/postage-calculation/rules").get()).docs;
 
     let rules = docs.map(x => x.data()) as PostageRule[];
     rules = sortBy(rules, x => x.lower);

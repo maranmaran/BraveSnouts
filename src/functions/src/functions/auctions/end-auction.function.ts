@@ -6,7 +6,7 @@ import { Auction, AuctionItem, Bid, TrackedItem, UserInfo, WinnerOnAuction } fro
  * Processes auctions end
  * Writes winners to DB
  */
-export const endAuctionFn = europeFunctions.https.onCall(
+export const endAuctionFn = europeFunctions().https.onCall(
   async (data, context) => {
 
     try {
@@ -68,7 +68,7 @@ const auctionEnd = async (auctionId: string, handoverDetails: string[]) => {
 /** Retrieves specific auction data */
 export const getAuction = async (auctionId: string) => {
 
-  const auction = await appStore.doc(`auctions/${auctionId}`).get();
+  const auction = await appStore().doc(`auctions/${auctionId}`).get();
 
   if (!auction.exists) {
     throw new Error(`Auction ${auctionId} not found`);
@@ -80,7 +80,7 @@ export const getAuction = async (auctionId: string) => {
 /** Retrieves auction items */
 export const getAuctionItems = async (auctionId: string) => {
 
-  const itemsQuery = appStore.doc(`auctions/${auctionId}`).collection('items');
+  const itemsQuery = appStore().doc(`auctions/${auctionId}`).collection('items');
   const itemsSnapshot = await itemsQuery.get();
   const items = itemsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as AuctionItem[];
 
@@ -120,7 +120,7 @@ export const getUserInformation = async (userIds: string[]) => {
       }
 
       // add to map
-      const userDb = await (await appStore.doc(`users/${userId}`).get()).data();
+      const userDb = await (await appStore().doc(`users/${userId}`).get()).data();
 
       userInfoMap.set(userId, {
         id: userId,
@@ -180,7 +180,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
     })
     );
 
-    await appStore.doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner);
+    await appStore().doc(`auctions/${auctionId}/winners/${winner.id}`).set(winner);
 
     // update each item for winner details
     for await (const bid of bids) {
@@ -203,7 +203,7 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
         postalInformation: null,
       }
 
-      await appStore.collection(`auctions/${auctionId}/items`).doc(winnerInstance.itemId).update(Object.assign({}, { winner: winnerInstance }));
+      await appStore().collection(`auctions/${auctionId}/items`).doc(winnerInstance.itemId).update(Object.assign({}, { winner: winnerInstance }));
     }
 
   }
@@ -211,11 +211,11 @@ const saveWinners = async (auctionId: string, userBids: Map<UserInfo, Bid[]>) =>
 
 /** Clears all user tracked items for processed auction */
 const clearTrackedItems = async (auctionId: string) => {
-  const trackedItems = await appStore.collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
+  const trackedItems = await appStore().collectionGroup("tracked-items").where("auctionId", "==", auctionId).get();
   for (const item of trackedItems.docs) {
     const trackedItem = item.data() as TrackedItem;
     logger.info(`users/${trackedItem.userId}/tracked-items/${item.id}`);
-    await appStore.doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
+    await appStore().doc(`users/${trackedItem.userId}/tracked-items/${item.id}`).delete();
   }
 }
 
@@ -223,7 +223,7 @@ const clearTrackedItems = async (auctionId: string) => {
 const updateAuction = async (auction: Auction, handoverDetails: string[]) => {
   auction.processed = true;
   auction.handoverDetails = handoverDetails;
-  await appStore.collection('auctions').doc(auction.id).set(auction, { merge: true });
+  await appStore().collection('auctions').doc(auction.id).set(auction, { merge: true });
 }
 
 

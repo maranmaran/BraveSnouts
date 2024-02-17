@@ -53,6 +53,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 20
+          distribution: "zulu"
       - name: Cache firebase emulators
         uses: actions/cache@v4
         with:
@@ -60,10 +64,6 @@ jobs:
           key: ${{ runner.os }}-firebase-emulators-${{
             hashFiles('emulator-cache/**') }}
         continue-on-error: true
-      - uses: actions/setup-java@v3
-        with:
-          java-version: 20
-          distribution: "zulu"
       - uses: w9jds/setup-firebase@main
         with:
           firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}

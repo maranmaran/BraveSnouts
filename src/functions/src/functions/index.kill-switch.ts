@@ -3,16 +3,16 @@ import { GoogleAuth } from "google-auth-library";
 import { google } from 'googleapis';
 import { appAdmin, appStore, europeFunctions } from "./app";
 
-const PROJECT_ID = appAdmin.installations().app.options.projectId;
+const PROJECT_ID = appAdmin().installations().app.options.projectId;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 const billing = google.cloudbilling('v1').projects;
 
-export const killSwitch = europeFunctions.pubsub.topic('firebase-budget-alert')
+export const killSwitch = europeFunctions().pubsub.topic('firebase-budget-alert')
     .onPublish(async (message, ctx) => {
         const data = JSON.parse(message.json);
         error('Budget exceeeded', { data });
 
-        const dynamicBudget = (await appStore.doc('config/global').get()).data().budget;
+        const dynamicBudget = (await appStore().doc('config/global').get()).data().budget;
 
         console.log(data);
         console.log(data.costAmount);

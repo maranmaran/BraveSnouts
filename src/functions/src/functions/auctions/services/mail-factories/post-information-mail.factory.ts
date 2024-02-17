@@ -30,7 +30,7 @@ export const sendPostConfirmationMail = async (
         full_name: postFormData.fullName,
         address: postFormData.address,
         phone: postFormData.phoneNumber,
-        ...(await mailSettings.getMailVariables())
+        ...(await mailSettings().getMailVariables())
     };
 
     const templateRaw = await getLocalTemplate();
@@ -48,6 +48,6 @@ export const getPostConfirmUrl = (
     auctionIds: string[]
 ) => {
     const ids = auctionIds.join(",");
-    return `${appConfig.base.url}/aukcije/potvrda-posta;auctionIds=${ids};userId=${userId};donation=${totalDonation};paymentDetails=${paymentDetail};postageFee=${postageFee}`;
+    return `${appConfig().base.url}/aukcije/potvrda-posta;auctionIds=${ids};userId=${userId};donation=${totalDonation};paymentDetails=${paymentDetail};postageFee=${postageFee}`;
 };
 

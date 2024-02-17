@@ -4,7 +4,7 @@ import { UserInfo, WinnerOnAuction } from "./models/models";
 import { sendHandoverDetailsUpdateMail } from "./services/mail-factories/handover-information-mail.factory";
 
 /** Sends email update to all people with new handover details for auction */
-export const changeHandoverFn = europeFunctions.https.onCall(
+export const changeHandoverFn = europeFunctions().https.onCall(
     async (data, context) => {
 
         const auctionIds = data.auctionIds as string[];
@@ -15,14 +15,14 @@ export const changeHandoverFn = europeFunctions.https.onCall(
             const usersMap = new Map<string, UserInfo>();
 
             for (const auctionId of auctionIds) {
-                const winnerDocs = await appStore.collection(`auctions/${auctionId}/winners`).get();
+                const winnerDocs = await appStore().collection(`auctions/${auctionId}/winners`).get();
                 const winners = winnerDocs.docs.map(winner => (winner.data() as WinnerOnAuction));
 
                 for (const winner of winners) {
                     usersMap.set(winner.userInfo.id, winner.userInfo);
                 }
 
-                await appStore.collection('auctions').doc(auctionId).set({ handoverDetails }, { merge: true });
+                await appStore().collection('auctions').doc(auctionId).set({ handoverDetails }, { merge: true });
             }
 
             for (const [_, userInfo] of usersMap) {

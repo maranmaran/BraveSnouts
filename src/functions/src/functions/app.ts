@@ -1,16 +1,35 @@
 import * as admin from 'firebase-admin';
+import { Storage } from 'firebase-admin/lib/storage/storage';
 import * as functions from 'firebase-functions';
 import { MailSettingsService } from './auctions/services/mail-settings.service';
 
-export const app = initialize();
-export const appAdmin = app.adminL;
-export const appStore = app.storeL;
-export const appStorage = app.storageL;
-export const appConfig = app.configL;
-export const mailSettings = app.mailSettingsL;
-export const europeFunctions = app.europeFunctionsL;
+export type AppConfig = {
+    adminL: admin.app.App;
+    storeL: admin.firestore.Firestore;
+    storageL: Storage;
+    configL: Record<string, any>;
+    mailSettingsL: MailSettingsService;
+    europeFunctionsL: functions.FunctionBuilder;
+};
 
-function initialize() {
+let _app: AppConfig = null;
+export const app = () => {
+    if (_app) {
+        return _app;
+    }
+
+    _app = initialize();
+    return _app;
+};
+
+export const appAdmin = () => app().adminL;
+export const appStore = () => app().storeL;
+export const appStorage = () => app().storageL;
+export const appConfig = () => app().configL;
+export const mailSettings = () => app().mailSettingsL;
+export const europeFunctions = () => app().europeFunctionsL;
+
+function initialize(): AppConfig {
     const projectId = process.env.GCLOUD_PROJECT ?? 'bravesnoutsdev';
     const bucket = process.env.FIREBASE_STORAGE_BUCKET ?? 'bravesnoutsdev.appspot.com';
     console.log(projectId, bucket);
@@ -28,7 +47,7 @@ function initialize() {
 
     admin.firestore().settings({ ignoreUndefinedProperties: true })
 
-    const appL = {
+    const appL: AppConfig = {
         adminL,
         storeL,
         storageL,

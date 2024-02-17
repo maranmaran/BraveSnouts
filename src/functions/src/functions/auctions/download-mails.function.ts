@@ -10,12 +10,12 @@ const path = require('path');
  * Picks up item winners and sends email notification templates for won items
  * Marks auction as processed
  */
-export const downloadMailsFn = europeFunctions.https.onCall(
+export const downloadMailsFn = europeFunctions().https.onCall(
     async (data, context) => {
 
         try {
 
-            const users = (await (await appStore.collection("/users/")
+            const users = (await (await appStore().collection("/users/")
                 .where("emailSettings.auctionAnnouncements", "==", true)
                 .where("emailSettings.bidUpdates", "==", true)
             ).get()).docs;
@@ -37,7 +37,7 @@ export const downloadMailsFn = europeFunctions.https.onCall(
             const exportFilePath = path.join(os.tmpdir(), `${FILENAME}.xlsx`);
             XLSX.writeFile(wb, exportFilePath, { bookType: 'xlsx' });
 
-            const bucket = appStorage.bucket();
+            const bucket = appStorage().bucket();
             const response = await bucket.upload(exportFilePath,
                 {
                     destination: `exports/${FILENAME}.xlsx`,

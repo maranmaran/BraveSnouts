@@ -28,11 +28,11 @@ export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
         const contentfulAnimals = await client.getEntries({ content_type: content_type });
 
         // clear storages
-        await appStore.recursiveDelete(appStore.collection('adoption'));
+        await appStore().recursiveDelete(appStore().collection('adoption'));
         await storage.recursiveDelete('adoption');
 
         // write new data
-        const writer = appStore.bulkWriter();
+        const writer = appStore().bulkWriter();
 
         for (const product of contentfulAnimals.items) {
             const animal = await toAnimal(product);
@@ -40,7 +40,7 @@ export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
             animal.images = await uploadToStorage(animal.slug, animal.images as AssetFile[]);
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.create(appStore.doc(`adoption/${animal.slug}`), animal)
+            writer.create(appStore().doc(`adoption/${animal.slug}`), animal)
         }
 
         await writer.close();

@@ -11,14 +11,14 @@ import {
 import { sendOutbiddedMail } from "./services/mail-factories/outbidded-mail.factory";
 
 // send email notification to users that they have been outbidded
-export const bidChangeFn = europeFunctions.firestore
+export const bidChangeFn = europeFunctions().firestore
   .document("auctions/{auctionId}/items/{itemId}")
   .onUpdate(async (change, ctx) => {
     const before = change.before.data() as AuctionItem;
     const after = change.after.data() as AuctionItem;
 
     const auction = (await (
-      await appStore.collection("auctions").doc(before.auctionId).get()
+      await appStore().collection("auctions").doc(before.auctionId).get()
     ).data()) as Auction;
 
     if (
@@ -53,7 +53,7 @@ export const bidChangeFn = europeFunctions.firestore
 
     // check permission
     const userEmailSettings = (
-      (await appStore.collection("users").doc(before.user).get()).data()
+      (await appStore().collection("users").doc(before.user).get()).data()
         ?.emailSettings as EmailSettings
     )?.bidUpdates;
     if (!userEmailSettings) {
@@ -62,7 +62,7 @@ export const bidChangeFn = europeFunctions.firestore
 
     // get outbidded user information
     const outbiddedUserData = (await (
-      await appStore.collection("users").doc(before.user).get()
+      await appStore().collection("users").doc(before.user).get()
     ).data()) as User;
     if (!outbiddedUserData) {
       logger.error("Can not find user");

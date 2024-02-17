@@ -5,10 +5,10 @@ import { sendOutbiddedMail } from './services/mail-factories/outbidded-mail.fact
 import { sendPostConfirmationMail } from './services/mail-factories/post-information-mail.factory';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
-export const testAuctionMailsFn = europeFunctions.https.onCall(
+export const testAuctionMailsFn = europeFunctions().https.onCall(
     async (data, context) => {
 
-        const mailVariables = await mailSettings.getMailVariables();
+        const mailVariables = await mailSettings().getMailVariables();
 
         const itemCount = data.itemCount ?? 10;
 
