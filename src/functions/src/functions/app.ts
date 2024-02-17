@@ -12,7 +12,7 @@ export type AppConfig = {
     europeFunctionsL: functions.FunctionBuilder;
 };
 
-let _app: AppConfig = null;
+let _app: AppConfig = undefined;
 export const app = () => {
     if (_app) {
         return _app;

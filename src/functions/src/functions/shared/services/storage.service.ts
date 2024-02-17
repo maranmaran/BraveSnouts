@@ -1,15 +1,15 @@
 import axios from "axios";
-import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 import { mkdirp } from "mkdirp";
 import * as os from 'os';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { appStorage } from "../../app";
 import { FirebaseFile } from "../../auctions/models/models";
 
 export class StorageService {
 
-    readonly bucket = admin.storage().bucket();
+    readonly bucket = appStorage().bucket();
 
     readonly uploadOptions = {
         gzip: true,

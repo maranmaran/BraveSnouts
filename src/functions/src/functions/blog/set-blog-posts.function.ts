@@ -17,7 +17,7 @@ export interface BlogPost {
     facebook: string;
 }
 
-const storage = new StorageService();
+let storage: StorageService = undefined;
 
 export const setBlogPostsFn = europeFunctions().pubsub
     .schedule('0 */4 * * *') // every 4 hours
@@ -30,6 +30,8 @@ export const setBlogPostsFn = europeFunctions().pubsub
         });
 
         const contentfulPosts = await client.getEntries({ content_type: content_type });
+
+        storage = new StorageService();
 
         await appStore().recursiveDelete(appStore().collection('blog'));
         await storage.recursiveDelete('blog');

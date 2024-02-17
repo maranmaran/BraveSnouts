@@ -13,7 +13,7 @@ export interface Animal {
     facebook: string;
 }
 
-const storage = new StorageService();
+let storage: StorageService = undefined;
 
 export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
     .schedule('0 */4 * * *') // every 4 hours
@@ -28,6 +28,8 @@ export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
         const contentfulAnimals = await client.getEntries({ content_type: content_type });
 
         // clear storages
+        storage = new StorageService();
+
         await appStore().recursiveDelete(appStore().collection('adoption'));
         await storage.recursiveDelete('adoption');
 
