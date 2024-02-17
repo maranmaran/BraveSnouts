@@ -48,6 +48,13 @@ jobs:
         working-directory: ./src/functions
     steps:
       - uses: actions/checkout@v2
+      - name: Cache firebase emulators
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-firebase-emulators-
       - uses: actions/setup-java@v3
         with:
           java-version: 20
