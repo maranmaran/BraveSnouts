@@ -55,9 +55,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators-${{ github.sha }}
+          key: ${{ runner.os }}-firebase-emulators
           restore-keys: |
-            ${{ runner.os }}-firebase-emulators-
+            ${{ runner.os }}-firebase-emulators
       - uses: actions/setup-java@v3
         with:
           java-version: 20
