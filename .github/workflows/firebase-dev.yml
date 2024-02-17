@@ -50,14 +50,14 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20
       - name: Cache firebase emulators
         uses: actions/cache@v4
         with:
           path: ~/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators
+          key: ${{ runner.os }}-firebase-emulators-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-firebase-emulators
+            ${{ runner.os }}-firebase-emulators-
       - uses: actions/setup-java@v3
         with:
           java-version: 20
