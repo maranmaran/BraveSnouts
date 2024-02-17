@@ -61,7 +61,6 @@ jobs:
           distribution: "zulu"
       - uses: w9jds/setup-firebase@main
         with:
-          tools-version: 12.5.4
           firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
       - run: npm ci
       - run: firebase use dev
