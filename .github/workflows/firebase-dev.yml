@@ -56,7 +56,7 @@ jobs:
       - name: Cache firebase emulators
         uses: actions/cache@v4
         with:
-          path: ${{ FIREBASE_EMULATORS_PATH }}
+          path: ${{ env.FIREBASE_EMULATORS_PATH }}
           key: ${{ runner.os }}-firebase-emulators-${{
             hashFiles('emulator-cache/**') }}
         continue-on-error: true
