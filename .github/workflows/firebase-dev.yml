@@ -43,6 +43,8 @@ jobs:
 
   functions:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_EMULATORS_PATH: ${{ github.workspace }}/emulator-cache
     defaults:
       run:
         working-directory: ./src/functions
@@ -54,10 +56,10 @@ jobs:
       - name: Cache firebase emulators
         uses: actions/cache@v4
         with:
-          path: ~/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-firebase-emulators-
+          path: ${{ FIREBASE_EMULATORS_PATH }}
+          key: ${{ runner.os }}-firebase-emulators-${{
+            hashFiles('emulator-cache/**') }}
+        continue-on-error: true
       - uses: actions/setup-java@v3
         with:
           java-version: 20
