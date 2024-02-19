@@ -67,7 +67,6 @@ jobs:
       - uses: w9jds/setup-firebase@main
         with:
           firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
-      - run: firebase use dev
       - run: npm ci
       - run: npm run test:emulators
         env:
