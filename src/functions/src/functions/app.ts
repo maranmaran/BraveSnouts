@@ -9,7 +9,6 @@ export type AppConfig = {
     storageL: Storage;
     configL: Record<string, any>;
     mailSettingsL: MailSettingsService;
-    europeFunctionsL: functions.FunctionBuilder;
 };
 
 let _app: AppConfig = undefined;
@@ -27,10 +26,9 @@ export const appStore = () => app().storeL;
 export const appStorage = () => app().storageL;
 export const appConfig = () => app().configL;
 export const mailSettings = () => app().mailSettingsL;
-export const europeFunctions = () => app().europeFunctionsL;
+export const europeFunctions = () => functions.region('europe-west1');
 
 function initialize(): AppConfig {
-
 
     const adminL = admin.initializeApp();
 
@@ -38,7 +36,6 @@ function initialize(): AppConfig {
     const storageL = admin.storage();
     const configL = functions.config();
     const mailSettingsL = new MailSettingsService(storeL);
-    const europeFunctionsL = functions.region('europe-west1');
 
     admin.firestore().settings({ ignoreUndefinedProperties: true })
 
@@ -47,12 +44,11 @@ function initialize(): AppConfig {
         storeL,
         storageL,
         configL,
-        mailSettingsL,
-        europeFunctionsL
+        mailSettingsL
     };
 
-    console.log(`Application configuration`, JSON.stringify(configL, null, 2));
-    console.log(`Mail settings`, JSON.stringify(mailSettingsL, null, 2));
+    console.trace('Show me');
+    console.log(`Application configuration`, JSON.stringify({ ...configL, mailVariables: mailSettingsL }, null, 2));
 
     return appL
 }

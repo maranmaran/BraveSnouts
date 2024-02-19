@@ -9,9 +9,17 @@ import { appConfig, appStorage, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
 import { StorageService } from "../shared/services/storage.service";
 
-const api = new Stripe(appConfig().stripe.secret, {
-    apiVersion: "2022-11-15"
-});
+let _api: Stripe = undefined;
+
+const api = () => {
+    if (_api) return _api;
+
+    _api = new Stripe(appConfig().stripe.secret, {
+        apiVersion: "2022-11-15"
+    });
+
+    return _api;
+}
 
 // TODO: Remove
 export const setProductCatalogHttpFn = europeFunctions().https
@@ -174,21 +182,21 @@ function refineCatalogImages(variation: InputSnoutsProductVariation) {
 async function archiveCurrentStripeCatalog() {
     let hasMore = true;
     while (hasMore) {
-        const res = await api.prices.list({ active: true, });
+        const res = await api().prices.list({ active: true, });
         hasMore = res.has_more;
 
         for (const p of res.data) {
-            await api.prices.update(p.id, { active: false });
+            await api().prices.update(p.id, { active: false });
         }
     }
 
     hasMore = true;
     while (hasMore) {
-        const res = await api.products.list({ active: true });
+        const res = await api().products.list({ active: true });
         hasMore = res.has_more;
 
         for (const p of res.data) {
-            await api.products.update(p.id, { active: false });
+            await api().products.update(p.id, { active: false });
         }
     }
 }
@@ -209,7 +217,7 @@ async function createCatalogInStripe(snoutsCatalog: OutputSnoutsProduct[]) {
 }
 
 async function createProduct(product: OutputSnoutsProduct) {
-    return await api.products.create({
+    return await api().products.create({
         name: product.slug,
         active: true,
         type: 'good',
@@ -223,7 +231,7 @@ async function createProduct(product: OutputSnoutsProduct) {
 }
 
 async function createPrice(product: Stripe.Product, price: { id: string, amount: number }) {
-    return await api.prices.create({
+    return await api().prices.create({
         active: true,
         tax_behavior: 'exclusive',
         billing_scheme: 'per_unit',

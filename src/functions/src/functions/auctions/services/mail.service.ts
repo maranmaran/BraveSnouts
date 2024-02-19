@@ -45,7 +45,7 @@ const client = (() => {
     default:
       throw new Error("No configured mail provider, check your firebase functions:config:get");
   }
-})();
+});
 
 export const sendMail = async composer => {
 
@@ -54,14 +54,14 @@ export const sendMail = async composer => {
 
     switch (appConfig().mail.provider) {
       case 'mailgun':
-        return await client.messages
+        return await client().messages
           .create(
             appConfig().mailgun?.domain, // domain
             { to: composer.mail.to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message } // message data
           )
       case 'gmail':
       case 'ethereal':
-        return await client.sendMail(message)
+        return await client().sendMail(message)
     }
   } catch (err) {
     logger.error(JSON.stringify(err), { err });

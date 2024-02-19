@@ -12,9 +12,19 @@ interface LineItem {
 
 type Cart = LineItem[];
 
-const api = new Stripe(appConfig().stripe.secret, {
-    apiVersion: "2022-11-15"
-});
+
+let _api: Stripe = undefined;
+
+const api = () => {
+    if (_api) return _api;
+
+    _api = new Stripe(appConfig().stripe.secret, {
+        apiVersion: "2022-11-15"
+    });
+
+    return _api;
+}
+
 
 export const createCheckoutSessionFn = europeFunctions().https
     .onCall(async (data, ctx) => {
@@ -45,7 +55,7 @@ async function createCheckoutSessionId(cart: Cart) {
         })
     )
 
-    return await api.checkout.sessions.create({
+    return await api().checkout.sessions.create({
         mode: 'payment',
         line_items: lineItems,
         payment_method_types: ['card'],

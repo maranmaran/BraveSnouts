@@ -3,8 +3,8 @@
   "scripts": {
     "kill:ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
     "lint": "eslint \"src/**/*\"",
-    "test": "npm run build:test && mocha 'test/tests/*.spec.ts'",
-    "test:emulators": "npm run build:test && firebase emulators:exec \"npm run test\"",
+    "test": "mocha 'test/tests/*.spec.ts'",
+    "test:emulators": "npm run build:test && firebase emulators:exec \"npm run env:test && npm run test\"",
     "build": "tsc && npm run kill:ports",
     "build:test": "npm run build && npm run env:test",
     "build:dev": "npm run build && npm run env:dev",
