@@ -1,0 +1,24 @@
+{
+  "base": {
+    "url": "https://localhost/app"
+  },
+  "mail": {
+    "provider": "mailgun"
+  },
+  "mailgun": {
+    "apikey": "test",
+    "domain": "127.0.0.1",
+    "baseurl": "test"
+  },
+  "ethereal": {
+    "password": "test",
+    "user": "test@email.com"
+  },
+  "stripe": {
+    "secret": "test"
+  },
+  "contentful": {
+    "secret": "test",
+    "space": "test"
+  }
+}

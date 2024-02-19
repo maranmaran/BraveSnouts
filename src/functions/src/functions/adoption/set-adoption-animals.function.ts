@@ -28,7 +28,7 @@ export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
         const contentfulAnimals = await client.getEntries({ content_type: content_type });
 
         // clear storages
-        storage = new StorageService();
+        storage = StorageService.create();
 
         await appStore().recursiveDelete(appStore().collection('adoption'));
         await storage.recursiveDelete('adoption');

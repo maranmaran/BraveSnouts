@@ -1,7 +1,7 @@
 // import { test } from 'bun:test';
 import { assert } from 'chai';
-import { appStorage } from '../src/functions/app';
-import { StorageService } from '../src/functions/shared/services/storage.service';
+import { appStorage } from '../../src/functions/app';
+import { StorageService } from '../../src/functions/shared/services/storage.service';
 
 const defTimeout = 0; // disable timeout
 const defWait = 15; // default wait time
@@ -13,7 +13,7 @@ describe('process image tests', async () => {
     })
 
     it('should process root original image', async () => {
-        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'image/jpeg',
             destination: 'original/cup'
         });
@@ -31,7 +31,7 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should process nested original image', async () => {
-        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'image/jpeg',
             destination: 'something/original/cup'
         });
@@ -49,7 +49,7 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing non original image', async () => {
-        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'image/jpeg',
             destination: 'nonoriginal/cup'
         });
@@ -64,7 +64,7 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('should exit when processing not supported file or extension', async () => {
-        await appStorage().bucket().upload('test/test-assets/cup.jpg', {
+        await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'application/pdf',
             destination: 'original/cup.pdf'
         });
@@ -80,7 +80,7 @@ describe('process image tests', async () => {
 
     it('should exit when processing already processed image', async () => {
         await appStorage().bucket()
-            .upload('test/test-assets/cup.jpg', {
+            .upload('test/assets/cup.jpg', {
                 contentType: 'application/jpg',
                 destination: 'original/cup.jpg',
                 metadata: {
@@ -101,7 +101,7 @@ describe('process image tests', async () => {
 
     it('should set processedByFirebaseFunction when image has been processed', async () => {
         await appStorage().bucket()
-            .upload('test/test-assets/cup.jpg', {
+            .upload('test/assets/cup.jpg', {
                 contentType: 'application/jpg',
                 destination: 'original/cup.jpg'
             });
@@ -121,7 +121,7 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('storage service - external image downloads to internal storage and provides accessible links', async () => {
-        const service = new StorageService();
+        const service = StorageService.create();
 
         const firebaseFile = await service.externalToStorage({
             name: 'photo',
@@ -139,7 +139,7 @@ describe('process image tests', async () => {
     }).timeout(defTimeout)
 
     it('storage service - external image downloads to internal storage and is processed, even if placed in nested original container', async () => {
-        const service = new StorageService();
+        const service = StorageService.create();
 
         const firebaseFile = await service.externalToStorage({
             name: 'photo',

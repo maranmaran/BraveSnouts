@@ -9,13 +9,11 @@ export interface MailVariable {
     show: boolean;
 }
 
-
 export interface BankAccount {
     name: string;
     account: string;
     visible: boolean;
 }
-
 
 export class MailSettingsService {
     private readonly _store: FirebaseFirestore.Firestore

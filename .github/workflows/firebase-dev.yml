@@ -68,7 +68,6 @@ jobs:
         with:
           firebase_token: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
       - run: npm ci
-      - run: firebase use dev
       - run: npm run test:emulators
         env:
           CLOUD_RUNTIME_CONFIG: "test/test-assets/.runtimeconfig.test.json"

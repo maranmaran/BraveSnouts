@@ -31,7 +31,7 @@ export const setBlogPostsFn = europeFunctions().pubsub
 
         const contentfulPosts = await client.getEntries({ content_type: content_type });
 
-        storage = new StorageService();
+        storage = StorageService.create();
 
         await appStore().recursiveDelete(appStore().collection('blog'));
         await storage.recursiveDelete('blog');

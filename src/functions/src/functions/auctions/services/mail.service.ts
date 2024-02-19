@@ -7,6 +7,9 @@ import * as path from 'path';
 
 import handlebars = require("handlebars");
 import mjml2html = require("mjml");
+import Mail = require('nodemailer/lib/mailer');
+import SMTPPool = require('nodemailer/lib/smtp-pool');
+import SMTPTransport = require('nodemailer/lib/smtp-transport');
 
 const mailgun = require('mailgun.js');
 const formData = require('form-data');

@@ -9,6 +9,8 @@ import { FirebaseFile } from "../../auctions/models/models";
 
 export class StorageService {
 
+    public static create = () => new StorageService();
+
     readonly bucket = appStorage().bucket();
 
     readonly uploadOptions = {
@@ -29,7 +31,7 @@ export class StorageService {
             StorageService.isTrue(obj?.metadata?.metadata?.processedByFirebaseFunction);
     }
 
-    public static isTrue(value) {
+    private static isTrue(value) {
         return value == true || value == "true";
     }
 

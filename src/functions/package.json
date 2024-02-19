@@ -2,15 +2,17 @@
   "name": "functions",
   "scripts": {
     "lint": "eslint \"src/**/*\"",
-    "test": "mocha 'test/*.spec.ts'",
-    "test:emulators": "npm run build && npm run kill-ports && firebase emulators:exec \"mocha 'test/*.spec.ts'\"",
+    "test": "mocha 'test/tests/*.spec.ts'",
+    "test:emulators": "npm run build && npm run kill-ports && npm run env:test && firebase emulators:exec \"mocha 'test/tests/*.spec.ts'\"",
     "kill-ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
     "build": "tsc",
     "build:watch": "tsc -w",
     "deploy": "firebase deploy --only functions",
     "serve": "npm run build && npm run kill-ports && firebase emulators:start",
     "serve:watch": "npm run build:watch && npm run kill-ports && firebase emulators:start",
-    "emulators": "npm run build && npm run kill-ports && firebase emulators:start --inspect-functions"
+    "emulators": "npm run build && npm run kill-ports && firebase emulators:start --inspect-functions",
+    "env:test": "shx cp test/.runtimeconfig.test.json .runtimeconfig.json",
+    "env:normal": "firebase functions:config:get > .runtimeconfig.json"
   },
   "engines": {
     "node": "20"
@@ -27,6 +29,7 @@
     "axios": "^1.4.0",
     "contentful": "^10.4.0",
     "cors": "^2.8.5",
+    "cp": "^0.2.0",
     "date-fns": "^2.30.0",
     "firebase-admin": "^11.10.1",
     "firebase-functions": "^4.7.0",
@@ -58,6 +61,7 @@
     "eslint-plugin-import": "^2.28.0",
     "firebase-functions-test": "^3.1.0",
     "mocha": "^10.2.0",
+    "shx": "^0.3.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   },

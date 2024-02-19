@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import { Storage } from 'firebase-admin/lib/storage/storage';
 import * as functions from 'firebase-functions';
-import { MailSettingsService } from './auctions/services/mail-settings.service';
+import { MailSettingsService } from './shared/services/mail-settings.service';
 
 export type AppConfig = {
     adminL: admin.app.App;
@@ -30,14 +30,9 @@ export const mailSettings = () => app().mailSettingsL;
 export const europeFunctions = () => app().europeFunctionsL;
 
 function initialize(): AppConfig {
-    const projectId = process.env.GCLOUD_PROJECT ?? 'bravesnoutsdev';
-    const bucket = process.env.FIREBASE_STORAGE_BUCKET ?? 'bravesnoutsdev.appspot.com';
-    console.log(projectId, bucket);
 
-    const adminL = admin.initializeApp({
-        projectId: process.env.GCLOUD_PROJECT,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? 'bravesnoutsdev.appspot.com'
-    });
+
+    const adminL = admin.initializeApp();
 
     const storeL = admin.firestore();
     const storageL = admin.storage();
@@ -55,6 +50,9 @@ function initialize(): AppConfig {
         mailSettingsL,
         europeFunctionsL
     };
+
+    console.log(`Application configuration`, JSON.stringify(configL, null, 2));
+    console.log(`Mail settings`, JSON.stringify(mailSettingsL, null, 2));
 
     return appL
 }
