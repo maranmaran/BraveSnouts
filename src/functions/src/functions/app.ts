@@ -47,7 +47,6 @@ function initialize(): AppConfig {
         mailSettingsL
     };
 
-    console.trace('Show me');
     console.log(`Application configuration`, JSON.stringify({ ...configL, mailVariables: mailSettingsL }, null, 2));
 
     return appL
