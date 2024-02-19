@@ -1,18 +1,18 @@
 {
   "name": "functions",
   "scripts": {
+    "kill:ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
     "lint": "eslint \"src/**/*\"",
-    "test": "mocha 'test/tests/*.spec.ts'",
-    "test:emulators": "npm run build && npm run kill-ports && npm run env:test && firebase emulators:exec \"npm run env:test && mocha 'test/tests/*.spec.ts'\"",
-    "kill-ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
-    "build": "tsc",
-    "build:watch": "tsc -w",
-    "deploy": "firebase deploy --only functions",
-    "serve": "npm run build && npm run kill-ports && firebase emulators:start",
-    "serve:watch": "npm run build:watch && npm run kill-ports && firebase emulators:start",
-    "emulators": "npm run build && npm run kill-ports && firebase emulators:start --inspect-functions",
-    "env:test": "shx cp test/.runtimeconfig.test.json .runtimeconfig.json",
-    "env:normal": "firebase functions:config:get > .runtimeconfig.json"
+    "test": "npm run build:test && mocha 'test/tests/*.spec.ts'",
+    "test:emulators": "npm run build:test && firebase emulators:exec \"npm run test\"",
+    "build": "tsc && npm run kill:ports",
+    "build:test": "npm run build && npm run env:test",
+    "build:dev": "npm run build && npm run env:dev",
+    "env:test": "firebase use test && firebase functions:config:get > .runtimeconfig.json",
+    "env:dev": "firebase use dev && firebase functions:config:get > .runtimeconfig.json",
+    "serve": "npm run build:dev && firebase emulators:start",
+    "emulators": "npm run build:dev && firebase emulators:start --inspect-functions",
+    "deploy": "firebase deploy --only functions"
   },
   "engines": {
     "node": "20"
