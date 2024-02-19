@@ -1,14 +1,13 @@
 import { error } from "firebase-functions/logger";
 import { GoogleAuth } from "google-auth-library";
 import { google } from 'googleapis';
-import { appAdmin, appStore, europeFunctions } from "./app";
-
-const PROJECT_ID = appAdmin().installations().app.options.projectId;
-const PROJECT_NAME = `projects/${PROJECT_ID}`;
-const billing = google.cloudbilling('v1').projects;
+import { appAdmin, appStore, europeFunctions } from "./functions/app";
 
 export const killSwitch = europeFunctions().pubsub.topic('firebase-budget-alert')
     .onPublish(async (message, ctx) => {
+        const PROJECT_ID = appAdmin().installations().app.options.projectId;
+        const PROJECT_NAME = `projects/${PROJECT_ID}`;
+
         const data = JSON.parse(message.json);
         error('Budget exceeeded', { data });
 
@@ -66,6 +65,8 @@ const _setAuthCredential = () => {
  */
 const _isBillingEnabled = async projectName => {
     try {
+        const billing = google.cloudbilling('v1').projects;
+
         const res = await billing.getBillingInfo({
             name: projectName
         });
@@ -85,6 +86,8 @@ const _isBillingEnabled = async projectName => {
  * @return {string} Text containing response from disabling billing
  */
 const _disableBillingForProject = async projectName => {
+    const billing = google.cloudbilling('v1').projects;
+
     const res = await billing.updateBillingInfo({
         name: projectName,
         requestBody: {

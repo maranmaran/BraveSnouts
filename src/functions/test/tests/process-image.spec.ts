@@ -1,4 +1,3 @@
-// import { test } from 'bun:test';
 import { assert } from 'chai';
 import { appStorage } from '../../src/functions/app';
 import { StorageService } from '../../src/functions/shared/services/storage.service';
@@ -7,7 +6,6 @@ const defTimeout = 0; // disable timeout
 const defWait = 5; // default wait time
 
 describe('process image tests', async () => {
-
     beforeEach(async () => {
         await appStorage().bucket().deleteFiles();
     })
@@ -155,7 +153,6 @@ describe('process image tests', async () => {
 
         await checkForInfiniteTrigger(3);
     }).timeout(defTimeout)
-
 });
 
 function assertProcessedImage(rootPath: string, name: string, files: string[]) {
