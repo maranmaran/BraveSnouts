@@ -1,5 +1,4 @@
 import { logger } from "firebase-functions";
-import { ObjectMetadata } from "firebase-functions/v1/storage";
 import * as fs from 'fs';
 import { mkdirp } from 'mkdirp';
 import * as os from 'os';
@@ -7,7 +6,6 @@ import * as path from 'path';
 import Stripe from "stripe";
 import { appConfig, appStorage, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from '../auctions/models/models';
-import { StorageService } from "../shared/services/storage.service";
 
 let _api: Stripe = undefined;
 
@@ -21,49 +19,15 @@ const api = () => {
     return _api;
 }
 
-// TODO: Remove
-export const setProductCatalogHttpFn = europeFunctions().https
+export const setProductCatalogFn = europeFunctions().https
     .onCall(async (data, ctx) => {
-        await syncCatalogToStripe('product-catalog/product-catalog.json', 'product-catalog.json');
-    })
 
-export const setProductCatalogFn = europeFunctions().storage
-    .bucket().object()
-    .onFinalize(async (object) => {
-
-        if (StorageService.isProcessedAlready(object)) {
-            logger.info('Already processed', object.name);
-            return;
-        }
-
-        const bucketPath = object.name;
+        const bucketPath = '/product-catalog//product-catalog.json';
         const fileName = 'product-catalog.json'
 
-        if (bucketPath !== '/product-catalog/product-catalog.json') {
-            return logger.warn("This function only processes " +
-                "following path: /product-catalog/product.json",
-                { path: bucketPath }
-            );
-        }
-
-        if (bucketPath.length > 100) {
-            return logger.error("Path is too long, review the code", { bucketPath });
-        }
-
         await syncCatalogToStripe(bucketPath, fileName);
-        await markAsProcessed(object);
     })
 
-async function markAsProcessed(object: ObjectMetadata) {
-    logger.info('Marking product catalog as processed');
-
-    const metadata = {
-        processedByFirebaseFunction: true,
-        firebaseFunctionName: 'setProductCatalog'
-    };
-
-    await appStorage().bucket().file(object.name).setMetadata({ metadata }, { fileName: object.name });
-}
 async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: string) {
     const bucket = appStorage().bucket();
     const tempFolder = path.join(os.tmpdir(), "bsnouts-product-catalog");
