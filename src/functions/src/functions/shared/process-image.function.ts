@@ -19,7 +19,8 @@ interface ImageProcessingSettings {
 
 const runtimeOpts: Partial<RuntimeOptions> = {
     timeoutSeconds: 540,
-    memory: "1GB"
+    memory: "1GB",
+    maxInstances: 1,
 }
 
 const supportedExtensions = ["image", "jpeg", "png", "jpg"];
