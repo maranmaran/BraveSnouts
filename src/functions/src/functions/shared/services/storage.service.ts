@@ -11,8 +11,6 @@ export class StorageService {
 
     public static create = () => new StorageService();
 
-    readonly bucket = appStorage().bucket();
-
     readonly uploadOptions = {
         gzip: true,
         public: true,
@@ -36,7 +34,7 @@ export class StorageService {
     }
 
     async recursiveDelete(prefix: string) {
-        await this.bucket.deleteFiles({ prefix });
+        await appStorage().bucket().deleteFiles({ prefix });
     }
 
     async externalToStorage(external: { name: string, url: string, destination: string }) {
@@ -55,7 +53,7 @@ export class StorageService {
         // upload to destination
 
         const pathOrig = `${external.destination}/original/${noExtFileName}_original`;
-        const res = await this.bucket.upload(localFilePath, { destination: pathOrig, ...this.uploadOptions });
+        const res = await appStorage().bucket().upload(localFilePath, { destination: pathOrig, ...this.uploadOptions });
 
         // make firebase file model
         const url = decodeURIComponent(await res[0].publicUrl()); // this is gcloud link...

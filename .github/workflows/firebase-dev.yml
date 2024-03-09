@@ -71,8 +71,8 @@ jobs:
       - run: npm run test:emulators
         env:
           CLOUD_RUNTIME_CONFIG: "test/test-assets/.runtimeconfig.test.json"
-          GCLOUD_PROJECT: "bravesnoutsdev"
-          FIREBASE_STORAGE_BUCKET: "bravesnoutsdev.appspot.com"
+          GCLOUD_PROJECT: "bravesnoutstest"
+          FIREBASE_STORAGE_BUCKET: "bravesnoutstest.appspot.com"
           FIREBASE_HOSTING_EMULATOR_HOST: "127.0.0.1:5000"
           FIREBASE_FUNCTIONS_EMULATOR_HOST: "127.0.0.1:5001"
           FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080"
@@ -80,9 +80,9 @@ jobs:
           FIREBASE_DATABASE_EMULATOR_HOST: "127.0.0.1:9000"
           FIREBASE_STORAGE_EMULATOR_HOST: "127.0.0.1:9199"
           FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099"
-      - uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only functions --project dev
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
-          PROJECT_PATH: "./src/functions"
+      # - uses: w9jds/firebase-action@master
+      #   with:
+      #     args: deploy --only functions --project dev
+      #   env:
+      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
+      #     PROJECT_PATH: "./src/functions"

@@ -92,6 +92,7 @@ const _disableBillingForProject = async projectName => {
         name: projectName,
         requestBody: {
             billingEnabled: false,
+            // https://console.cloud.google.com/billing/01FE42-36ED66-134A0D
             billingAccountName: 'Brave Snouts'
         }, // Disable billing
     });

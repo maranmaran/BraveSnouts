@@ -12,8 +12,8 @@ export type AppConfig = {
 };
 
 let _app: AppConfig = undefined;
-export const app = () => {
-    if (_app) {
+export const app = (reset = false) => {
+    if (!reset && _app) {
         return _app;
     }
 
@@ -28,9 +28,21 @@ export const appConfig = () => app().configL;
 export const mailSettings = () => app().mailSettingsL;
 export const europeFunctions = () => functions.region('europe-west1');
 
-function initialize(): AppConfig {
+export interface FirebaseConfig {
+    storageBucket: string,
+    databaseURL: string;
+    projectId: string;
+}
 
-    const adminL = admin.initializeApp();
+function initialize(): AppConfig {
+    const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG) as FirebaseConfig;
+    if (!firebaseConfig) {
+        firebaseConfig.projectId = process.env.GCLOUD_PROJECT;
+        firebaseConfig.storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
+    }
+    console.log('App initialize config', firebaseConfig);
+
+    const adminL = admin.initializeApp(firebaseConfig);
 
     const storeL = admin.firestore();
     const storageL = admin.storage();
@@ -46,8 +58,6 @@ function initialize(): AppConfig {
         configL,
         mailSettingsL
     };
-
-    console.log(`Application configuration`, JSON.stringify({ ...configL, mailVariables: mailSettingsL }, null, 2));
 
     return appL
 }

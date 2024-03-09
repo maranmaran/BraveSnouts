@@ -12,7 +12,7 @@
         },
         {
             "label": "compile-function-tests",
-            "command": "npm run build",
+            "command": "npm run build:test",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}/src/functions",
@@ -21,7 +21,7 @@
         },
         {
             "label": "compile-function-tests-with-emulators",
-            "command": "npm run emulators",
+            "command": "npm run serve:test",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}/src/functions",

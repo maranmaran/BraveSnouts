@@ -42,7 +42,6 @@ export class AppComponent {
       this.adoptApi.getAnimals(),
       this.blogApi.getPosts(),
     ]).subscribe()
-    // .pipe(tap(console.log))
   }
 
   listenLogin() {
