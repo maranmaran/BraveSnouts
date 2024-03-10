@@ -12,16 +12,16 @@
                 <div [ngSwitch]="state">
                     <ng-container *ngSwitchCase="'future'">
                         Počinje:
-                        {{ auction.startDate.toDate() | date : 'MMM d, HH:mm:ss' }}
+                        {{ auction.startDate.toDate() | date: 'MMM d, HH:mm:ss' }}
                     </ng-container>
                     <ng-container *ngSwitchCase="'expired'">
                         Završila:
-                        {{ auction.endDate.toDate() | date : 'MMM d, HH:mm:ss' }}
+                        {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'active'">
                         Traje do:
-                        {{ auction.endDate.toDate() | date : 'MMM d, HH:mm:ss' }}
+                        {{ auction.endDate.toDate() | date: 'MMM d, HH:mm:ss' }}
                     </ng-container>
                 </div>
                 <countdown *ngIf="state == 'active' && config" class="m-0 font-bold" #cd [config]="config"> </countdown>
@@ -207,7 +207,7 @@
                     <img mat-card-avatar [src]="bid.userInfo?.avatar" />
                     <mat-card-title> {{ bid.userInfo?.name }} - {{ bid.bid | moneyAsync | async }} </mat-card-title>
                     <mat-card-subtitle>
-                        {{ bid.date.toDate() | date : 'MMM d, h:mm:ss' }}
+                        {{ bid.date.toDate() | date: 'MMM d, h:mm:ss' }}
                     </mat-card-subtitle>
                     <mat-card-subtitle>
                         {{ bid.userInfo?.email }}

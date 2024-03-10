@@ -275,6 +275,17 @@ export class AdminAuctionsPageComponent implements OnInit {
     ).subscribe(noop);
   }
 
+  onUpdateCatalog() {
+    this.functionsSvc.updateCatalog().pipe(
+      first(),
+      this.toastSvc.observe({
+        loading: `Ažuriranje kataloga trgovine`,
+        success: `Uspješno"`,
+        error: `Nešto je pošlo po zlu`,
+      }),
+    ).subscribe
+  }
+
   //#endregion
 
   //#region Dialog helpers

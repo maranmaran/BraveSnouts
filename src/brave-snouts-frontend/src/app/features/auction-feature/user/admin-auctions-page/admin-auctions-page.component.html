@@ -33,6 +33,7 @@
         <div class="flex md:flex-col flex-row gap-4">
             <button mat-flat-button color="primary" (click)="onDownloadMails()">Ispis mailova</button>
             <button mat-flat-button color="primary" (click)="onSendTestMail()">Test mail</button>
+            <button mat-flat-button color="primary" (click)="onUpdateCatalog()">Ažuriraj katalog</button>
             <button
                 mat-flat-button
                 color="primary"
@@ -96,7 +97,7 @@
             <td mat-cell *matCellDef="let element">
                 <p *ngIf="element.lastTimeWinningMailsSent">
                     Poslani
-                    {{ element.lastTimeWinningMailsSent?.toDate() | date : 'dd.MM, HH:mm' }}
+                    {{ element.lastTimeWinningMailsSent?.toDate() | date: 'dd.MM, HH:mm' }}
                 </p>
                 <p *ngIf="!element.lastTimeWinningMailsSent">Nisu još poslani</p>
             </td>

@@ -20,6 +20,11 @@ export class FunctionsService {
     return callable({ email, items });
   }
 
+  updateCatalog() {
+    const callable = this.functions.httpsCallable('shop-setProductCatalog');
+    return callable({});
+  }
+
   /** Calls cloud function to send winner emails */
   sendWinnerMails(auctionIds: string[], handoverDetails: string[]) {
     const callable = this.functions.httpsCallable('auctions-sendWinnerMail');
