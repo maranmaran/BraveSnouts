@@ -69,7 +69,7 @@ export const DEFAULT_GALLERY_CONFIG = {
     { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true } },
     {
       provide: FUNCTIONS_EMULATOR,
-      useValue: false ? undefined : (console.error('USING LOCAL FIREBASE FUNCTIONS'), ['localhost', 5001]),
+      useValue: false ? undefined : (console.warn('EMULATOR DEFINED', FUNCTIONS_EMULATOR), ['localhost', 5001]),
     },
     {
       provide: GALLERY_CONFIG, useValue: {
