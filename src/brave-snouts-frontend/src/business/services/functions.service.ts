@@ -23,7 +23,7 @@ export class FunctionsService {
   updateCatalog() {
     const callable = this.functions.httpsCallable('shop-setProductCatalog');
 
-    return callable({});
+    return callable({ time: new Date() });
   }
 
   /** Calls cloud function to send winner emails */
