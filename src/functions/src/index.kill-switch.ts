@@ -18,26 +18,27 @@ export const killSwitch = europeFunctions().pubsub.topic('firebase-budget-alert'
         logger.info(data.budgetAmount);
         logger.info('Dynamic budget', dynamicBudget);
 
-        if (data.costAmount <= dynamicBudget) {
-            logger.info("No action necessary.");
-            return `No action necessary. (Current cost: ${data.costAmount})`;
-        }
+        return;
+        // if (data.costAmount <= dynamicBudget) {
+        //     logger.info("No action necessary.");
+        //     return `No action necessary. (Current cost: ${data.costAmount})`;
+        // }
 
-        if (!PROJECT_ID) {
-            logger.error("no project specified");
-            return 'No project specified';
-        }
+        // if (!PROJECT_ID) {
+        //     logger.error("no project specified");
+        //     return 'No project specified';
+        // }
 
-        _setAuthCredential();
+        // _setAuthCredential();
 
-        const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
-        if (billingEnabled) {
-            logger.warn("disabling billing");
-            return _disableBillingForProject(PROJECT_NAME);
-        } else {
-            logger.info("billing already disabled");
-            return 'Billing already disabled';
-        }
+        // const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
+        // if (billingEnabled) {
+        //     logger.warn("disabling billing");
+        //     return _disableBillingForProject(PROJECT_NAME);
+        // } else {
+        //     logger.info("billing already disabled");
+        //     return 'Billing already disabled';
+        // }
     })
 
 

@@ -39,6 +39,8 @@ async function syncCatalogToStripe(catalogBucketPath: string, catalogFileName: s
     logger.log('Reading product catalog');
     const snoutsCatalog = getCatalog(`${tempFolder}/${catalogFileName}`);
 
+    logger.log(`Read ${snoutsCatalog.length} catalog items`)
+
     logger.log('Archiving current catalog in stripe');
     await archiveCurrentStripeCatalog();
 
