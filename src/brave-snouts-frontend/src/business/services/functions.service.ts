@@ -22,6 +22,7 @@ export class FunctionsService {
 
   updateCatalog() {
     const callable = this.functions.httpsCallable('shop-setProductCatalog');
+
     return callable({});
   }
 

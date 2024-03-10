@@ -283,7 +283,7 @@ export class AdminAuctionsPageComponent implements OnInit {
         success: `Uspješno"`,
         error: `Nešto je pošlo po zlu`,
       }),
-    ).subscribe
+    ).subscribe()
   }
 
   //#endregion
