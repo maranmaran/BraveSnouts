@@ -31,7 +31,7 @@ const supportedExtensions = ["image", "jpeg", "png", "jpg"];
 export const processImageFn = europeFunctions().runWith(runtimeOpts)
     .storage.bucket().object()
     .onFinalize(async (object) => {
-        logger.info("Image metadata", object);
+        // logger.info("Image metadata", object);
 
         if (StorageService.isProcessedAlready(object)) {
             logger.info('Already processed', object.name);
@@ -61,15 +61,19 @@ export const processImageFn = europeFunctions().runWith(runtimeOpts)
             || rootPathIsLocatedInDirectoryNamedOriginal
             || uploadedFilePathIsNotInDirectoryNamedOriginal;
 
+
         if (exitCondition) {
-            logger.warn("This function only processes " +
-                "following path: */original/{file}",
+            logger.warn("This function only processes following path: */original/{file}",
                 {
                     path: object.name,
-                    tooLongPath,
-                    notSupportedExtension,
-                    rootPathIsLocatedInDirectoryNamedOriginal,
-                    uploadedFilePathIsNotInDirectoryNamedOriginal
+                    rootPath: rootPath,
+                    contentType: object.contentType,
+                    validations: {
+                        tooLongPath,
+                        notSupportedExtension,
+                        rootPathIsLocatedInDirectoryNamedOriginal,
+                        uploadedFilePathIsNotInDirectoryNamedOriginal
+                    }
                 }
             );
 
