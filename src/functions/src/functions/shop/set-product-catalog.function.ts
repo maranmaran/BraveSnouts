@@ -22,7 +22,7 @@ const api = () => {
 export const setProductCatalogFn = europeFunctions().https
     .onCall(async (data, ctx) => {
 
-        const bucketPath = '/product-catalog//product-catalog.json';
+        const bucketPath = 'product-catalog/product-catalog.json';
         const fileName = 'product-catalog.json'
 
         await syncCatalogToStripe(bucketPath, fileName);
