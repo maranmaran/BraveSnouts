@@ -1,6 +1,7 @@
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { BLOCKS, Block, Document, Inline, Text } from "@contentful/rich-text-types";
 import { Asset, AssetFile, Entry, EntrySkeletonType, createClient } from "contentful";
+import { RuntimeOptions } from "firebase-functions/v1";
 import { appConfig, appStore, europeFunctions } from "../app";
 import { FirebaseFile } from "../auctions/models/models";
 import { StorageService } from "../shared/services/storage.service";
@@ -19,7 +20,13 @@ export interface BlogPost {
 
 let storage: StorageService = undefined;
 
-export const setBlogPostsFn = europeFunctions().pubsub
+const runtimeOpts: Partial<RuntimeOptions> = {
+    timeoutSeconds: 540,
+    memory: "512MB",
+    maxInstances: 1,
+}
+
+export const setBlogPostsFn = europeFunctions().runWith(runtimeOpts).pubsub
     .schedule('0 */4 * * *') // every 4 hours
     .onRun(async () => {
 
