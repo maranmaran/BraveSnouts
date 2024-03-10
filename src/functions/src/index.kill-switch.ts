@@ -1,4 +1,4 @@
-import { error } from "firebase-functions/logger";
+import { logger } from "firebase-functions";
 import { GoogleAuth } from "google-auth-library";
 import { google } from 'googleapis';
 import { appAdmin, appStore, europeFunctions } from "./functions/app";
@@ -9,22 +9,22 @@ export const killSwitch = europeFunctions().pubsub.topic('firebase-budget-alert'
         const PROJECT_NAME = `projects/${PROJECT_ID}`;
 
         const data = JSON.parse(message.json);
-        error('Budget exceeeded', { data });
+        logger.error('Budget exceeeded', { data });
 
         const dynamicBudget = (await appStore().doc('config/global').get()).data().budget;
 
-        console.log(data);
-        console.log(data.costAmount);
-        console.log(data.budgetAmount);
-        console.log('Dynamic budget', dynamicBudget);
+        logger.info(data);
+        logger.info(data.costAmount);
+        logger.info(data.budgetAmount);
+        logger.info('Dynamic budget', dynamicBudget);
 
         if (data.costAmount <= dynamicBudget) {
-            console.log("No action necessary.");
+            logger.info("No action necessary.");
             return `No action necessary. (Current cost: ${data.costAmount})`;
         }
 
         if (!PROJECT_ID) {
-            console.log("no project specified");
+            logger.error("no project specified");
             return 'No project specified';
         }
 
@@ -32,10 +32,10 @@ export const killSwitch = europeFunctions().pubsub.topic('firebase-budget-alert'
 
         const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
         if (billingEnabled) {
-            console.log("disabling billing");
+            logger.warn("disabling billing");
             return _disableBillingForProject(PROJECT_NAME);
         } else {
-            console.log("billing already disabled");
+            logger.info("billing already disabled");
             return 'Billing already disabled';
         }
     })
@@ -70,10 +70,12 @@ const _isBillingEnabled = async projectName => {
         const res = await billing.getBillingInfo({
             name: projectName
         });
-        console.log(res);
+
+        console.info(res);
+
         return res.data.billingEnabled;
     } catch (e) {
-        console.log(
+        console.error(
             'Unable to determine if billing is enabled on specified project, assuming billing is enabled'
         );
         return true;
@@ -97,8 +99,8 @@ const _disableBillingForProject = async projectName => {
         }, // Disable billing
     });
 
-    console.log(res);
-    console.log("Billing Disabled");
+    console.info(res);
+    console.info("Billing Disabled");
 
     return `Billing disabled: ${JSON.stringify(res.data)}`;
 };
