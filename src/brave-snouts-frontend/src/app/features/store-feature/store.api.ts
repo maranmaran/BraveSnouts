@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
-import { HotToastService } from "@ngneat/hot-toast";
+import { HotToastService } from "@ngxpert/hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
 import { BehaviorSubject, first, firstValueFrom, map, of, shareReplay, tap } from "rxjs";
 import { FirebaseFile } from "src/business/models/firebase-file.model";

@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { HotToastService } from "@ngneat/hot-toast";
+import { HotToastService } from "@ngxpert/hot-toast";
 import { AdoptApi } from "./adopt.api";
 
 @Component({

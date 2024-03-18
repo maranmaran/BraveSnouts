@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { HotToastService } from '@ngneat/hot-toast'
+import { HotToastService } from '@ngxpert/hot-toast'
 import { Subject, filter, takeUntil, tap } from 'rxjs'
 import { FirebaseFile } from 'src/business/models/firebase-file.model'
 import { uniqueArray } from 'src/business/utils/unique-array.util'

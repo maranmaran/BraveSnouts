@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl } from '@angular/forms';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { Subject, firstValueFrom, from, noop } from 'rxjs';
 import { first, map, skip, take, takeUntil } from 'rxjs/operators';
 import { EmailSettings, User } from 'src/business/models/user.model';
