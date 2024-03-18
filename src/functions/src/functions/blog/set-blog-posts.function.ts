@@ -26,9 +26,9 @@ const runtimeOpts: Partial<RuntimeOptions> = {
     maxInstances: 1,
 }
 
-export const setBlogPostsFn = europeFunctions().runWith(runtimeOpts).pubsub
-    .schedule('0 */4 * * *') // every 4 hours
-    .onRun(async () => {
+
+export const setBlogPostsFn = europeFunctions().https
+    .onCall(async (data, ctx) => {
 
         const content_type = 'braveSnoutsBlog';
         const client = createClient({

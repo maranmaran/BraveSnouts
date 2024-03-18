@@ -286,6 +286,28 @@ export class AdminAuctionsPageComponent implements OnInit {
     ).subscribe()
   }
 
+  onUpdateAdoptionAnimals() {
+    this.functionsSvc.updateAdoptionAnimals().pipe(
+      first(),
+      this.toastSvc.observe({
+        loading: `Ažuriranje udomljavanja`,
+        success: `Uspješno"`,
+        error: `Nešto je pošlo po zlu`,
+      }),
+    ).subscribe()
+  }
+
+  onUpdateBlog() {
+    this.functionsSvc.updateBlog().pipe(
+      first(),
+      this.toastSvc.observe({
+        loading: `Ažuriranje bloga`,
+        success: `Uspješno"`,
+        error: `Nešto je pošlo po zlu`,
+      }),
+    ).subscribe()
+  }
+
   //#endregion
 
   //#region Dialog helpers

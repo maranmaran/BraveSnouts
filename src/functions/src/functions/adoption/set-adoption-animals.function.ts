@@ -1,6 +1,6 @@
 import { Asset, AssetFile, Entry, EntrySkeletonType, createClient } from "contentful";
 import * as functions from 'firebase-functions';
-import { appStore } from "../app";
+import { appStore, europeFunctions } from "../app";
 import { FirebaseFile } from "../auctions/models/models";
 import { StorageService } from "../shared/services/storage.service";
 
@@ -15,9 +15,8 @@ export interface Animal {
 
 let storage: StorageService = undefined;
 
-export const setAdoptionAnimalsFn = functions.region('europe-west1').pubsub
-    .schedule('0 */4 * * *') // every 4 hours
-    .onRun(async () => {
+export const setAdoptionAnimalsFn = europeFunctions().https
+    .onCall(async (data, ctx) => {
         // retrieve cms data
         const content_type = 'braveSnoutsAdoption';
         const client = createClient({

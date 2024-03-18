@@ -26,6 +26,18 @@ export class FunctionsService {
     return callable({ time: new Date() });
   }
 
+  updateAdoptionAnimals() {
+    const callable = this.functions.httpsCallable('shop-setAdoptionAnimalsFn');
+
+    return callable({ time: new Date() });
+  }
+
+  updateBlog() {
+    const callable = this.functions.httpsCallable('shop-setBlogPostsFn');
+
+    return callable({ time: new Date() });
+  }
+
   /** Calls cloud function to send winner emails */
   sendWinnerMails(auctionIds: string[], handoverDetails: string[]) {
     const callable = this.functions.httpsCallable('auctions-sendWinnerMail');

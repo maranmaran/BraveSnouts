@@ -5,10 +5,13 @@ import { appAdmin, appStore, europeFunctions } from "./functions/app";
 
 export const killSwitch = europeFunctions().pubsub.topic('firebase-budget-alert')
     .onPublish(async (message, ctx) => {
+        logger.info(message);
+
         const PROJECT_ID = appAdmin().installations().app.options.projectId;
         const PROJECT_NAME = `projects/${PROJECT_ID}`;
 
         const data = JSON.parse(message.json);
+
         logger.error('Budget exceeeded', { data });
 
         const dynamicBudget = (await appStore().doc('config/global').get()).data().budget;
