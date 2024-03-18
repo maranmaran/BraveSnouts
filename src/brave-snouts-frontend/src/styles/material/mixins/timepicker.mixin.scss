@@ -1,74 +1,73 @@
-@use "@angular/material" as mat;
-@import "@angular/material/theming";
+@use '@angular/material' as mat;
 
 //lightness 0darkest 100lightest
 @function get-darker-color($color) {
-  // if light.. darken more
-  @if (lightness($color) > 50) {
-    @return darken($color, 5%);
-  }
+    // if light.. darken more
+    @if (lightness($color) > 50) {
+        @return darken($color, 5%);
+    }
 
-  @return $color;
+    @return $color;
 }
 
 @function get-conditioned-text-color($background) {
-  $original: white;
-  $inverted: black;
+    $original: white;
+    $inverted: black;
 
-  $condition: false;
-  @if (lightness($background) > 60) {
-    $condition: true;
-  }
+    $condition: false;
+    @if (lightness($background) > 60) {
+        $condition: true;
+    }
 
-  @if ($condition) {
-    @return $inverted;
-  }
+    @if ($condition) {
+        @return $inverted;
+    }
 
-  @return $original;
+    @return $original;
 }
 
 @function enchance-brightness($background, $percentage) {
-  @if (lightness($background) < 50) {
-    // dark
-    @return lighten($background, $percentage);
-  } @else {
-    // light
-    @return darken($background, $percentage);
-  }
+    @if (lightness($background) < 50) {
+        // dark
+        @return lighten($background, $percentage);
+    } @else {
+        // light
+        @return darken($background, $percentage);
+    }
 }
 
 @mixin timepicker-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
 
-  $foreground-palette: map-get($theme, foreground); //palette
-  $background-palette: map-get($theme, background); //palette
+    $foreground-palette: map-get($theme, foreground); //palette
+    $background-palette: map-get($theme, background); //palette
 
-  $theme-text: map-get($foreground-palette, text);
+    $theme-text: map-get($foreground-palette, text);
 
-  $theme-dialog: map-get($background-palette, dialog);
-  $theme-background: map-get($background-palette, background);
-  $theme-card: map-get($background-palette, card);
+    $theme-dialog: map-get($background-palette, dialog);
+    $theme-background: map-get($background-palette, background);
+    $theme-card: map-get($background-palette, card);
 
-  ngx-mat-timepicker-field {
-    mat-form-field {
-      max-width: 16px !important;
+    ngx-mat-timepicker-field {
+        mat-form-field {
+            max-width: 16px !important;
 
-      .mat-mdc-form-field-bottom-align {
-        display: none !important;
-      }
+            .mat-mdc-form-field-bottom-align {
+                display: none !important;
+            }
+        }
+
+        ngx-mat-timepicker-toggle {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding-left: 0.5rem !important;
+
+            mat-icon {
+                color: black !important;
+            }
+        }
     }
-
-    ngx-mat-timepicker-toggle {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      margin: 0 !important;
-      padding-left: 0.5rem !important;
-
-      mat-icon {
-        color: black !important;
-      }
-    }
-  }
 }

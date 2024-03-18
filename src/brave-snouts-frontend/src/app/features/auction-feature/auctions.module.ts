@@ -2,11 +2,11 @@ import { ClipboardModule } from "@angular/cdk/clipboard";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { HotToastModule } from "@ngneat/hot-toast";
+import { provideHotToastConfig } from "@ngxpert/hot-toast";
 import { GalleryModule } from "ng-gallery";
 import { LightboxModule } from "ng-gallery/lightbox";
 import { CountdownModule } from "ngx-countdown";
-import { DragScrollModule } from "ngx-drag-scroll";
+import { DragScrollComponent, DragScrollItemDirective } from "ngx-drag-scroll";
 import { NgxDropzoneModule } from "ngx-dropzone";
 import { AuctionsToolbarComponent } from "src/app/features/auction-feature/auctions-toolbar/auctions-toolbar.component";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
@@ -61,7 +61,9 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         GalleryModule,
         LightboxModule,
         CountdownModule,
-        DragScrollModule,
+
+        DragScrollComponent,
+        DragScrollItemDirective,
 
         // Shared
         MaterialModule,
@@ -71,7 +73,6 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
 
         // Custom shared
         VirtualScrollerModule,
-        HotToastModule.forRoot(),
 
         // Shared
         AuctionsToolbarComponent,
@@ -136,7 +137,8 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         FirebaseImagePipe,
     ],
     providers: [
-        FirebaseImagePipe
+        FirebaseImagePipe,
+        provideHotToastConfig()
     ]
 })
 export class AuctionsModule { }

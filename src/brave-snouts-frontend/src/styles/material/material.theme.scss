@@ -1,30 +1,30 @@
 // ======================================= MIXINS ==========================================
-@use "@angular/material" as mat;
-@import "./mixins/scrollbar.mixin.scss";
-@import "./mixins/section.mixin.scss";
-@import "./mixins/autofill.mixin.scss";
-@import "./mixins/random.mixin.scss";
-@import "./mixins/elevation.mixin.scss";
-@import "./mixins/colors.mixin.scss";
-@import "./mixins/timepicker.mixin.scss";
-@import "./mixins/grids.mixin.scss";
-@import "./mixins/logo.mixin.scss";
+@use '@angular/material' as mat;
+@include mat.core();
+
+@import './mixins/scrollbar.mixin.scss';
+@import './mixins/section.mixin.scss';
+@import './mixins/autofill.mixin.scss';
+@import './mixins/random.mixin.scss';
+@import './mixins/elevation.mixin.scss';
+@import './mixins/colors.mixin.scss';
+@import './mixins/timepicker.mixin.scss';
+@import './mixins/grids.mixin.scss';
+@import './mixins/logo.mixin.scss';
 
 @mixin custom-components-theme($theme) {
-  @include scrollbar-theme($theme);
-  @include section-theme($theme);
-  @include autofill-theme($theme);
-  @include random-theme($theme);
-  @include elevation-theme($theme);
-  @include colors-theme($theme);
-  @include grids-theme($theme);
-  @include timepicker-theme($theme);
-  @include logo-theme($theme);
+    @include scrollbar-theme($theme);
+    @include section-theme($theme);
+    @include autofill-theme($theme);
+    @include random-theme($theme);
+    @include elevation-theme($theme);
+    @include colors-theme($theme);
+    @include grids-theme($theme);
+    @include timepicker-theme($theme);
+    @include logo-theme($theme);
 }
 
 // ======================================= THEME ==========================================
-@import "@angular/material/theming";
-@include mat.core();
 
 $primary: mat.$cyan-palette;
 $accent: mat.$cyan-palette;
@@ -34,23 +34,23 @@ $theme-light-primary: mat.define-palette($primary, 700, 400, 900);
 $theme-light-accent: mat.define-palette($accent, A700);
 $theme-light-warn: mat.define-palette($warning, A700);
 
-@import url("https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500&display=swap');
 $custom-typography: mat.define-typography-config(
-  $font-family: "Mali, cursive",
-  $headline-5: mat.define-typography-level(32px, 48px, 700),
-  $body-2: mat.define-typography-level(16px, 24px, 500),
+    $font-family: 'Mali, cursive',
+    $headline-5: mat.define-typography-level(32px, 48px, 700),
+    $body-2: mat.define-typography-level(16px, 24px, 500),
 );
 
 $theme-light: mat.define-light-theme(
-  (
-    color: (
-      primary: $theme-light-primary,
-      accent: $theme-light-accent,
-      warn: $theme-light-warn,
-    ),
-    typography: $custom-typography,
-    density: 0,
-  )
+    (
+        color: (
+            primary: $theme-light-primary,
+            accent: $theme-light-accent,
+            warn: $theme-light-warn,
+        ),
+        typography: $custom-typography,
+        density: 0,
+    )
 );
 
 @include mat.core-theme($theme-light);

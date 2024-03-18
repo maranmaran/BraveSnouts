@@ -11,7 +11,7 @@ import { HotToastService } from '@ngneat/hot-toast';
   template: `
     <div class="container flex flex-row justify-center items-center">
             <div class="section" id="email_clipboard">
-                app.hrabrenjuske@gmail.com
+                app.hrabrenjuske&#64;gmail.com
             </div>
             
             <button id="clipboard-btn" matTooltip="Kopiraj" [cdkCopyToClipboard]="value" class="cursor-pointer mat-elevation-z2" (cdkCopyToClipboardCopied)="onCopyFinished($event)">
