@@ -46,7 +46,7 @@ export const processImageFn = europeFunctions().runWith(runtimeOpts)
         // *.jpg
         const fileName = path.basename(object.name);
         // */something
-        const rootPath = path.dirname(filePath) == '.' ? "" : path.dirname(filePath);
+        const rootPath = path.dirname(filePath) === '.' ? "" : path.dirname(filePath);
         // */something/original/image.jpg -> image
         const noExtFileName = path.basename(fileName, path.extname(fileName));
 
@@ -54,7 +54,7 @@ export const processImageFn = europeFunctions().runWith(runtimeOpts)
         const tooLongPath = fullPath.length > 100;
         const rootPathIsLocatedInDirectoryNamedOriginal = rootPath.includes('/original/');
         const uploadedFilePathIsNotInDirectoryNamedOriginal = path.basename(filePath) !== 'original';
-        const notSupportedExtension = supportedExtensions.filter(x => object.contentType.includes(x)).length == 0;
+        const notSupportedExtension = supportedExtensions.filter(x => object.contentType.includes(x)).length === 0;
 
         const exitCondition = tooLongPath
             || notSupportedExtension
@@ -103,7 +103,7 @@ export const processImageFn = europeFunctions().runWith(runtimeOpts)
 
         const bucket = appStorage().bucket();
 
-        logger.log('Downloading image');
+        logger.log(`Downloading image ${fullPath}`);
         const originalLocalPath = `${tempFolder}/${fileName}.jpg`;
         await bucket.file(fullPath).download({ destination: originalLocalPath });
 
@@ -141,8 +141,8 @@ export const processImageFn = europeFunctions().runWith(runtimeOpts)
         const thumbImage = `${tempFolder}/${noExtFileName}_thumb.jpg`;
         const compressedImage = `${tempFolder}/${noExtFileName}_compressed.jpg`;
 
-        const thumbDestination = `${rootPath}/thumb/${noExtFileName}_thumb`;
-        const compressedDest = `${rootPath}/compressed/${noExtFileName}_compressed`;
+        const thumbDestination = `${rootPath}/thumb/${noExtFileName}_thumb.jpg`;
+        const compressedDest = `${rootPath}/compressed/${noExtFileName}_compressed.jpg`;
 
         const processedMetadata = { processedByFirebaseFunction: true, firebaseFunctionName: 'processImageFunction' };
         const uploadOptions = {

@@ -21,6 +21,8 @@
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^16.1.1",
     "@contentful/rich-text-types": "^16.2.1",
+    "@google-cloud/billing": "^4.3.0",
+    "@google-cloud/compute": "^4.3.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/handlebars": "^4.1.0",
     "@types/lodash": "^4.14.196",
@@ -51,6 +53,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.6.0",
@@ -65,6 +68,12 @@
     "shx": "^0.3.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
+  },
+  "overrides": {
+    "stream-shift": "1.0.2"
+  },
+  "overridesComments": {
+    "stream-shift": "temp problem https://github.com/googleapis/nodejs-storage/issues/2368 on Node 20"
   },
   "private": true
 }

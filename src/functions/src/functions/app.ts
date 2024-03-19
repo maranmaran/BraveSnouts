@@ -40,7 +40,8 @@ function initialize(): AppConfig {
         firebaseConfig.projectId = process.env.GCLOUD_PROJECT;
         firebaseConfig.storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
     }
-    console.log('App initialize config', firebaseConfig);
+
+    functions.logger.info('App initialize config', firebaseConfig);
 
     const adminL = admin.initializeApp(firebaseConfig);
 

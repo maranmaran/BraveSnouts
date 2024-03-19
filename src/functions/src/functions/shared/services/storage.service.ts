@@ -30,7 +30,7 @@ export class StorageService {
     }
 
     private static isTrue(value) {
-        return value == true || value == "true";
+        return value === true || value === "true";
     }
 
     async recursiveDelete(prefix: string) {
