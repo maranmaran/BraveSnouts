@@ -84,5 +84,5 @@ jobs:
         with:
           args: deploy --only functions --project dev
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_PROD }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN_DEV }}
           PROJECT_PATH: "./src/functions"
