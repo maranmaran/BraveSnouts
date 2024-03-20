@@ -160,9 +160,9 @@ describe('process image tests', async () => {
 });
 
 function assertProcessedImage(rootPath: string, name: string, files: string[]) {
-    assert.isTrue(files.filter(x => x == `${rootPath}original/${name}`).length == 1, 'should have 1 original');
-    assert.isTrue(files.filter(x => x == `${rootPath}thumb/${name}_thumb`).length == 1, 'should have 1 thumb');
-    assert.isTrue(files.filter(x => x == `${rootPath}compressed/${name}_compressed`).length == 1, 'should have 1 compressed');
+    assert.isTrue(files.filter(x => x == `${rootPath}original/${name}.jpg`).length == 1, 'should have 1 original');
+    assert.isTrue(files.filter(x => x == `${rootPath}thumb/${name}_thumb.jpg`).length == 1, 'should have 1 thumb');
+    assert.isTrue(files.filter(x => x == `${rootPath}compressed/${name}_compressed.jpg`).length == 1, 'should have 1 compressed');
 }
 
 async function checkForInfiniteTrigger(originalCount: number) {
