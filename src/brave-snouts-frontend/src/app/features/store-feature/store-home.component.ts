@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { StoreApi } from './store.api';
 
 @Component({
@@ -47,7 +48,13 @@ export class StoreHomeComponent {
     get renderBack() { return this.router.url.startsWith('/merch/proizvod') || this.atCheckout }
 
     navigateBack() {
-        history.back();
+        const isAppUrl = document.referrer.indexOf(environment.baseUrl) != -1;
+
+        if (isAppUrl) {
+            history.back();
+        } else {
+            this.router.navigate(['merch']);
+        }
     }
 
     onTabChange(value: string) {

@@ -1,30 +1,12 @@
-import { Inject, Injectable } from "@angular/core";
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { from, of } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 import { AuthService } from "src/business/services/auth.service";
 
-@Injectable({ providedIn: 'root' })
-export class AdminGuard implements CanActivate {
-
-  constructor(
-    private  authService: AuthService,
-  ) {
-  }
-
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-
-    return this.authService.isAdmin$.pipe(
-        switchMap(result => {
-
-            if(!result) {
-                return of(false);
-            }
-            
-            return of(true);
-        })
-    );
-
-  }
-
+export const adminGuard: CanActivateFn = async (route, state) => {
+  const router = inject(Router);
+  const authSvc = inject(AuthService);
+  return await firstValueFrom(authSvc.isAdmin$)
+    ? true
+    : router.navigate(['']);
 }

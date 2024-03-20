@@ -1,65 +1,46 @@
 
-import { Injectable } from "@angular/core";
-import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { Observable, of } from "rxjs";
-import { map, switchMap, take } from "rxjs/operators";
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 import { Auction } from "src/business/models/auction.model";
 import { getAuctionState } from "src/business/services/auction.service";
 import { AuthService } from "src/business/services/auth.service";
 import { AuctionRepository } from "src/business/services/repositories/auction.repository";
 
-@Injectable({ providedIn: 'root' })
-export class AuctionActiveGuard implements CanActivate {
+export const auctionActiveGuard: CanActivateFn = async (route, state) => {
+  const router = inject(Router);
+  const authSvc = inject(AuthService);
+  const auctionRepo = inject(AuctionRepository);
 
+  const auctionId = route.paramMap.get('id') || route.paramMap.get('auctionId');
 
-  private readonly auctionRepo: AuctionRepository;
+  const allow = () => true;
+  const deny = () => router.navigate(['/aukcije']);
+  const isAuctionActive = (auction: Auction) => getAuctionState(auction) == 'active';
 
-  constructor(
-    private router: Router,
-    private readonly firestore: AngularFirestore,
-    private readonly authSvc: AuthService,
-  ) {
-    this.auctionRepo = new AuctionRepository(this.firestore);
+  if (!auctionId) {
+    return deny();
   }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  const isAdmin = await firstValueFrom(authSvc.isAdmin$);
 
-    let auction = this.router.getCurrentNavigation().extras.state?.auction as Auction;
-    let auctionId = next.paramMap.get('id') || next.paramMap.get('auctionId');
-
-    if (!auction && !auctionId) {
-      return this.router.navigate(['/aukcije'])
-    }
-
-    return this.authSvc.isAdmin$.pipe(
-      switchMap(admin => {
-        // admin can navigate to any state of auction
-        // be it future, active or expired
-        if (admin) return of(true);
-
-        // if not admin do regular check
-
-        if (!auction) {
-          let auction$ = this.getAuction(auctionId);
-
-          return auction$.pipe(map(auction => getAuctionState(auction) == 'active'));
-        }
-
-        return of(getAuctionState(auction) == 'active');
-      }),
-      switchMap(canNavigate => {
-        if (canNavigate) return of(true);
-
-        return this.router.navigate(['/aukcije']);
-      })
-    );
+  // admin can navigate to any state of auction
+  // be it future, active or expired
+  if (isAdmin) {
+    return allow();
   }
 
-  getAuction(id: string): Observable<Auction> {
-    return this.auctionRepo.getOne(id).pipe(take(1));
-  }
-
+  // if not admin do regular check
+  const auction = await getAuction(auctionId, router, auctionRepo);
+  return isAuctionActive(auction) ? allow() : deny();
 }
 
+const getAuction = async (auctionId: string, router: Router, auctionRepo: AuctionRepository) => {
+  const auction = router.getCurrentNavigation().extras.state?.auction as Auction;
+  if (auction) {
+    return auction;
+  }
+
+  return await firstValueFrom(auctionRepo.getOne(auctionId));
+}
 

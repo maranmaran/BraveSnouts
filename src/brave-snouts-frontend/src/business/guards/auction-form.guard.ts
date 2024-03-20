@@ -1,28 +1,18 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { of } from "rxjs";
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
 
-@Injectable({ providedIn: 'root' })
-export class AuctionFormGuard implements CanActivate {
+export const auctionIdGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
 
-  constructor(
-    private router: Router,
-  ) {
+  const data = router.getCurrentNavigation().extras.state;
+
+  if (!data) {
+    return router.navigate(['/aukcije'])
   }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-
-    let data = this.router.getCurrentNavigation().extras.state;
-
-    if (!data) {
-      return this.router.navigate(['/aukcije'])
-    }
-
-    if (!data.auction || !data.items || !data.action) {
-      return this.router.navigate(['/aukcije'])
-    }
-
-    return of(true);
+  if (!data.auction || !data.items || !data.action) {
+    return router.navigate(['/aukcije'])
   }
 
+  return true;
 }

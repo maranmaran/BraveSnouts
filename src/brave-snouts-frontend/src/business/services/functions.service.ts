@@ -27,13 +27,13 @@ export class FunctionsService {
   }
 
   updateAdoptionAnimals() {
-    const callable = this.functions.httpsCallable('shop-setAdoptionAnimalsFn');
+    const callable = this.functions.httpsCallable('adoption-setAdoptionAnimals');
 
     return callable({ time: new Date() });
   }
 
   updateBlog() {
-    const callable = this.functions.httpsCallable('shop-setBlogPostsFn');
+    const callable = this.functions.httpsCallable('blog-setBlogPosts');
 
     return callable({ time: new Date() });
   }

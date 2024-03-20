@@ -51,7 +51,7 @@ export const setBlogPostsFn = europeFunctions().https
             post.hero = (await uploadToStorage(post.slug, [post.hero as AssetFile]))[0];
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.create(appStore().doc(`blog/${post.slug}`), post)
+            writer.set(appStore().doc(`blog/${post.slug}`), post)
         }
 
         await writer.close();

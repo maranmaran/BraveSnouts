@@ -41,7 +41,7 @@ export const setAdoptionAnimalsFn = europeFunctions().https
             animal.images = await uploadToStorage(animal.slug, animal.images as AssetFile[]);
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.create(appStore().doc(`adoption/${animal.slug}`), animal)
+            writer.set(appStore().doc(`adoption/${animal.slug}`), animal)
         }
 
         await writer.close();

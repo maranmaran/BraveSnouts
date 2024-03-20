@@ -50,9 +50,9 @@ import { RouterModule } from '@angular/router'
     template: `
         <mat-toolbar color="primary" class="h-10 grid grid-cols-5 justify-center items-center gap-4">
             <ng-container *ngTemplateOutlet="navBtn; context: { route: '/', name: 'Početna' }" ></ng-container>
-            <ng-container *ngTemplateOutlet="navBtn; context: { route: '/vnext/blog', name: 'Blog' }" ></ng-container>
-            <ng-container *ngTemplateOutlet="navBtn; context: { route: '/vnext/merch', name: 'Merch' }" ></ng-container>
-            <ng-container *ngTemplateOutlet="navBtn; context: { route: '/vnext/udomi', name: 'Udomi' }" ></ng-container>
+            <ng-container *ngTemplateOutlet="navBtn; context: { route: '/blog', name: 'Blog' }" ></ng-container>
+            <ng-container *ngTemplateOutlet="navBtn; context: { route: '/merch', name: 'Merch' }" ></ng-container>
+            <ng-container *ngTemplateOutlet="navBtn; context: { route: '/udomi', name: 'Udomi' }" ></ng-container>
             <ng-container *ngTemplateOutlet="navBtn; context: { route: '/aukcije', name: 'Aukcije' }" ></ng-container>
         </mat-toolbar>
 

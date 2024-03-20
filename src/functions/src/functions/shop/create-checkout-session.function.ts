@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import { Stripe } from "stripe";
 import { appConfig, europeFunctions } from "../app";
 
 interface LineItem {
@@ -44,7 +44,7 @@ async function createCheckoutSessionId(cart: Cart) {
             price_data: {
                 product_data: {
                     name: c.product.name,
-                    description: "Test",
+                    description: "Test description",
                     images: [c.product.image]
                 },
                 unit_amount: c.price * 100,
@@ -68,5 +68,10 @@ async function createCheckoutSessionId(cart: Cart) {
             },
             submit: { message: 'Doniraj!' }
         },
+        shipping_address_collection: {
+            allowed_countries: [
+                'HR',
+            ]
+        }
     });
 } 

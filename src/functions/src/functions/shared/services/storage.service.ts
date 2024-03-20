@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logger } from 'firebase-functions';
 import * as fs from 'fs';
 import { mkdirp } from "mkdirp";
 import * as os from 'os';
@@ -46,23 +47,26 @@ export class StorageService {
         const localTemp = path.join(os.tmpdir(), "external-images");
         const localFilePath = `${localTemp}/${external.name}`;
         const noExtFileName = path.basename(external.name, path.extname(external.name));
+        logger.log(external);
 
         await mkdirp(localTemp);
         fs.writeFileSync(localFilePath, image);
 
         // upload to destination
 
-        const pathOrig = `${external.destination}/original/${noExtFileName}_original`;
+        const pathOrig = `${external.destination}/original/${noExtFileName}_original.jpg`;
         const res = await appStorage().bucket().upload(localFilePath, { destination: pathOrig, ...this.uploadOptions });
 
         // make firebase file model
         const url = decodeURIComponent(await res[0].publicUrl()); // this is gcloud link...
 
-        const pathThumb = decodeURIComponent(pathOrig).replace('/original/', '/thumb/').replace('_original', '_thumb');
-        const fUrlThumb = decodeURIComponent(url).replace('/original/', '/thumb/').replace('_original', '_thumb');
+        logger.error(url);
 
-        const pathComp = decodeURIComponent(pathOrig).replace('/original/', '/compressed/').replace('_original', '_compressed');
-        const fUrlComp = decodeURIComponent(url).replace('/original/', '/compressed/').replace('_original', '_compressed');
+        const pathThumb = decodeURIComponent(pathOrig).replace('/original/', '/thumb/').replace('_original', '_original_thumb');
+        const fUrlThumb = decodeURIComponent(url).replace('/original/', '/thumb/').replace('_original', '_original_thumb');
+
+        const pathComp = decodeURIComponent(pathOrig).replace('/original/', '/compressed/').replace('_original', '_original_compressed');
+        const fUrlComp = decodeURIComponent(url).replace('/original/', '/compressed/').replace('_original', '_original_compressed');
 
         const firebaseFile = <FirebaseFile>{
             name: external.name,

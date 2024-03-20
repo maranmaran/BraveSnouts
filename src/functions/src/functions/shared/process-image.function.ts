@@ -51,7 +51,7 @@ export const processImageFn = europeFunctions().runWith(runtimeOpts)
         const noExtFileName = path.basename(fileName, path.extname(fileName));
 
         // Exit conditions, beware of loops
-        const tooLongPath = fullPath.length > 100;
+        const tooLongPath = fullPath.length > 200;
         const rootPathIsLocatedInDirectoryNamedOriginal = rootPath.includes('/original/');
         const uploadedFilePathIsNotInDirectoryNamedOriginal = path.basename(filePath) !== 'original';
         const notSupportedExtension = supportedExtensions.filter(x => object.contentType.includes(x)).length === 0;

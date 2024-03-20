@@ -1,25 +1,9 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { of } from "rxjs";
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
 
-
-@Injectable({ providedIn: 'root' })
-export class AuctionIdGuard implements CanActivate {
-
-  constructor(
-    private router: Router,
-  ) {
-  }
-
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-
-    let auctionId = next.paramMap.get('id');
-
-    if (!auctionId) {
-      return this.router.navigate(['/aukcije'])
-    }
-
-    return of(true);
-  }
-
+export const auctionIdGuard: CanActivateFn = async (route, state) => {
+  const router = inject(Router);
+  return route.paramMap.get('id')
+    ? true
+    : router.navigate(['/aukcije'])
 }

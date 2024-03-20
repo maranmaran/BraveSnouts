@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { HotToastService } from "@ngxpert/hot-toast";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js/pure";
 import { BehaviorSubject, first, firstValueFrom, map, of, shareReplay, tap } from "rxjs";
 import { FirebaseFile } from "src/business/models/firebase-file.model";
 import { environment } from "src/environments/environment";
@@ -167,9 +167,9 @@ export class StoreApi {
         // When the customer clicks on the button, redirect them to Checkout.
         const stripe = await loadStripe(environment.stripe.publishableKey);
 
-        const sessionId = await firstValueFrom(this.functions.httpsCallable('shop-createCheckoutSession')(cart));
+        const checkoutSession = await firstValueFrom(this.functions.httpsCallable('shop-createCheckoutSession')(cart));
 
-        const { error } = await stripe.redirectToCheckout({ sessionId });
+        const { error } = await stripe.redirectToCheckout({ sessionId: checkoutSession.id });
 
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
