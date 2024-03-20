@@ -47,7 +47,6 @@ export class StorageService {
         const localTemp = path.join(os.tmpdir(), "external-images");
         const localFilePath = `${localTemp}/${external.name}`;
         const noExtFileName = path.basename(external.name, path.extname(external.name));
-        logger.log(external);
 
         await mkdirp(localTemp);
         fs.writeFileSync(localFilePath, image);
