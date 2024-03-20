@@ -15,7 +15,7 @@ describe('process image tests', async () => {
     it('should process root original image', async () => {
         await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'image/jpeg',
-            destination: 'original/cup'
+            destination: 'original/cup.jpg'
         });
         await wait(defWaitS);
 
@@ -33,7 +33,7 @@ describe('process image tests', async () => {
     it('should process nested original image', async () => {
         await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'image/jpeg',
-            destination: 'something/original/cup'
+            destination: 'something/original/cup.jpg'
         });
         await wait(defWaitS);
 
@@ -51,14 +51,15 @@ describe('process image tests', async () => {
     it('should exit when processing non original image', async () => {
         await appStorage().bucket().upload('test/assets/cup.jpg', {
             contentType: 'image/jpeg',
-            destination: 'nonoriginal/cup'
+            destination: 'nonoriginal/cup.jpg'
         });
         await wait(defWaitS);
 
         const response = await appStorage().bucket().getFiles();
         const files = (response.flatMap(x => x) as File[]).map(x => x.name);
 
-        assert.isTrue(files.length == 1 && files[0] == 'nonoriginal/cup', 'no other images should be present');
+        assert.isTrue(files.length == 1, 'should be single image');
+        assert.isTrue(files[0] == 'nonoriginal/cup.jpg', 'no other than original should be present');
 
         await checkForInfiniteTrigger(1);
     }).timeout(defTimeoutS)
