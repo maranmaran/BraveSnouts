@@ -1,0 +1,9 @@
+.container {
+    height: unset !important;
+}
+
+virtual-scroller {
+    height: auto;
+    min-height: 470px;
+    width: 100%;
+}

@@ -1,0 +1,9 @@
+.item {
+  min-width: 30rem;
+}
+
+@media (max-width: 600px) {
+  .item {
+    min-width: 100%;
+  }
+}

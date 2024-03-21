@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
+    "outDir": "lib",
+    "strict": false,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "strictPropertyInitialization": false,
+    // "composite": true // enable to reference in utility scripts
+  },
+  "compileOnSave": true,
+  "include": [
+    "src/**/*",
+    "test/**/*",
+  ]
+}

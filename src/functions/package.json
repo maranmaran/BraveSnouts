@@ -1,0 +1,79 @@
+{
+  "name": "functions",
+  "scripts": {
+    "kill:ports": "npx kill-port 4000 5000 50001 8080 8085 9000 9099 9150 9199 9229",
+    "lint": "eslint \"src/**/*\"",
+    "test": "mocha 'test/tests/*.spec.ts'",
+    "test:emulators": "npm run build:test && firebase emulators:exec \"npm run env:test && npm run test\"",
+    "build": "tsc && npm run kill:ports",
+    "build:test": "npm run build && npm run env:test",
+    "build:dev": "npm run build && npm run env:dev",
+    "env:test": "firebase use test && firebase functions:config:get > .runtimeconfig.json",
+    "env:dev": "firebase use dev && firebase functions:config:get > .runtimeconfig.json",
+    "serve:dev": "npm run build:dev && firebase emulators:start --inspect-functions",
+    "serve:test": "npm run build:test && firebase emulators:start --inspect-functions",
+    "deploy:dev": "npm run build:dev && firebase deploy --only functions"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/src/index.js",
+  "dependencies": {
+    "@contentful/rich-text-html-renderer": "^16.1.1",
+    "@contentful/rich-text-types": "^16.2.1",
+    "@google-cloud/billing": "^4.3.0",
+    "@google-cloud/compute": "^4.3.0",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/handlebars": "^4.1.0",
+    "@types/lodash": "^4.14.196",
+    "@types/mjml": "^4.7.1",
+    "@types/nodemailer": "^6.4.9",
+    "axios": "^1.4.0",
+    "contentful": "^10.4.0",
+    "cors": "^2.8.5",
+    "cp": "^0.2.0",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.7.0",
+    "form-data": "^4.0.0",
+    "google-auth-library": "^9.0.0",
+    "googleapis": "^126.0.1",
+    "handlebars": "^4.7.8",
+    "lodash": "^4.17.21",
+    "mailgun.js": "^9.2.0",
+    "mjml": "^4.14.1",
+    "mkdirp": "^3.0.1",
+    "nodemailer": "^6.9.4",
+    "nodemailer-express-handlebars": "^6.1.0",
+    "path": "^0.12.7",
+    "sharp": "^0.32.4",
+    "stripe": "^12.17.0",
+    "uuid": "^9.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "@types/chai": "^4.3.6",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.6.0",
+    "@types/sinon": "^10.0.16",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "chai": "^4.3.8",
+    "eslint": "^8.46.0",
+    "eslint-plugin-import": "^2.28.0",
+    "firebase-functions-test": "^3.1.0",
+    "mocha": "^10.2.0",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "overrides": {
+    "stream-shift": "1.0.2"
+  },
+  "overridesComments": {
+    "stream-shift": "temp problem https://github.com/googleapis/nodejs-storage/issues/2368 on Node 20"
+  },
+  "private": true
+}

@@ -1,0 +1,7 @@
+@media (max-width: 600px) {
+
+    // Extra tabs are shown in toolbar on mobile phone, hence 96px
+    .container {
+        height: calc(100% - 96px - 1rem) !important;
+    }
+}

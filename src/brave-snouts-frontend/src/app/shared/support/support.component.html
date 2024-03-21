@@ -1,0 +1,13 @@
+<div class="flex flex-col justify-center items-start">
+    <div class="w-full flex flex-row justify-between">
+        <div class="text-xl ml-3 mt-3 font-bold">Pomoć</div>
+
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon> close </mat-icon>
+        </button>
+    </div>
+
+    <div class="flex flex-col self-center gap-4 dialog-body p-3 mb-5">
+        <app-email-copy></app-email-copy>
+    </div>
+</div>

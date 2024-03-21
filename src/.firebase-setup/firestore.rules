@@ -1,0 +1,112 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	
+    function isAdmin() {
+    	return request.auth != null && 
+      			 get(/databases/$(database)/documents/admins/$(request.auth.uid)).data != null;
+    }
+    
+    function isBidGreater() {
+    	return request.resource.data.bid != null && request.resource.data.bid > resource.data.bid;
+    }
+    
+    function checkIfWinnerUpdate() {
+    	return request.resource.data.winner != null;
+    }
+    
+    // Auction items
+    // * everyone can update items and their bids
+    // * evaluate item bid upon update
+    // * allow admin to make updates to auction items
+    match /auctions/{auction}/items/{item} {
+    	allow read;
+      allow create: if request.auth != null;
+      //allow update: if isAdmin() || request.resource.data.bid > resource.data.bid;
+      allow update: if isAdmin() || checkIfWinnerUpdate() || isBidGreater();
+      allow delete: if isAdmin();
+    }
+    
+    // Auction winners
+    match /auctions/{auction}/winners/{winner} {
+    	allow read: if isAdmin();
+      allow write: if isAdmin() || request.resource.data.deliveryChoice != null;
+    }
+    
+    // Auctions 
+    // * only admins can write
+    // * everyone can read
+    match /auctions/{auction} {
+    	allow read;
+      allow write: if isAdmin(); 
+      allow delete: if isAdmin();
+    }
+    
+    // Winners 
+    // * only admins can read and write
+    match /winners/{winner} {
+    	allow read: if isAdmin();
+      allow write: if isAdmin(); 
+      allow delete: if isAdmin();
+    }
+    
+    // User bids 
+    // * everyone authenticated can write
+    match /bids/{bid} {
+    	allow read;
+      allow write: if request.auth != null;
+      allow delete: if isAdmin();
+    }
+    
+    // Admins
+    // * anyone can read
+    match /admins/{adminId} {
+    	allow read;
+    }
+    
+    match /config/{configId} {
+    	allow read;
+    }
+    
+    // Users 
+    match /users/{user} {
+    	allow read;
+      allow write: if request.auth != null; 
+    }
+    
+    // Tracked items  
+    match /users/{user}/tracked-items/{item} {
+    	allow read: if request.auth != null;
+      allow write: if request.auth != null; 
+    }
+    
+    // Adoption 
+    // * only admins can write
+    // * everyone can read
+    match /adoption/{adoptee} {
+    	allow read;
+      allow write: if isAdmin(); 
+      allow delete: if isAdmin();
+    }
+    
+    // Shop 
+    // * only admins can write
+    // * everyone can read
+    match /shop/{product} {
+    	allow read;
+      allow write: if isAdmin(); 
+      allow delete: if isAdmin();
+    }
+    
+    // Blog 
+    // * only admins can write
+    // * everyone can read
+    match /blog/{post} {
+    	allow read;
+      allow write: if isAdmin(); 
+      allow delete: if isAdmin();
+    }
+    
+  }
+  
+
+}

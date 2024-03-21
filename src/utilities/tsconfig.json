@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es2022",
+    "module": "commonjs",
+    "strict": false,
+    "strictPropertyInitialization": false,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "references": [
+    // {
+    //   "path": "../functions",
+    // }
+  ]
+}

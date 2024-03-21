@@ -1,0 +1,27 @@
+<div class="container flex flex-col justify-center items-start">
+  <button mat-icon-button class="self-end" (click)="onClose()">
+    <mat-icon> close </mat-icon>
+  </button>
+
+  <div class="flex flex-col gap-2 w-full mb-4">
+    <mat-form-field
+      *ngFor="let control of handoverDetails.controls; index as i"
+      class="flex-[2_1_100%]"
+    >
+      <mat-label>Detalji preuzimanja</mat-label>
+      <input matInput [formControl]="$any(handoverDetails.controls[i])" />
+    </mat-form-field>
+    <button class="self-end" mat-flat-button color="warn" (click)="onAdd()">
+      Dodaj mjesto preuzimanja
+    </button>
+    <button
+      class="self-end"
+      mat-flat-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!handoverDetails.valid"
+    >
+      Spremi
+    </button>
+  </div>
+</div>

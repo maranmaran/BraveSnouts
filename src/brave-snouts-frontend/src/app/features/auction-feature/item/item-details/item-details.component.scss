@@ -1,0 +1,36 @@
+.auction-item {
+  @apply flex flex-col gap-4 m-2;
+
+  .auction-item-title {
+    @apply relative flex flex-row justify-between items-center gap-4 h-16
+  }
+
+  .auction-item-media {
+    // height: 400px;
+    height: 200px;
+    display: flex;
+
+    img,
+    video {
+      width: 100%;
+    }
+  }
+
+  .auction-item-description {
+    @apply m-0 overflow-hidden max-h-11;
+  }
+
+  .auction-item-actions {
+    @apply flex flex-col items-center justify-center;
+
+    .auction-item-actions_row {
+      @apply w-full mb-3 flex flex-row flex-nowrap justify-between items-center px-2;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .mat-mdc-card-image {
+    height: 200px;
+  }
+}

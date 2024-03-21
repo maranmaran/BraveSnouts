@@ -1,0 +1,28 @@
+@use "@angular/material" as mat;
+@import "./material.theme.scss";
+
+.mat-mdc-form-field {
+  width: 100% !important;
+}
+
+.mat-mdc-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-mdc-card-header {
+  flex-shrink: 0;
+}
+
+.mat-mdc-card-content {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.mat-mdc-card-actions {
+  margin-right: 0;
+}
+
+mat-card {
+  padding: 16px;
+}

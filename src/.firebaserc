@@ -1,0 +1,8 @@
+{
+    "projects": {
+        "test": "bravesnoutstest",
+        "dev": "bravesnoutsdev",
+        "prod": "bravesnoutsprod",
+        "default": "bravesnoutsdev"
+    }
+}

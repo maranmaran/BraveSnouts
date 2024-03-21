@@ -1,0 +1,19 @@
+<div class="container flex flex-col justify-center items-center">
+  <button mat-icon-button class="self-end" (click)="onClose(false)">
+    <mat-icon> close </mat-icon>
+  </button>
+
+  <div class="mb-5">
+    {{ data.text }}
+  </div>
+
+  <div class="mb-3 w-[80%] flex flex-row gap-4 justify-between items-center">
+    <button mat-stroked-button color="warn" (click)="onClose(false)">
+      {{ data.no }}
+    </button>
+
+    <button mat-flat-button color="primary" (click)="onClose(true)">
+      {{ data.yes }}
+    </button>
+  </div>
+</div>

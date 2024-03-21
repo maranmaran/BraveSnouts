@@ -1,0 +1,26 @@
+:host {
+  @apply flex justify-center items-center;
+}
+
+img,
+video {
+  width: 100%;
+}
+
+.single-gallery-image {
+  // object-fit: cover;
+  object-fit: contain;
+}
+
+#placeholder {
+  object-fit: contain !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+@media (max-width: 900px) {
+  #placeholder {
+    max-height: 150px !important;
+    max-width: 150px !important;
+  }
+}

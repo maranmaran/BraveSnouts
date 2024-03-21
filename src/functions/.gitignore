@@ -1,0 +1,27 @@
+# Compiled JavaScript files
+**/*.js
+**/*.js.map
+
+# Except the ESLint config file
+!.eslintrc.js
+.runtimeconfig.json
+
+# TypeScript v1 declaration files
+typings/
+
+# Node.js dependency directory
+node_modules/
+
+**/key.json
+**/keydev.json
+**/keyprod.json
+**/prodkey.json
+**/devkey.json
+**/.env
+
+/data/images
+/data/transformed-images
+
+**/*key.json
+**/*keydev.json
+**/*keyprod.json

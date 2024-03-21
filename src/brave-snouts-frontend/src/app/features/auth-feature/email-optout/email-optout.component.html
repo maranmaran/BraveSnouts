@@ -1,0 +1,17 @@
+<div *ngIf="bootstrap" class="container">
+  <h1 class="mb-5">Email notifikacije</h1>
+
+  <div class="controls-grid">
+    <div>Informacije i najave aukcija:</div>
+    <mat-slide-toggle
+      [formControl]="auctionAnnouncements"
+      color="warn"
+    ></mat-slide-toggle>
+
+    <div>Mail o nadmašenoj ponudi:</div>
+    <mat-slide-toggle
+      [formControl]="bidUpdates"
+      color="warn"
+    ></mat-slide-toggle>
+  </div>
+</div>

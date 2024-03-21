@@ -1,0 +1,63 @@
+@mixin logo-theme($theme) {
+  .logo-base {
+    cursor: pointer;
+
+    z-index: 100 !important;
+    position: relative;
+    top: 35px;
+
+    border-radius: 50%;
+    border: 5px solid white;
+
+    height: 75px;
+    width: 75px;
+
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -o-user-select: none !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+    -webkit-tap-highlight-color: none !important;
+  }
+
+  $static-logo: url("/assets/snouts-logo/njuske-original-krug-compressed.jpg");
+  $animated-logo: url("/assets/snouts-logo/njuske-original-animated-compressed.gif");
+
+  .logo-animated {
+    @extend .logo-base;
+    background-image: $animated-logo, $static-logo;
+    background-size: contain;
+  }
+
+  .logo {
+    @extend .logo-base;
+    background-image: $static-logo;
+    background-size: contain;
+
+    .spinner {
+      position: relative;
+      top: -6.5px;
+      left: -6.5px;
+      z-index: 100000;
+
+      --spinner-size: 87.5px;
+
+      width: var(--spinner-size) !important;
+      height: var(--spinner-size) !important;
+
+      svg {
+        width: var(--spinner-size) !important;
+        height: var(--spinner-size) !important;
+
+        circle {
+          stroke-width: 7px !important;
+        }
+      }
+    }
+
+    &:hover {
+      @extend .logo-animated;
+    }
+  }
+}

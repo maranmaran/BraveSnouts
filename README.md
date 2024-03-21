@@ -36,12 +36,11 @@ Application only requires name, mail and profile picture permissions.
 If you are the current highest bidder you will have a star on the item that marks you the highest bidder.
 Application keeps track of bids and will notify you via email when you are outbidded. You can opt out of this.
 
-Once the auction is done, app will automatically send email with item winnings to highest bidders along with payment information.
-In development: Inform facebook authenticated users via facebook messenger.
+Once the auction is done, app will automatically send email with item winnings to highest bidders along with payment information and distribute information between parties along with pickup and handover organization.
 
 # Developer notes
 
-This app is developed with angular 11+ and firebase as backend server / database.
+This app is developed with angular 15 and firebase as backend server / database.
 It consumes firebase firestore, auth, storage, functions.
 
 ## Deployment

@@ -1,0 +1,96 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'node_modules/@ngxpert/hot-toast/src/styles/styles.scss';
+@import './material/material.styles.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+.center {
+    @apply flex justify-center items-center;
+}
+
+.img-fluid {
+    @apply h-full w-auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 0 !important;
+}
+
+img,
+video {
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -o-user-select: none !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+    -webkit-tap-highlight-color: none !important;
+}
+
+button {
+    cursor: pointer !important;
+}
+
+// 3rd PARTY LIBRARY
+lightbox {
+    gallery {
+        background-color: black !important;
+    }
+}
+
+gallery {
+    background-color: white !important;
+}
+
+// 3rd PARTY LIBRARY
+
+label {
+    padding-bottom: 0 !important;
+}
+
+.container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 1rem;
+    height: calc(100% - 40px - 1rem) !important; // because of toolbar height
+}
+
+.btn-small {
+    font-size: 10px !important;
+}
+
+.restrict-height-handover {
+    .mat-mdc-dialog-container {
+        max-height: 60vh !important;
+    }
+}
+
+.truncated {
+    display: block;
+    white-space: nowrap;
+    /* forces text to single line */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    min-height: 200px !important;
+}

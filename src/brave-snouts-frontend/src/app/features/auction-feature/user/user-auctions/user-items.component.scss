@@ -1,0 +1,43 @@
+virtual-scroller {
+    height: 100%;
+    width: 100%;
+}
+
+.custom-height {
+    height: 615px !important;
+    padding-bottom: 20px;
+}
+
+@media(max-width: 600px) {
+    .custom-height {
+        height: 170px !important;
+        padding-bottom: 20px;
+
+        app-item-media {
+            max-height: 170px !important;
+            max-width: 170px !important;
+        }
+    }
+}
+
+.best-bid-label {
+    position: relative;
+    bottom: 1rem;
+    top: unset;
+    font-size: 9px;
+}
+
+
+#won-items,
+#outbidded-items {
+    .auction-item {
+        width: 430px !important;
+    }
+}
+
+#won-items-gallery,
+#outbidded-items-gallery {
+    app-item-media {
+        margin-right: 10px;
+    }
+}

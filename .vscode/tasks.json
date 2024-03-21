@@ -1,0 +1,66 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile-utilities",
+            "command": "npm run build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/src/utilities"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "compile-function-tests",
+            "command": "npm run build:test",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/src/functions",
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "compile-function-tests-with-emulators",
+            "command": "npm run serve:test",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/src/functions",
+            },
+            "isBackground": true,
+            // This task is run before some debug tasks.
+            // Problem is, it's a watch script, and since it never exits, VSCode
+            // complains. All this is needed so VSCode just lets it run.
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": "Emulator Hub running",
+                    }
+                }
+            ]
+        },
+        {
+            "label": "terminate-tasks",
+            "command": "echo ${input:terminate}",
+            "type": "shell",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "terminate",
+            "type": "command",
+            "command": "workbench.action.tasks.terminate",
+            "args": "terminateAll"
+        }
+    ],
+}

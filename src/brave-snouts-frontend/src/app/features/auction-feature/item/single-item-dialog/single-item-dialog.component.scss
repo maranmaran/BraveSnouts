@@ -1,0 +1,28 @@
+.item {
+  min-width: 30rem;
+}
+
+@media (max-width: 600px) {
+  .item {
+    min-width: 100%;
+  }
+}
+
+.container {
+  position: relative;
+
+  width: 100%;
+
+  app-single-item {
+    width: 100%;
+    .container {
+      width: 100%;
+      app-item-details {
+        width: 100%;
+        .auction-item {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

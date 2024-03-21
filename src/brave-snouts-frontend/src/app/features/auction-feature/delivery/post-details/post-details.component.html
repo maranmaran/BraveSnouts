@@ -1,0 +1,11 @@
+<div class="container flex flex-col justify-start items-center">
+  <button mat-icon-button class="self-end" (click)="onClose()">
+    <mat-icon> close </mat-icon>
+  </button>
+
+  <div class="mb-4 flex flex-col gap-4">
+    <label><b>Ime:</b> {{ data.fullName }}</label>
+    <label><b>Adresa:</b> {{ data.address }}</label>
+    <label><b>Telefon:</b> {{ data.phoneNumber }}</label>
+  </div>
+</div>
