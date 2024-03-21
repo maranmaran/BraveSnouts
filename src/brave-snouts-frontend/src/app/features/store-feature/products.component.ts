@@ -33,7 +33,9 @@ import { Product, StoreApi } from './store.api';
                   class="rounded-full h-4 w-4 m-2 border-[0.2px] border-solid border-gray-400 shadow-md" 
                   [ngStyle]="{ backgroundColor: color.colorCode }"
                 ></span>
-              </div> 
+              </div>
+      
+              <button class="w-full absolute bottom-0 opacity-0 hidden group-hover:block group-hover:opacity-100 transition-all duration-[250ms]" mat-raised-button (click)="navigate(product)">Kupi ({{ product.price }} €)</button>
             </div>  
         </mat-card>
 
