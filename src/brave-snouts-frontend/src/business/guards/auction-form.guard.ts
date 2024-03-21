@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 
-export const auctionIdGuard: CanActivateFn = (route, state) => {
+export const auctionFormGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   const data = router.getCurrentNavigation().extras.state;

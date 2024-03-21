@@ -2,7 +2,7 @@
     <div *ngIf="handoverDetails && handoverDetails.length > 0 && !bootstrap" class="flex flex-col gap-4">
         <h3 class="mb-2 p-3 font-bold">Odaberite lokaciju:</h3>
         <div
-            class="section center ml-1 mr-1 cursor-pointer"
+            class="section center ml-1 mr-1 cursor-pointer hover:shadow-lg hover:bg-slate-300 transition-all duration-150"
             *ngFor="let option of handoverDetails"
             (click)="onSubmit(option)"
         >
@@ -45,6 +45,7 @@
         </div>
 
         <h1>Hvala na potvrdi</h1>
+        <h2>Ubrzo ćemo vas preusmjeriti nazad na aukcije</h2>
     </div>
 
     <div *ngIf="bootstrap && !success" class="text-center p-3" style="max-width: 23rem">

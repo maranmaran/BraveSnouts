@@ -69,7 +69,7 @@ export class AdminAuctionsPageComponent implements OnInit {
   /** Whether or not only processeed auctions have been selected */
   public get onlyProcessedAuctionsSelected(): boolean {
     return this.selection.selected
-      .map((a) => a.processed)
+      .map((a) => a?.processed)
       .reduce((prev, cur) => (cur &&= prev), true);
   }
 
@@ -83,7 +83,8 @@ export class AdminAuctionsPageComponent implements OnInit {
       return;
     }
 
-    for (const auction of this.selection.selected) {
+    const nonProcessed = this.selection.selected.filter(x => x.processed == false);
+    for (const auction of nonProcessed) {
       let endAuction$ = this.functionsSvc
         .endAuction(auction.id, handoverDetails)
         .pipe(
@@ -128,6 +129,14 @@ export class AdminAuctionsPageComponent implements OnInit {
       return;
     }
 
+    const alreadySent = this.selection.selected.filter(x => !!x.lastTimeWinningMailsSent);
+    if (alreadySent) {
+      const answer = confirm('Označio/la si aukcije za koje su već poslani pobjednički mailovi? Sigurno želiš nastaviti?');
+      if (!answer) {
+        return;
+      }
+    }
+
     this.functionsSvc
       .sendWinnerMails(auctionIds, handoverDetails[0])
       .pipe(
@@ -170,15 +179,19 @@ export class AdminAuctionsPageComponent implements OnInit {
       return;
     }
 
-    from(this.selection.selected.map(x => x.id))
+    const auctions = [...this.selection.selected];
+    this.selection.deselect(...auctions);
+
+    from(auctions)
       .pipe(
-        first(),
         this.toastSvc.observe({
           loading: `Arhiviram`,
           success: `Uspješno`,
           error: `Nešto je pošlo po zlu`,
         }),
-        mergeMap(id => this.auctionRepo.update(id, { archived: true }))
+        mergeMap(a => {
+          return this.auctionRepo.update(a.id, { archived: true });
+        })
       ).subscribe(noop);
   }
 

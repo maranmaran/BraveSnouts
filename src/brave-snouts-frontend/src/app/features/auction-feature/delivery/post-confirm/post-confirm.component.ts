@@ -134,7 +134,10 @@ export class PostConfirmComponent implements OnInit {
     Promise.all(updateJobs)
       .then(() => (this.sendConfirmation(), this.success = true))
       .catch(err => (console.error(err), this.success = false))
-      .finally(() => this.bootstrap = true);
+      .finally(() => {
+        this.bootstrap = true
+        setTimeout(() => this.router.navigate(['/aukcije']), 5000);
+      });
   }
 
   sendConfirmation() {

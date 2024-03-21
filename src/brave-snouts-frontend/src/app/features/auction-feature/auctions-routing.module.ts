@@ -12,6 +12,7 @@ import { EmailLoginComponent } from 'src/app/features/auth-feature/email-login/e
 import { EmailOptoutComponent } from 'src/app/features/auth-feature/email-optout/email-optout.component';
 import { adminGuard } from 'src/business/guards/admin.guard';
 import { auctionActiveGuard } from 'src/business/guards/auction-active.guard';
+import { auctionFormGuard } from 'src/business/guards/auction-form.guard';
 import { auctionIdGuard } from 'src/business/guards/auction-id.guard';
 import { authGuard } from 'src/business/guards/auth.guard';
 import { AuctionBulkImageFormComponent } from './auction/auction-bulk-image-form/auction-bulk-image-form.component';
@@ -25,25 +26,27 @@ const routes: Routes = [
         path: '', component: AuctionsHomeComponent, children: [
             { path: '', component: AuctionListComponent },
 
-            { path: 'potvrda-posta', component: PostConfirmComponent },
-            { path: 'potvrda-primopredaja', component: HandoverConfirmComponent },
-
-            { path: 'kreiranje-aukcije', canActivate: [adminGuard, auctionIdGuard], component: AuctionFormComponent },
-            { path: 'izmjena-aukcije', canActivate: [adminGuard, auctionIdGuard], component: AuctionFormComponent },
-            { path: 'kreiranje-aukcije-sa-ucitavanjem-slika', canActivate: [adminGuard], component: AuctionBulkImageFormComponent },
-
             { path: 'aukcija', canActivate: [auctionIdGuard, auctionActiveGuard], component: AuctionDetailsComponent },
             { path: 'predmet', canActivate: [auctionActiveGuard], component: SingleItemComponent },
-
             { path: 'moji-predmeti', canActivate: [authGuard], component: UserItemsComponent },
-            { path: 'aukcija-administracija', canActivate: [adminGuard, auctionIdGuard], component: AdminPageComponent },
-            { path: 'administracija', canActivate: [adminGuard], component: AdminAuctionsPageComponent },
+
+            { path: 'potvrda-posta', component: PostConfirmComponent },
+            { path: 'potvrda-primopredaja', component: HandoverConfirmComponent },
 
             { path: 'email-prijava', component: EmailLoginComponent },
             { path: 'email-postavke', component: EmailOptoutComponent },
 
             { path: 'polica-privatnosti', component: PrivacyPolicyComponent },
             { path: 'pravila', component: AuctionRulesComponent },
+
+            // admin
+            { path: 'administracija', canActivate: [adminGuard], component: AdminAuctionsPageComponent },
+            { path: 'aukcija-administracija', canActivate: [adminGuard, auctionIdGuard], component: AdminPageComponent },
+
+            { path: 'kreiranje-aukcije', canActivate: [adminGuard, auctionFormGuard], component: AuctionFormComponent },
+            { path: 'izmjena-aukcije', canActivate: [adminGuard, auctionFormGuard], component: AuctionFormComponent },
+            { path: 'kreiranje-aukcije-sa-ucitavanjem-slika', canActivate: [adminGuard], component: AuctionBulkImageFormComponent },
+
         ]
     },
     // non matched routes

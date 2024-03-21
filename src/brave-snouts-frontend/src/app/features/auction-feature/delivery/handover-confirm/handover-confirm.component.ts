@@ -104,7 +104,10 @@ export class HandoverConfirmComponent implements OnInit, OnDestroy {
     Promise.all(updateJobs)
       .then(() => (this.sendConfirmation(option), this.success = true))
       .catch(err => (console.error(err), this.success = false))
-      .finally(() => this.bootstrap = true);
+      .finally(() => {
+        this.bootstrap = true
+        setTimeout(() => this.router.navigate(['/aukcije']), 5000);
+      });
   }
 
   sendConfirmation(option) {
