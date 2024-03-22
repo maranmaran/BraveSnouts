@@ -10,6 +10,8 @@ export interface Animal {
     images: FirebaseFile[];
     instagram: string;
     facebook: string;
+    shortDescription: string;
+    tags: string[];
 }
 
 @Injectable({ providedIn: 'root' })

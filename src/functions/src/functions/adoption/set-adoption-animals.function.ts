@@ -11,6 +11,8 @@ export interface Animal {
     images: AssetFile[] | FirebaseFile[];
     instagram: string;
     facebook: string;
+    shortDescription: string;
+    tags: string[];
 }
 
 let storage: StorageService = undefined;
@@ -67,6 +69,8 @@ async function toAnimal(entry: Entry<EntrySkeletonType, undefined, string>) {
         description: entry.fields.description,
         instagram: entry.fields.instagram,
         facebook: entry.fields.facebook,
+        shortDescription: entry.fields.shortDescription,
+        tags: entry.fields.tags,
         images: (<Asset[]>entry.fields.images).map(x => x.fields.file)
     };
 }
