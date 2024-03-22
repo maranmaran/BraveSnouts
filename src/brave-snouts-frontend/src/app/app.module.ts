@@ -9,7 +9,7 @@ import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functio
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GALLERY_CONFIG } from 'ng-gallery';
+import { GALLERY_CONFIG, GalleryConfig } from 'ng-gallery';
 import { LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
@@ -20,7 +20,7 @@ import { MaterialModule } from './shared/material.module';
 
 registerLocaleData(hrLocale);
 
-export const DEFAULT_GALLERY_CONFIG = {
+export const DEFAULT_GALLERY_CONFIG: GalleryConfig = {
   imageSize: 'contain',
   scrollBehavior: 'smooth',
   loadingStrategy: 'preload',
@@ -72,21 +72,7 @@ export const DEFAULT_GALLERY_CONFIG = {
     //   useValue: true ? undefined : (console.warn('EMULATOR DEFINED', FUNCTIONS_EMULATOR), ['localhost', 5001]),
     // },
     {
-      provide: GALLERY_CONFIG, useValue: {
-        autoPlay: true,
-        imageSize: 'cover',
-        dots: true,
-        dotsPosition: 'bottom',
-
-        scrollBehavior: 'smooth',
-        loadingStrategy: 'preload',
-
-        counter: false,
-        thumb: false,
-        loop: true,
-
-        debug: false,
-      }
+      provide: GALLERY_CONFIG, useValue: DEFAULT_GALLERY_CONFIG
     },
   ]
 })

@@ -9,24 +9,30 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, MatButtonModule, MatIconModule],
   styles: [``],
   template: `
-    <div class="flex flex-row gap-2">
-      <img
-        [ngClass]="{ 'invisible': !instagram }"
-        class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105"
+    <div class="flex flex-row gap-4">
+
+    {{facebook}}
+
+    @if(!(removeFromDom && !instagram)) {
+      <a [href]="instagram" target="_blank" [ngClass]="{ 'invisible': !instagram }"><img
+        class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105 hover:cursor-pointer"
         src="assets/social-logo/instagram.svg"
         matTooltip="Instagram poveznica"
-      />
+      /></a>
+    }
 
-      <img
-        [ngClass]="{ 'invisible': !instagram }"
-        class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105"
-        src="assets/social-logo/facebook.svg"
-        matTooltip="Facebook poveznica"
-      />
+    @if(!(removeFromDom && !facebook)) {
+        <a [href]="facebook" target="_blank" [ngClass]="{ 'invisible': !facebook }"><img
+          class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105 hover:cursor-pointer"
+          src="assets/social-logo/facebook.svg"
+          matTooltip="Facebook poveznica"
+        /></a>
+      }
     </div>
   `
 })
 export class SocialLinksComponent {
   @Input() instagram;
   @Input() facebook;
+  @Input() removeFromDom = false
 }

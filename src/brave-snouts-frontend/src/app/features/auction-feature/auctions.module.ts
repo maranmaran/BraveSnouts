@@ -138,7 +138,7 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
     ],
     providers: [
         FirebaseImagePipe,
-        provideHotToastConfig()
+        provideHotToastConfig(),
     ]
 })
 export class AuctionsModule { }

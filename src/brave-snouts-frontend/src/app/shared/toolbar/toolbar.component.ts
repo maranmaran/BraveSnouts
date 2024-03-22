@@ -63,19 +63,18 @@ import { SupportComponent } from '../support/support.component'
                     <mat-icon>menu</mat-icon>
                 </button>
                 <mat-menu #navMenu="matMenu">
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/', name: 'Početna' }" ></ng-container>
-                     <ng-container *ngTemplateOutlet="navBtn; context: { route: '/blog', name: 'Blog' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/merch', name: 'Merch' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/udomi', name: 'Udomi' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/aukcije', name: 'Aukcije' }" ></ng-container>
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
+                    <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container>
+                    <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container>
                 </mat-menu>
-
                 <span class="flex lg:hidden gap-4">
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/', name: 'Početna' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/blog', name: 'Blog' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/merch', name: 'Merch' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/udomi', name: 'Udomi' }" ></ng-container>
-                    <ng-container *ngTemplateOutlet="navBtn; context: { route: '/aukcije', name: 'Aukcije' }" ></ng-container>
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
+                    <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container>
+                    <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container>
                 </span>
             </div>
 
@@ -146,14 +145,34 @@ import { SupportComponent } from '../support/support.component'
             </div>
         </mat-toolbar>
 
-        <ng-template #navBtn let-route="route" let-name="name">
-            <button
+        <ng-template #navBtn let-route="route" let-icon="icon" let-name="name" let-menu="menu">
+            <button *ngIf="!menu"
                 mat-button
                 class="nav-button shadow-md hover:shadow-xl"
                 [routerLink]="[route]"
-                [routerLinkActiveOptions]="{ exact: true }"
-                routerLinkActive="nav-button-active"
+                [routerLinkActiveOptions]="{
+                    paths: 'subset',
+                    fragment: 'exact',
+                    matrixParams: 'exact',
+                    queryParams: 'exact'
+                }"
+                routerLinkActive="mat-mdc-button mat-mdc-raised-button"
             >
+                <mat-icon matPrefix>{{icon}}</mat-icon>
+                {{ name }}
+            </button>
+            <button *ngIf="menu"
+                mat-menu-item
+                [routerLink]="[route]"
+                [routerLinkActiveOptions]="{
+                    paths: 'subset',
+                    fragment: 'exact',
+                    matrixParams: 'exact',
+                    queryParams: 'exact'
+                }"
+                routerLinkActive="bg-zinc-200"
+            >
+                <mat-icon matPrefix>{{icon}}</mat-icon>
                 {{ name }}
             </button>
         </ng-template>

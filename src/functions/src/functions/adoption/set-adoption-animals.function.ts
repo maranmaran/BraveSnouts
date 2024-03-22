@@ -35,9 +35,8 @@ export const setAdoptionAnimalsFn = europeFunctions().https
         // write new data
         const writer = appStore().bulkWriter();
 
-        for (const product of contentfulAnimals.items) {
-            const animal = await toAnimal(product);
-
+        for (const contentfulAnimal of contentfulAnimals.items) {
+            const animal = await toAnimal(contentfulAnimal);
             animal.images = await uploadToStorage(animal.slug, animal.images as AssetFile[]);
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises

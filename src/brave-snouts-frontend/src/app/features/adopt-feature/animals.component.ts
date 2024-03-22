@@ -37,6 +37,6 @@ export class AnimalsComponent {
 
   navigate(animal: Animal) {
     this.api.selectAnimal(animal);
-    this.router.navigate(['udomi', `njuska`, animal.slug])
+    this.router.navigate(['udomi', `njusku`, animal.slug])
   }
 }
