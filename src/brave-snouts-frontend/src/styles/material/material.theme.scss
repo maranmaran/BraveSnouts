@@ -26,6 +26,42 @@
 
 // ======================================= THEME ==========================================
 
+$color1: #38556a;
+$color2: #86949d;
+$color3: #df0c15;
+$color4: #1f2024;
+$color5: #ffffff;
+
+$snouts-primary-palette: (
+    50: #e4effc,
+    100: #c4d7e6,
+    200: #a5bbce,
+    300: #85a0b6,
+    400: #6c8ba3,
+    500: #547792,
+    600: #476980,
+    700: #38556a,
+    800: #2a4254,
+    900: #192e3d,
+    contrast: (
+        50: rgba(#e4effc, 0.87),
+        100: rgba(#c4d7e6, 0.87),
+        200: rgba(#a5bbce, 0.87),
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+    ),
+);
+
+// Fontovi:
+// naslovi - League Spartan
+// paragrafi - Raleway
+
+// $primary: $snouts-primary-palette;
 $primary: mat.$cyan-palette;
 $accent: mat.$cyan-palette;
 $warning: mat.$red-palette;
@@ -40,6 +76,8 @@ $custom-typography: mat.define-typography-config(
     $headline-5: mat.define-typography-level(32px, 48px, 700),
     $body-2: mat.define-typography-level(16px, 24px, 500),
 );
+
+//
 
 $theme-light: mat.define-light-theme(
     (
