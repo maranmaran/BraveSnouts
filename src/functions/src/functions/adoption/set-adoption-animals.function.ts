@@ -18,35 +18,38 @@ export interface Animal {
 let storage: StorageService = undefined;
 
 export const setAdoptionAnimalsFn = europeFunctions().https
-    .onCall(async (data, ctx) => {
-        // retrieve cms data
-        const content_type = 'braveSnoutsAdoption';
-        const client = createClient({
-            space: functions.config().contentful.space,
-            accessToken: functions.config().contentful.secret,
-        });
+    .onCall(async (data, ctx) => await setAdoptionAnimalsInternal());
 
-        const contentfulAnimals = await client.getEntries({ content_type: content_type });
+export async function setAdoptionAnimalsInternal() {
+    // retrieve cms data
+    const content_type = 'braveSnoutsAdoption';
+    const client = createClient({
+        space: functions.config().contentful.space,
+        accessToken: functions.config().contentful.secret,
+    });
 
-        // clear storages
-        storage = StorageService.create();
+    const contentfulAnimals = await client.getEntries({ content_type: content_type });
 
-        await appStore().recursiveDelete(appStore().collection('adoption'));
-        await storage.recursiveDelete('adoption');
+    // clear storages
+    storage = StorageService.create();
 
-        // write new data
-        const writer = appStore().bulkWriter();
+    await appStore().recursiveDelete(appStore().collection('adoption'));
+    await storage.recursiveDelete('adoption');
 
-        for (const contentfulAnimal of contentfulAnimals.items) {
-            const animal = await toAnimal(contentfulAnimal);
-            animal.images = await uploadToStorage(animal.slug, animal.images as AssetFile[]);
+    // write new data
+    const writer = appStore().bulkWriter();
 
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            writer.set(appStore().doc(`adoption/${animal.slug}`), animal)
-        }
+    for (const contentfulAnimal of contentfulAnimals.items) {
+        const animal = await toAnimal(contentfulAnimal);
+        animal.images = await uploadToStorage(animal.slug, animal.images as AssetFile[]);
+        animal.description = animal.description.split('\n').join('<br/>');;
 
-        await writer.close();
-    })
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        writer.set(appStore().doc(`adoption/${animal.slug}`), animal)
+    }
+
+    await writer.close();
+}
 
 async function uploadToStorage(id: string, files: AssetFile[]) {
     const fFiles: FirebaseFile[] = [];

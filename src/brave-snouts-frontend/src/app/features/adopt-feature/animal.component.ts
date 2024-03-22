@@ -30,21 +30,33 @@ import { AdoptApi, Animal } from './adopt.api'
 
             <div class="grid grid-rows-[min-content,min-content,1fr] gap-4 h-full p-2">
                 <h1 class="justify-self-end font-extrabold">{{animal.name}}</h1>
-                <div class="flex flex-row items-center gap-4">
-                  <app-social-links
-                      *ngIf="animal.instagram || animal.facebook"
-                      class="post-socials"
-                      [removeFromDom]="true"
-                      [instagram]="animal.instagram"
-                      [facebook]="animal.facebook"
-                  ></app-social-links>
-                  <button mat-flat-button (click)="onAdopt(animal)" color="primary" class="justify-self-end relative top-[5px]">
-                    <div class="flex flex-row justify-center items-center gap-2">
-                        <mat-icon>pets</mat-icon> <span>Udomi</span> <mat-icon> pets </mat-icon>
+                <div class="flex flex-row justify-between">
+                  <span class="flex flex-row items-center gap-4">
+                    <app-social-links
+                        *ngIf="animal.instagram || animal.facebook"
+                        class="post-socials"
+                        [removeFromDom]="true"
+                        [instagram]="animal.instagram"
+                        [facebook]="animal.facebook"
+                    ></app-social-links>
+                    <button mat-flat-button (click)="onAdopt(animal)" color="primary" class="justify-self-end relative top-[5px]">
+                      <div class="flex flex-row justify-center items-center gap-2">
+                          <mat-icon>pets</mat-icon> <span>Udomi</span> <mat-icon> pets </mat-icon>
+                      </div>
+                    </button>
+                  </span>
+
+                  <span class="flex flex-row items-center gap-4">
+                    <div class="flex flex-row gap-1 items-center pr-2 justify-end">
+                      @for(tag of animal.tags; track tag) {
+                        <div class="flex justify-center items-center h-min m-1 font-medium py-1 px-2 rounded-full text-cyan-600 bg-cyan-100 border border-cyan-300 ">
+                            <div class="text-sm font-normal leading-none max-w-full flex-initial">{{tag}}</div>
+                        </div>
+                      }
                     </div>
-                  </button>
+                  </span>
                 </div>
-                <div class="prose-xl">{{ animal.description }}</div>
+                <div class="prose-xl" [innerHTML]="animal.description"></div>
             </div>
         </div>
     `,

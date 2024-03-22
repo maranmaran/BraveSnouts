@@ -48,6 +48,7 @@ export class AdoptApi {
             .valueChanges()
             .pipe(
                 first(),
+                map(animals => animals.map(a => (a.description.replace('\n', '<br\>'), a))),
                 tap(animals => this.animalsSubject.next(animals))
             );
     }

@@ -11,8 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
   template: `
     <div class="flex flex-row gap-4">
 
-    {{facebook}}
-
     @if(!(removeFromDom && !instagram)) {
       <a [href]="instagram" target="_blank" [ngClass]="{ 'invisible': !instagram }"><img
         class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105 hover:cursor-pointer"
