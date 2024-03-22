@@ -123,7 +123,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     }
 
     this.fetchInProgress = true;
-    this.loadingSvc.active$.next(true);
+    this.loadingSvc.loading$.next(true);
 
     const subscription = this.itemsRepo
       .getScrollPage(this._auctionId, this.last)
@@ -143,7 +143,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
           // update flags
           this.fetchInProgress = false;
-          this.loadingSvc.active$.next(false);
+          this.loadingSvc.loading$.next(false);
         },
       );
 

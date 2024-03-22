@@ -43,7 +43,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly renderer = inject(Renderer2);
 
   async ngOnInit() {
-    this.isLoading$ = this.loadingSvc.active$;
+    this.isLoading$ = this.loadingSvc.loading$;
     this.userId = await firstValueFrom(this.authSvc.userId$);
     this._subsink.add(
       this.getTrackedItems()
@@ -74,7 +74,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getTrackedItems() {
-    this.loadingSvc.active$.next(true);
+    this.loadingSvc.loading$.next(true);
 
     return this.itemsRepo.getUserItems(this.userId).pipe(
       tap(items => this.total = items?.length),
@@ -93,7 +93,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (item == "empty") {
         this.total = 0;
         this.items = [];
-        setTimeout(() => this.loadingSvc.active$.next(false));
+        setTimeout(() => this.loadingSvc.loading$.next(false));
         return;
       }
 
@@ -112,7 +112,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.itemDialogSvc.items.next(this.items);
 
       if (this.items?.length == this.total) {
-        setTimeout(() => this.loadingSvc.active$.next(false));
+        setTimeout(() => this.loadingSvc.loading$.next(false));
       }
 
     });

@@ -3,5 +3,5 @@ import { BehaviorSubject } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class ProgressBarService {
-    active$ = new BehaviorSubject<boolean>(false);
+    loading$ = new BehaviorSubject<boolean>(false);
 }

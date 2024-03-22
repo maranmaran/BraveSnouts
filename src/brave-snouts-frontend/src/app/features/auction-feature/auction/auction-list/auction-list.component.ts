@@ -78,7 +78,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
     }
 
     // progress bar - loading
-    this.loadingSvc.active$.next(true);
+    this.loadingSvc.loading$.next(true);
     this.auctions$ = auctions$.pipe(
       tap(auctions => {
         this.totalDonated = auctions.filter(a => this.getAuctionState(a) == 'active')
@@ -86,7 +86,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
         this.totalDonated = Math.round(this.totalDonated * 100) / 100;
       }),
-      tap(() => this.loadingSvc.active$.next(false)),
+      tap(() => this.loadingSvc.loading$.next(false)),
       tap(() => this.auctionsBootstrapped = true),
     );
   }
@@ -193,7 +193,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
 
         // delete items subcollection
         // finally delete auction
-        this.loadingSvc.active$.next(true);
+        this.loadingSvc.loading$.next(true);
         this.itemsRepo.getAll(auctionObj.id)
           .pipe(
             take(1),
@@ -201,7 +201,7 @@ export class AuctionListComponent implements OnInit, OnDestroy {
             concatMap(deletePromises => from(Promise.all(deletePromises))),
             concatMap(() => this.auctionRepo.delete(auctionObj.id)),
             concatMap(() => this.itemsRepo.deleteTrackedItems(auctionObj.id)),
-            finalize(() => this.loadingSvc.active$.next(false))
+            finalize(() => this.loadingSvc.loading$.next(false))
           ).subscribe()
       })
 

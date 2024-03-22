@@ -1,28 +1,22 @@
 <mat-toolbar class="h-10 flex flex-row justify-between" color="primary">
     <div id="actions" class="flex flex-row w-32">
-        <button mat-icon-button *ngIf="admin$ | async; privacyPolicy" [matMenuTriggerFor]="adminMenu">
+        <button class="hidden lg:flex" mat-icon-button [matMenuTriggerFor]="navMenu" matTooltip="Navigacija">
             <mat-icon>menu</mat-icon>
         </button>
-        <mat-menu #adminMenu="matMenu">
-            <button mat-menu-item (click)="onCreateAuctionThroughImages()">
-                <mat-icon matPrefix> add </mat-icon>
-                <span class="mat-small">Napravi aukciju</span>
-            </button>
-            <button mat-menu-item routerLink="/aukcije/administracija">
-                <mat-icon matPrefix> admin_panel_settings </mat-icon>
-                <span class="mat-small">Admin sučelje</span>
-            </button>
+        <mat-menu #navMenu="matMenu">
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/', name: 'Početna' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/blog', name: 'Blog' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/merch', name: 'Merch' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/udomi', name: 'Udomi' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/aukcije', name: 'Aukcije' }"></ng-container> -->
         </mat-menu>
-
-        <ng-container *ngIf="!(admin$ | async)">
-            <button mat-icon-button matTooltip="Polica privatnosti" routerLink="/aukcije/polica-privatnosti">
-                <mat-icon>policy</mat-icon>
-            </button>
-
-            <button mat-icon-button routerLink="/aukcije/pravila">
-                <mat-icon>info</mat-icon>
-            </button>
-        </ng-container>
+        <span class="flex lg:hidden gap-4">
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/', name: 'Početna' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/blog', name: 'Blog' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/merch', name: 'Merch' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/udomi', name: 'Udomi' }"></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet="navBtn; context: { route: '/aukcije', name: 'Aukcije' }"></ng-container> -->
+        </span>
     </div>
 
     <div
@@ -40,6 +34,28 @@
     </div>
 
     <div id="user-profile" class="user-auth h-full relative flex flex-row justify-end items-center gap-2">
+        <button mat-icon-button *ngIf="admin$ | async; info" matTooltip="Administracija" [matMenuTriggerFor]="adminMenu">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #adminMenu="matMenu">
+            <button mat-menu-item (click)="onCreateAuctionThroughImages()">
+                <mat-icon matPrefix> add </mat-icon>
+                <span class="mat-small">Napravi aukciju</span>
+            </button>
+            <button mat-menu-item routerLink="/aukcije/administracija">
+                <mat-icon matPrefix> admin_panel_settings </mat-icon>
+                <span class="mat-small">Admin sučelje</span>
+            </button>
+        </mat-menu>
+
+        <button mat-icon-button matTooltip="Polica privatnosti" routerLink="/aukcije/polica-privatnosti">
+            <mat-icon>policy</mat-icon>
+        </button>
+
+        <button mat-icon-button matTooltip="Pravila aukcije" routerLink="/aukcije/pravila">
+            <mat-icon>info</mat-icon>
+        </button>
+
         <button mat-icon-button matTooltip="Pomoć" (click)="onShowContactHelp()">
             <mat-icon>help</mat-icon>
         </button>
@@ -108,3 +124,15 @@
         </ng-template>
     </mat-tab>
 </mat-tab-group>
+
+<ng-template #navBtn let-route="route" let-name="name">
+    <button
+        mat-button
+        class="nav-button shadow-md hover:shadow-xl"
+        [routerLink]="[route]"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="nav-button-active"
+    >
+        {{ name }}
+    </button>
+</ng-template>

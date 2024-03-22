@@ -217,7 +217,7 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   async onShowWinners() {
-    this.loadingSvc.active$.next(true);
+    this.loadingSvc.loading$.next(true);
     let winners = new Map<
       string,
       { winner: WinnerOnAuction; auctionIds: Set<string> }
@@ -243,7 +243,7 @@ export class AdminAuctionsPageComponent implements OnInit {
         }
       }
     }
-    this.loadingSvc.active$.next(false);
+    this.loadingSvc.loading$.next(false);
 
     this.dialog.open(WinnerDetailsDialogComponent, {
       maxHeight: '80vh',

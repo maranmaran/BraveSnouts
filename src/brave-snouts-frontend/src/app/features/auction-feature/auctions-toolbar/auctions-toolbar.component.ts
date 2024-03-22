@@ -38,7 +38,7 @@ export class AuctionsToolbarComponent implements OnInit, OnDestroy {
 
   user$ = this.authSvc.user$;
   admin$ = this.authSvc.isAdmin$;
-  active$ = this.loadingSvc.active$;
+  active$ = this.loadingSvc.loading$;
   userInfo$ = this.authSvc.getUserInformation();
 
   private _subsink = new SubSink();
@@ -110,7 +110,6 @@ export class AuctionsToolbarComponent implements OnInit, OnDestroy {
   onLogout() {
     this.authSvc.logout();
   }
-
 
   readonly renderer = inject(Renderer2)
 
