@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
     <div class="flex flex-row gap-4">
 
     @if(!(removeFromDom && !instagram)) {
-      <a [href]="instagram" target="_blank" [ngClass]="{ 'invisible': !instagram }"><img
+      <a [href]="instagram" target="_blank" (click)="$event.stopImmediatePropagation()" [ngClass]="{ 'invisible': !instagram }"><img
         class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105 hover:cursor-pointer"
         src="assets/social-logo/instagram.svg"
         matTooltip="Instagram poveznica"
@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     }
 
     @if(!(removeFromDom && !facebook)) {
-        <a [href]="facebook" target="_blank" [ngClass]="{ 'invisible': !facebook }"><img
+        <a [href]="facebook" target="_blank" (click)="$event.stopImmediatePropagation()" [ngClass]="{ 'invisible': !facebook }"><img
           class="h-10 w-10 shadow-sm hover:shadow-xl hover:scale-105 hover:cursor-pointer"
           src="assets/social-logo/facebook.svg"
           matTooltip="Facebook poveznica"
