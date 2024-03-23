@@ -5,10 +5,10 @@ import { AuctionItemGenerator } from "../services/auction-item.generator";
 import { AuctionGenerator } from "../services/auction.generator";
 import { ImageGenerator } from "../services/image.generator";
 
+const cleanData = false;
 const seedNewImages = false;
-const cleanData = true;
+const auctionSizes = [5, 50, 100];
 // const auctionSizes = [5, 20, 100, 300, 500];
-const auctionSizes = [5];
 
 (async () => {
 
@@ -55,19 +55,30 @@ async function getExistingImages() {
 
   const result: FirebaseFile[] = [];
   for (const file of files[0]) {
-    const fileName = file.name.split('_')[0].split('/').reverse()[0];
+    const fileName = file.name.split('_')[0].split('/').reverse()[0].split('.');
 
     const urlOrig = file.publicUrl();
-    const urlThumb = await getUrl('auction-items/automation-images/thumb/' + fileName + '_thumb');
-    const urlComp = await getUrl('auction-items/automation-images/compressed/' + fileName + '_compressed');
+    const urlThumb = await getUrl('auction-items/automation-images/thumb/' + fileName[0] + '_thumb.' + fileName[1]);
+    const urlComp = await getUrl('auction-items/automation-images/compressed/' + fileName[0] + '_compressed.' + fileName[1]);
 
     result.push({
-      name: fileName,
-      path: `auction-items/automation-images`,
+      name: fileName[0],
       type: 'image',
-      urlOrig,
-      urlComp,
-      urlThumb
+      original: {
+        path: `auction-items/automation-images/original`,
+        fUrl: urlOrig,
+        gUrl: urlOrig,
+      },
+      compressed: {
+        path: `auction-items/automation-images/compressed`,
+        fUrl: urlComp,
+        gUrl: urlComp,
+      },
+      thumbnail: {
+        path: `auction-items/automation-images/thumbnail`,
+        fUrl: urlThumb,
+        gUrl: urlThumb,
+      },
     });
   }
 

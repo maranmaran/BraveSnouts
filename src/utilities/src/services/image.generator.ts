@@ -143,16 +143,27 @@ export class ImageGenerator {
             });
 
             const originalUrl = originalResp[0].publicUrl()
-            const imgUrl = compressedResp[0].publicUrl()
+            const compressedUrl = compressedResp[0].publicUrl()
             const thumbUrl = thumbResp[0].publicUrl()
 
             result.push(<FirebaseFile>{
                 name: image,
-                path: `auction-items/${image}`,
                 type: 'image',
-                urlOrig: originalUrl,
-                urlComp: imgUrl,
-                urlThumb: thumbUrl
+                original: {
+                    path: `auction-items/${auctionId}/original/${image}_original`,
+                    fUrl: originalUrl,
+                    gUrl: originalUrl,
+                },
+                compressed: {
+                    path: `auction-items/${auctionId}/compressed/${image}_compressed`,
+                    fUrl: compressedUrl,
+                    gUrl: compressedUrl,
+                },
+                thumbnail: {
+                    path: `auction-items/${auctionId}/thumb/${image}_thumb`,
+                    fUrl: thumbUrl,
+                    gUrl: thumbUrl,
+                },
             });
         }
 

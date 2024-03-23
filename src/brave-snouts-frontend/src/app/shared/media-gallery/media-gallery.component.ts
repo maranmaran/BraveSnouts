@@ -57,14 +57,8 @@ const DEFAULT_LIGHTBOX_CONFIG: LightboxConfig = {
         }
     `,
   template: `
-        <!-- <div class="flex flex-col gap-2">
-        <div>{{ 'No media ' +  empty() }}</div>
-        <div>{{ 'Use single ' +  useSingle() + ' ' + media().length }}</div>
-        <div>{{ 'Use gallery ' +  useGallery() + ' ' + media().length }}</div>
-      </div> -->
-
         @if (!this.files || this.files.length == 0) {
-            <i class="text-gray-500">No images</i>
+            <i class="text-gray-500">Bez multimedije</i>
         }
 
         @if (this.useGallery) {
@@ -88,24 +82,6 @@ const DEFAULT_LIGHTBOX_CONFIG: LightboxConfig = {
                 }"
             />
         }
-        <!-- <img 
-          id="single-image"
-          class="img-fluid"
-          [ngStyle]="{
-              background: 'url(' + image.thumb + ') 50% 50% no-repeat',
-              'background-size': 'contain'
-          }"
-          [src]="image.thumb"/> -->
-        <!-- <img
-            *ngIf="media.length == 1 && (media[0] | firebaseImage | async) as image"
-            class="w-full h-full single-gallery-image cursor-pointer"
-            (click)="openLightbox()"
-            [ngStyle]="{
-                background: 'url(' + image.thumb + ') 50% 50% no-repeat',
-                'background-size': 'contain'
-            }"
-            [src]="image.src"
-        /> -->
     `,
 })
 export class MediaGalleryModule implements OnInit, OnDestroy {
@@ -129,14 +105,9 @@ export class MediaGalleryModule implements OnInit, OnDestroy {
   @Output() opened = new EventEmitter<void>()
   @Output() closed = new EventEmitter<void>()
 
-  // galleryId = input<string>();
-  // tiles = input<boolean>(false);
-  // files = input<FirebaseFile[]>([]);
-  // forceIdx? = input<number | null>(null);
-  // config = input<GalleryConfig>(DEFAULT_GALLERY_CONFIG);
-
-  get useTiles() { return this.tiles };
-  get useGallery() { return !this.useTiles };
+  get useTiles() { return this.hasMedia && this.tiles };
+  get useGallery() { return this.hasMedia && !this.useTiles };
+  get hasMedia() { return this.files && this.files.length > 0 };
 
   readonly galleryMedia = signal([] as ImageItemData[])
   readonly tileMedia = computed(() => this.galleryMedia()?.[this.tileIdx])
