@@ -98,12 +98,34 @@ import { SupportComponent } from '../support/support.component'
             </div>
 
             <div id="user-profile" class="user-auth h-full relative flex flex-row justify-end items-center gap-2">
+
+                <button mat-icon-button *ngIf="admin$ | async; info" matTooltip="Administracija" [matMenuTriggerFor]="adminMenu">
+                    <mat-icon>admin_panel_settings</mat-icon>
+                </button>
+                <mat-menu #adminMenu="matMenu">
+                    <button mat-menu-item (click)="onCreateAuctionThroughImages()">
+                        <mat-icon matPrefix> add </mat-icon>
+                        <span class="mat-small">Napravi aukciju</span>
+                    </button>
+                    <button mat-menu-item routerLink="/aukcije/administracija">
+                        <mat-icon matPrefix> admin_panel_settings </mat-icon>
+                        <span class="mat-small">Admin sučelje</span>
+                    </button>
+                    <button mat-menu-item routerLink="/blog">
+                        <mat-icon matPrefix> storefront </mat-icon>
+                        <span class="mat-small">Blog (vNext)</span>
+                    </button>
+                    <button mat-menu-item routerLink="/merch">
+                        <mat-icon matPrefix> newspaper </mat-icon>
+                        <span class="mat-small">Shop (vNext)</span>
+                    </button>
+                </mat-menu>
+                
                 <button mat-icon-button matTooltip="Pomoć" (click)="onShowContactHelp()">
                     <mat-icon>help</mat-icon>
                 </button>
 
                 <button *ngIf="!(user$ | async)" mat-stroked-button class="p-0" (click)="onLogin()">Prijava</button>
-
                 <ng-container *ngIf="user$ | async as user">
                     <img
                         *ngIf="user?.photoURL; else noPhoto"
@@ -188,6 +210,7 @@ export class ToolbarComponent {
     readonly loading$ = this.loadingSvc.loading$
 
     readonly user$ = this.authSvc.user$
+    readonly admin$ = this.authSvc.isAdmin$;
     readonly userInfo$ = this.authSvc.getUserInformation()
 
     clickFlag = false
@@ -218,6 +241,11 @@ export class ToolbarComponent {
             closeOnNavigation: true,
             panelClass: 'dialog-no-padding',
         })
+    }
+
+
+    onCreateAuctionThroughImages() {
+        this.router.navigate(['/aukcije/kreiranje-aukcije-sa-ucitavanjem-slika']);
     }
 
     onLogout = () => this.authSvc.logout()

@@ -59,7 +59,7 @@
                   "maximumError": "5kb"
                 }
               ],
-              "outputHashing": "all",
+              "outputHashing": "all"
             },
             "development": {
               "fileReplacements": [
@@ -73,7 +73,8 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
@@ -81,14 +82,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "brave-snouts-frontend:build"
+            "buildTarget": "brave-snouts-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "brave-snouts-frontend:build:production"
+              "buildTarget": "brave-snouts-frontend:build:production"
             },
             "development": {
-              "browserTarget": "brave-snouts-frontend:build:development"
+              "buildTarget": "brave-snouts-frontend:build:development"
             }
           }
         },
