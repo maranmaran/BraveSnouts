@@ -23,7 +23,7 @@ import { AuthService } from 'src/business/services/auth.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
 import { SubSink } from 'subsink';
-import { ItemScrollViewService } from './item-scroll-view.service';
+import { AuctionItemsScrollViewService } from './item-scroll-view.service';
 
 @Component({
   selector: 'app-item-gallery',
@@ -47,7 +47,7 @@ export class ItemGalleryComponent implements OnInit, OnChanges, OnDestroy {
     private readonly dialog: MatDialog,
     private readonly itemDialogSvc: ItemDialogService,
     private readonly authSvc: AuthService,
-    public readonly itemScrollViewSvc: ItemScrollViewService,
+    public readonly itemScrollViewSvc: AuctionItemsScrollViewService,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) { }
 

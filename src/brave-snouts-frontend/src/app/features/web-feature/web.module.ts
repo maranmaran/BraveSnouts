@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { GalleryModule } from "ng-gallery";
 import { AuctionsToolbarComponent } from "src/app/features/auction-feature/auctions-toolbar/auctions-toolbar.component";
+import { MediaGalleryModule } from "src/app/shared/media-gallery/media-gallery.component";
 import { WebHomeComponent } from "./web-home.component";
 import { WebRoutingModule } from "./web-routing.module";
 
@@ -11,7 +11,7 @@ import { WebRoutingModule } from "./web-routing.module";
         WebRoutingModule,
         AuctionsToolbarComponent,
 
-        GalleryModule
+        MediaGalleryModule
     ],
     declarations: [
         WebHomeComponent,

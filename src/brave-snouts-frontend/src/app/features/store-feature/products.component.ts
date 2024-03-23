@@ -16,11 +16,12 @@ import { Product, StoreApi } from './store.api';
             shadow-lg rounded-b-md flex justify-start p-0 rounded overflow-hidden
             cursor-pointer hover:shadow-2xl
           ">
-            <media-gallery class="w-full h-[250px] group-hover:h-[205px] group-hover:scale-110
+            <bs-media-gallery class="w-full h-[250px] group-hover:h-[205px] group-hover:scale-110
               self-center bg-cover bg-no-repeat animation" 
+              [id]="product.id"
               [media]="getImages(product)"
               [maxResolution]="true"
-            ></media-gallery>
+            ></bs-media-gallery>
             
             <div class="animation group-hover:pb-12">
               <mat-card-header class="px-3 pt-5 pb-4 justify-between gap-12">

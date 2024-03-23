@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class ItemScrollViewService {
+export class AuctionItemsScrollViewService {
   // "grid" or "items"
 
   block = false;

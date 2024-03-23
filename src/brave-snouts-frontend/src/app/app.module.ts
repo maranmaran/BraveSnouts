@@ -9,32 +9,17 @@ import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functio
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GALLERY_CONFIG, GalleryConfig } from 'ng-gallery';
-import { LIGHTBOX_CONFIG } from 'ng-gallery/lightbox';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
 import { environment } from 'src/environments/environment';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './shared/material.module';
+// import { USE_EMULATOR as AUTH_EMULATOR } from '@angular/fire/auth';
+// import { USE_EMULATOR as FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+// import { USE_EMULATOR as FUNCTIONS_EMULATOR } from '@angular/fire/functions';
 
 registerLocaleData(hrLocale);
-
-export const DEFAULT_GALLERY_CONFIG: GalleryConfig = {
-  imageSize: 'contain',
-  scrollBehavior: 'smooth',
-  loadingStrategy: 'preload',
-
-  itemAutosize: false,
-  autoHeight: false,
-
-  dots: false,
-  counter: false,
-  thumb: false,
-  loop: true,
-
-  debug: false,
-}
 
 @NgModule({
   imports: [
@@ -63,17 +48,12 @@ export const DEFAULT_GALLERY_CONFIG: GalleryConfig = {
   providers: [
     { provide: LOCALE_ID, useValue: 'hr' },
     { provide: REGION, useValue: 'europe-west1' },
-    { provide: LIGHTBOX_CONFIG, useValue: { imageSize: 'contain' } },
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true } },
-    // {
-    //   provide: FUNCTIONS_EMULATOR,
-    //   useValue: true ? undefined : (console.warn('EMULATOR DEFINED', FUNCTIONS_EMULATOR), ['localhost', 5001]),
-    // },
-    {
-      provide: GALLERY_CONFIG, useValue: DEFAULT_GALLERY_CONFIG
-    },
+    // { provide: AUTH_EMULATOR, useValue: environment.production ? undefined : ['localhost', 9099], },
+    // { provide: FIRESTORE_EMULATOR, useValue: environment.production ? undefined : ['localhost', 8080],},
+    // { provide: FUNCTIONS_EMULATOR, useValue: environment.production ? undefined : ['localhost', 5001], },
   ]
 })
 export class AppModule { }

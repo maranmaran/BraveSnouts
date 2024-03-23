@@ -58,8 +58,7 @@
             padding-top: 100%;
             /* added */
 
-            #single-image,
-            #placeholder {
+            .tile {
                 height: $maxHeight !important;
                 width: $maxWidth !important;
 

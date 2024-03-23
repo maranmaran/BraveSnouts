@@ -1,71 +1,68 @@
 <virtual-scroller
-  *ngIf="(itemScrollViewSvc.view$ | async) == 'grid'"
-  #gridScroller
-  class="items-gallery-grid-scroller"
-  #scroll
-  [items]="items"
-  [parentScroll]="parentScroll"
-  (vsEnd)="onLoadMore($event)"
-  [enableUnequalChildrenSizes]="(itemScrollViewSvc.view$ | async) == 'items'"
+    *ngIf="(itemScrollViewSvc.view$ | async) == 'grid'"
+    #gridScroller
+    class="items-gallery-grid-scroller"
+    #scroll
+    [items]="items"
+    [parentScroll]="parentScroll"
+    (vsEnd)="onLoadMore($event)"
+    [enableUnequalChildrenSizes]="(itemScrollViewSvc.view$ | async) == 'items'"
 >
-  <div
-    #container
-    [ngClass]="{
-      'items-gallery-grid': (itemScrollViewSvc.view$ | async) == 'grid'
-    }"
-  >
     <div
-      class="media-container center"
-      *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn"
+        #container
+        [ngClass]="{
+            'items-gallery-grid': (itemScrollViewSvc.view$ | async) == 'grid'
+        }"
     >
-      <app-item-media
-        class="media elevate hover"
-        [first]="true"
-        [media]="item.media"
-        [auctionId]="item.auctionId"
-        (click)="openItem(item)"
-      >
-        <div
-          class="best-bid-label background warn lighter mat-small"
-          *ngIf="userId == item.user && (isAuthenticated$ | async)"
-        >
-          Vaša ponuda je najbolja
+        <div class="media-container center" *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn">
+            <bs-media-gallery
+                class="media elevate hover"
+                [tiles]="true"
+                [tileIdx]="0"
+                [media]="item.media"
+                [galleryId]="item.id"
+                (click)="openItem(item)"
+                (opened)="itemScrollViewSvc.block = true"
+                (closed)="itemScrollViewSvc.block = false"
+            >
+                <div
+                    class="best-bid-label background warn lighter mat-small"
+                    *ngIf="userId == item.user && (isAuthenticated$ | async)"
+                >
+                    Vaša ponuda je najbolja
+                </div>
+            </bs-media-gallery>
         </div>
-      </app-item-media>
     </div>
-  </div>
 </virtual-scroller>
 
 <virtual-scroller
-  *ngIf="(itemScrollViewSvc.view$ | async) == 'items'"
-  #itemsScroller
-  class="items-gallery-grid-scroller"
-  #scroll
-  [items]="items"
-  [parentScroll]="parentScroll"
-  (vsEnd)="onLoadMore($event)"
-  [enableUnequalChildrenSizes]="(itemScrollViewSvc.view$ | async) == 'items'"
+    *ngIf="(itemScrollViewSvc.view$ | async) == 'items'"
+    #itemsScroller
+    class="items-gallery-grid-scroller"
+    #scroll
+    [items]="items"
+    [parentScroll]="parentScroll"
+    (vsEnd)="onLoadMore($event)"
+    [enableUnequalChildrenSizes]="(itemScrollViewSvc.view$ | async) == 'items'"
 >
-  <div
-    #container
-    [ngClass]="{
-      'items-grid': (itemScrollViewSvc.view$ | async) == 'items'
-    }"
-  >
-    <app-item-details
-      class="item"
-      *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn"
-      [auction]="auction"
-      [item]="item"
-      [trackedItems]="userTrackedItems"
+    <div
+        #container
+        [ngClass]="{
+            'items-grid': (itemScrollViewSvc.view$ | async) == 'items'
+        }"
     >
-    </app-item-details>
-  </div>
+        <app-item-details
+            class="item"
+            *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn"
+            [auction]="auction"
+            [item]="item"
+            [trackedItems]="userTrackedItems"
+        >
+        </app-item-details>
+    </div>
 </virtual-scroller>
 
-<div
-  *ngIf="itemScrollViewSvc.loading$ | async"
-  class="backdrop mat-app-background"
->
-  <mat-spinner class="grid-spinner"></mat-spinner>
+<div *ngIf="itemScrollViewSvc.loading$ | async" class="backdrop mat-app-background">
+    <mat-spinner class="grid-spinner"></mat-spinner>
 </div>

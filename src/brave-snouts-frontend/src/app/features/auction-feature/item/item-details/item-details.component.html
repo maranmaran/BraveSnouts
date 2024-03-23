@@ -44,12 +44,7 @@
         </div>
     </ng-container>
 
-    <app-item-media
-        class="auction-item-media"
-        [media]="item.media"
-        [galleryId]="item.id"
-        [auctionId]="item.auctionId"
-    ></app-item-media>
+    <bs-media-gallery class="auction-item-media" [media]="item.media" [galleryId]="item.id"></bs-media-gallery>
 
     <mat-card-content class="auction-item-description">
         <div

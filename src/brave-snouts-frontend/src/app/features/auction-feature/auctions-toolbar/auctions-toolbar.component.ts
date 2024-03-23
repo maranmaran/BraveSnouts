@@ -17,7 +17,7 @@ import { SupportComponent } from 'src/app/shared/support/support.component';
 import { AuthService } from 'src/business/services/auth.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { SubSink } from 'subsink';
-import { ItemScrollViewService } from '../item/item-gallery/item-scroll-view.service';
+import { AuctionItemsScrollViewService } from '../item/item-gallery/item-scroll-view.service';
 
 @Component({
   selector: 'auctions-toolbar',
@@ -33,7 +33,7 @@ export class AuctionsToolbarComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly loadingSvc: ProgressBarService,
     private readonly dialog: MatDialog,
-    public readonly itemScrollViewSvc: ItemScrollViewService
+    public readonly itemScrollViewSvc: AuctionItemsScrollViewService
   ) { }
 
   user$ = this.authSvc.user$;

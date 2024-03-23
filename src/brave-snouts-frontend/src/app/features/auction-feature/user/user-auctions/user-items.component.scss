@@ -8,12 +8,12 @@ virtual-scroller {
     padding-bottom: 20px;
 }
 
-@media(max-width: 600px) {
+@media (max-width: 600px) {
     .custom-height {
         height: 170px !important;
         padding-bottom: 20px;
 
-        app-item-media {
+        media-gallery {
             max-height: 170px !important;
             max-width: 170px !important;
         }
@@ -27,7 +27,6 @@ virtual-scroller {
     font-size: 9px;
 }
 
-
 #won-items,
 #outbidded-items {
     .auction-item {
@@ -37,7 +36,7 @@ virtual-scroller {
 
 #won-items-gallery,
 #outbidded-items-gallery {
-    app-item-media {
+    media-gallery {
         margin-right: 10px;
     }
 }

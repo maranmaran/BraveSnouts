@@ -40,7 +40,7 @@ type VariationMap = Map<VariationId, ProductVariation>;
             class="grid grid-cols-2 sm:grid-cols-1 justify-center align-center gap-12 
            w-[80vw] max-w-2xl sm:max-w-full sm:w-full"
         >
-            <media-gallery [media]="product.variations[0].images" [fullResolution]="true"></media-gallery>
+            <bs-media-gallery [media]="product.variations[0].images" [fullResolution]="true"></bs-media-gallery>
         
             <form *ngIf="form" [formGroup]="form" class="grid grid-rows-[min-content,1fr,1fr] gap-12 sm:gap-4 h-full">
                 <div class="flex flex-row justify-between gap-8">

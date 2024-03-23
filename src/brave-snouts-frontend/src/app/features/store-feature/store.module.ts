@@ -10,8 +10,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSliderModule } from "@angular/material/slider";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { GalleryModule } from "ng-gallery";
-import { MediaGallery } from "src/app/shared/media-gallery/media-gallery.component";
+import { MediaGalleryModule } from "src/app/shared/media-gallery/media-gallery.component";
 import { ToolbarComponent } from "src/app/shared/toolbar/toolbar.component";
 import { CartComponent } from "./cart.component";
 import { CheckoutSuccessComponent } from "./checkout-success.component";
@@ -26,9 +25,8 @@ import { StoreRoutingModule } from './store-routing.module';
         ReactiveFormsModule,
         StoreRoutingModule,
         ToolbarComponent,
-        MediaGallery,
+        MediaGalleryModule,
 
-        GalleryModule,
         MatCardModule,
         MatButtonModule,
         MatIconModule,
