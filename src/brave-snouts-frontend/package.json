@@ -8,8 +8,8 @@
     "config:dev": "npm run config -- --environment=dev",
     "config:prod": "npm run config -- --environment=prod",
     "start": "npm run config:dev && ng serve -c development",
-    "build:dev": "npm ci && npm run config:dev && ng build -c development",
-    "build:prod": "npm ci && npm run config:prod && ng build -c production"
+    "build:dev": "npm ci && npm run config:dev && ng build --output-hashing=all -c development",
+    "build:prod": "npm ci && npm run config:prod && ng build --output-hashing=all -c production"
   },
   "dependencies": {
     "@angular/animations": "~17.3.0",
