@@ -29,8 +29,8 @@ import { AdoptApi, Animal } from './adopt.api'
             ></gallery>
 
             <div class="grid grid-rows-[min-content,min-content,1fr] gap-4 h-full p-2">
-                <h1 class="justify-self-end font-extrabold">{{animal.name}}</h1>
-                <div class="flex flex-row justify-between">
+                <h1 class="justify-self-end font-extrabold md:justify-self-center">{{animal.name}}</h1>
+                <div class="flex flex-row md:flex-col justify-between">
                   <span class="flex flex-row items-center gap-4">
                     <app-social-links
                         *ngIf="animal.instagram || animal.facebook"
@@ -46,7 +46,7 @@ import { AdoptApi, Animal } from './adopt.api'
                     </button>
                   </span>
 
-                  <span class="flex flex-row items-center gap-4">
+                  <span class="flex flex-row items-center gap-4 md:justify-center">
                     <div class="flex flex-row gap-1 items-center pr-2 justify-end">
                       @for(tag of animal.tags; track tag) {
                         <div class="flex justify-center items-center h-min m-1 font-medium py-1 px-2 rounded-full text-cyan-600 bg-cyan-100 border border-cyan-300 ">
