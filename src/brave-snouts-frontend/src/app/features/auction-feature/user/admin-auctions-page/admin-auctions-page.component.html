@@ -98,8 +98,15 @@
             <th mat-header-cell *matHeaderCellDef>Pobjednički mailovi</th>
             <td mat-cell *matCellDef="let element">
                 <p *ngIf="element.lastTimeWinningMailsSent">
-                    Poslani
-                    {{ element.lastTimeWinningMailsSent?.toDate() | date: 'dd.MM, HH:mm' }}
+                    Poslani {{ element.lastTimeWinningMailsSent?.toDate() | date: 'dd.MM, HH:mm' }}
+                </p>
+                <p *ngIf="element.howMuchWinningMailsSent">
+                    Poslano
+                    {{
+                        element.howMuchWinningMailsSent == 'none'
+                            ? '0 mailova'
+                            : element.howMuchWinningMailsSent + ' mailova'
+                    }}
                 </p>
                 <p *ngIf="!element.lastTimeWinningMailsSent">Nisu još poslani</p>
             </td>

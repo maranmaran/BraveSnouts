@@ -24,12 +24,13 @@ export const sendWinnerMailFn = europeFunctions().https.onCall(
             logger.info("Sending emails")
 
             // logger.error("Uncomment send mails to actually send mails");
-            await sendMails(auctions, userBidsTransformed, handoverDetails);
+            const howMuchWinningMailsSent = await sendMails(auctions, userBidsTransformed, handoverDetails);
 
             for (const auction of auctions) {
                 auction.lastTimeWinningMailsSent = new Date();
                 await appStore().doc(`auctions/${auction.id}`).update({
-                    lastTimeWinningMailsSent: new Date()
+                    lastTimeWinningMailsSent: new Date(),
+                    howMuchWinningMailsSent
                 });
             }
 
@@ -129,4 +130,8 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         logger.info(`Reverted endAuctionMailSent flag`);
     }
 
+    const totalSent = sentMailsCounter + skippedCounter;
+    const totalToSend = userBids.size;
+
+    return `${totalSent}/${totalToSend}`;
 }

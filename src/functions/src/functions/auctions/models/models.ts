@@ -38,6 +38,8 @@ export class Auction {
 
     // Describes last point in time the winning mails were sent
     lastTimeWinningMailsSent?: Date = null;
+    // Describes how much of total mails were sent    
+    howMuchWinningMailsSent?: string = 'none';
 }
 
 export class Winner {
