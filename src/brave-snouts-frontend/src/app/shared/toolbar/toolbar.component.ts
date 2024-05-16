@@ -66,14 +66,14 @@ import { SupportComponent } from '../support/support.component'
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
-                    <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container>
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container> -->
                     <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container>
                 </mat-menu>
                 <span class="flex lg:hidden gap-4">
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
-                    <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container>
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container> -->
                     <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container>
                 </span>
             </div>
