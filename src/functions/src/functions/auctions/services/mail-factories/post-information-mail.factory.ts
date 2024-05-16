@@ -48,6 +48,6 @@ export const getPostConfirmUrl = (
     auctionIds: string[]
 ) => {
     const ids = auctionIds.join(",");
-    return `${appConfig().base.url}/aukcije/potvrda-posta;auctionIds=${ids};userId=${userId};donation=${totalDonation};paymentDetails=${paymentDetail};postageFee=${postageFee}`;
+    return `${appConfig().base.url}/potvrda-posta;auctionIds=${ids};userId=${userId};donation=${totalDonation};paymentDetails=${paymentDetail};postageFee=${postageFee}`;
 };
 

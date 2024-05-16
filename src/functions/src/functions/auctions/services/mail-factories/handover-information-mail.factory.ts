@@ -55,5 +55,5 @@ export const sendHandoverConfirmationMail = async (
 
 export const getHandoverConfirmUrl = (userId: string, auctionIds: string[]) => {
     const ids = auctionIds.join(",");
-    return `${appConfig().base.url}/aukcije/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
+    return `${appConfig().base.url}/potvrda-primopredaja;auctionIds=${ids};userId=${userId}`;
 };
