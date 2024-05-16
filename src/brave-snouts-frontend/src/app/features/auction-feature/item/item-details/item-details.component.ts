@@ -289,8 +289,8 @@ export class ItemDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
   // TODO: Put into database
   // Bid modifier is step between bids 
-  // (current 0.7EUR + or -, before it was 5HRK)
-  private readonly bidModifier = 0.7;
+  // (current 0.5EUR + or -)
+  private readonly bidModifier = 1;
 
   subtractBid() {
     let currentModified = this.currentBid * 100;
