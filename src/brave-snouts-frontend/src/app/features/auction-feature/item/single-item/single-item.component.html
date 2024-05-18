@@ -1,9 +1,17 @@
-<div class="container center overflow-hidden">
-  <app-item-details
-    class="item"
-    *ngIf="item$ | async as item"
-    [auction]="auction"
-    [item]="item"
-    [trackedItems]="userTrackedItems"
-  ></app-item-details>
+<div class="container center overflow-hidden flex flex-col gap-4 mx-auto">
+    <div class="flex flex-row justify-between w-full max-w-fit flex-wrap md:flex-col gap-4">
+        <button (click)="toAuction(auction)" mat-raised-button color="primary">
+            <mat-icon>arrow_back</mat-icon>
+            Povratak na aukciju
+        </button>
+
+        <button routerLink="/aukcije/moji-predmeti" mat-raised-button color="primary">Moji predmeti</button>
+    </div>
+    <app-item-details
+        class="item single-item"
+        *ngIf="item$ | async as item"
+        [auction]="auction"
+        [item]="item"
+        [trackedItems]="userTrackedItems"
+    ></app-item-details>
 </div>

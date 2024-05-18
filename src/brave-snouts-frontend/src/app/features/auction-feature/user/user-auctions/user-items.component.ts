@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnDestroy, OnInit, Renderer2, RendererStyleFl
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { mergeMap, tap } from 'rxjs/operators';
-import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { BreakpointService } from 'src/business/services/breakpoint.service';
@@ -122,19 +121,4 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     return item.id;
   }
 
-
-  openItem(item: AuctionItem) {
-
-    this.dialog.open(SingleItemDialogComponent, {
-      height: 'auto',
-      width: '100%',
-      maxWidth: '20rem',
-      autoFocus: false,
-      closeOnNavigation: true,
-      panelClass: ['item-dialog', 'mat-elevation-z8'],
-      data: { item, svc: this.itemDialogSvc }
-    });
-
-    window.history.pushState({ modal: true }, '', '#modal');
-  }
 }

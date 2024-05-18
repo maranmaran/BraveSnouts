@@ -84,6 +84,10 @@ export class SingleItemComponent implements OnInit, OnDestroy {
     )
   }
 
+  toAuction(auction: Auction) {
+    this.router.navigate(['/aukcije/aukcija', { id: auction.id }], { state: { auction } });
+  }
+
   ngOnDestroy(): void {
     this._subsink.unsubscribe();
   }
