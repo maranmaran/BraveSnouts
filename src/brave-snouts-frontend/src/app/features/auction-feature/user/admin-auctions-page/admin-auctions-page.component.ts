@@ -289,6 +289,8 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   onUpdateCatalog() {
+    alert('Iskljucena funkcionalnost');
+
     this.functionsSvc.updateCatalog().pipe(
       first(),
       this.toastSvc.observe({
@@ -300,6 +302,8 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   onUpdateAdoptionAnimals() {
+    alert('Iskljucena funkcionalnost');
+
     this.functionsSvc.updateAdoptionAnimals().pipe(
       first(),
       this.toastSvc.observe({
@@ -311,6 +315,8 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   onUpdateBlog() {
+    alert('Iskljucena funkcionalnost');
+
     this.functionsSvc.updateBlog().pipe(
       first(),
       this.toastSvc.observe({
