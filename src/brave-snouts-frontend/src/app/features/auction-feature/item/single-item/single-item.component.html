@@ -5,7 +5,9 @@
             Povratak na aukciju
         </button>
 
-        <button routerLink="/aukcije/moji-predmeti" mat-raised-button color="primary">Moji predmeti</button>
+        <button *ngIf="authenticated$ | async" routerLink="/aukcije/moji-predmeti" mat-raised-button color="primary">
+            Moji predmeti
+        </button>
     </div>
     <app-item-details
         class="item single-item"
