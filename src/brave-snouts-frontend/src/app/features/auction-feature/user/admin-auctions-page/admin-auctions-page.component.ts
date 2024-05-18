@@ -130,7 +130,7 @@ export class AdminAuctionsPageComponent implements OnInit {
     }
 
     const alreadySent = this.selection.selected.filter(x => !!x.lastTimeWinningMailsSent);
-    if (alreadySent) {
+    if (alreadySent?.length > 0) {
       const answer = confirm('Označio/la si aukcije za koje su već poslani pobjednički mailovi? Sigurno želiš nastaviti?');
       if (!answer) {
         return;

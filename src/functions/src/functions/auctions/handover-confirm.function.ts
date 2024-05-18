@@ -64,7 +64,6 @@ export const handoverConfirmFn = europeFunctions().https.onCall(
 
         await sendMail(getComposer("app.hrabrenjuske@gmail.com", `${userDb.displayName} je odabrao preuzimanje poštom`, adminUpdateMessage));
 
-        await sendPostConfirmationMail(userDb, auctionIds, chosenOptionData, totalDonation, paymentDetail, postageFee)
         return { status: 200 };
       }
 
