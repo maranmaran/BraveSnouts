@@ -2,9 +2,11 @@ import { isAfter, isBefore } from "date-fns";
 import { Timestamp } from "firebase/firestore";
 import { Auction } from "src/business/models/auction.model";
 
-export function getAuctionState(auction: Auction): 'future' | 'active' | 'expired' {
+export type AuctionState = 'future' | 'active' | 'expired';
 
-    let state: 'future' | 'active' | 'expired' = 'active';
+export function getAuctionState(auction: Auction): AuctionState {
+
+    let state: AuctionState = 'active';
 
     if (isFutureAuction(auction)) {
         state = 'future'
