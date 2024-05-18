@@ -51,7 +51,9 @@ const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
 const appId = process.env.FIREBASE_APP_ID;
 const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
-const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+
+// process.env.STRIPE_PUBLISHABLE_KEY;
+const stripePublishableKey = 'obsolete';
 
 if (!apiKey) throw new Error(`apiKey missing`);
 if (!authDomain) throw new Error(`authDomain missing`);
@@ -87,9 +89,6 @@ const buildEnvironmentFileContent = `
       appId: "${appId}",
       measurementId: "${measurementId}"
     },
-    stripe: {
-      publishableKey: '${stripePublishableKey}'
-    },
     pageSizes: {
       itemsList: ${process.env.PAGE_SIZE_ITEMS_LIST ?? 16},
     },
@@ -98,9 +97,13 @@ const buildEnvironmentFileContent = `
       maxBidOffset: ${process.env.APP_MAX_BID_OFFSET ?? 30},
       bidStepSize: ${process.env.APP_BID_STEP_SIZE ?? 5}
     },
-    imageCacheSeed: ${process.env.CACHE_SEED ?? 7}
+    imageCacheSeed: ${process.env.CACHE_SEED ?? 7},
+    stripe: {
+       publishableKey: '${stripePublishableKey}'
+    },
   };
 `;
+
 
 writeFileUsingFS(targetPath, buildEnvironmentFileContent); // appending data into the target file
 

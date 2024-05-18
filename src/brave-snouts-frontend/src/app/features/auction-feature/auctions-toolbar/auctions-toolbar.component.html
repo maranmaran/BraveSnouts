@@ -7,7 +7,7 @@
             <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
             <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
             <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
-            @if (admin$ | async) {
+            <!-- @if (admin$ | async) {
                 <ng-container
                     *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'pets', route: '/udomi', name: 'Udomi' }"
                 ></ng-container>
@@ -17,20 +17,20 @@
                     navBtn;
                     context: { menu: true, icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }
                 "
-            ></ng-container>
+            ></ng-container> -->
         </mat-menu>
         <span class="flex lg:hidden gap-4">
             <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
             <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
             <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
-            @if (admin$ | async) {
+            <!-- @if (admin$ | async) {
                 <ng-container
                     *ngTemplateOutlet="navBtn; context: { icon: 'pets', route: '/udomi', name: 'Udomi' }"
                 ></ng-container>
             }
             <ng-container
                 *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }"
-            ></ng-container>
+            ></ng-container> -->
         </span>
     </div>
 
@@ -61,14 +61,14 @@
                 <mat-icon matPrefix> admin_panel_settings </mat-icon>
                 <span class="mat-small">Admin sučelje</span>
             </button>
-            <button mat-menu-item routerLink="/blog">
+            <!-- <button mat-menu-item routerLink="/blog">
                 <mat-icon matPrefix> storefront </mat-icon>
                 <span class="mat-small">Blog (vNext)</span>
             </button>
             <button mat-menu-item routerLink="/merch">
                 <mat-icon matPrefix> newspaper </mat-icon>
                 <span class="mat-small">Shop (vNext)</span>
-            </button>
+            </button> -->
         </mat-menu>
 
         <ng-template #info>

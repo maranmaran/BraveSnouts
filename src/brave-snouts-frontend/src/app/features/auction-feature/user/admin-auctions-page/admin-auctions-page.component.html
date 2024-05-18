@@ -100,6 +100,7 @@
                 <p *ngIf="element.lastTimeWinningMailsSent">
                     Poslani {{ element.lastTimeWinningMailsSent?.toDate() | date: 'dd.MM, HH:mm' }}
                 </p>
+                <p *ngIf="!element.lastTimeWinningMailsSent">Nisu još poslani</p>
                 <p *ngIf="element.howMuchWinningMailsSent">
                     Poslano
                     {{
@@ -108,7 +109,6 @@
                             : element.howMuchWinningMailsSent + ' mailova'
                     }}
                 </p>
-                <p *ngIf="!element.lastTimeWinningMailsSent">Nisu još poslani</p>
             </td>
         </ng-container>
 
