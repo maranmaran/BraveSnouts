@@ -79,6 +79,7 @@
             "options": [
                 "generate-auction",
                 "test-all-mails",
+                "total-donations",
             ],
             "description": "Enter the script name to debug (e.g., generate-auction)",
         }

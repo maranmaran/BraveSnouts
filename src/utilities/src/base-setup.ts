@@ -3,7 +3,8 @@ import * as admin from 'firebase-admin';
 import * as path from 'path';
 export const firebase_tools = require('firebase-tools');
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+const envPath = path.resolve(__dirname, '../../../.env');
+dotenv.config({ path: envPath, debug: true });
 
 export const firebaseConfig = {
     credential: admin.credential.applicationDefault(),

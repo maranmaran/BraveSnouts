@@ -51,16 +51,18 @@ export class Winner {
     bidId: string;
     userId: string;
 
-    userInfo: {
-        id: string,
-        name: string;
-        email: string;
-    };
+    userInfo: WinnerUserInfo;
 
     deliveryChoice?: 'postal' | 'handover';
     handoverOption: string;
     paymentStatus: 'paid' | 'pending' | 'notpaid';
     postalInformation?: PostalInformation;
+}
+
+export interface WinnerUserInfo {
+    id: string,
+    name: string;
+    email: string;
 }
 
 export class PostalInformation {
