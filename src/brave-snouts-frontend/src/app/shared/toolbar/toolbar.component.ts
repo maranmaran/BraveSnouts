@@ -59,22 +59,22 @@ import { SupportComponent } from '../support/support.component'
     template: `
         <mat-toolbar class="h-10 flex flex-row justify-between" color="primary">
             <div id="actions" class="flex flex-row w-auto">
-                <button class="hidden lg:flex" mat-icon-button [matMenuTriggerFor]="navMenu">
+               <!-- <button class="hidden lg:flex" mat-icon-button [matMenuTriggerFor]="navMenu">
                     <mat-icon>menu</mat-icon>
-                </button>
+                </button> -->
                 <mat-menu #navMenu="matMenu">
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container> -->
-                    <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container>
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { menu: true, icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container> -->
                 </mat-menu>
                 <span class="flex lg:hidden gap-4">
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'home', route: '/pocetna', name: 'Početna' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container> -->
-                    <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container>
+                   <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container> -->
                 </span>
             </div>
 
