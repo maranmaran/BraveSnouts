@@ -58,7 +58,7 @@ import { SupportComponent } from '../support/support.component'
     ],
     template: `
         <mat-toolbar class="h-10 flex flex-row justify-between" color="primary">
-            <div id="actions" class="flex flex-row w-auto">
+           <!-- <div id="actions" class="flex flex-row w-auto">
                <!-- <button class="hidden lg:flex" mat-icon-button [matMenuTriggerFor]="navMenu">
                     <mat-icon>menu</mat-icon>
                 </button> -->
@@ -74,9 +74,9 @@ import { SupportComponent } from '../support/support.component'
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'newspaper', route: '/blog', name: 'Blog' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'storefront', route: '/merch', name: 'Merch' }" ></ng-container> -->
                     <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'pets', route: '/udomi', name: 'Udomi' }" ></ng-container> -->
-                   <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container> -->
+                    <!-- <ng-container *ngTemplateOutlet="navBtn; context: { icon: 'volunteer_activism', route: '/aukcije', name: 'Aukcije' }" ></ng-container> -->
                 </span>
-            </div>
+            </div> -->
 
             <div
                 id="logo"
