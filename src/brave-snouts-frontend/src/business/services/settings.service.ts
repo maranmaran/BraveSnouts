@@ -55,6 +55,7 @@ export class SettingsService {
 export interface GlobalSettings {
     eurRate: number;
     gradualImageLoading: boolean;
+    loadFullResolution: boolean;
     testing: {
         email: string;
         itemsCount: number;

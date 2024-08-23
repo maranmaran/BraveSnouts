@@ -86,6 +86,10 @@ const initializeFirestore = async (projectName) => {
             // Turning this to TRUE increases costs because of our
             // storage bandwith increase (more high res images more download egress more money spent)
             gradualImageLoading: false,
+
+            // False, if we do not wish to override all images to use full resolution (original upload)
+            // True, if we wish to override all images to use full resolution (original upload)
+            loadFullResolution: false,
             // Parameters used when invoking "test" mail from the application
             testing: {
                 email: 'test@gmail.com',
