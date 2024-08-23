@@ -1,14 +1,14 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, Renderer2, RendererStyleFlags2, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, firstValueFrom, of } from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
-import { SingleItemDialogComponent } from 'src/app/features/auction-feature/item/single-item-dialog/single-item-dialog.component';
+import { mergeMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AuctionItem } from 'src/business/models/auction-item.model';
 import { AuthService } from 'src/business/services/auth.service';
 import { BreakpointService } from 'src/business/services/breakpoint.service';
 import { ItemDialogService } from 'src/business/services/item-dialog.service';
 import { ProgressBarService } from 'src/business/services/progress-bar.service';
 import { AuctionItemRepository } from 'src/business/services/repositories/auction-item.repository';
+import { AuctionRepository } from 'src/business/services/repositories/auction.repository';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -33,6 +33,7 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly isMobile$ = inject(BreakpointService).isMobile$;
 
   constructor(
+    private readonly auctionsRepo: AuctionRepository,
     private readonly itemsRepo: AuctionItemRepository,
     private readonly authSvc: AuthService,
     private readonly loadingSvc: ProgressBarService,
@@ -86,16 +87,22 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const idx = this.items.findIndex(it => it.id == item.id);
 
-        return idx != -1 ? of(this.items[idx]) : this.itemsRepo.getOne(item.auctionId, item.id);
+        if (idx != -1) {
+          return of(this.items[idx]);
+        }
+
+        return this.itemsRepo.getOne(item.auctionId, item.id);
       }),
-    ).subscribe(item => {
+      withLatestFrom(this.auctionsRepo.getAuctionsWithState(['expired', 'active']))
+    ).subscribe(([item, auctions]) => {
 
       if (item == "empty") {
         this.total = 0;
         this.items = [];
-        setTimeout(() => this.loadingSvc.loading$.next(false));
+        setTimeout(() => this.loadingSvc.loading$.next(false))
         return;
       }
+
 
       const idx = this.items.findIndex(it => it.id == item.id);
 
@@ -106,35 +113,20 @@ export class UserItemsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.items = [...this.items, item];
       }
 
+      const auctionsHash = new Set<string>(auctions.map(x => x.id));
+      this.items = this.items.filter(i => auctionsHash.has(i.auctionId));
+
       this.winningItems = [...this.items.filter(item => item.user == this.userId)]
       this.outbiddedItems = [...this.items.filter(item => item.user != this.userId)]
 
       this.itemDialogSvc.items.next(this.items);
+      setTimeout(() => this.loadingSvc.loading$.next(false))
 
-      if (this.items?.length == this.total) {
-        setTimeout(() => this.loadingSvc.loading$.next(false));
-      }
-
-    });
+    }, e => console.error(e));
   }
 
   trackByFn(_, item) {
     return item.id;
   }
 
-
-  openItem(item: AuctionItem) {
-
-    this.dialog.open(SingleItemDialogComponent, {
-      height: 'auto',
-      width: '100%',
-      maxWidth: '20rem',
-      autoFocus: false,
-      closeOnNavigation: true,
-      panelClass: ['item-dialog', 'mat-elevation-z8'],
-      data: { item, svc: this.itemDialogSvc }
-    });
-
-    window.history.pushState({ modal: true }, '', '#modal');
-  }
 }

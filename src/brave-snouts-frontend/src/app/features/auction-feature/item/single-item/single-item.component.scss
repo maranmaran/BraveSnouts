@@ -1,9 +1,17 @@
 .item {
-  min-width: 30rem;
+    min-width: 25rem;
 }
 
 @media (max-width: 600px) {
-  .item {
-    min-width: 100%;
-  }
+    .item {
+        min-width: calc(100vw - 2rem);
+    }
+
+    .single-item {
+        ::ng-deep {
+            mat-card {
+                width: calc(100vw - 2rem);
+            }
+        }
+    }
 }

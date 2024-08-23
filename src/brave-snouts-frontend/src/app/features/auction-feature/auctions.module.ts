@@ -42,7 +42,6 @@ import { ItemDetailsComponent } from "./item/item-details/item-details.component
 import { ItemGalleryComponent } from "./item/item-gallery/item-gallery.component";
 import { ItemListComponent } from "./item/item-list/item-list.component";
 import { ItemsListDialogComponent } from "./item/items-list-dialog/items-list-dialog.component";
-import { SingleItemDialogComponent } from "./item/single-item-dialog/single-item-dialog.component";
 import { SingleItemComponent } from "./item/single-item/single-item.component";
 import { AdminAuctionsPageComponent } from "./user/admin-auctions-page/admin-auctions-page.component";
 import { AdminPageComponent } from "./user/admin-page/admin-page.component";
@@ -114,7 +113,6 @@ import { WinnerDetailsDialogComponent } from "./user/winner-details-dialog/winne
         UserItemsComponent,
 
         SingleItemComponent,
-        SingleItemDialogComponent,
 
         // Auth
         LoginMethodComponent,

@@ -18,6 +18,7 @@ export class SingleItemComponent implements OnInit, OnDestroy {
 
   @Input() fromDialog: boolean = false;
 
+  readonly authenticated$ = this.authSvc.isAuthenticated$;
   private readonly _subsink = new SubSink();
 
   constructor(
@@ -82,6 +83,10 @@ export class SingleItemComponent implements OnInit, OnDestroy {
     this._subsink.add(
       userTrackedItems$.subscribe(items => this.userTrackedItems = items)
     )
+  }
+
+  toAuction(auction: Auction) {
+    this.router.navigate(['/aukcije/aukcija', { id: auction.id }], { state: { auction } });
   }
 
   ngOnDestroy(): void {

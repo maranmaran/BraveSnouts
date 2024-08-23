@@ -49,7 +49,7 @@
     <mat-card-content class="auction-item-description">
         <div
             *ngIf="item.description; else noDescription"
-            class="overflow-hidden flex flex-row gap-2 justify-start items-center"
+            class="overflow-hidden flex flex-row gap-2 justify-start items-center max-w-[350px]"
         >
             <span #description class="truncated overflow-hidden" [innerHtml]="item.description"></span>
             <a
