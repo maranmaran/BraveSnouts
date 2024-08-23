@@ -47,7 +47,7 @@ export class FirebaseImagePipe implements PipeTransform {
             return <Partial<ImageItemData>>{
               src: original,
               thumb: original,
-              type: original
+              type
             };
           }
 
@@ -78,7 +78,7 @@ export class FirebaseImagePipe implements PipeTransform {
             return <Partial<ImageItemData>>{
               src: original,
               thumb: original,
-              type: original
+              type
             };
           }
 
