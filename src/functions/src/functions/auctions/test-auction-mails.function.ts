@@ -10,7 +10,7 @@ export const testAuctionMailsFn = europeFunctions().https.onCall(
 
         const mailVariables = await mailSettings().getMailVariables();
 
-        const itemCount = data.itemCount ?? 10;
+        const itemCount = data.itemsCount ?? 10;
 
         const fakeAuctions: Auction[] = [];
         const fakeAuctionIds = fakeAuctions.map(x => x.id);
