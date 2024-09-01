@@ -16,9 +16,9 @@ export const testAuctionMailsFn = europeFunctions().https.onCall(
         const fakeAuctionIds = fakeAuctions.map(x => x.id);
         const fakeHandoverDetails = ["test lokacija 1", "test lokacija 2"];
         const fakeAuctionItem = getFakeAuctionItem();
-        const fakeBids = Array.from(itemCount).map(x => getFakeBid(fakeUserInfo));
         const fakeUser = getFakeUser(data.email);
         const fakeUserInfo = getFakeUserInfo(data.email);
+        const fakeBids = getBids(itemCount, fakeUserInfo);
 
         await sendWinnerMail(fakeAuctions, fakeHandoverDetails, fakeUserInfo, fakeBids, mailVariables);
         await sendHandoverConfirmationMail(fakeUser, fakeAuctionIds, fakeHandoverDetails[0]);
@@ -29,6 +29,13 @@ export const testAuctionMailsFn = europeFunctions().https.onCall(
 );
 
 // TODO: Use faker
+function getBids(count: number, useInfo: UserInfo) {
+    let bids: Bid[] = []
+    for (let i = 0; i < count; i++) {
+        bids.push(getFakeBid(useInfo))
+    }
+    return bids;
+}
 
 function getFakeAuctionItem() {
     return <AuctionItem>{
