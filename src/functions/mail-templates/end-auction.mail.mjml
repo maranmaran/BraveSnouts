@@ -39,7 +39,7 @@
                     <mj-text>{{{ bank_accounts }}} </mj-text>
                 </mj-text>
 
-                <!-- <mj-text> {{{ postage_details }}} </mj-text> -->
+                <mj-text> {{{ postage_details }}} </mj-text>
 
                 <mj-text> {{{ postage_rules }}} </mj-text>
 
