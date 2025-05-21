@@ -2,7 +2,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule, NgOptimizedImage, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import hrLocale from '@angular/common/locales/hr';
-import { LOCALE_ID, NgModule, OnInit } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule, SETTINGS as FIRESTORE_SETTINGS } from '@angular/fire/compat/firestore';
 import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functions';
@@ -57,16 +57,18 @@ registerLocaleData(hrLocale);
     // { provide: FUNCTIONS_EMULATOR, useValue: environment.production ? undefined : ['localhost', 5001], },
   ]
 })
-export class AppModule implements OnInit {
-  ngOnInit(): void {
+export class AppModule {
+  constructor() {
     this.initializeAppCheck();
   }
 
   initializeAppCheck() {
-    const firebaseApp = getApp(); // get app that has been initialized with Angularfire above
-    initializeAppCheck(firebaseApp, {
-      provider: new ReCaptchaEnterpriseProvider(environment.firebaseConfig.appCheckKey),
-      isTokenAutoRefreshEnabled: true
-    });
+    setTimeout(() => {
+      const firebaseApp = getApp(); // get app that has been initialized with Angularfire above
+      initializeAppCheck(firebaseApp, {
+        provider: new ReCaptchaEnterpriseProvider(environment.firebaseConfig.appCheckKey),
+        isTokenAutoRefreshEnabled: true
+      });
+    })
   }
 }
