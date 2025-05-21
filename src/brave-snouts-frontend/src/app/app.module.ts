@@ -59,7 +59,7 @@ registerLocaleData(hrLocale);
 })
 export class AppModule {
   constructor() {
-    this.initializeAppCheck();
+    // this.initializeAppCheck();
   }
 
   initializeAppCheck() {
