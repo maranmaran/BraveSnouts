@@ -65,7 +65,7 @@ export class AppModule {
   initializeAppCheck() {
     const firebaseApp = getApp(); // get app that has been initialized with Angularfire above
     initializeAppCheck(firebaseApp, {
-      provider: new ReCaptchaEnterpriseProvider(environment.appCheckKey),
+      provider: new ReCaptchaEnterpriseProvider(environment.firebaseConfig.appCheckKey),
       isTokenAutoRefreshEnabled: true
     });
   }
