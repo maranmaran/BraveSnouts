@@ -51,6 +51,7 @@ const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
 const appId = process.env.FIREBASE_APP_ID;
 const measurementId = process.env.FIREBASE_MEASUREMENT_ID;
+const appCheckKey = process.env.FIREBASE_APP_CHECK_KEY;
 
 // process.env.STRIPE_PUBLISHABLE_KEY;
 const stripePublishableKey = 'obsolete';
@@ -64,6 +65,7 @@ if (!appId) throw new Error(`appId missing`);
 if (!measurementId) throw new Error(`measurementId missing`);
 if (!measurementId) throw new Error(`measurementId missing`);
 if (!stripePublishableKey) throw new Error(`stripePublishableKey missing`);
+if (!appCheckKey) throw new Error(`appCheckKey missing`);
 
 if (projectId == 'bravesnoutsprod') {
   console.error('\n\n\n');
@@ -87,7 +89,8 @@ const buildEnvironmentFileContent = `
       storageBucket: "${storageBucket}",
       messagingSenderId: "${messagingSenderId}",
       appId: "${appId}",
-      measurementId: "${measurementId}"
+      measurementId: "${measurementId}",
+      appCheckKey: "${appCheckKey}"
     },
     pageSizes: {
       itemsList: ${process.env.PAGE_SIZE_ITEMS_LIST ?? 16},

@@ -44,6 +44,9 @@ export class AppComponent {
     ]).subscribe()
   }
 
+  // TODO: Use GetRedirectResult API 
+  // TODO: Make use of refresh tokens to extend the session
+  // https://firebase.google.com/docs/auth/web/google-signin#web_10
   listenLogin() {
     return combineLatest([
       this.authSvc.user$.pipe(startWith(null)),

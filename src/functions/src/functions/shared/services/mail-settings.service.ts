@@ -61,7 +61,7 @@ export class MailSettingsService {
     formatBankAccounts(bankAccounts: BankAccount[]) {
         return `
             <ul>
-                ${bankAccounts.filter(ba => ba.visible).map(ba => `<li>${ba.name} - ${ba.account}</li>`)}
+                ${bankAccounts.filter(ba => ba.visible).map(ba => `<li>${ba.name} - ${ba.account}</li>`).join('')}
             </ul>
         `;
     }

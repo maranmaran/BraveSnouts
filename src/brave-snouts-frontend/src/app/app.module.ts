@@ -9,6 +9,8 @@ import { AngularFireFunctionsModule, REGION } from '@angular/fire/compat/functio
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { getApp } from 'firebase/app';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { ErrorInterceptor } from 'src/business/interceptors/error.interceptor';
 import { HttpInterceptor } from 'src/business/interceptors/http.interceptor';
@@ -36,7 +38,6 @@ registerLocaleData(hrLocale);
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireFunctionsModule,
-
     // Shared
     MaterialModule,
     ClipboardModule,
@@ -56,4 +57,16 @@ registerLocaleData(hrLocale);
     // { provide: FUNCTIONS_EMULATOR, useValue: environment.production ? undefined : ['localhost', 5001], },
   ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    this.initializeAppCheck();
+  }
+
+  initializeAppCheck() {
+    const firebaseApp = getApp(); // get app that has been initialized with Angularfire above
+    initializeAppCheck(firebaseApp, {
+      provider: new ReCaptchaEnterpriseProvider(environment.appCheckKey),
+      isTokenAutoRefreshEnabled: true
+    });
+  }
+}

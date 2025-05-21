@@ -14,10 +14,10 @@ export class FunctionsService {
     return callable({ auctionId, handoverDetails });
   }
 
-  testAuctionMails(email, items) {
+  testAuctionMails(email, itemsCount) {
     const callable = this.functions.httpsCallable('auctions-testAuctionMails');
 
-    return callable({ email, items });
+    return callable({ email, itemsCount });
   }
 
   updateCatalog() {

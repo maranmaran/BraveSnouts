@@ -3,7 +3,7 @@
         <!-- <mj-font name="Mali" href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,500;1,500" /> -->
         <mj-style inline="inline"> .h1, .h2, .h3, .h4, .h5, .h6 { margin: 0; padding: 0; } </mj-style>
         <mj-attributes>
-            <mj-all font-family="Trebuchet MS, Cursive" />
+            <mj-all font-family="Trebuchet MS, Arial, sans-serif" />
             <mj-text padding-bottom="0" />
             <mj-section background-color="whitesmoke" padding-left="10px" padding-right="10px" />
             <mj-image border-radius="50%" />
