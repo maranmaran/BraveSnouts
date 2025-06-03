@@ -15,7 +15,7 @@ export const sendWinnerMail = async (
     user: UserInfo,
     items: Bid[],
     settingsMailVariables: any,
-) => {
+): Promise<boolean | any> => {
     const templateRaw = await getLocalTemplate();
 
     logger.info(`Sending mail to ${user.email} as he won ${items.length} items!`);
@@ -61,5 +61,6 @@ export const sendWinnerMail = async (
     const composer = getComposer(user.email, "Čestitamo na osvojenim predmetima!", template);
     const res = await sendMail(composer);
     logger.debug(res);
+    return res
 };
 

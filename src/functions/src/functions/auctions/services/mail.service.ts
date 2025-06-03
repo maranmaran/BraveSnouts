@@ -48,25 +48,53 @@ const client = (() => {
 });
 
 export const sendMail = async composer => {
-
   try {
     const message = (await composer.compile().build()).toString('ascii');
 
     switch (appConfig().mail.provider) {
       case 'mailgun':
-        return await client().messages
-          .create(
-            appConfig().mailgun?.domain, // domain
-            { to: composer.mail.to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message } // message data
-          )
+        return await sendMailgunMail(composer.mail.to, message)
       case 'gmail':
       case 'ethereal':
         return await client().sendMail(message)
     }
   } catch (err) {
     logger.error(JSON.stringify(err), { err });
+    return false
   }
 }
+
+async function sendMailgunMail(to: string, message: any): Promise<boolean> {
+  const maxDurationMs = 10 * 60 * 1000; // 10 minutes
+  const initialDelayMs = 1000; // 1 second
+  const maxDelayMs = 60 * 1000; // Max 60 seconds between retries
+  const backoffFactor = 2;
+
+  let attempt = 0;
+  let totalElapsed = 0;
+  let delay = initialDelayMs;
+
+  while (totalElapsed < maxDurationMs) {
+    try {
+      await client().messages.create(
+        appConfig().mailgun?.domain,
+        { to, 'h:Reply-To': 'app.hrabrenjuske@gmail.com', message }
+      );
+      return true;
+    } catch (err) {
+      logger.error(`Mail send failed (attempt ${attempt + 1}): ${JSON.stringify(err)}`, { err });
+      if (totalElapsed + delay >= maxDurationMs) break;
+
+      await new Promise(resolve => setTimeout(resolve, delay));
+      totalElapsed += delay;
+      delay = Math.min(delay * backoffFactor, maxDelayMs);
+      attempt++;
+    }
+  }
+
+  return false;
+}
+
 
 export function getComposer(to: string, subject: string, html: string) {
   return new mailComposer({

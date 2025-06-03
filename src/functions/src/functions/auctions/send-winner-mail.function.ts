@@ -109,9 +109,15 @@ const sendMails = async (auctions: Auction[], userBids: Map<UserInfo, Bid[]>, ha
         }
 
         sendMailJobs.push(new Promise<void>(async (res, err) => {
-            await sendWinnerMail(auctions, handoverDetails, userInfo, bids, mailVariables);
+            const sendMailResponse = await sendWinnerMail(auctions, handoverDetails, userInfo, bids, mailVariables);
+            if (sendMailResponse === false) {
+                err("mail did not send successfully")
+                return
+            }
+
             await appStore().doc(`users/${userInfo.id}`).update({ endAuctionMailSent: true })
             sentMailsCounter++;
+
             res();
         }))
     }
