@@ -271,20 +271,27 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   onSendTestMail() {
+    const mailCnt = Number(window.prompt("Koliko mailova", "1"));
+
     combineLatest([
       this.settingsSvc.settings$.pipe(first()),
       this.authSvc.user$.pipe(first())
     ]).pipe(
       first(),
       this.toastSvc.observe({
-        loading: `Slanje test maila`,
-        success: `Uspješno"`,
+        loading: `Slanje ${mailCnt} test mailova`,
+        success: `Uspješno poslano ${mailCnt} mailova`,
         error: `Nešto je pošlo po zlu`,
       }),
-      map(([settings, user]) => { return { email: settings.testing.email ?? user.email, itemsCount: settings.testing.itemsCount ?? 10 } }),
-      switchMap(((data: { email: string, itemsCount: number }) =>
-        this.functionsSvc.testAuctionMails(data.email, data.itemsCount)
-      ))
+      map(([settings, user]) => ({
+        email: settings.testing.email ?? user.email,
+        itemsCount: settings.testing.itemsCount ?? 10
+      })),
+      switchMap((data) =>
+        from(Array(mailCnt).fill(0)).pipe(
+          mergeMap(() => this.functionsSvc.testAuctionMails(data.email, data.itemsCount))
+        )
+      )
     ).subscribe(noop);
   }
 
