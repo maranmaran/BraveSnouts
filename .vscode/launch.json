@@ -80,6 +80,7 @@
                 "generate-auction",
                 "test-all-mails",
                 "total-donations",
+                "update-users",
             ],
             "description": "Enter the script name to debug (e.g., generate-auction)",
         }
