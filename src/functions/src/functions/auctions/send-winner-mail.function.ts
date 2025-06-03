@@ -1,12 +1,18 @@
 /* eslint-disable eqeqeq */
-import { logger } from 'firebase-functions';
+import { RuntimeOptions, logger } from 'firebase-functions';
 import { appStore, europeFunctions, mailSettings } from '../app';
 import { getAuction, getAuctionItems, getBids, getUserBidsMap, getUserInformation } from './end-auction.function';
 import { Auction, AuctionItem, Bid, UserInfo } from './models/models';
 import { sendWinnerMail } from './services/mail-factories/winner-mail.factory';
 
+const runtimeOpts: Partial<RuntimeOptions> = {
+    timeoutSeconds: 540,
+    maxInstances: 1,
+}
+
+
 // Sends email for won items
-export const sendWinnerMailFn = europeFunctions().https.onCall(
+export const sendWinnerMailFn = europeFunctions().runWith(runtimeOpts).https.onCall(
     async (data, context) => {
 
         try {

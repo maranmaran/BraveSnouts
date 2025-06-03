@@ -271,7 +271,7 @@ export class AdminAuctionsPageComponent implements OnInit {
   }
 
   onSendTestMail() {
-    const mailCnt = Number(window.prompt("Koliko mailova", "1"));
+    const mailCnt = Number(window.prompt("Koliko iteracija test mailova. Pazi! Za svaki broj ce se poslat 5 mailova, dakle mnozi s 5!", "1"));
 
     combineLatest([
       this.settingsSvc.settings$.pipe(first()),
